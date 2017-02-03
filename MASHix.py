@@ -10,6 +10,7 @@ import os
 from subprocess import Popen, PIPE
 from shutil import copyfile
 from multiprocessing import Pool
+from functools import partial
 
 ## Checks if a directory exists and if not creates one.
 def folderexist(directory):
@@ -77,26 +78,34 @@ def sketch_references(inputfile, output_tag, threads, kmer_size):
 
 ## Makes the sketch command of mash for the reads to be compare to the reference.
 ## According to mash turorial it is useful to provide the -m 2 option in order to remove single-copy k-mers
-def sketch_genomes(genome, inputfile, output_tag, threads, kmer_size):
+def sketch_genomes(genome, inputfile, output_tag, kmer_size):
 	out_folder = os.path.join(os.path.dirname(os.path.abspath(inputfile)), "genome_sketchs")
 	folderexist(out_folder)
 	out_file = os.path.join(out_folder, os.path.basename(genome)) 
-	sketcher_command = "mash sketch -o " + out_file +" -k " + kmer_size + " -p "+ threads +" -i " + genome
+	sketcher_command = "mash sketch -o " + out_file +" -k " + kmer_size + " -p 1 -i " + genome 		## threads are 1 here because it's faster multiprocessing
 	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
 	stdout,stderr= p.communicate()
 	return out_file + ".msh"
 
 ## Executes mash dist
-def masher(ref_sketch, genome_sketch, output_tag, threads):
+def masher(ref_sketch, genome_sketch, output_tag):
 	out_folder = os.path.join(os.path.dirname(os.path.abspath(genome_sketch)), "dist_files")
 	folderexist(out_folder)
 	out_file = os.path.join(out_folder, "".join(os.path.basename(genome_sketch).split(".")[:-1])+"_distances.txt")
-	mash_command = "mash dist -p "+ threads+ " " + ref_sketch +" "+ genome_sketch + " > " + out_file
+	mash_command = "mash dist -p 1 " + ref_sketch +" "+ genome_sketch + " > " + out_file		## threads are 1 here because it's faster multiprocessing
 	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
-	stdout,stderr= p.communicate()
+	stdout,stderr= p.communicate()		## implement a check in stderr in order to see if run was sucessfull and if not output which ones weren't.
 	return out_file
+
+def multiprocess_mash(list_mash_files, ref_sketch,main_fasta, output_tag, kmer_size,genome):	
+	genome_sketch = sketch_genomes(genome, main_fasta, output_tag,kmer_size)
+	mash_output = masher(ref_sketch, genome_sketch, output_tag)
+	os.remove(genome) #removes temporary fasta file
+	list_mash_files.append(mash_output)
+
+	return list_mash_files
 
 ##MAIN##
 
@@ -145,13 +154,17 @@ def main():
 	print "***********************************"
 	print "Sketching genomes and running mash distances..."
 	print 
+#	list_mash_files=[]
+#	for genome in genomes:
+#		genome_sketch = sketch_genomes(genome, main_fasta, args.output_tag, threads,kmer_size)
+#		mash_output = masher(ref_sketch, genome_sketch, args.output_tag, threads)
+#		os.remove(genome) #removes temporary fasta file
+#		list_mash_files.append(mash_output)
 	list_mash_files=[]
-	for genome in genomes:
-		genome_sketch = sketch_genomes(genome, main_fasta, args.output_tag, threads,kmer_size)
-		mash_output = masher(ref_sketch, genome_sketch, args.output_tag, threads)
-		os.remove(genome) #removes temporary fasta file
-		list_mash_files.append(mash_output)
-		
+	pool = Pool(int(threads)) 		# Create a multiprocessing Pool
+	pool.map(partial(multiprocess_mash, list_mash_files, ref_sketch,main_fasta, args.output_tag, kmer_size), genomes)   # process genomes iterable with pool
+
+	#multiprocess_mash(list_mash_files,ref_sketch,main_fasta, args.output_tag, kmer_size, genomes)		
 	print "Finished MASH... uf uf uf!"
 
 	## remove master_fasta
