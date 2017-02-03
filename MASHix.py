@@ -70,13 +70,9 @@ def sketch_references(inputfile, output_tag, threads, kmer_size):
 	out_file = os.path.join(out_folder, output_tag +"_reference")
 	folderexist(out_folder)
 	sketcher_command = "mash sketch -o " + out_file +" -k " + kmer_size+ " -p "+ threads + " -i " + inputfile
-#	print
-#	print sketcher_command
-#	print
 	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
 	stdout,stderr= p.communicate()
-#	print stderr
 	return out_file + ".msh"
 
 ## Makes the sketch command of mash for the reads to be compare to the reference.
@@ -86,13 +82,9 @@ def sketch_genomes(genome, inputfile, output_tag, threads, kmer_size):
 	folderexist(out_folder)
 	out_file = os.path.join(out_folder, os.path.basename(genome)) 
 	sketcher_command = "mash sketch -o " + out_file +" -k " + kmer_size + " -p "+ threads +" -i " + genome
-#	print
-#	print sketcher_command
-#	print
 	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
 	stdout,stderr= p.communicate()
-#	print stderr
 	return out_file + ".msh"
 
 ## Executes mash dist
@@ -101,13 +93,9 @@ def masher(ref_sketch, genome_sketch, output_tag, threads):
 	folderexist(out_folder)
 	out_file = os.path.join(out_folder, "".join(os.path.basename(genome_sketch).split(".")[:-1])+"_distances.txt")
 	mash_command = "mash dist -p "+ threads+ " " + ref_sketch +" "+ genome_sketch + " > " + out_file
-#	print
-#	print mash_command
-#	print	
 	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
 	stdout,stderr= p.communicate()
-#	print stderr
 	return out_file
 
 ##MAIN##
