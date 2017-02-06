@@ -10,7 +10,7 @@ Note: each header in fasta is considered a reference
 
 * python2.7 and packages commonly distributed along with it.
 
-* **tqdm** - If you have not installed it, just tun this in terminal: _pip install tqdm_ (you may need sudo permissions or specify _--user_ option to _pip install_ in order to install it locally).
+* **tqdm** - If you have not installed it yet, just run this command in terminal: _pip install tqdm_ (you may need sudo permissions or specify _--user_ option to _pip install_ in order to install it locally).
 
 ---
 
