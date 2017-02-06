@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-## Last update: 3/2/2017
+## Last update: 6/2/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix for each pairwise comparison between libraries
 ## Note: each header in fasta is considered a reference
@@ -11,6 +11,7 @@ from subprocess import Popen, PIPE
 from shutil import copyfile
 from multiprocessing import Pool
 from functools import partial
+import tqdm			# dependency to be documented
 
 ## Checks if a directory exists and if not creates one.
 def folderexist(directory):
@@ -97,6 +98,7 @@ def masher(ref_sketch, genome_sketch, output_tag):
 	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
 	stdout,stderr= p.communicate()		## implement a check in stderr in order to see if run was sucessfull and if not output which ones weren't.
+	os.remove(genome_sketch)		## removes sketch file (.msh) of each genome or sequence
 	return out_file
 
 def multiprocess_mash(list_mash_files, ref_sketch,main_fasta, output_tag, kmer_size,genome):	
@@ -106,6 +108,11 @@ def multiprocess_mash(list_mash_files, ref_sketch,main_fasta, output_tag, kmer_s
 	list_mash_files.append(mash_output)
 
 	return list_mash_files
+
+#def mash_distance_matrix(list_mash_files):
+#	out_folder = os.path.join(os.path.dirname(os.path.abspath(genome_sketch)), "dist_files")
+#	matrix = open()
+
 
 ##MAIN##
 
@@ -154,17 +161,14 @@ def main():
 	print "***********************************"
 	print "Sketching genomes and running mash distances..."
 	print 
-#	list_mash_files=[]
-#	for genome in genomes:
-#		genome_sketch = sketch_genomes(genome, main_fasta, args.output_tag, threads,kmer_size)
-#		mash_output = masher(ref_sketch, genome_sketch, args.output_tag, threads)
-#		os.remove(genome) #removes temporary fasta file
-#		list_mash_files.append(mash_output)
+
 	list_mash_files=[]
 	pool = Pool(int(threads)) 		# Create a multiprocessing Pool
-	pool.map(partial(multiprocess_mash, list_mash_files, ref_sketch,main_fasta, args.output_tag, kmer_size), genomes)   # process genomes iterable with pool
-
-	#multiprocess_mash(list_mash_files,ref_sketch,main_fasta, args.output_tag, kmer_size, genomes)		
+	mp=pool.imap_unordered(partial(multiprocess_mash, list_mash_files, ref_sketch,main_fasta, args.output_tag, kmer_size), genomes)   # process genomes iterable with pool
+	## loop to print a nice progress bar
+	for _ in tqdm.tqdm(mp, total=len(genomes)):
+		pass
+	pool.close()
 	print "Finished MASH... uf uf uf!"
 
 	## remove master_fasta
