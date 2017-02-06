@@ -10,6 +10,8 @@ Note: each header in fasta is considered a reference
 
 * **tqdm** - If you have not installed it, just tun this in terminal: _pip install tqdm_ (you may need sudo permissions or specify _--user_ option to _pip install_ in order to install it locally).
 
+---
+
 ###Options:
 
 **'-i'**,**'--input_references'**, dest='inputfile', nargs='+', required=True, help='Provide the input fasta files to parse. This will inputs will be joined in a master fasta.'
