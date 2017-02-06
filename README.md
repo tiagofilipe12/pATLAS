@@ -4,6 +4,12 @@ This script runs MASH in plasmid databases making a parwise diagonal matrix for 
 
 Note: each header in fasta is considered a reference
 
+###Dependencies:
+
+* python2.7 and packages commonly distributed along with it.
+
+* **tqdm** - If you have not installed it, just tun this in terminal: _pip install tqdm_ (you may need sudo permissions or specify _--user_ option to _pip install_ in order to install it locally).
+
 ###Options:
 
 **'-i'**,**'--input_references'**, dest='inputfile', nargs='+', required=True, help='Provide the input fasta files to parse. This will inputs will be joined in a master fasta.'
