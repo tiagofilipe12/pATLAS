@@ -4,6 +4,8 @@ This script runs MASH in plasmid databases making a parwise diagonal matrix for 
 
 Note: each header in fasta is considered a reference
 
+---
+
 ###Dependencies:
 
 * python2.7 and packages commonly distributed along with it.
@@ -26,6 +28,6 @@ Note: each header in fasta is considered a reference
 
 ---
 
-####Output
+###Output
 
 * Outputs a diagonal matrix with all pairwise distances between all genomes in input.
