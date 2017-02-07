@@ -8,10 +8,19 @@
 import argparse
 import os
 from subprocess import Popen, PIPE
-from shutil import copyfile
+import shutil
 from multiprocessing import Pool
 from functools import partial
-import tqdm			# dependency to be documented
+import tqdm
+import operator	
+import csv
+
+## Removes keys from dictionary that are present in another list
+def key_removal(temporary_dict, comparisons_made):
+	for key in temporary_dict.keys():
+		if key in comparisons_made:
+			del temporary_dict[key]
+	return temporary_dict
 
 ## Checks if a directory exists and if not creates one.
 def folderexist(directory):
@@ -49,22 +58,25 @@ def genomes_parser(main_fasta, output_tag):
 	out_file = os.path.join(out_folder, os.path.basename(main_fasta) + "_seq" )
 	if_handle=open(main_fasta,'r')
 	x = 1
-	list_genomes = []
+	list_genomes_files = []
+	list_all_genomes = [" "]		## This blank string will be essential for the first row of matrix file
 	check = 0
 	for line in if_handle:
 		if line.startswith(">"):
+			newline=line.replace(">", "")
+			list_all_genomes.append(newline)		## Adds all genome entries for the first row of matrix file
 			if check == x:
 				out_handle.close()
 				x+=1
 			out_handle = open(os.path.join(out_file + str(x)), "w")
-			list_genomes.append(os.path.join(out_file + str(x)))
+			list_genomes_files.append(os.path.join(out_file + str(x)))
 			out_handle.write(line)
 			check +=1
 		else:
 			out_handle.write(line)
 
 	if_handle.close()
-	return list_genomes
+	return list_genomes_files, list_all_genomes
 
 ## Makes the sketch command of mash for the reference
 def sketch_references(inputfile, output_tag, threads, kmer_size):
@@ -98,20 +110,45 @@ def masher(ref_sketch, genome_sketch, output_tag):
 	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
 	stdout,stderr= p.communicate()		## implement a check in stderr in order to see if run was sucessfull and if not output which ones weren't.
-	os.remove(genome_sketch)		## removes sketch file (.msh) of each genome or sequence
+	#os.remove(genome_sketch)		## removes sketch file (.msh) of each genome or sequence
 	return out_file
 
 def multiprocess_mash(list_mash_files, ref_sketch,main_fasta, output_tag, kmer_size,genome):	
 	genome_sketch = sketch_genomes(genome, main_fasta, output_tag,kmer_size)
 	mash_output = masher(ref_sketch, genome_sketch, output_tag)
-	os.remove(genome) #removes temporary fasta file
+	#os.remove(genome) #removes temporary fasta file
 	list_mash_files.append(mash_output)
 
 	return list_mash_files
 
-#def mash_distance_matrix(list_mash_files):
-#	out_folder = os.path.join(os.path.dirname(os.path.abspath(genome_sketch)), "dist_files")
-#	matrix = open()
+def mash_distance_matrix(list_mash_files, output_tag, list_all_genomes):
+	print list_all_genomes[0]
+	out_folder = os.path.join(os.path.dirname(os.path.abspath(list_all_genomes[0])))
+	matrix = open(os.path.join(out_folder, output_tag, ".csv"), 'wb') 
+	writer=csv.writer(matrix ,delimiter=';', quotechar='"', quoting=csv.QUOTE_NONE)
+	writer.writerow(list_all_genomes)		## Writes first row, with headers as each genome or sequence
+
+	comparisons_made = [] 		## A dictionary to store all the comparisons already made and not needed
+	for infile in list_mash_files:
+		input_f = open(infile,'r')
+		temporary_dict = {}		
+		for line in input_f:
+			tab_split = line.split("\t")
+			reference = tab_split[0].strip()
+			sequence = tab_split[1].stirp()
+			mash_dist = tab_split[2].strip()
+			p_value = tab_split[3].strip()
+			if float(p_value) < 0.05:
+				temporary_dict[reference] = mash_dist
+
+		temporary_dict=key_removal(temporary_dict, comparisons_made)		## this will remove all keys that were previously compared against all genomes
+
+		sorted_dist_dict = sorted(temporary_dict.items(), key=operator.itemgetter(1), reverse=True)	## orders from the major to the minor value
+		for k,v in sorted_dist_dict:
+ 			row = [k] + list(v)
+			writer.writerow(row)
+
+		comparisons_made.append(sequence)		## lists all the sequence or genomes for which all comparisons were already made
 
 
 ##MAIN##
@@ -141,11 +178,7 @@ def main():
 	print "***********************************"
 	print "Creating main database..."
 	print
-	if len(fastas)>1:
-		main_fasta = master_fasta(fastas, args.output_tag)
-	else:
-		main_fasta = fastas[0] + ".tmp"
-		copyfile(fastas[0], main_fasta)
+	main_fasta = master_fasta(fastas, args.output_tag)
 
 	## runs mash related functions
 	print "***********************************"
@@ -155,7 +188,7 @@ def main():
 	print "***********************************"
 	print "Making temporary files for each genome in fasta..."
 	print 
-	genomes = genomes_parser(main_fasta, args.output_tag)
+	genomes, list_all_genomes = genomes_parser(main_fasta, args.output_tag)
 
 	## This must be multiprocessed since it is extremely fast to do mash against one plasmid sequence
 	print "***********************************"
@@ -166,14 +199,25 @@ def main():
 	pool = Pool(int(threads)) 		# Create a multiprocessing Pool
 	mp=pool.imap_unordered(partial(multiprocess_mash, list_mash_files, ref_sketch,main_fasta, args.output_tag, kmer_size), genomes)   # process genomes iterable with pool
 	## loop to print a nice progress bar
-	for _ in tqdm.tqdm(mp, total=len(genomes)):
-		pass
+	try:
+		for _ in tqdm.tqdm(mp, total=len(genomes)):
+			pass
+	except:
+		print "progress will not be tracked because you have no package named 'tqdm'"
 	pool.close()
+	print
 	print "Finished MASH... uf uf uf!"
 
 	## remove master_fasta
 	if not args.no_remove:
 		os.remove(main_fasta)
+
+	## Makes distances matrix csv file
+	print
+	print "***********************************"
+	print "Creating distance matrix..."
+	print 
+	mash_distance_matrix(list_mash_files, args.output_tag, list_all_genomes)
 
 if __name__ == "__main__":
 	main()
