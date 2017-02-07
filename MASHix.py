@@ -108,14 +108,11 @@ def masher(ref_sketch, genome_sketch, output_tag):
 	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
 	stdout,stderr= p.communicate()		## implement a check in stderr in order to see if run was sucessfull and if not output which ones weren't.
-	#os.remove(genome_sketch)		## removes sketch file (.msh) of each genome or sequence
 	return out_file
 
 def multiprocess_mash(ref_sketch,main_fasta, output_tag, kmer_size,genome):	
 	genome_sketch = sketch_genomes(genome, main_fasta, output_tag,kmer_size)
 	mash_output = masher(ref_sketch, genome_sketch, output_tag)
-	#os.remove(genome) #removes temporary fasta file
-
 
 def mash_distance_matrix(fastas, output_tag):
 	## read all infiles
@@ -128,8 +125,7 @@ def mash_distance_matrix(fastas, output_tag):
 	writer=csv.writer(matrix ,delimiter=';', quotechar='"', quoting=csv.QUOTE_NONE, escapechar='\\')
 
 	comparisons_made = [] 		## A list to store all the comparisons already made
-	master_dict = {}
-	## parses distances files
+	master_dict = {}			## A dictionary to store all distances to all references of each sequence/genome
 	for infile in list_mash_files:
 		input_f = open(os.path.join(in_folder, infile),'r')
 		temporary_dict = {}		
@@ -146,14 +142,14 @@ def mash_distance_matrix(fastas, output_tag):
 
 		comparisons_made.append(sequence)		## lists all the sequence or genomes for which all comparisons were already made
 
-		sorted_dist_dict = sorted(temporary_dict.items(), key=operator.itemgetter(0))	## orders from the major to the minor value
+		sorted_dist_dict = sorted(temporary_dict.items(), key=operator.itemgetter(0))	## puts the dictionary in alphabetical order
 		master_dict[sequence] = sorted_dist_dict	## creates a master dictionary storing all dictionaries with distances for each sequence or genome
 	## Outputs a csv with a diagonal with the values of distances between genomes
 	## first line
-	writer.writerow([" "]+sorted(comparisons_made))
+	writer.writerow([" "]+sorted(comparisons_made))		## sorting this list is necessary to make it correspond with the sorted dictionary... also alphabetically
 	## writes all other lines
 	row_lenght = 0
-	for k in sorted(comparisons_made):
+	for k in sorted(comparisons_made):		## sorting this list is necessary to make it correspond with the sorted dictionary... also alphabetically
 		list_dist=[]
 		for ref, dist in master_dict[k]:
 			list_dist.append(dist) 		
@@ -167,10 +163,10 @@ def mash_distance_matrix(fastas, output_tag):
 def main():
 	parser = argparse.ArgumentParser(description="Compares all entries in a fasta file using MASH")
 	parser.add_argument('-i','--input_references', dest='inputfile', nargs='+', required=True, help='Provide the input fasta files to parse.')
-	parser.add_argument('-o','--output', dest='output_tag', required=True, help='Provide an output tag')
-	parser.add_argument('-t', '--threads', dest='threads', help='Provide the number of threads to be used. Default: 1')
-	parser.add_argument('-k', '--kmers', dest='kmer_size', help='Provide the number of k-mers to be provided to mash sketch. Default: 21')
-	parser.add_argument('-no_rm', '--no-remove', dest='no_remove', action='store_true', help='Specify if you do not want to remove the output concatenated fasta.')
+	parser.add_argument('-o','--output', dest='output_tag', required=True, help='Provide an output tag.')
+	parser.add_argument('-t', '--threads', dest='threads', help='Provide the number of threads to be used. Default: 1.')
+	parser.add_argument('-k', '--kmers', dest='kmer_size', help='Provide the number of k-mers to be provided to mash sketch. Default: 21.')
+	parser.add_argument('-rm', '--remove', dest='remove', action='store_true', help='Remove any temporary files and folders not needed (not present in results subdirectory).')
 	args = parser.parse_args()
 	if args.threads is None:
 		threads = "1"
@@ -215,12 +211,10 @@ def main():
 	except:
 		print "progress will not be tracked because you have no package named 'tqdm'"
 	pool.close()
+	pool.join()		## needed in order for the process to end before the remaining options are triggered
 	print
 	print "Finished MASH... uf uf uf!"
 
-	## remove master_fasta
-	if not args.no_remove:
-		os.remove(main_fasta)
 
 	## Makes distances matrix csv file
 	print
@@ -228,7 +222,22 @@ def main():
 	print "Creating distance matrix..."
 	print 
 	mdm = mash_distance_matrix(fastas, args.output_tag)
-	print mdm
+
+	## remove master_fasta
+	#remove_temps(args.remove, main_fasta)
+	if args.remove:
+		os.remove(main_fasta)
+		for f in os.listdir(os.path.join(os.path.dirname(os.path.abspath(fastas[0])), args.output_tag, "genome_sketchs", "dist_files")):
+			os.remove(os.path.join(os.path.dirname(os.path.abspath(fastas[0])), args.output_tag, "genome_sketchs", "dist_files",f))
+		os.rmdir(os.path.join(os.path.dirname(os.path.abspath(fastas[0])), args.output_tag, "genome_sketchs", "dist_files"))
+		for root, dirs, files in os.walk(os.path.dirname(os.path.abspath(main_fasta)), topdown=True):
+			print dirs
+			for dirname in dirs:
+				if not dirname=="results":
+					print dirname
+					for filename in os.listdir(os.path.join(root,dirname)):
+						os.remove(os.path.join(root, dirname, filename))
+					os.rmdir(os.path.join(root, dirname))
 
 if __name__ == "__main__":
 	main()
