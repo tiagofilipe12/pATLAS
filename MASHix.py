@@ -59,12 +59,10 @@ def genomes_parser(main_fasta, output_tag):
 	if_handle=open(main_fasta,'r')
 	x = 1
 	list_genomes_files = []
-	list_all_genomes = [" "]		## This blank string will be essential for the first row of matrix file
 	check = 0
 	for line in if_handle:
 		if line.startswith(">"):
 			newline=line.replace(">", "")
-			list_all_genomes.append(newline)		## Adds all genome entries for the first row of matrix file
 			if check == x:
 				out_handle.close()
 				x+=1
@@ -76,7 +74,7 @@ def genomes_parser(main_fasta, output_tag):
 			out_handle.write(line)
 
 	if_handle.close()
-	return list_genomes_files, list_all_genomes
+	return list_genomes_files
 
 ## Makes the sketch command of mash for the reference
 def sketch_references(inputfile, output_tag, threads, kmer_size):
@@ -113,43 +111,56 @@ def masher(ref_sketch, genome_sketch, output_tag):
 	#os.remove(genome_sketch)		## removes sketch file (.msh) of each genome or sequence
 	return out_file
 
-def multiprocess_mash(list_mash_files, ref_sketch,main_fasta, output_tag, kmer_size,genome):	
+def multiprocess_mash(ref_sketch,main_fasta, output_tag, kmer_size,genome):	
 	genome_sketch = sketch_genomes(genome, main_fasta, output_tag,kmer_size)
 	mash_output = masher(ref_sketch, genome_sketch, output_tag)
 	#os.remove(genome) #removes temporary fasta file
-	list_mash_files.append(mash_output)
 
-	return list_mash_files
 
-def mash_distance_matrix(list_mash_files, output_tag, list_all_genomes):
-	print list_all_genomes[0]
-	out_folder = os.path.join(os.path.dirname(os.path.abspath(list_all_genomes[0])))
-	matrix = open(os.path.join(out_folder, output_tag, ".csv"), 'wb') 
-	writer=csv.writer(matrix ,delimiter=';', quotechar='"', quoting=csv.QUOTE_NONE)
-	writer.writerow(list_all_genomes)		## Writes first row, with headers as each genome or sequence
+def mash_distance_matrix(fastas, output_tag):
+	## read all infiles
+	in_folder = os.path.join(os.path.dirname(os.path.abspath(fastas[0])), output_tag, "genome_sketchs", "dist_files")
+	list_mash_files = [f for f in os.listdir(in_folder) if f.endswith("distances.txt")]
+	## creates output directory and opens csv module
+	out_folder = os.path.join(os.path.dirname(os.path.abspath(fastas[0])), output_tag, "results")
+	folderexist(out_folder)
+	matrix = open(os.path.join(out_folder, output_tag + ".csv"), 'wb') 
+	writer=csv.writer(matrix ,delimiter=';', quotechar='"', quoting=csv.QUOTE_NONE, escapechar='\\')
 
-	comparisons_made = [] 		## A dictionary to store all the comparisons already made and not needed
+	comparisons_made = [] 		## A list to store all the comparisons already made
+	master_dict = {}
+	## parses distances files
 	for infile in list_mash_files:
-		input_f = open(infile,'r')
+		input_f = open(os.path.join(in_folder, infile),'r')
 		temporary_dict = {}		
 		for line in input_f:
 			tab_split = line.split("\t")
 			reference = tab_split[0].strip()
-			sequence = tab_split[1].stirp()
+			sequence = tab_split[1].strip()
 			mash_dist = tab_split[2].strip()
 			p_value = tab_split[3].strip()
 			if float(p_value) < 0.05:
 				temporary_dict[reference] = mash_dist
-
-		temporary_dict=key_removal(temporary_dict, comparisons_made)		## this will remove all keys that were previously compared against all genomes
-
-		sorted_dist_dict = sorted(temporary_dict.items(), key=operator.itemgetter(1), reverse=True)	## orders from the major to the minor value
-		for k,v in sorted_dist_dict:
- 			row = [k] + list(v)
-			writer.writerow(row)
+			else:
+				temporary_dict[reference] = "1"
 
 		comparisons_made.append(sequence)		## lists all the sequence or genomes for which all comparisons were already made
 
+		sorted_dist_dict = sorted(temporary_dict.items(), key=operator.itemgetter(0))	## orders from the major to the minor value
+		master_dict[sequence] = sorted_dist_dict	## creates a master dictionary storing all dictionaries with distances for each sequence or genome
+	## Outputs a csv with a diagonal with the values of distances between genomes
+	## first line
+	writer.writerow([" "]+sorted(comparisons_made))
+	## writes all other lines
+	row_lenght = 0
+	for k in sorted(comparisons_made):
+		list_dist=[]
+		for ref, dist in master_dict[k]:
+			list_dist.append(dist) 		
+ 		row = [k] + list_dist[0:row_lenght]
+ 		row_lenght += 1
+		writer.writerow(row)
+	return os.path.join(out_folder, output_tag + ".csv")
 
 ##MAIN##
 
@@ -188,16 +199,15 @@ def main():
 	print "***********************************"
 	print "Making temporary files for each genome in fasta..."
 	print 
-	genomes, list_all_genomes = genomes_parser(main_fasta, args.output_tag)
+	genomes = genomes_parser(main_fasta, args.output_tag)
 
 	## This must be multiprocessed since it is extremely fast to do mash against one plasmid sequence
 	print "***********************************"
 	print "Sketching genomes and running mash distances..."
 	print 
 
-	list_mash_files=[]
 	pool = Pool(int(threads)) 		# Create a multiprocessing Pool
-	mp=pool.imap_unordered(partial(multiprocess_mash, list_mash_files, ref_sketch,main_fasta, args.output_tag, kmer_size), genomes)   # process genomes iterable with pool
+	mp=pool.imap_unordered(partial(multiprocess_mash, ref_sketch,main_fasta, args.output_tag, kmer_size), genomes)   # process genomes iterable with pool
 	## loop to print a nice progress bar
 	try:
 		for _ in tqdm.tqdm(mp, total=len(genomes)):
@@ -217,7 +227,8 @@ def main():
 	print "***********************************"
 	print "Creating distance matrix..."
 	print 
-	mash_distance_matrix(list_mash_files, args.output_tag, list_all_genomes)
+	mdm = mash_distance_matrix(fastas, args.output_tag)
+	print mdm
 
 if __name__ == "__main__":
 	main()
