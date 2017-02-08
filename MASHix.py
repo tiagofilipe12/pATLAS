@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-## Last update: 6/2/2017
+## Last update: 8/2/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix for each pairwise comparison between libraries
 ## Note: each header in fasta is considered a reference
@@ -175,18 +175,13 @@ def main():
 	parser = argparse.ArgumentParser(description="Compares all entries in a fasta file using MASH")
 	parser.add_argument('-i','--input_references', dest='inputfile', nargs='+', required=True, help='Provide the input fasta files to parse.')
 	parser.add_argument('-o','--output', dest='output_tag', required=True, help='Provide an output tag.')
-	parser.add_argument('-t', '--threads', dest='threads', help='Provide the number of threads to be used. Default: 1.')
-	parser.add_argument('-k', '--kmers', dest='kmer_size', help='Provide the number of k-mers to be provided to mash sketch. Default: 21.')
+	parser.add_argument('-t', '--threads', dest='threads', default="1", help='Provide the number of threads to be used. Default: 1.')
+	parser.add_argument('-k', '--kmers', dest='kmer_size', default="21", help='Provide the number of k-mers to be provided to mash sketch. Default: 21.')
 	parser.add_argument('-rm', '--remove', dest='remove', action='store_true', help='Remove any temporary files and folders not needed (not present in results subdirectory).')
 	args = parser.parse_args()
-	if args.threads is None:
-		threads = "1"
-	else:
-		threads = args.threads
-	if args.kmer_size is None:
-		kmer_size = "21"
-	else:
-		kmer_size = args.kmer_size
+
+	threads = args.threads
+	kmer_size = args.kmer_size
 	fastas = []
 	for filename in args.inputfile:
 		if any (x in filename for x in [".fas",".fasta",".fna",".fsa", ".fa"]):
