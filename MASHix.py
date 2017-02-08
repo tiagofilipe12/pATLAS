@@ -25,7 +25,6 @@ def output_tree(infile, tag):
 			os.mkdir(os.path.join(mother_directory, d))
 		except OSError:
 			pass
-
 	return mother_directory
 
 ## Removes keys from dictionary that are present in another list
@@ -99,7 +98,7 @@ def sketch_references(inputfile, output_tag, threads, kmer_size, mother_director
 						inputfile]
 	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE)
 	p.wait()
-	stdout,stderr= p.communicate()
+#	stdout,stderr= p.communicate()
 	return out_file + ".msh"
 
 ## Makes the sketch command of mash for the reads to be compare to the reference.
@@ -107,7 +106,6 @@ def sketch_references(inputfile, output_tag, threads, kmer_size, mother_director
 def sketch_genomes(genome, mother_directory, output_tag, kmer_size):
 	out_folder = os.path.join(mother_directory, "genome_sketchs")
 	out_file = os.path.join(out_folder, os.path.basename(genome))
-	#print out_file
 	sketcher_command = ["mash",
 						"sketch",
 						"-o",
@@ -120,17 +118,24 @@ def sketch_genomes(genome, mother_directory, output_tag, kmer_size):
 						genome]
 	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE)
 	p.wait()
-	stdout,stderr= p.communicate()
+#	stdout,stderr= p.communicate()
 	return out_file + ".msh"
 
 ## Executes mash dist
 def masher(ref_sketch, genome_sketch, output_tag, mother_directory):
 	out_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
 	out_file = os.path.join(out_folder, "".join(os.path.basename(genome_sketch).split(".")[:-1])+"_distances.txt")
-	mash_command = "mash dist -p 1 " + ref_sketch +" "+ genome_sketch + " > " + out_file		## threads are 1 here because it's faster multiprocessing
-	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
+	mash_command = ["mash",
+					"dist",
+					"-p",
+					"1",		## threads are 1 here because multiprocessing is faster 
+					ref_sketch,
+					genome_sketch,
+					">",
+					out_file]
+	p=Popen(mash_command, stdout = PIPE, stderr = PIPE)
 	p.wait()
-	stdout,stderr= p.communicate()		
+#	stdout,stderr= p.communicate()		
 	return out_file
 
 def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_directory, genome):	
@@ -138,7 +143,6 @@ def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_dire
 	mash_output = masher(ref_sketch, genome_sketch, output_tag, mother_directory)
 
 ## calculates ths distances between pairwise genomes
-
 def mash_distance_matrix(mother_directory, output_tag):
 	## read all infiles
 	in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
@@ -191,6 +195,7 @@ def main():
 
 	threads = args.threads
 	kmer_size = args.kmer_size
+	
 	## lists all fastas given to argparser
 	fastas = [f for f in args.inputfile if f.endswith((".fas",".fasta",".fna",".fsa", ".fa"))]
 
@@ -222,12 +227,13 @@ def main():
 
 	pool = Pool(int(threads)) 		# Create a multiprocessing Pool
 	mp=pool.imap_unordered(partial(multiprocess_mash, ref_sketch, main_fasta, args.output_tag, kmer_size, mother_directory), genomes)   # process genomes iterable with pool
+	
 	## loop to print a nice progress bar
 	try:
 		for _ in tqdm.tqdm(mp, total=len(genomes)):
 			pass
 	except:
-		print "progress will not be tracked because you have no package named 'tqdm'"
+		print "progress will not be tracked because of 'reasons'... check if you have tqdm package installed."
 	pool.close()
 	pool.join()		## needed in order for the process to end before the remaining options are triggered
 	print
@@ -241,11 +247,15 @@ def main():
 	mdm = mash_distance_matrix(mother_directory, args.output_tag)
 
 	## remove master_fasta
+
 	if args.remove:
+		print "***********************************"
+		print "Removing temporary files and folders..."
+		print
 		os.remove(main_fasta)
-		for dirs in os.listdir(mother_directory):
-			if dirs != "results":
-				shutil.rmtree(os.path.join(mother_directory, dirs))
+		for d in os.listdir(mother_directory):
+			if d != "results":
+				shutil.rmtree(os.path.join(mother_directory, d))
 
 if __name__ == "__main__":
 	main()
