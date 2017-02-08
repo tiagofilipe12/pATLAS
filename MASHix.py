@@ -215,7 +215,6 @@ def main():
 	print
 	print "Finished MASH... uf uf uf!"
 
-
 	## Makes distances matrix csv file
 	print
 	print "***********************************"
@@ -227,17 +226,10 @@ def main():
 	#remove_temps(args.remove, main_fasta)
 	if args.remove:
 		os.remove(main_fasta)
-		for f in os.listdir(os.path.join(os.path.dirname(os.path.abspath(fastas[0])), args.output_tag, "genome_sketchs", "dist_files")):
-			os.remove(os.path.join(os.path.dirname(os.path.abspath(fastas[0])), args.output_tag, "genome_sketchs", "dist_files",f))
-		os.rmdir(os.path.join(os.path.dirname(os.path.abspath(fastas[0])), args.output_tag, "genome_sketchs", "dist_files"))
-		for root, dirs, files in os.walk(os.path.dirname(os.path.abspath(main_fasta)), topdown=True):
-			print dirs
-			for dirname in dirs:
-				if not dirname=="results":
-					print dirname
-					for filename in os.listdir(os.path.join(root,dirname)):
-						os.remove(os.path.join(root, dirname, filename))
-					os.rmdir(os.path.join(root, dirname))
+		mother_directory = os.path.join(os.path.dirname(os.path.abspath(fastas[0])), args.output_tag)
+		for dirs in os.listdir(mother_directory):
+			if not dirs == "results":
+				shutil.rmtree(os.path.join(mother_directory, dirs))
 
 if __name__ == "__main__":
 	main()
