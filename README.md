@@ -1,8 +1,8 @@
 # MASHix.py
 
-This script runs MASH in plasmid databases making a parwise diagonal matrix for each pairwise comparison between libraries
+This script runs MASH in plasmid databases making a parwise diagonal matrix for each pairwise comparison between libraries.
 
-Note: each header in fasta is considered a reference
+Note: each header in fasta is considered a reference.
 
 ---
 
@@ -12,7 +12,7 @@ Note: each header in fasta is considered a reference
 
 * **tqdm** - If you have not installed it yet, just run this command in terminal: _pip install tqdm_ (you may need sudo permissions or specify _--user_ option to _pip install_ in order to install it locally).
 
-* **Mash** - You can download mash version 1.1.1 directly here: [linux](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-Linux64-v1.1.1.tar.gz) and [OSX](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-OSX64-v1.1.1.tar.gz). Other releases were not tested but may be downloaded in Mash git [releases page](https://github.com/marbl/Mash/releases)
+* **Mash** - You can download mash version 1.1.1 directly here: [linux](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-Linux64-v1.1.1.tar.gz) and [OSX](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-OSX64-v1.1.1.tar.gz). Other releases were not tested but may be downloaded in Mash git [releases page](https://github.com/marbl/Mash/releases).
 
 ---
 
