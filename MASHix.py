@@ -11,6 +11,7 @@ from subprocess import Popen, PIPE
 import shutil
 from multiprocessing import Pool
 from functools import partial
+from collections import OrderedDict
 import tqdm
 import operator	
 import csv
@@ -53,7 +54,7 @@ def header_fix(input_header):
 
 ## Function to create a master fasta file from several fasta databases. One fasta is enought though
 def master_fasta(fastas, output_tag, mother_directory):
-	out_file = os.path.join(mother_directory, "master_fasta_" + output_tag + ".fas")
+	out_file = os.path.join(mother_directory, "{}output_tag{}".format("master_fasta_",".fas"))
 	master_fasta = open(out_file, "w")
 	for filename in fastas:
 		fasta = open(filename,"r")
@@ -69,22 +70,19 @@ def genomes_parser(main_fasta, output_tag, mother_directory):
 	out_folder = os.path.join(mother_directory, "tmp")
 	out_file = os.path.join(out_folder, os.path.basename(main_fasta) + "_seq" )
 	if_handle=open(main_fasta,'r')
-	x = 1
 	list_genomes_files = []
-	check = 0
-	for line in if_handle:
+	out_handle = None
+	for x, line in enumerate(if_handle):		## x coupled with enumerate creates a counter for every loop
 		if line.startswith(">"):
-			newline=line.replace(">", "")
-			if check == x:
+			if out_handle:
 				out_handle.close()
-				x+=1
 			out_handle = open(os.path.join(out_file + str(x)), "w")
 			list_genomes_files.append(os.path.join(out_file + str(x)))
 			out_handle.write(line)
-			check +=1
 		else:
 			out_handle.write(line)
 
+	out_handle.close()
 	if_handle.close()
 	return list_genomes_files
 
@@ -92,8 +90,17 @@ def genomes_parser(main_fasta, output_tag, mother_directory):
 def sketch_references(inputfile, output_tag, threads, kmer_size, mother_directory):
 	out_folder = os.path.join(mother_directory, "reference_sketch")
 	out_file = os.path.join(out_folder, output_tag +"_reference")
-	sketcher_command = "mash sketch -o " + out_file +" -k " + kmer_size+ " -p "+ threads + " -i " + inputfile
-	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE, shell=True)
+	sketcher_command = ["mash", 
+						"sketch", 
+						"-o", 
+						out_file, 
+						"-k", 
+						kmer_size, 
+						"-p", 
+						threads, 
+						"-i", 
+						inputfile]
+	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE)
 	p.wait()
 	stdout,stderr= p.communicate()
 	return out_file + ".msh"
@@ -104,8 +111,17 @@ def sketch_genomes(genome, mother_directory, output_tag, kmer_size):
 	out_folder = os.path.join(mother_directory, "genome_sketchs")
 	out_file = os.path.join(out_folder, os.path.basename(genome))
 	#print out_file
-	sketcher_command = "mash sketch -o " + out_file +" -k " + kmer_size + " -p 1 -i " + genome 		## threads are 1 here because it's faster multiprocessing
-	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE, shell=True)
+	sketcher_command = ["mash",
+						"sketch",
+						"-o",
+						out_file,
+						"-k",
+						kmer_size,
+						"-p", 
+						"1",		## threads are 1 here because multiprocessing is faster 
+						"-i",
+						genome]
+	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE)
 	p.wait()
 	stdout,stderr= p.communicate()
 	return out_file + ".msh"
@@ -139,7 +155,7 @@ def mash_distance_matrix(mother_directory, output_tag):
 	master_dict = {}			## A dictionary to store all distances to all references of each sequence/genome
 	for infile in list_mash_files:
 		input_f = open(os.path.join(in_folder, infile),'r')
-		temporary_dict = {}		
+		temporary_dict = OrderedDict()		
 		for line in input_f:
 			tab_split = line.split("\t")
 			reference = tab_split[0].strip()
@@ -152,17 +168,17 @@ def mash_distance_matrix(mother_directory, output_tag):
 				temporary_dict[reference] = "1"
 
 		comparisons_made.append(sequence)		## lists all the sequence or genomes for which all comparisons were already made
-
-		sorted_dist_dict = sorted(temporary_dict.items(), key=operator.itemgetter(0))	## puts the dictionary in alphabetical order
-		master_dict[sequence] = sorted_dist_dict	## creates a master dictionary storing all dictionaries with distances for each sequence or genome
+		#sorted_dist_dict = sorted(temporary_dict.items(), key=operator.itemgetter(0))	## puts the dictionary in alphabetical order
+		master_dict[sequence] = temporary_dict	## creates a master dictionary storing all dictionaries with distances for each sequence or genome
 	## Outputs a csv with a diagonal with the values of distances between genomes
 	## first line
-	writer.writerow([" "]+sorted(comparisons_made))		## sorting this list is necessary to make it correspond with the sorted dictionary... also alphabetically
+	writer.writerow([" "]+comparisons_made)		## sorting this list is necessary to make it correspond with the sorted dictionary... also alphabetically
 	## writes all other lines
-	row_lenght = 0
-	for k in sorted(comparisons_made):		## sorting this list is necessary to make it correspond with the sorted dictionary... also alphabetically
+	row_lenght = 0 		## replace by enumerate in loop
+	for k in comparisons_made:		## sorting this list is necessary to make it correspond with the sorted dictionary... also alphabetically
 		list_dist=[]
-		for ref, dist in master_dict[k]:
+		for dist in master_dict[k].values():
+			print dist
 			list_dist.append(dist) 		
  		row = [k] + list_dist[0:row_lenght]
  		row_lenght += 1
@@ -182,10 +198,8 @@ def main():
 
 	threads = args.threads
 	kmer_size = args.kmer_size
-	fastas = []
-	for filename in args.inputfile:
-		if any (x in filename for x in [".fas",".fasta",".fna",".fsa", ".fa"]):
-			fastas.append(filename)
+	## lists all fastas given to argparser
+	fastas = [f for f in args.inputfile if f.endswith((".fas",".fasta",".fna",".fsa", ".fa"))]
 
 	## creates output directory tree
 	mother_directory=output_tree(fastas[0], args.output_tag)
@@ -214,7 +228,7 @@ def main():
 	print 
 
 	pool = Pool(int(threads)) 		# Create a multiprocessing Pool
-	mp=pool.imap_unordered(partial(multiprocess_mash, ref_sketch,main_fasta, args.output_tag, kmer_size, mother_directory), genomes)   # process genomes iterable with pool
+	mp=pool.imap_unordered(partial(multiprocess_mash, ref_sketch, main_fasta, args.output_tag, kmer_size, mother_directory), genomes)   # process genomes iterable with pool
 	## loop to print a nice progress bar
 	try:
 		for _ in tqdm.tqdm(mp, total=len(genomes)):
@@ -238,7 +252,7 @@ def main():
 	if args.remove:
 		os.remove(main_fasta)
 		for dirs in os.listdir(mother_directory):
-			if not dirs == "results":
+			if dirs != "results":
 				shutil.rmtree(os.path.join(mother_directory, dirs))
 
 if __name__ == "__main__":
