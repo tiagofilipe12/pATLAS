@@ -15,6 +15,21 @@ import tqdm
 import operator	
 import csv
 
+## function to create output directories tree
+def output_tree(infile, tag):
+	mother_directory = out_folder = os.path.join(os.path.dirname(os.path.abspath(infile)), tag)
+	tmp_directory = os.path.join(mother_directory, "tmp")
+	results_directory = os.path.join(mother_directory, "results")
+	reference_directory = os.path.join(mother_directory, "reference_sketch")
+	genome_directory = os.path.join(mother_directory, "genome_sketchs")
+	dist_directory = os.path.join(genome_directory, "dist_files")
+	
+	tree_list = [mother_directory, tmp_directory, results_directory, reference_directory, genome_directory, dist_directory]
+	for directory in tree_list:
+		folderexist(directory)
+	return mother_directory
+
+
 ## Removes keys from dictionary that are present in another list
 def key_removal(temporary_dict, comparisons_made):
 	for key in temporary_dict.keys():
@@ -37,10 +52,8 @@ def header_fix(input_header):
 	return input_header
 
 ## Function to create a master fasta file from several fasta databases. One fasta is enought though
-def master_fasta(fastas, output_tag):
-	out_folder = os.path.join(os.path.dirname(os.path.abspath(fastas[0])), output_tag)
-	folderexist(out_folder)
-	out_file = os.path.join(out_folder, "master_fasta_" + output_tag + ".fas")
+def master_fasta(fastas, output_tag, mother_directory):
+	out_file = os.path.join(mother_directory, "master_fasta_" + output_tag + ".fas")
 	master_fasta = open(out_file, "w")
 	for filename in fastas:
 		fasta = open(filename,"r")
@@ -52,9 +65,8 @@ def master_fasta(fastas, output_tag):
 	return out_file
 
 # Creates temporary fasta files in a tmp directory in order to give to mash the file as a unique genome to compare against all genomes
-def genomes_parser(main_fasta, output_tag):
-	out_folder = os.path.join(os.path.dirname(os.path.abspath(main_fasta)), "tmp")
-	folderexist(out_folder)
+def genomes_parser(main_fasta, output_tag, mother_directory):
+	out_folder = os.path.join(mother_directory, "tmp")
 	out_file = os.path.join(out_folder, os.path.basename(main_fasta) + "_seq" )
 	if_handle=open(main_fasta,'r')
 	x = 1
@@ -77,10 +89,9 @@ def genomes_parser(main_fasta, output_tag):
 	return list_genomes_files
 
 ## Makes the sketch command of mash for the reference
-def sketch_references(inputfile, output_tag, threads, kmer_size):
-	out_folder = os.path.join(os.path.dirname(os.path.abspath(inputfile)), "reference_sketch")
+def sketch_references(inputfile, output_tag, threads, kmer_size, mother_directory):
+	out_folder = os.path.join(mother_directory, "reference_sketch")
 	out_file = os.path.join(out_folder, output_tag +"_reference")
-	folderexist(out_folder)
 	sketcher_command = "mash sketch -o " + out_file +" -k " + kmer_size+ " -p "+ threads + " -i " + inputfile
 	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
@@ -89,10 +100,10 @@ def sketch_references(inputfile, output_tag, threads, kmer_size):
 
 ## Makes the sketch command of mash for the reads to be compare to the reference.
 ## According to mash turorial it is useful to provide the -m 2 option in order to remove single-copy k-mers
-def sketch_genomes(genome, inputfile, output_tag, kmer_size):
-	out_folder = os.path.join(os.path.dirname(os.path.abspath(inputfile)), "genome_sketchs")
-	folderexist(out_folder)
-	out_file = os.path.join(out_folder, os.path.basename(genome)) 
+def sketch_genomes(genome, mother_directory, output_tag, kmer_size):
+	out_folder = os.path.join(mother_directory, "genome_sketchs")
+	out_file = os.path.join(out_folder, os.path.basename(genome))
+	#print out_file
 	sketcher_command = "mash sketch -o " + out_file +" -k " + kmer_size + " -p 1 -i " + genome 		## threads are 1 here because it's faster multiprocessing
 	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
@@ -100,27 +111,27 @@ def sketch_genomes(genome, inputfile, output_tag, kmer_size):
 	return out_file + ".msh"
 
 ## Executes mash dist
-def masher(ref_sketch, genome_sketch, output_tag):
-	out_folder = os.path.join(os.path.dirname(os.path.abspath(genome_sketch)), "dist_files")
-	folderexist(out_folder)
+def masher(ref_sketch, genome_sketch, output_tag, mother_directory):
+	out_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
 	out_file = os.path.join(out_folder, "".join(os.path.basename(genome_sketch).split(".")[:-1])+"_distances.txt")
 	mash_command = "mash dist -p 1 " + ref_sketch +" "+ genome_sketch + " > " + out_file		## threads are 1 here because it's faster multiprocessing
 	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
-	stdout,stderr= p.communicate()		## implement a check in stderr in order to see if run was sucessfull and if not output which ones weren't.
+	stdout,stderr= p.communicate()		
 	return out_file
 
-def multiprocess_mash(ref_sketch,main_fasta, output_tag, kmer_size,genome):	
-	genome_sketch = sketch_genomes(genome, main_fasta, output_tag,kmer_size)
-	mash_output = masher(ref_sketch, genome_sketch, output_tag)
+def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_directory, genome):	
+	genome_sketch = sketch_genomes(genome, mother_directory, output_tag, kmer_size)
+	mash_output = masher(ref_sketch, genome_sketch, output_tag, mother_directory)
 
-def mash_distance_matrix(fastas, output_tag):
+## calculates ths distances between pairwise genomes
+
+def mash_distance_matrix(mother_directory, output_tag):
 	## read all infiles
-	in_folder = os.path.join(os.path.dirname(os.path.abspath(fastas[0])), output_tag, "genome_sketchs", "dist_files")
+	in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
 	list_mash_files = [f for f in os.listdir(in_folder) if f.endswith("distances.txt")]
 	## creates output directory and opens csv module
-	out_folder = os.path.join(os.path.dirname(os.path.abspath(fastas[0])), output_tag, "results")
-	folderexist(out_folder)
+	out_folder = os.path.join(mother_directory, "results")
 	matrix = open(os.path.join(out_folder, output_tag + ".csv"), 'wb') 
 	writer=csv.writer(matrix ,delimiter=';', quotechar='"', quoting=csv.QUOTE_NONE, escapechar='\\')
 
@@ -181,21 +192,26 @@ def main():
 		if any (x in filename for x in [".fas",".fasta",".fna",".fsa", ".fa"]):
 			fastas.append(filename)
 
+	## creates output directory tree
+	mother_directory=output_tree(fastas[0], args.output_tag)
+
 	## checks if multiple fastas are provided or not avoiding master_fasta function
 	print "***********************************"
 	print "Creating main database..."
 	print
-	main_fasta = master_fasta(fastas, args.output_tag)
+	main_fasta = master_fasta(fastas, args.output_tag, mother_directory)
 
 	## runs mash related functions
 	print "***********************************"
 	print "Sketching reference..."
 	print 
-	ref_sketch=sketch_references(main_fasta,args.output_tag,threads,kmer_size)
+	ref_sketch=sketch_references(main_fasta,args.output_tag,threads,kmer_size, mother_directory)
+
+	## breaks master fasta into multiple fastas with one genome each
 	print "***********************************"
 	print "Making temporary files for each genome in fasta..."
 	print 
-	genomes = genomes_parser(main_fasta, args.output_tag)
+	genomes = genomes_parser(main_fasta, args.output_tag, mother_directory)
 
 	## This must be multiprocessed since it is extremely fast to do mash against one plasmid sequence
 	print "***********************************"
@@ -203,7 +219,7 @@ def main():
 	print 
 
 	pool = Pool(int(threads)) 		# Create a multiprocessing Pool
-	mp=pool.imap_unordered(partial(multiprocess_mash, ref_sketch,main_fasta, args.output_tag, kmer_size), genomes)   # process genomes iterable with pool
+	mp=pool.imap_unordered(partial(multiprocess_mash, ref_sketch,main_fasta, args.output_tag, kmer_size, mother_directory), genomes)   # process genomes iterable with pool
 	## loop to print a nice progress bar
 	try:
 		for _ in tqdm.tqdm(mp, total=len(genomes)):
@@ -220,13 +236,12 @@ def main():
 	print "***********************************"
 	print "Creating distance matrix..."
 	print 
-	mdm = mash_distance_matrix(fastas, args.output_tag)
+	mdm = mash_distance_matrix(mother_directory, args.output_tag)
 
 	## remove master_fasta
 	#remove_temps(args.remove, main_fasta)
 	if args.remove:
 		os.remove(main_fasta)
-		mother_directory = os.path.join(os.path.dirname(os.path.abspath(fastas[0])), args.output_tag)
 		for dirs in os.listdir(mother_directory):
 			if not dirs == "results":
 				shutil.rmtree(os.path.join(mother_directory, dirs))
