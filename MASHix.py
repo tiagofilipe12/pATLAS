@@ -19,17 +19,14 @@ import csv
 ## function to create output directories tree
 def output_tree(infile, tag):
 	mother_directory = out_folder = os.path.join(os.path.dirname(os.path.abspath(infile)), tag)
-	tmp_directory = os.path.join(mother_directory, "tmp")
-	results_directory = os.path.join(mother_directory, "results")
-	reference_directory = os.path.join(mother_directory, "reference_sketch")
-	genome_directory = os.path.join(mother_directory, "genome_sketchs")
-	dist_directory = os.path.join(genome_directory, "dist_files")
-	
-	tree_list = [mother_directory, tmp_directory, results_directory, reference_directory, genome_directory, dist_directory]
-	for directory in tree_list:
-		folderexist(directory)
-	return mother_directory
+	dirs = ["", "tmp", "results", "reference_sketch", "genome_sketchs", os.path.join("genome_sketchs","dist_files")]
+	for d in dirs:
+		try:
+			os.mkdir(os.path.join(mother_directory, d))
+		except OSError:
+			pass
 
+	return mother_directory
 
 ## Removes keys from dictionary that are present in another list
 def key_removal(temporary_dict, comparisons_made):
@@ -178,7 +175,6 @@ def mash_distance_matrix(mother_directory, output_tag):
 	for k in comparisons_made:		## sorting this list is necessary to make it correspond with the sorted dictionary... also alphabetically
 		list_dist=[]
 		for dist in master_dict[k].values():
-			print dist
 			list_dist.append(dist) 		
  		row = [k] + list_dist[0:row_lenght]
  		row_lenght += 1
@@ -248,7 +244,6 @@ def main():
 	mdm = mash_distance_matrix(mother_directory, args.output_tag)
 
 	## remove master_fasta
-	#remove_temps(args.remove, main_fasta)
 	if args.remove:
 		os.remove(main_fasta)
 		for dirs in os.listdir(mother_directory):
