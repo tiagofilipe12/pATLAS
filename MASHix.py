@@ -165,19 +165,16 @@ def mash_distance_matrix(mother_directory, output_tag):
 				temporary_dict[reference] = "1"
 
 		comparisons_made.append(sequence)		## lists all the sequence or genomes for which all comparisons were already made
-		#sorted_dist_dict = sorted(temporary_dict.items(), key=operator.itemgetter(0))	## puts the dictionary in alphabetical order
 		master_dict[sequence] = temporary_dict	## creates a master dictionary storing all dictionaries with distances for each sequence or genome
 	## Outputs a csv with a diagonal with the values of distances between genomes
 	## first line
-	writer.writerow([" "]+comparisons_made)		## sorting this list is necessary to make it correspond with the sorted dictionary... also alphabetically
+	writer.writerow([" "]+comparisons_made)
 	## writes all other lines
-	row_lenght = 0 		## replace by enumerate in loop
-	for k in comparisons_made:		## sorting this list is necessary to make it correspond with the sorted dictionary... also alphabetically
+	for row_length, k in enumerate(comparisons_made):
 		list_dist=[]
 		for dist in master_dict[k].values():
 			list_dist.append(dist) 		
- 		row = [k] + list_dist[0:row_lenght]
- 		row_lenght += 1
+ 		row = [k] + list_dist[0:row_length]
 		writer.writerow(row)
 	return os.path.join(out_folder, output_tag + ".csv")
 
