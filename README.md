@@ -12,24 +12,31 @@ Note: each header in fasta is considered a reference.
 
 * **tqdm** - If you have not installed it yet, just run this command in terminal: _pip install tqdm_ (you may need sudo permissions or specify _--user_ option to _pip install_ in order to install it locally).
 
+* **numpy** - If you have not installed it yet, just run this command in terminal: _pip install numpy_ (you may need sudo permissions or specify _--user_ option to _pip install_ in order to install it locally).
+
 * **Mash** - You can download mash version 1.1.1 directly here: [linux](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-Linux64-v1.1.1.tar.gz) and [OSX](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-OSX64-v1.1.1.tar.gz). Other releases were not tested but may be downloaded in Mash git [releases page](https://github.com/marbl/Mash/releases).
 
 ---
 
 ###Options:
 
-**'-i'**,**'--input_references'**, dest='inputfile', nargs='+', required=True, help='Provide the input fasta files to parse. This will inputs will be joined in a master fasta.'
+**'-i'**,**'--input_references'** - 'Provide the input fasta files to parse. This will inputs will be joined in a master fasta.'
 
-**'-o'**,**'--output'**, dest='output_tag', required=True, help='Provide an output tag'
+**'-o'**,**'--output'** - 'Provide an output tag'
 
-**'-t'**, **'--threads'**, dest='threads', help='Provide the number of threads to be used'
+**'-t'**, **'--threads'** - 'Provide the number of threads to be used'
 
-**'-k'**,**'--kmers'**, dest='kmer_size', help='Provide the number of k-mers to be provided to mash sketch. Default: 21'
+**'-k'**,**'--kmers'** - 'Provide the number of k-mers to be provided to mash sketch. Default: 21'
 
-**'-no_rm'**, **'--no-remove'**, dest='no_remove', action='store_true', help='Specify if you do not want to remove the output concatenated fasta.'
+**'-no_rm'**, **'--no-remove'** - 'Specify if you do not want to remove the output concatenated fasta.'
+
+**'-hist'**, **'--histograms'** - 'Checks the distribution of distances values ploting histograms'
+
 
 ---
 
 ###Output
 
-* Outputs a diagonal matrix with all pairwise distances between all genomes in input.
+* Outputs a diagonal matrix (_.csv_ file) with all pairwise distances between all genomes in input.
+
+* Outputs two plots in two _.html_ files, one plot for the number of genomes with a given mash distances (average and meadian) and another plot the number of genomes with a given significant pairwise differences.
