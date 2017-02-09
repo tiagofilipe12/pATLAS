@@ -50,7 +50,7 @@ def header_fix(input_header):
 
 ## Function to create a master fasta file from several fasta databases. One fasta is enought though
 def master_fasta(fastas, output_tag, mother_directory):
-	out_file = os.path.join(mother_directory, "{}output_tag{}".format("master_fasta_",".fas"))
+	out_file = os.path.join(mother_directory, "master_fasta_{}.fas".format(output_tag))
 	master_fasta = open(out_file, "w")
 	for filename in fastas:
 		fasta = open(filename,"r")
@@ -125,17 +125,12 @@ def sketch_genomes(genome, mother_directory, output_tag, kmer_size):
 def masher(ref_sketch, genome_sketch, output_tag, mother_directory):
 	out_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
 	out_file = os.path.join(out_folder, "".join(os.path.basename(genome_sketch).split(".")[:-1])+"_distances.txt")
-	mash_command = ["mash",
-					"dist",
-					"-p",
-					"1",		## threads are 1 here because multiprocessing is faster 
-					ref_sketch,
-					genome_sketch,
-					">",
-					out_file]
-	p=Popen(mash_command, stdout = PIPE, stderr = PIPE)
+	mash_command = "mash dist -p 1 {} {} > {}".format(ref_sketch,genome_sketch,out_file)
+	print mash_command
+	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
-#	stdout,stderr= p.communicate()		
+	stdout,stderr= p.communicate()
+	print stderr
 	return out_file
 
 def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_directory, genome):	
