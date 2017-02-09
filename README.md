@@ -37,7 +37,7 @@ Note: each header in fasta is considered a reference.
 
 ###Output
 
-Outputs all files to: "full path to first input file" --> string given to '-o' option --> results.
+Outputs all files to: full path to first input file --> string given to '-o' option --> results.
 
 * Outputs a diagonal matrix (_.csv_ file) with all pairwise distances between all genomes in input.
 
