@@ -37,6 +37,8 @@ Note: each header in fasta is considered a reference.
 
 ###Output
 
+Outputs all files to: "first input file full path" --> "string given to -o option" --> results.
+
 * Outputs a diagonal matrix (_.csv_ file) with all pairwise distances between all genomes in input.
 
 * Outputs two plots in two _.html_ files, one plot for the number of genomes with a given mash distances (average and meadian) and another plot the number of genomes with a given significant pairwise differences.
