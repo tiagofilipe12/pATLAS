@@ -126,11 +126,9 @@ def masher(ref_sketch, genome_sketch, output_tag, mother_directory):
 	out_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
 	out_file = os.path.join(out_folder, "".join(os.path.basename(genome_sketch).split(".")[:-1])+"_distances.txt")
 	mash_command = "mash dist -p 1 {} {} > {}".format(ref_sketch,genome_sketch,out_file)
-	print mash_command
 	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
 	stdout,stderr= p.communicate()
-	print stderr
 	return out_file
 
 def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_directory, genome):	
