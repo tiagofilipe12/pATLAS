@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-## Last update: 8/2/2017
+## Last update: 9/2/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix for each pairwise comparison between libraries
 ## Note: each header in fasta is considered a reference
@@ -15,6 +15,7 @@ from collections import OrderedDict
 import tqdm
 import operator	
 import csv
+from modules.hist_util import plot_histogram
 
 ## function to create output directories tree
 def output_tree(infile, tag):
@@ -137,6 +138,10 @@ def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_dire
 
 ## calculates ths distances between pairwise genomes
 def mash_distance_matrix(mother_directory, output_tag):
+	## lists for graphical outputs
+	
+	lists_traces = []	## list that lists all trace_lists generated
+
 	## read all infiles
 	in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
 	list_mash_files = [f for f in os.listdir(in_folder) if f.endswith("distances.txt")]
@@ -149,7 +154,8 @@ def mash_distance_matrix(mother_directory, output_tag):
 	master_dict = {}			## A dictionary to store all distances to all references of each sequence/genome
 	for infile in list_mash_files:
 		input_f = open(os.path.join(in_folder, infile),'r')
-		temporary_dict = OrderedDict()		
+		temporary_dict = OrderedDict()
+		trace_list =[]		## list to append every distance value with p-value>0.05 in each sequence/genome		
 		for line in input_f:
 			tab_split = line.split("\t")
 			reference = tab_split[0].strip()
@@ -158,11 +164,14 @@ def mash_distance_matrix(mother_directory, output_tag):
 			p_value = tab_split[3].strip()
 			if float(p_value) < 0.05:
 				temporary_dict[reference] = mash_dist
+				trace_list.append(float(mash_dist))
 			else:
 				temporary_dict[reference] = "1"
 
 		comparisons_made.append(sequence)		## lists all the sequence or genomes for which all comparisons were already made
 		master_dict[sequence] = temporary_dict	## creates a master dictionary storing all dictionaries with distances for each sequence or genome
+		lists_traces.append(trace_list)
+
 	## Outputs a csv with a diagonal with the values of distances between genomes
 	## first line
 	writer.writerow([" "]+comparisons_made)
@@ -173,7 +182,7 @@ def mash_distance_matrix(mother_directory, output_tag):
 			list_dist.append(dist) 		
  		row = [k] + list_dist[0:row_length]
 		writer.writerow(row)
-	return os.path.join(out_folder, output_tag + ".csv")
+	return os.path.join(out_folder, output_tag + ".csv"), lists_traces
 
 ##MAIN##
 
@@ -184,6 +193,7 @@ def main():
 	parser.add_argument('-t', '--threads', dest='threads', default="1", help='Provide the number of threads to be used. Default: 1.')
 	parser.add_argument('-k', '--kmers', dest='kmer_size', default="21", help='Provide the number of k-mers to be provided to mash sketch. Default: 21.')
 	parser.add_argument('-rm', '--remove', dest='remove', action='store_true', help='Remove any temporary files and folders not needed (not present in results subdirectory).')
+	parser.add_argument('-hist', '--histograms', dest='histograms', action='store_true', help='Checks the distribution of distances values ploting histograms')
 	args = parser.parse_args()
 
 	threads = args.threads
@@ -237,10 +247,9 @@ def main():
 	print "***********************************"
 	print "Creating distance matrix..."
 	print 
-	mdm = mash_distance_matrix(mother_directory, args.output_tag)
+	mdm, lists_traces = mash_distance_matrix(mother_directory, args.output_tag)
 
 	## remove master_fasta
-
 	if args.remove:
 		print "***********************************"
 		print "Removing temporary files and folders..."
@@ -250,5 +259,13 @@ def main():
 			if d != "results":
 				shutil.rmtree(os.path.join(mother_directory, d))
 
+	## Histograms  
+	if args.histograms:
+		print "***********************************"
+		print "Outputing histograms..."
+		print
+		plot_histogram(lists_traces, args.output_tag, mother_directory)
+
 if __name__ == "__main__":
 	main()
+	print "***********************************"
