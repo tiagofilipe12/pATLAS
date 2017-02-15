@@ -1,6 +1,6 @@
 # MASHix.py
 
-This script runs MASH in plasmid databases making a parwise diagonal matrix for each pairwise comparison between libraries.
+This script runs MASH, making a parwise comparisons between sequences in input (fasta) file(s).
 
 Note: each header in fasta is considered a reference.
 
