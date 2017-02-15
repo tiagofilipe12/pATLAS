@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-## Last update: 9/2/2017
+## Last update: 13/2/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix for each pairwise comparison between libraries
 ## Note: each header in fasta is considered a reference
@@ -11,11 +11,10 @@ from subprocess import Popen, PIPE
 import shutil
 from multiprocessing import Pool
 from functools import partial
-from collections import OrderedDict
 import tqdm
 import operator	
-import csv
-from modules.hist_util import plot_histogram
+from utils.hist_util import plot_histogram
+import json
 
 ## function to create output directories tree
 def output_tree(infile, tag):
@@ -137,52 +136,37 @@ def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_dire
 	mash_output = masher(ref_sketch, genome_sketch, output_tag, mother_directory)
 
 ## calculates ths distances between pairwise genomes
-def mash_distance_matrix(mother_directory, output_tag):
-	## lists for graphical outputs
-	
-	lists_traces = []	## list that lists all trace_lists generated
-
+## This function should be multiprocessed in order to retrieve several output files (as many as the specified cores specified?)
+def mash_distance_matrix(mother_directory):
 	## read all infiles
 	in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
+	out_file = open(os.path.join(mother_directory, "results", "dict_temp.json"), "w")
+	master_dict={}	## A dictionary to store all distances to all references of each sequence/genome
 	list_mash_files = [f for f in os.listdir(in_folder) if f.endswith("distances.txt")]
-	## creates output directory and opens csv module
-	out_folder = os.path.join(mother_directory, "results")
-	matrix = open(os.path.join(out_folder, output_tag + ".csv"), 'wb') 
-	writer=csv.writer(matrix ,delimiter=';', quotechar='"', quoting=csv.QUOTE_NONE, escapechar='\\')
-
-	comparisons_made = [] 		## A list to store all the comparisons already made
-	master_dict = {}			## A dictionary to store all distances to all references of each sequence/genome
+	lists_traces=[]		## list that lists all trace_lists generated
+	
 	for infile in list_mash_files:
 		input_f = open(os.path.join(in_folder, infile),'r')
-		temporary_dict = OrderedDict()
-		trace_list =[]		## list to append every distance value with p-value>0.05 in each sequence/genome		
+		temporary_list = []
+		trace_list=[]	## list to append every distance value with p-value>0.05 in each sequence/genome	
 		for line in input_f:
 			tab_split = line.split("\t")
-			reference = tab_split[0].strip()
-			sequence = tab_split[1].strip()
+			reference = "_".join(tab_split[0].strip().split("_")[0:2])
+			sequence = "_".join(tab_split[1].strip().split("_")[0:2])
 			mash_dist = tab_split[2].strip()
 			p_value = tab_split[3].strip()
-			if float(p_value) < 0.05:
-				temporary_dict[reference] = mash_dist
+			## there is no need to store all values since we are only interested in representing the significant ones 
+			## and those that correlate well with ANI (mashdist<=0.1)
+			if float(p_value) < 0.05 and reference != sequence and float(mash_dist) < 0.1:
+				temporary_list.append([reference,mash_dist])
 				trace_list.append(float(mash_dist))
-			else:
-				temporary_dict[reference] = "1"
-
-		comparisons_made.append(sequence)		## lists all the sequence or genomes for which all comparisons were already made
-		master_dict[sequence] = temporary_dict	## creates a master dictionary storing all dictionaries with distances for each sequence or genome
+		if temporary_list: 
+			master_dict[sequence]=temporary_list
 		lists_traces.append(trace_list)
 
-	## Outputs a csv with a diagonal with the values of distances between genomes
-	## first line
-	writer.writerow([" "]+comparisons_made)
-	## writes all other lines
-	for row_length, k in enumerate(comparisons_made):
-		list_dist=[]
-		for dist in master_dict[k].values():
-			list_dist.append(dist) 		
- 		row = [k] + list_dist[0:row_length]
-		writer.writerow(row)
-	return os.path.join(out_folder, output_tag + ".csv"), lists_traces
+	out_file.write(json.dumps(master_dict))
+	out_file.close()
+	return lists_traces
 
 ##MAIN##
 
@@ -247,7 +231,7 @@ def main():
 	print "***********************************"
 	print "Creating distance matrix..."
 	print 
-	mdm, lists_traces = mash_distance_matrix(mother_directory, args.output_tag)
+	lists_traces=mash_distance_matrix(mother_directory)
 
 	## remove master_fasta
 	if args.remove:
@@ -265,6 +249,9 @@ def main():
 		print "Outputing histograms..."
 		print
 		plot_histogram(lists_traces, args.output_tag, mother_directory)
+
+	## html and js modules
+	##add something to copy the js files and html files to the results directory
 
 if __name__ == "__main__":
 	main()
