@@ -14,6 +14,7 @@ from functools import partial
 import tqdm
 import operator	
 from utils.hist_util import plot_histogram
+from operator import itemgetter
 import json
 
 ## function to create output directories tree
@@ -144,7 +145,8 @@ def mash_distance_matrix(mother_directory):
 	master_dict={}	## A dictionary to store all distances to all references of each sequence/genome
 	list_mash_files = [f for f in os.listdir(in_folder) if f.endswith("distances.txt")]
 	lists_traces=[]		## list that lists all trace_lists generated
-	
+	x=0   			## set a counter for the total number of links to be ploted in VivaGraphJS
+
 	for infile in list_mash_files:
 		input_f = open(os.path.join(in_folder, infile),'r')
 		temporary_list = []
@@ -157,15 +159,23 @@ def mash_distance_matrix(mother_directory):
 			p_value = tab_split[3].strip()
 			## there is no need to store all values since we are only interested in representing the significant ones 
 			## and those that correlate well with ANI (mashdist<=0.1)
-			if float(p_value) < 0.05 and reference != sequence and float(mash_dist) < 0.1:
+			if float(p_value) < 0.05 and reference != sequence and float(mash_dist) < 0.05:
 				temporary_list.append([reference,mash_dist])
 				trace_list.append(float(mash_dist))
-		if temporary_list: 
+		if temporary_list:
+			if temporary_list > 50:
+				sorted_temporary_list = sorted(temporary_list, key=itemgetter(1))
+				temporary_list = sorted_temporary_list[:50]
+			else:
+				pass
+			x += len(temporary_list) 
 			master_dict[sequence]=temporary_list
 		lists_traces.append(trace_list)
 
 	out_file.write(json.dumps(master_dict))
 	out_file.close()
+	print "total number of nodes = {}".format(len(master_dict.keys()))
+	print "total numer of links = {}".format(x)
 	return lists_traces
 
 ##MAIN##
