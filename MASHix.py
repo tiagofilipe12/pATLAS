@@ -195,25 +195,26 @@ def main():
 	fastas = [f for f in args.inputfile if f.endswith((".fas",".fasta",".fna",".fsa", ".fa"))]
 
 	## creates output directory tree
-	mother_directory=output_tree(fastas[0], args.output_tag)
+	output_tag = args.output_tag.replace("/","")	## if the user gives and input tag that is already a folder
+	mother_directory=output_tree(fastas[0], output_tag)
 
 	## checks if multiple fastas are provided or not avoiding master_fasta function
 	print "***********************************"
 	print "Creating main database..."
 	print
-	main_fasta = master_fasta(fastas, args.output_tag, mother_directory)
+	main_fasta = master_fasta(fastas, output_tag, mother_directory)
 
 	## runs mash related functions
 	print "***********************************"
 	print "Sketching reference..."
 	print 
-	ref_sketch=sketch_references(main_fasta,args.output_tag,threads,kmer_size, mother_directory)
+	ref_sketch=sketch_references(main_fasta,output_tag,threads,kmer_size, mother_directory)
 
 	## breaks master fasta into multiple fastas with one genome each
 	print "***********************************"
 	print "Making temporary files for each genome in fasta..."
 	print 
-	genomes = genomes_parser(main_fasta, args.output_tag, mother_directory)
+	genomes = genomes_parser(main_fasta, output_tag, mother_directory)
 
 	## This must be multiprocessed since it is extremely fast to do mash against one plasmid sequence
 	print "***********************************"
@@ -221,7 +222,7 @@ def main():
 	print 
 
 	pool = Pool(int(threads)) 		# Create a multiprocessing Pool
-	mp=pool.imap_unordered(partial(multiprocess_mash, ref_sketch, main_fasta, args.output_tag, kmer_size, mother_directory), genomes)   # process genomes iterable with pool
+	mp=pool.imap_unordered(partial(multiprocess_mash, ref_sketch, main_fasta, output_tag, kmer_size, mother_directory), genomes)   # process genomes iterable with pool
 	
 	## loop to print a nice progress bar
 	try:
@@ -256,7 +257,7 @@ def main():
 		print "***********************************"
 		print "Outputing histograms..."
 		print
-		plot_histogram(lists_traces, args.output_tag, mother_directory)
+		plot_histogram(lists_traces, output_tag, mother_directory)
 
 	## copy html and js modules to output results directory
 	for add_script in ["vivagraph.js", "jquery-3.1.1.js", "visualization.html"]:
