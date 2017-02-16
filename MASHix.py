@@ -259,7 +259,8 @@ def main():
 		plot_histogram(lists_traces, args.output_tag, mother_directory)
 
 	## html and js modules
-	##add something to copy the js files and html files to the results directory
+	for add_script in ["vivagraph.js", "jquery-3.1.1.js", "visualization.html"]:
+		shutil.move(os.path.abspath(__file__), os.path.join(mother_directory, "results"))
 
 if __name__ == "__main__":
 	main()
