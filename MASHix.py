@@ -260,7 +260,7 @@ def main():
 
 	## copy html and js modules to output results directory
 	for add_script in ["vivagraph.js", "jquery-3.1.1.js", "visualization.html"]:
-		shutil.move(os.path.abspath(__file__), os.path.join(mother_directory, "results"))
+		shutil.copyfile(os.path.join(os.path.abspath(__file__), "modules", add_script), os.path.join(mother_directory, "results", add_script))
 
 if __name__ == "__main__":
 	main()
