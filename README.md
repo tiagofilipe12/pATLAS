@@ -1,4 +1,4 @@
-# MASHix.py
+# MASHix
 
 This script runs MASH, making a parwise comparisons between sequences in input (fasta) file(s).
 
