@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-## Last update: 15/2/2017
+## Last update: 16/2/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix for each pairwise comparison between libraries
 ## Note: each header in fasta is considered a reference
@@ -143,7 +143,7 @@ def mash_distance_matrix(mother_directory):
 	master_dict={}	## A dictionary to store all distances to all references of each sequence/genome
 	list_mash_files = [f for f in os.listdir(in_folder) if f.endswith("distances.txt")]
 	lists_traces=[]		## list that lists all trace_lists generated
-	x=0   			## set a counter for the total number of links to be ploted in VivaGraphJS
+	x=0
 
 	for infile in list_mash_files:
 		input_f = open(os.path.join(in_folder, infile),'r')
@@ -161,19 +161,19 @@ def mash_distance_matrix(mother_directory):
 				temporary_list.append([reference,mash_dist])
 				trace_list.append(float(mash_dist))
 		if temporary_list:
-			if temporary_list > 50:
+			if len(temporary_list) > 5:	## filters links up to 5 shorter distances between sequences for each node
 				sorted_temporary_list = sorted(temporary_list, key=itemgetter(1))
-				temporary_list = sorted_temporary_list[:50]
+				part_temporary_list = sorted_temporary_list[:5]
 			else:
-				pass
-			x += len(temporary_list) 
-			master_dict[sequence]=temporary_list
+				part_temporary_list = temporary_list
+			x += part_temporary_list
+			master_dict[sequence]=part_temporary_list
 		lists_traces.append(trace_list)
 
 	out_file.write(json.dumps(master_dict))
 	out_file.close()
 	print "total number of nodes = {}".format(len(master_dict.keys()))
-	print "total numer of links = {}".format(x)
+	print "total number of links = {}".format(x)
 	return lists_traces
 
 ##MAIN##
