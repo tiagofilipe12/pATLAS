@@ -119,7 +119,6 @@ def sketch_genomes(genome, mother_directory, output_tag, kmer_size):
 						genome]
 	p=Popen(sketcher_command, stdout = PIPE, stderr = PIPE)
 	p.wait()
-#	stdout,stderr= p.communicate()
 	return out_file + ".msh"
 
 ## Executes mash dist
@@ -129,7 +128,6 @@ def masher(ref_sketch, genome_sketch, output_tag, mother_directory):
 	mash_command = "mash dist -p 1 {} {} > {}".format(ref_sketch,genome_sketch,out_file)
 	p=Popen(mash_command, stdout = PIPE, stderr = PIPE, shell=True)
 	p.wait()
-	stdout,stderr= p.communicate()
 	return out_file
 
 def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_directory, genome):	
