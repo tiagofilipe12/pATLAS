@@ -190,7 +190,7 @@ def main():
 
 	threads = args.threads
 	kmer_size = args.kmer_size
-	
+
 	## lists all fastas given to argparser
 	fastas = [f for f in args.inputfile if f.endswith((".fas",".fasta",".fna",".fsa", ".fa"))]
 
@@ -258,7 +258,7 @@ def main():
 		print
 		plot_histogram(lists_traces, args.output_tag, mother_directory)
 
-	## html and js modules
+	## copy html and js modules to output results directory
 	for add_script in ["vivagraph.js", "jquery-3.1.1.js", "visualization.html"]:
 		shutil.move(os.path.abspath(__file__), os.path.join(mother_directory, "results"))
 
