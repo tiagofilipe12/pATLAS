@@ -15,20 +15,20 @@
                 getArray().done(function(json){
 	                $.each(json, function(sequence,pair){
 	                	if (list.indexOf(sequence) < 0) {    //checks if sequence is not in list to prevent adding multiple nodes for each sequence
-                      g.addNode(sequence)
-                      list.push(sequence)
+                      g.addNode(sequence);
+                      list.push(sequence);
                       //console.log(sequence)
                       }
 	                    $.each(pair, function(reference,dist){
 	                      if (list.indexOf(reference) < 0) {    //checks if reference is not in list to prevent adding multiple nodes for each sequence
-                          g.addNode(reference)
-                          list.push(reference)
+                          g.addNode(reference);
+                          list.push(reference);
                           //console.log(pair)
                         }
 	                      g.addLink(sequence,reference)
-	                    })
-	                })
-                  console.log(list.length)
+	                    });
+	                });
+                  console.log(list.length);
 
                     var layout = Viva.Graph.Layout.forceDirected(g, {
                        springLength : 30,
@@ -65,7 +65,7 @@
                         var renderer = Viva.Graph.View.renderer(g, {
                             layout   : layout,
                             graphics : graphics,
-                            container: document.getElementById('cenas')
+                            container: document.getElementById('couve-flor')
                         });
                         renderer.run();
                         renderer.pause();
@@ -76,9 +76,8 @@
             }         
 
         </script>        
-       <!-- <script language="javascript" type="text/javascript" src="mashix_vect.js"></script> -->
     </head>
     <body onload="onLoad()" style="height:100%;width:100%;">
-    	<div id="cenas" style="height:100%;width:100%;"></div>
+    	<div id="couve-flor" style="height:100%;width:100%;"></div>
     </body>
 </html>
