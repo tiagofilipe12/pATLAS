@@ -37,23 +37,20 @@ The first thing you have to do is run MASHix.py in order to calculate distances 
 
 **'-no_rm'**, **'--no-remove'** - 'Specify if you do not want to remove the output concatenated fasta.'
 
-###modules/visualization.html
 
-This html loads the JSON file retrieved by MASHix.py and runs vivagraph.js in order to plot the connections (using MASH distances) between closely related  nodes (genomes/sequences).
-
-So, **for now**:
-
-You have to copy the output dict\_temp.json file into the directory where the _vivagraph.js_, _jquery-3.1.1.js_ and _visualization.html_ is. Then, open _visualization.html_ with **firefox** or follow the following instructions to allow google chrome to access filesystem: [http://www.chrome-allow-file-access-from-file.com/]
-
-Note: In future implementation these copy and paste steps won't be necessary but for now... stick to it.
-
-Note 2: Large datasets, which may have huge number of links between nodes (genomes/sequences) may suffer from slow loading times. So, in order to avoid this, before loading the visualization.html, first check the two graphical outputs retrieved by MASHix.py.
 
 ---
 
-###Output
+###Outputs
 
 Outputs all files to: full path to first input file --> string given to '-o' option --> results.
 
-* Outputs two plots in two .html files, one plot for the number of genomes with a given mash distances (average, meadian, maximum and minimum) and another plot the number of genomes with a given significant pairwise differences.
+1. Outputs two plots in two .html files, one plot for the number of genomes with a given mash distances (average, meadian, maximum and minimum) and another plot the number of genomes with a given significant pairwise differences.
 
+2. **visualization.html**
+
+...This html loads the JSON file retrieved by MASHix.py and runs vivagraph.js in order to plot the connections (using MASH distances) between closely related  nodes (genomes/sequences).
+
+...Open _visualization.html_ with **firefox** or follow the following instructions to allow google chrome to access filesystem: [http://www.chrome-allow-file-access-from-file.com/]
+
+...Note: Large datasets, which may have huge number of links between nodes (genomes/sequences) may suffer from slow loading times. So, in order to avoid this, before loading the visualization.html, first check the two graphical outputs retrieved by MASHix.py.
