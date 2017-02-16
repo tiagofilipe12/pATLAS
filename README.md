@@ -51,6 +51,6 @@ Outputs all files to: full path to first input file --> string given to '-o' opt
 
 ...This html loads the JSON file retrieved by MASHix.py and runs vivagraph.js in order to plot the connections (using MASH distances) between closely related  nodes (genomes/sequences).
 
-...Open _visualization.html_ with **firefox** or follow the following instructions to allow google chrome to access filesystem: [http://www.chrome-allow-file-access-from-file.com/]
+...Open _visualization.html_ with **firefox** or follow the following instructions to allow google chrome to access filesystem: [http://www.chrome-allow-file-access-from-file.com/]. _visualization.html_ is currently saved along (in the same folder) with the .js scripts and .json file created with MASHix.py in order to be properly read.
 
 ...Note: Large datasets, which may have huge number of links between nodes (genomes/sequences) may suffer from slow loading times. So, in order to avoid this, before loading the visualization.html, first check the two graphical outputs retrieved by MASHix.py.
