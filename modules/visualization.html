@@ -13,8 +13,8 @@
 
                 var g = Viva.Graph.graph();
                 getArray().done(function(json){
-	                $.each(json, function(sequence,dict_dist){
-	                	if (list.indexOf(sequence) < 0) {    //checks if sequence is not in list to prevent adding multiple nodes for each sequence
+                  $.each(json, function(sequence,dict_dist){
+                    if (list.indexOf(sequence) < 0) {    //checks if sequence is not in list to prevent adding multiple nodes for each sequence
                       g.addNode(sequence);
                       list.push(sequence);
                       }
@@ -23,13 +23,13 @@
                       var pairs = dict_dist[i];
                       var reference = pairs[0];  //stores references in a unique variable
                       var distance = pairs[1];   //stores distances in a unique variable
-	                    if (list.indexOf(reference) < 0) {    //checks if reference is not in list to prevent adding multiple nodes for each sequence
+                      if (list.indexOf(reference) < 0) {    //checks if reference is not in list to prevent adding multiple nodes for each sequence
                         g.addNode(reference);
                         list.push(reference);
                       }
-	                    g.addLink(sequence,reference);
+                      g.addLink(sequence,reference);
                     };
-	                });
+                  });
                   console.log(list);
 
                     var layout = Viva.Graph.Layout.forceDirected(g, {
@@ -73,13 +73,13 @@
                         renderer.pause();
                     }
 
-	            });
+              });
 
             }         
 
         </script>        
     </head>
     <body onload="onLoad()" style="height:100%;width:100%;">
-    	<div id="couve-flor" style="height:100%;width:100%;"></div>
+      <div id="couve-flor" style="height:100%;width:100%;"></div>
     </body>
 </html>
