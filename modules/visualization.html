@@ -13,22 +13,24 @@
 
                 var g = Viva.Graph.graph();
                 getArray().done(function(json){
-	                $.each(json, function(sequence,pair){
+	                $.each(json, function(sequence,dict_dist){
 	                	if (list.indexOf(sequence) < 0) {    //checks if sequence is not in list to prevent adding multiple nodes for each sequence
                       g.addNode(sequence);
                       list.push(sequence);
-                      //console.log(sequence)
                       }
-	                    $.each(pair, function(reference,dist){
-	                      if (list.indexOf(reference) < 0) {    //checks if reference is not in list to prevent adding multiple nodes for each sequence
-                          g.addNode(reference);
-                          list.push(reference);
-                          //console.log(pair)
-                        }
-	                      g.addLink(sequence,reference)
-	                    });
+                      // loops between all arrays of array pairing sequence and distances
+                    for (var i = 0; i < dict_dist.length; i++){
+                      var pairs = dict_dist[i];
+                      var reference = pairs[0];  //stores references in a unique variable
+                      var distance = pairs[1];   //stores distances in a unique variable
+	                    if (list.indexOf(reference) < 0) {    //checks if reference is not in list to prevent adding multiple nodes for each sequence
+                        g.addNode(reference);
+                        list.push(reference);
+                      }
+	                    g.addLink(sequence,reference);
+                    };
 	                });
-                  console.log(list.length);
+                  console.log(list);
 
                     var layout = Viva.Graph.Layout.forceDirected(g, {
                        springLength : 30,
