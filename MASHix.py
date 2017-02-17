@@ -139,7 +139,7 @@ def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_dire
 def mash_distance_matrix(mother_directory):
 	## read all infiles
 	in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
-	out_file = open(os.path.join(mother_directory, "results", "dict_temp.json"), "w")
+	out_file = open(os.path.join(mother_directory, "results", "import_to_vivagraph.json"), "w")
 	master_dict={}	## A dictionary to store all distances to all references of each sequence/genome
 	list_mash_files = [f for f in os.listdir(in_folder) if f.endswith("distances.txt")]
 	lists_traces=[]		## list that lists all trace_lists generated
