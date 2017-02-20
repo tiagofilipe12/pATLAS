@@ -103,7 +103,6 @@ def sketch_references(inputfile, output_tag, threads, kmer_size, mother_director
 	return out_file + ".msh"
 
 ## Makes the sketch command of mash for the reads to be compare to the reference.
-## According to mash turorial it is useful to provide the -m 2 option in order to remove single-copy k-mers
 def sketch_genomes(genome, mother_directory, output_tag, kmer_size):
 	out_folder = os.path.join(mother_directory, "genome_sketchs")
 	out_file = os.path.join(out_folder, os.path.basename(genome))
