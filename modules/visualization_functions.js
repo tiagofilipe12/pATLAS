@@ -3,7 +3,6 @@
                 return $.getJSON('import_to_vivagraph01_l50.json');
           }
 
-
             // initiates vivagraph main functions
   
             function onLoad() {
@@ -66,6 +65,8 @@
                   var nodeColor = 0x31698a, // hex rrggbb
                   nodeSize = 12;
                   
+
+
                   // Starts graphics render
                   function renderGraph(){
                       var graphics = Viva.Graph.View.webglGraphics();
@@ -127,9 +128,34 @@
                         
 
                       renderer.rerender();
-                      renderer.pause();
+
+                      // Pause button implementation
+                      // 1. Create the button
+                      var button = document.createElement("button");
+                      button.innerHTML = "Pause animation";
+
+                      // 2. Append somewhere
+                      var body = document.getElementsByTagName("body")[0];
+                      body.appendChild(button);
+
+                      // 3. Add event handler to pause
+                      button.addEventListener ("click", function() {
+                        if (button.innerHTML == "Pause animation") {
+                          renderer.pause();
+                          button.innerHTML = "Resume animation";
+                        }
+                        else {
+                          // 4. Add event handler to resume
+                          renderer.resume();
+                          button.innerHTML = "Pause animation";
+                        }
+                      });
+
+                      // End Pause button implementation
                   }
-                  
+                
+
+
                 });
 
             }
