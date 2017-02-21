@@ -119,20 +119,47 @@
                           });
                           renderer.rerender();
                         });
-                        // mouse hovering nodes
-                        events.mouseEnter(function (node) {
-                          console.log('Mouse entered node: ' + node.id);
+
+                        //** mouse hovering on nodes **//
+                        events.mouseEnter(function (node, e) {
+                          nodeUI_1 = graphics.getNodeUI(node.id);
+                          var domPos = {
+                            x: nodeUI_1.position.x,
+                            y: nodeUI_1.position.y
+                          };
+                           // And ask graphics to transform it to DOM coordinates:
+                            graphics.transformGraphToClientCoordinates(domPos);
+
+                            domPos.x = (domPos.x + nodeSize + nodeUI_1.size) + 'px';
+                            domPos.y = (domPos.y - 30)+ 'px';
+                              $('#popup_description').empty();
+                              $('#popup_description').append("<div>"+node.id+"</div>");
+                              $('#popup_description').css({'padding': '10px 10px 10px 10px', 
+                                                           'border':'1px solid grey', 
+                                                           'border-radius': '10px', 
+                                                           'background-color':'white',
+                                                           'display':'block', 
+                                                           'left':domPos.x, 
+                                                           'top':domPos.y, 
+                                                           'position':'fixed', 
+                                                           'z-index':2
+                                                           });
+                          //console.log('Mouse entered node: ' + node.id);
                         }).mouseLeave(function (node) {
-                          console.log('Mouse left node: ' + node.id);
+                          $('#popup_description').css({'display':'none'});
+                          //console.log('Mouse left node: ' + node.id);
                         });
+                        //** mouse hovering block end **//
                         
 
                       renderer.rerender();
+                      // by default the animation on forces is paused since it may be computational intensive for old computers
+                      renderer.pause();   
 
                       // Pause button implementation
                       // 1. Create the button
                       var button = document.createElement("button");
-                      button.innerHTML = "Pause animation";
+                      button.innerHTML = "Apply forces";
 
                       // 2. Append somewhere
                       var body = document.getElementsByTagName("body")[0];
@@ -140,14 +167,14 @@
 
                       // 3. Add event handler to pause
                       button.addEventListener ("click", function() {
-                        if (button.innerHTML == "Pause animation") {
-                          renderer.pause();
-                          button.innerHTML = "Resume animation";
+                        if (button.innerHTML == "Apply forces") {
+                          renderer.resume();
+                          button.innerHTML = "Forget it! Pause!";
                         }
                         else {
                           // 4. Add event handler to resume
-                          renderer.resume();
-                          button.innerHTML = "Pause animation";
+                          renderer.pause();
+                          button.innerHTML = "Apply forces";
                         }
                       });
 
