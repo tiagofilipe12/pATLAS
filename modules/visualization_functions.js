@@ -12,7 +12,7 @@
                 getArray().done(function(json){
                   $.each(json, function(sequence,dict_dist){
                     if (list.indexOf(sequence) < 0) {    //checks if sequence is not in list to prevent adding multiple nodes for each sequence
-                      g.addNode(sequence,sequence);
+                      g.addNode(sequence,sequence);   // second sequence is data to be implemented in future versions
                       list.push(sequence);
                       }
                       // loops between all arrays of array pairing sequence and distances
@@ -21,7 +21,7 @@
                       var reference = pairs[0];  //stores references in a unique variable
                       var distance = pairs[1];   //stores distances in a unique variable
                       if (list.indexOf(reference) < 0) {    //checks if reference is not in list to prevent adding multiple nodes for each sequence
-                        g.addNode(reference,reference);
+                        g.addNode(reference,reference);    //second reference is data to be implemented in future versions
                         list.push(reference);
                       }
                       g.addLink(sequence,reference,distance);
@@ -127,23 +127,23 @@
                             x: nodeUI_1.position.x,
                             y: nodeUI_1.position.y
                           };
-                           // And ask graphics to transform it to DOM coordinates:
-                            graphics.transformGraphToClientCoordinates(domPos);
+                          // And ask graphics to transform it to DOM coordinates:
+                          graphics.transformGraphToClientCoordinates(domPos);
 
-                            domPos.x = (domPos.x + nodeSize + nodeUI_1.size) + 'px';
-                            domPos.y = (domPos.y - 30)+ 'px';
-                              $('#popup_description').empty();
-                              $('#popup_description').append("<div>"+node.id+"</div>");
-                              $('#popup_description').css({'padding': '10px 10px 10px 10px', 
-                                                           'border':'1px solid grey', 
-                                                           'border-radius': '10px', 
-                                                           'background-color':'white',
-                                                           'display':'block', 
-                                                           'left':domPos.x, 
-                                                           'top':domPos.y, 
-                                                           'position':'fixed', 
-                                                           'z-index':2
-                                                           });
+                          domPos.x = (domPos.x + nodeSize + nodeUI_1.size) + 'px';
+                          domPos.y = (domPos.y - 30)+ 'px';
+                          $('#popup_description').empty();
+                          $('#popup_description').append("<div>"+node.id+"</div>");
+                          $('#popup_description').css({'padding': '10px 10px 10px 10px', 
+                                                      'border':'1px solid grey', 
+                                                      'border-radius': '10px', 
+                                                      'background-color':'white',
+                                                      'display':'block', 
+                                                      'left':domPos.x, 
+                                                      'top':domPos.y, 
+                                                      'position':'fixed', 
+                                                      'z-index':2
+                                                      });
                           //console.log('Mouse entered node: ' + node.id);
                         }).mouseLeave(function (node) {
                           $('#popup_description').css({'display':'none'});
@@ -155,33 +155,32 @@
                       renderer.rerender();
                       // by default the animation on forces is paused since it may be computational intensive for old computers
                       renderer.pause();   
-
-                      // Pause button implementation
-                      // 1. Create the button
-                      var button = document.createElement("button");
-                      button.innerHTML = "Apply forces";
-
-                      // 2. Append somewhere
-                      var body = document.getElementsByTagName("body")[0];
-                      body.appendChild(button);
-
-                      // 3. Add event handler to pause
-                      button.addEventListener ("click", function() {
-                        if (button.innerHTML == "Apply forces") {
+                      
+                      //** BUTTONS **//
+                      //** Pause button implementation **//
+                      var button_info = "Apply forces"
+                      $('#pauseButton').text(button_info);
+                      $('#pauseButton').on('click', function(e) {
+                        // Add event handler to resume
+                        if (button_info == "Apply forces") {
+                          //console.log("text: "+button_info)
                           renderer.resume();
-                          button.innerHTML = "Forget it! Pause!";
+                          button_info = "Forget it! Pause!";
                         }
+                        // Add event handler to pause
                         else {
-                          // 4. Add event handler to resume
+                          //console.log(button_info)                          
                           renderer.pause();
-                          button.innerHTML = "Apply forces";
+                          button_info = "Apply forces";
                         }
+                        $(this).text(button_info);                        
                       });
+                      //** End Pause button implementation **//
 
-                      // End Pause button implementation
-                  }
-                
+                      //** Data button **//
+                      //$('#taxaButton').text("Filters");
 
+                  }          
 
                 });
 

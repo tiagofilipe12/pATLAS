@@ -1,14 +1,66 @@
 <html>
     <head>
-        <meta charset="UTF-8"/> 
-        <title>Plasmid Clustering</title>
-        <script language="javascript" type="text/javascript" src="vivagraph.js"></script>
-        <script language="javascript" type="text/javascript" src="jquery-3.1.1.js"></script> 
-        <script language="javascript" type="text/javascript" src="visualization_functions.js"></script>              
+      <meta charset="UTF-8"/> 
+      <title>Plasmid Clustering</title>
+      <script language="javascript" type="text/javascript" src="vivagraph.js"></script>
+      <script language="javascript" type="text/javascript" src="jquery-3.1.1.js"></script>
+      <link rel="stylesheet" href="bootstrap.css">
+      <script language="javascript" type="text/javascript" src="bootstrap.js"></script>  
+      <script language="javascript" type="text/javascript" src="visualization_functions.js"></script>
+
+      <!--style and script for buttons submenu-->
+
+      <style>
+        .dropdown-submenu {
+          position: relative;
+          background-color: #B54646;
+        }
+
+        .dropdown-submenu .dropdown-menu {
+          top: 0;
+          left: 100%;
+          margin-top: -1px;
+          background-color: #B54646;
+        }
+      </style>
+
+      <script>
+        $(document).ready(function(){
+          $('.dropdown-submenu a.test').on("click", function(e){
+            $(this).next('ul').toggle();
+            e.stopPropagation();    //prevents from opening all submenus at once
+            //e.preventDefault();
+          });
+        });
+      </script>
+
+      <!-- End of styling and script for submenus -->
+
     </head>
     
-    <body onload="onLoad()" style="height:100%;width:100%;">
-      <div id="couve-flor" style="height:95%;width:100%;"></div>
+    <body onload="onLoad()">
+      <div id="couve-flor" style="height:96%;width:99%;"></div>
       <div id="popup_description" style="display: none"></div>
+        
+      <button id="pauseButton" type="button" class="btn btn-primary" style="float: right;"></button>
+      
+      <!-- Initiates the dropdown menu options 
+
+      <div class="dropup">
+        <button id="taxaButton" type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" style="background-color: #B54646;">Filters
+        <span class="caret"></span></button>
+        <ul class="dropdown-menu" style="background-color: #B54646;">
+          <li><a tabindex="-1" style="background-color: #B54646;" href="#">Genus</a></li>
+          <li><a tabindex="-1" style="background-color: #B54646;" href="#">Species</a></li>
+          <li class="dropdown-submenu" style="background-color: #B54646;">            
+            <a class="test" tabindex="-1" href="#">Gis<span class="caret"></span></a>
+              <ul class="dropdown-menu" style="background-color: #B54646;">
+                <li><a tabindex="-1" style="background-color: #B54646;" href="#">2nd level dropdown</a></li>
+                <li><a tabindex="-1" style="background-color: #B54646;" href="#">2nd level dropdown </a></li>
+              </ul>
+        </ul>
+        </div>
+        ends dropdown menu -->
+
     </body>
 </html>
