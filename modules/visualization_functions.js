@@ -7,7 +7,7 @@
             // initiates vivagraph main functions
   
             function onLoad() {
-                var list=[];
+                var list=[];   //list to store references already ploted as nodes
 
                 var g = Viva.Graph.graph();
                 getArray().done(function(json){
@@ -63,7 +63,7 @@
 
                   // Sets parameters to be passed to WebglCircle in order to change 
                   // node shape, setting color and size.
-                  var nodeColor = 0x336699, // hex rrggbb
+                  var nodeColor = 0x31698a, // hex rrggbb
                   nodeSize = 12;
                   
                   // Starts graphics render
@@ -89,34 +89,40 @@
                       });
                       
                       renderer.run();
-
+                      
+                      // opens events in webgl such as mouse hoverings or clicks
                       var events = Viva.Graph.webglInputEvents(graphics, g);
-                        //change node color on overing, though it only functions without renderer.pause()
-                        //events.mouseEnter(function (node) {
-                        //  console.log('Mouse entered node: ' + node.id);
-                        // var nodeUI = graphics.getNodeUI(node.id);
-                        //  nodeUI.color = 0xFF69B4FF;
-                        //});
-                        // changes the color of node and links of this node when clicked
+
+                        // changes the color of node and links (and respective linked nodes) of this node when clicked
                         events.click(function (node) {
                           change_color=true;
                           console.log('Single click on node: ' + node.id);
                           var nodeUI = graphics.getNodeUI(node.id);
-                          color_to_use=0x336699
+                          color_to_use=nodeColor
 
                           if (nodeUI.color == color_to_use) {
                             default_link_color=nodeUI.color
-                            color_to_use=[0xCC0000,0xFF4500FF];
+                            color_to_use=[0xe36e59,0xFF4500FF,0x854442];
                           }
                           else {
-                            color_to_use=[0x336699,0xb3b3b3ff]; // resets the color of node and respective links if it was previously checked (on click)
+                            // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
+                            color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];  
                           }
                           nodeUI.color = color_to_use[0];
-                          g.forEachLinkedNode(node.id, function(node, link){
-                            var linkUI = graphics.getLinkUI(link.id);
+                          g.forEachLinkedNode(node.id, function(linkedNode, link){                            
+                            var linkUI = graphics.getLinkUI(link.id);                            
                             linkUI.color=color_to_use[1];
+                            //console.log(linkedNode.id)
+                            var linked_nodeUI = graphics.getNodeUI(linkedNode.id);
+                            linked_nodeUI.color = color_to_use[2];
                           });
                           renderer.rerender();
+                        });
+                        // mouse hovering nodes
+                        events.mouseEnter(function (node) {
+                          console.log('Mouse entered node: ' + node.id);
+                        }).mouseLeave(function (node) {
+                          console.log('Mouse left node: ' + node.id);
                         });
                         
 
