@@ -19,7 +19,7 @@ Note: each header in fasta is considered a reference.
 Note: This script exports a JSON file to be loaded with [VivaGraphJS](https://github.com/anvaka/VivaGraphJS) in order to plot distances between genomes (example file is provided in modules/import\_to\_vivagraph.json). Altough, there is no need to load additional modules since they are provided along with the _visualization.html_ in modules.
 
 ---
-## How do I run this thing?
+## How do I run this thing? aka Usage
 
 ###MASHix.py
 
@@ -39,6 +39,11 @@ The first thing you have to do is run MASHix.py in order to calculate distances 
 
 **'-hist'**, **'--histograms'** - 'Checks the distribution of distances values ploting histograms.'
 
+###visualization.html
+
+To run _visualization.html_ a json file containing a dictionary of nodes and distances between pairs of nodes is required. MASHix.py can be used for that since it is one the outputs of MASHix.py. However, note that json file must be copied to MASHix main directory where _visualization.html_ is stored.
+
+More comming soon...
 
 ---
 
