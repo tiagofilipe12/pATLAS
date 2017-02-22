@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-      return $.getJSON('import_to_vivagraph01_l50.json');
+      return $.getJSON('example.json');   // change the input file name
 }
 // initiates vivagraph main functions  
 function onLoad() {
