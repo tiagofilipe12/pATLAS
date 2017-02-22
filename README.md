@@ -48,9 +48,9 @@ Outputs all files to: full path to first input file --> string given to '-o' opt
 
 1. Outputs two plots in two .html files, one plot for the number of genomes with a given mash distances (average, meadian, maximum and minimum) and another plot the number of genomes with a given significant pairwise differences.
 
-2. **visualization.html**
+2. **load visualization.html**
 
-   This html loads the JSON file retrieved by MASHix.py and runs vivagraph.js in order to plot the connections (using MASH distances) between closely related  nodes (genomes/sequences).
+   This html loads the JSON file retrieved by MASHix.py and runs vivagraph.js in order to plot the connections (using MASH distances) between closely related  nodes (genomes/sequences). **VERY IMPORTANT: in order to run _visualization.html_ make sure .json file is in the same folder as the _visualization.html_, otherwise it won't do anything.**
 
    Open _visualization.html_ with **firefox** or follow the following instructions to allow google chrome to access filesystem: [http://www.chrome-allow-file-access-from-file.com/]. _visualization.html_ is currently saved along (in the same folder) with the .js scripts and .json file created with MASHix.py in order to be properly read.
 
