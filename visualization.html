@@ -15,7 +15,6 @@
           position: absolute;
           bottom:2%;
           left:48%;
-          opacity: 80%;
         }
         #couve-flor{
           height: 90%;
@@ -40,7 +39,10 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" style="color: #bb271c" href="https://github.com/tiagofilipe12/MASHix" target="_blank"><strong>MASHix</strong></a>
+            <a class="navbar-brand" style="color: #bb271c" 
+                data-toggle="tooltip" title="Go to MASHix GitHub" 
+                href="https://github.com/tiagofilipe12/MASHix" 
+                target="_blank"><strong>MASHix</strong></a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -73,11 +75,15 @@
       <div id="couve-flor" > 
         <div id="buttonStuff">
           <!-- Buttons that overlay the graph and interact with it -->
-          <button id="playpauseButton" type="button" class="btn btn-success">
+          <button id="playpauseButton" data-toggle="tooltip" 
+                  title="Play/Pause" type="button" 
+                  class="btn btn-success">
             <span class="glyphicon glyphicon-play"></span>
           </button>
 
-          <button id="refreshButton" type="button" class="btn btn-primary">
+          <button id="refreshButton" data-toggle="tooltip" 
+                  title="Reset nodes color" type="button" 
+                  class="btn btn-primary">
             <span class="glyphicon glyphicon-refresh"></span>
             </span>
           </button>
