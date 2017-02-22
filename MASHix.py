@@ -156,7 +156,7 @@ def mash_distance_matrix(mother_directory):
 			p_value = tab_split[3].strip()
 			## there is no need to store all values since we are only interested in representing the significant ones 
 			## and those that correlate well with ANI (mashdist<=0.1)
-			if float(p_value) < 0.05 and reference != sequence and float(mash_dist) < 0.05:
+			if float(p_value) < 0.05 and reference != sequence and float(mash_dist) < 0.1:
 				temporary_list.append([reference,mash_dist])
 				trace_list.append(float(mash_dist))
 		if temporary_list:
