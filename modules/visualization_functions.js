@@ -49,7 +49,6 @@ function onLoad() {
         //processingElement.innerHTML = 'Layout precompute: ' + iterations;
         if (iterations > 0) {
           setTimeout(function () {
-              //console.log(iterations);
               precompute(iterations, callback);
           }, 0); // keep going in next even cycle
         } else {
@@ -118,8 +117,8 @@ function onLoad() {
               };
               // And ask graphics to transform it to DOM coordinates:
               graphics.transformGraphToClientCoordinates(domPos);
-              domPos.x = (domPos.x + nodeSize + nodeUI_1.size) + 'px';
-              domPos.y = (domPos.y - 30)+ 'px';
+              domPos.x = (domPos.x + nodeUI_1.size) + 'px';
+              domPos.y = (domPos.y) + 'px';
               $('#popup_description').empty();
               $('#popup_description').append("<div>"+
                                               node.data.sequence+
@@ -153,7 +152,6 @@ function onLoad() {
           $('#refreshButton').on('click', function(e) {
             color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];
             for (id in store_nodes) {
-              console.log(id)
               var nodeUI = graphics.getNodeUI(store_nodes[id]);  
               nodeUI.color =color_to_use[0]
               g.forEachLinkedNode(store_nodes[id], function(linkedNode, link){
