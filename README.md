@@ -1,4 +1,4 @@
-# MASHix
+# <strong><font color='#bb271c'>MASHix</font></strong>
 
 This script runs MASH, making a parwise comparisons between sequences in input (fasta) file(s).
 
