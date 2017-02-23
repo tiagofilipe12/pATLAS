@@ -79,7 +79,9 @@ function onLoad() {
               graphics : graphics,
               container: document.getElementById('couve-flor')
           });                      
-          renderer.run();                      
+          renderer.run();
+
+
           // opens events in webgl such as mouse hoverings or clicks
 
           //**************//
@@ -155,6 +157,10 @@ function onLoad() {
         // by default the animation on forces is paused since 
         // it may be computational intensive for old computers
         renderer.pause(); 
+
+        //** Loading Screen goes off **//
+        document.getElementById('loading').style.visibility="hidden";
+        document.getElementById('couve-flor').style.visibility="visible";       
 
         //***************//
         //*** BUTTONS ***//
