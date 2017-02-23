@@ -29,11 +29,12 @@ def output_tree(infile, tag):
 	return mother_directory
 
 ## Removes keys from dictionary that are present in another list
-def key_removal(temporary_dict, comparisons_made):
-	for key in temporary_dict.keys():
-		if key in comparisons_made:
-			del temporary_dict[key]
-	return temporary_dict
+## Currently this functions is not being used
+#def key_removal(temporary_dict, comparisons_made):
+#	for key in temporary_dict.keys():
+#		if key in comparisons_made:
+#			del temporary_dict[key]
+#	return temporary_dict
 
 ## Checks if a directory exists and if not creates one.
 def folderexist(directory):
@@ -53,14 +54,24 @@ def header_fix(input_header):
 def master_fasta(fastas, output_tag, mother_directory):
 	out_file = os.path.join(mother_directory, "master_fasta_{}.fas".format(output_tag))
 	master_fasta = open(out_file, "w")
+	sequence_info = {}
 	for filename in fastas:
 		fasta = open(filename,"r")
-		for line in fasta:
+		for x,line in enumerate(fasta):
 			if line.startswith(">"):
+				if x != 0:
+					sequence_info[sequence] = (species, length)	#outputs dict at the beggining of each new entry
+				length = 0 	# resets sequence length for every > found
 				line = header_fix(line)
+				linesplit = line.strip().split("_") ## splits fasta headers by _ character
+				sequence = "_".join(linesplit[0:2]).replace(">","")
+				species = "_".join(linesplit[7:9])
+			else:
+				length += len(line)	## necessary since fasta sequences may be spread in multiple lines
 			master_fasta.write(line)
+		sequence_info[sequence] = (species, str(length))	## adds to dict last entry of each input file
 	master_fasta.close()
-	return out_file
+	return out_file, sequence_info
 
 # Creates temporary fasta files in a tmp directory in order to give to mash the file as a unique genome to compare against all genomes
 def genomes_parser(main_fasta, output_tag, mother_directory):
@@ -135,7 +146,7 @@ def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size, mother_dire
 
 ## calculates ths distances between pairwise genomes
 ## This function should be multiprocessed in order to retrieve several output files (as many as the specified cores specified?)
-def mash_distance_matrix(mother_directory):
+def mash_distance_matrix(mother_directory, sequence_info):
 	## read all infiles
 	in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
 	out_file = open(os.path.join(mother_directory, "results", "import_to_vivagraph.json"), "w")
@@ -161,7 +172,8 @@ def mash_distance_matrix(mother_directory):
 				trace_list.append(float(mash_dist))
 		if temporary_list:
 			x += len(temporary_list)
-			master_dict[sequence]=part_temporary_list
+			string_sequence = "{}_{}_{}".format(sequence, sequence_info[sequence][0], sequence_info[sequence][1])
+			master_dict[string_sequence]=temporary_list
 		lists_traces.append(trace_list)
 
 	out_file.write(json.dumps(master_dict))
@@ -196,7 +208,7 @@ def main():
 	print "***********************************"
 	print "Creating main database..."
 	print
-	main_fasta = master_fasta(fastas, output_tag, mother_directory)
+	main_fasta, sequence_info = master_fasta(fastas, output_tag, mother_directory)
 
 	## runs mash related functions
 	print "***********************************"
@@ -234,7 +246,7 @@ def main():
 	print "***********************************"
 	print "Creating distance matrix..."
 	print 
-	lists_traces=mash_distance_matrix(mother_directory)
+	lists_traces=mash_distance_matrix(mother_directory, sequence_info)
 
 	## remove master_fasta
 	if args.remove:
