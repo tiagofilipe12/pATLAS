@@ -81,106 +81,118 @@ function onLoad() {
           });                      
           renderer.run();                      
           // opens events in webgl such as mouse hoverings or clicks
+
+          //**************//
+          //*** EVENTS ***//
+          //**************//
+
           var events = Viva.Graph.webglInputEvents(graphics, g);
           store_nodes=[];  //list used to store nodes
-            // changes the color of node and links (and respective linked nodes) of this node when clicked
-            events.click(function (node) {
-              store_nodes.push(node.id);
-              change_color=true;
-              console.log('Single click on node: ' + node.id);
-              var nodeUI = graphics.getNodeUI(node.id);
-              color_to_use=nodeColor
-              if (nodeUI.color == color_to_use) {
-                default_link_color=nodeUI.color
-                color_to_use=[0xe36e59,0xFF4500FF,0x854442];
-              }
-              else {
-                // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
-                color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];  
-              }
-              nodeUI.color = color_to_use[0];
-              g.forEachLinkedNode(node.id, function(linkedNode, link){
-                var linkUI = graphics.getLinkUI(link.id);                            
-                linkUI.color=color_to_use[1];
-                //console.log(linkedNode.id)
-                var linked_nodeUI = graphics.getNodeUI(linkedNode.id);
-                linked_nodeUI.color = color_to_use[2];
-              });
-              renderer.rerender();
-            });
-            //** mouse hovering on nodes **//
-            events.mouseEnter(function (node, e) {
-              nodeUI_1 = graphics.getNodeUI(node.id);
-              var domPos = {
-                x: nodeUI_1.position.x,
-                y: nodeUI_1.position.y
-              };
-              // And ask graphics to transform it to DOM coordinates:
-              graphics.transformGraphToClientCoordinates(domPos);
-              domPos.x = (domPos.x + nodeUI_1.size) + 'px';
-              domPos.y = (domPos.y) + 'px';
-              $('#popup_description').empty();
-              $('#popup_description').append("<div>"+
-                                              node.data.sequence+
-                                              "<br />"+
-                                              node.data.species+
-                                              "<br />"+
-                                              node.data.seq_length+
-                                              "</div>");
-              $('#popup_description').css({'padding': '10px 10px 10px 10px', 
-                                          'border':'1px solid grey', 
-                                          'border-radius': '10px', 
-                                          'background-color':'white',
-                                          'display':'block', 
-                                          'left':domPos.x, 
-                                          'top':domPos.y, 
-                                          'position':'fixed', 
-                                          'z-index':2
-                                          });
-              //console.log('Mouse entered node: ' + node.id);
-            }).mouseLeave(function (node) {
-              $('#popup_description').css({'display':'none'});
-              //console.log('Mouse left node: ' + node.id);
-            });
-            //** mouse hovering block end **//                        
-          renderer.rerender();
-          // by default the animation on forces is paused since 
-          // it may be computational intensive for old computers
-          renderer.pause();                         
-          //*** BUTTONS ***//
-          // Button to reset selection of nodes
-          $('#refreshButton').on('click', function(e) {
-            color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];
-            for (id in store_nodes) {
-              var nodeUI = graphics.getNodeUI(store_nodes[id]);  
-              nodeUI.color =color_to_use[0]
-              g.forEachLinkedNode(store_nodes[id], function(linkedNode, link){
-                var linkUI = graphics.getLinkUI(link.id);                            
-                linkUI.color=color_to_use[1];
-                var linked_nodeUI = graphics.getNodeUI(linkedNode.id);
-                linked_nodeUI.color = color_to_use[2];
-              });                          
+          // changes the color of node and links (and respective linked nodes) of this node when clicked
+          events.click(function (node) {
+            store_nodes.push(node.id);
+            change_color=true;
+            console.log('Single click on node: ' + node.id);
+            var nodeUI = graphics.getNodeUI(node.id);
+            color_to_use=nodeColor
+            if (nodeUI.color == color_to_use) {
+              default_link_color=nodeUI.color
+              color_to_use=[0xe36e59,0xFF4500FF,0x854442];
             }
-            renderer.rerender();
-            });                    
-          // Buttons to control force play/pause using bootstrap navigation bar
-          var paused = true;
-          $('#playpauseButton').on('click', function(e) {
-            if (paused == true) {                          
-                renderer.resume();
-                $('#playpauseButton').empty();
-                $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
-                paused = false;
-              }                        
-            else {                          
-                renderer.pause();
-                $('#playpauseButton').empty();
-                $('#playpauseButton').append('<span class="glyphicon glyphicon-play"></span>')
-                paused = true;
-              }
+            else {
+              // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
+              color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];  
+            }
+            nodeUI.color = color_to_use[0];
+            g.forEachLinkedNode(node.id, function(linkedNode, link){
+              var linkUI = graphics.getLinkUI(link.id);                            
+              linkUI.color=color_to_use[1];
+              //console.log(linkedNode.id)
+              var linked_nodeUI = graphics.getNodeUI(linkedNode.id);
+              linked_nodeUI.color = color_to_use[2];
             });
-          //** Data button **//
-          //$('#taxaButton').text("Filters");
+            renderer.rerender();
+          });
+
+
+
+          //** mouse hovering on nodes **//
+          events.mouseEnter(function (node, e) {
+            nodeUI_1 = graphics.getNodeUI(node.id);
+            var domPos = {
+              x: nodeUI_1.position.x,
+              y: nodeUI_1.position.y
+            };
+            // And ask graphics to transform it to DOM coordinates:
+            graphics.transformGraphToClientCoordinates(domPos);
+            domPos.x = (domPos.x + nodeUI_1.size) + 'px';
+            domPos.y = (domPos.y) + 'px';
+            $('#popup_description').empty();
+            $('#popup_description').append("<div>"+
+                                            node.data.sequence+
+                                            "<br />"+
+                                            node.data.species+
+                                            "<br />"+
+                                            node.data.seq_length+
+                                            "</div>");
+            $('#popup_description').css({'padding': '10px 10px 10px 10px', 
+                                        'border':'1px solid grey', 
+                                        'border-radius': '10px', 
+                                        'background-color':'white',
+                                        'display':'block', 
+                                        'left':domPos.x, 
+                                        'top':domPos.y, 
+                                        'position':'fixed', 
+                                        'z-index':2
+                                        });
+            //console.log('Mouse entered node: ' + node.id);
+          }).mouseLeave(function (node) {
+            $('#popup_description').css({'display':'none'});
+            //console.log('Mouse left node: ' + node.id);
+          });
+          //** mouse hovering block end **//                        
+        renderer.rerender();
+        // by default the animation on forces is paused since 
+        // it may be computational intensive for old computers
+        renderer.pause(); 
+
+        //***************//
+        //*** BUTTONS ***//
+        //***************//
+
+        // Button to reset selection of nodes
+        $('#refreshButton').on('click', function(e) {
+          color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];
+          for (id in store_nodes) {
+            var nodeUI = graphics.getNodeUI(store_nodes[id]);  
+            nodeUI.color =color_to_use[0]
+            g.forEachLinkedNode(store_nodes[id], function(linkedNode, link){
+              var linkUI = graphics.getLinkUI(link.id);                            
+              linkUI.color=color_to_use[1];
+              var linked_nodeUI = graphics.getNodeUI(linkedNode.id);
+              linked_nodeUI.color = color_to_use[2];
+            });                          
+          }
+          renderer.rerender();
+          });
+
+        // Buttons to control force play/pause using bootstrap navigation bar
+        var paused = true;
+        $('#playpauseButton').on('click', function(e) {
+          $('#playpauseButton').empty();
+          if (paused == true) {                          
+              renderer.resume();
+              $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
+              paused = false;
+            }
+          else {     
+              renderer.pause();
+              $('#playpauseButton').append('<span class="glyphicon glyphicon-play"></span>')
+              paused = true;
+            }
+          });
+        //** Data button **//
+        //$('#taxaButton').text("Filters");
       }          
     });
 }
