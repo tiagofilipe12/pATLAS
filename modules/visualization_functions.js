@@ -7,25 +7,23 @@ function onLoad() {
     var list=[];   //list to store references already ploted as nodes
     var g = Viva.Graph.graph();
     getArray().done(function(json){
-      $.each(json, function(sequence,dict_dist){
+      $.each(json, function(sequence_info,dict_dist){
+        // next we need to retrieve each information type independently
+        var sequence = sequence_info.split("_").slice(0,2).join("_");
+        var species = sequence_info.split("_").slice(2,4).join(" ");
+        var seq_length = sequence_info.split("_").slice(-1).join("");
         if (list.indexOf(sequence) < 0) {    //checks if sequence is not in list to prevent adding multiple nodes for each sequence
-          g.addNode(sequence,{sequence:"<font color='#468499'>seq_id: </font>"+ sequence,
-                              species:"<font color='#468499'>Species: </font>"+"test",
-                              seq_length: "<font color='#468499'>seq_length: </font>"+"1234"});
-          list.push(sequence);
+          g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font>"+ sequence,
+                              species:"<font color='#468499'>Species: </font>"+species,
+                              seq_length: "<font color='#468499'>seq_length: </font>"+seq_length});
+          list.push(sequence_info);
           }
           // loops between all arrays of array pairing sequence and distances
         for (var i = 0; i < dict_dist.length; i++){
           var pairs = dict_dist[i];
-          var reference = pairs[0];  //stores references in a unique variable
+          var reference_info = pairs[0];  //stores references in a unique variable
           var distance = pairs[1];   //stores distances in a unique variable
-          if (list.indexOf(reference) < 0) {    //checks if reference is not in list to prevent adding multiple nodes for each sequence
-            g.addNode(reference,{sequence:"<font color='#468499'>seq_id: </font>"+ sequence, 
-                                species:"<font color='#468499'>Species: </font>"+"test",
-                                seq_length: "<font color='#468499'>seq_length: </font>"+"1234"}); 
-            list.push(reference);
-          }
-          g.addLink(sequence,reference,distance);
+          g.addLink(sequence_info,reference_info,distance);
         };
       });
       // previously used to check the number of nodes provided
