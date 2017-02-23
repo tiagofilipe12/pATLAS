@@ -43,6 +43,10 @@ The first thing you have to do is run MASHix.py in order to calculate distances 
 
 To run _visualization.html_ a json file containing a dictionary of nodes and distances between pairs of nodes is required. MASHix.py can be used for that since it is one the outputs of MASHix.py. However, note that json file must be copied to MASHix main directory where _visualization.html_ is stored.
 
+**Example usage:**
+
+![](https://github.com/tiagofilipe12/MASHix/blob/master/images/example_usage.gif)
+
 More comming soon...
 
 ---
