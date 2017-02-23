@@ -27,7 +27,6 @@ function onLoad() {
         };
       });
       // previously used to check the number of nodes provided
-      //console.log(list);
       var layout = Viva.Graph.Layout.forceDirected(g, {
           springLength : 30,
           springCoeff : 0.0001,
@@ -195,6 +194,22 @@ function onLoad() {
               paused = true;
             }
           });
+
+        // Form and button for search box
+        $('#submitButton').click(function(event){
+          var query = $('#formValueId').val()
+          console.log("search query: "+ query);
+          event.preventDefault();
+          g.forEachNode(function (node) {
+            var nodeUI = graphics.getNodeUI(node.id);
+            var species = node.data.species.split(">").slice(-1).toString();
+            if (species == query){
+              nodeUI.color = 0xff0000
+            }
+          });
+        });
+
+
         //** Data button **//
         //$('#taxaButton').text("Filters");
       }          
