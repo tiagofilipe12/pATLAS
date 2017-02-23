@@ -55,7 +55,8 @@ function onLoad() {
       }
       // Sets parameters to be passed to WebglCircle in order to change 
       // node shape, setting color and size.
-      var nodeColor = 0x31698a, // hex rrggbb
+      var nodeColor = 0x31698a; // hex rrggbb
+      //var linkColor = 0xd4d4d4; // hex rrggbb
       nodeSize = 12;                  
       // Starts graphics render
       function renderGraph(){
@@ -68,8 +69,12 @@ function onLoad() {
           // second, change the node ui model, which can be understood
           // by the custom shader:
           graphics.node(function (node) {
-              return new WebglCircle(nodeSize, nodeColor);
-            });
+            return new WebglCircle(nodeSize, nodeColor);
+          });
+          //graphics.link(function(link){
+          //  console.log(link)
+          //  this.color = linkColor;
+          //});
           //** END block #1 for node customization **//
           var renderer = Viva.Graph.View.renderer(g, {
               layout   : layout,
@@ -95,8 +100,7 @@ function onLoad() {
             var nodeUI = graphics.getNodeUI(node.id);
             color_to_use=nodeColor
             if (nodeUI.color == color_to_use) {
-              default_link_color=nodeUI.color
-              color_to_use=[0xe36e59,0xFF4500FF,0x854442];
+              color_to_use=[0xffcd33,0xFF4500FF,0x310e0f];
             }
             else {
               // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
@@ -207,11 +211,17 @@ function onLoad() {
               nodeUI.color = 0xff0000
             }
           });
+          renderer.rerender();
+        });
+        // Button to clear the selected nodes by form
+        $('#clearButton').click(function(event){
+          g.forEachNode(function (node) {
+            var nodeUI = graphics.getNodeUI(node.id);
+            nodeUI.color = nodeColor;            
+          });
+          renderer.rerender();
         });
 
-
-        //** Data button **//
-        //$('#taxaButton').text("Filters");
       }          
     });
 }
