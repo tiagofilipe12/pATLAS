@@ -165,13 +165,16 @@ def mash_distance_matrix(mother_directory, sequence_info):
 			sequence = "_".join(tab_split[1].strip().split("_")[0:2])
 			mash_dist = tab_split[2].strip()
 			p_value = tab_split[3].strip()
+			## Added new reference string in order to parse easier within visualization_functions.js
+			string_reference = "{}_{}_{}".format(reference, sequence_info[reference][0], sequence_info[reference][1])
 			## there is no need to store all values since we are only interested in representing the significant ones 
 			## and those that correlate well with ANI (mashdist<=0.1)
 			if float(p_value) < 0.05 and reference != sequence and float(mash_dist) < 0.1:
-				temporary_list.append([reference,mash_dist])
+				temporary_list.append([string_reference,mash_dist])
 				trace_list.append(float(mash_dist))
 		if temporary_list:
 			x += len(temporary_list)
+			## Added new sequence string in order to parse easier within visualization_functions.js
 			string_sequence = "{}_{}_{}".format(sequence, sequence_info[sequence][0], sequence_info[sequence][1])
 			master_dict[string_sequence]=temporary_list
 		lists_traces.append(trace_list)
