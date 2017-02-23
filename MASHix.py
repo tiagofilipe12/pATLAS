@@ -160,12 +160,7 @@ def mash_distance_matrix(mother_directory):
 				temporary_list.append([reference,mash_dist])
 				trace_list.append(float(mash_dist))
 		if temporary_list:
-			if len(temporary_list) > 50:	## filters links up to 5 shorter distances between sequences for each node
-				sorted_temporary_list = sorted(temporary_list, key=itemgetter(1))
-				part_temporary_list = sorted_temporary_list[:50]
-			else:
-				part_temporary_list = temporary_list
-			x += len(part_temporary_list)
+			x += len(temporary_list)
 			master_dict[sequence]=part_temporary_list
 		lists_traces.append(trace_list)
 
