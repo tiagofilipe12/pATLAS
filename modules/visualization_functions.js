@@ -55,7 +55,7 @@ function onLoad() {
       }
       // Sets parameters to be passed to WebglCircle in order to change 
       // node shape, setting color and size.
-      var nodeColor = 0x5c6d70; // hex rrggbb
+      var nodeColor = 0x666370; // hex rrggbb
       nodeSize = 12;                  
       // Starts graphics render
       function renderGraph(){
@@ -97,7 +97,7 @@ function onLoad() {
             console.log("Some color: "+nodeUI.color);
             color_to_use=nodeColor
             if (nodeUI.color == color_to_use) {
-              color_to_use=[0xe0ac9d,0x000000FF,0xa37774];
+              color_to_use=[0xc89933,0x000000FF,0x7c3912];
             }
             else {
               // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
@@ -113,8 +113,6 @@ function onLoad() {
             });
             renderer.rerender();
           });
-
-
 
           //** mouse hovering on nodes **//
           events.mouseEnter(function (node, e) {
@@ -206,7 +204,7 @@ function onLoad() {
             var nodeUI = graphics.getNodeUI(node.id);
             var species = node.data.species.split(">").slice(-1).toString();
             if (species == query){
-              nodeUI.color = 0xe88873;
+              nodeUI.color = 0xf71735;
               changed_nodes.push(node.id);
             }
           });
@@ -218,7 +216,6 @@ function onLoad() {
           g.forEachNode(function (node) {
             var nodeUI = graphics.getNodeUI(node.id);
             if (changed_nodes.indexOf(node.id) >= 0){
-              console.log(node.id)
               nodeUI.color = nodeColor; 
             }                       
           });
