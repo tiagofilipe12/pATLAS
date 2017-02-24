@@ -55,8 +55,7 @@ function onLoad() {
       }
       // Sets parameters to be passed to WebglCircle in order to change 
       // node shape, setting color and size.
-      var nodeColor = 0x31698a; // hex rrggbb
-      //var linkColor = 0xd4d4d4; // hex rrggbb
+      var nodeColor = 0x5c6d70; // hex rrggbb
       nodeSize = 12;                  
       // Starts graphics render
       function renderGraph(){
@@ -71,10 +70,7 @@ function onLoad() {
           graphics.node(function (node) {
             return new WebglCircle(nodeSize, nodeColor);
           });
-          //graphics.link(function(link){
-          //  console.log(link)
-          //  this.color = linkColor;
-          //});
+
           //** END block #1 for node customization **//
           var renderer = Viva.Graph.View.renderer(g, {
               layout   : layout,
@@ -98,9 +94,10 @@ function onLoad() {
             change_color=true;
             console.log('Single click on node: ' + node.id);
             var nodeUI = graphics.getNodeUI(node.id);
+            console.log("Some color: "+nodeUI.color);
             color_to_use=nodeColor
             if (nodeUI.color == color_to_use) {
-              color_to_use=[0xffcd33,0xFF4500FF,0x310e0f];
+              color_to_use=[0xe0ac9d,0x000000FF,0xa37774];
             }
             else {
               // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
@@ -204,20 +201,26 @@ function onLoad() {
           var query = $('#formValueId').val()
           console.log("search query: "+ query);
           event.preventDefault();
+          changed_nodes = [];
           g.forEachNode(function (node) {
             var nodeUI = graphics.getNodeUI(node.id);
             var species = node.data.species.split(">").slice(-1).toString();
             if (species == query){
-              nodeUI.color = 0xff0000
+              nodeUI.color = 0xe88873;
+              changed_nodes.push(node.id);
             }
           });
           renderer.rerender();
         });
         // Button to clear the selected nodes by form
         $('#clearButton').click(function(event){
+          console.log(changed_nodes);
           g.forEachNode(function (node) {
             var nodeUI = graphics.getNodeUI(node.id);
-            nodeUI.color = nodeColor;            
+            if (changed_nodes.indexOf(node.id) >= 0){
+              console.log(node.id)
+              nodeUI.color = nodeColor; 
+            }                       
           });
           renderer.rerender();
         });
