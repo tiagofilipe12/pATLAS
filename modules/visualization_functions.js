@@ -94,14 +94,18 @@ function onLoad() {
             change_color=true;
             console.log('Single click on node: ' + node.id);
             var nodeUI = graphics.getNodeUI(node.id);
-            console.log("Some color: "+nodeUI.color);
-            color_to_use=nodeColor
-            if (nodeUI.color == color_to_use) {
+            //statement when node and linked nodes are still in default color
+            if (nodeUI.color == nodeColor) {    
               color_to_use=[0xc89933,0x000000FF,0x7c3912];
             }
+            //statement when linked node is selected
+            else if(nodeUI.color == 0x7c3912){
+              color_to_use=[0xc89933,0x000000FF,0x7c3912];
+            }
+            // statement do deselect node and linked nodes
             else {
               // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
-              color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];  
+              color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];
             }
             nodeUI.color = color_to_use[0];
             g.forEachLinkedNode(node.id, function(linkedNode, link){
@@ -109,7 +113,9 @@ function onLoad() {
               linkUI.color=color_to_use[1];
               //console.log(linkedNode.id)
               var linked_nodeUI = graphics.getNodeUI(linkedNode.id);
-              linked_nodeUI.color = color_to_use[2];
+              if (linked_nodeUI.color != 0xc89933) {
+                linked_nodeUI.color = color_to_use[2];
+              }
             });
             renderer.rerender();
           });
