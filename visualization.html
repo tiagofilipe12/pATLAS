@@ -5,8 +5,12 @@
       <script language="javascript" type="text/javascript" src="./modules/vivagraph.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/jquery-3.1.1.js"></script>
       <link rel="stylesheet" href="./bootstrap-3.3.7-dist/css/bootstrap.css">
+      <link rel="stylesheet" href="./modules/nouislider.css">
+      <link rel="stylesheet" href="./modules/jquery-ui.css">
       <script language="javascript" type="text/javascript" src="./bootstrap-3.3.7-dist/js/bootstrap.js"></script>  
       <script language="javascript" type="text/javascript" src="./modules/visualization_functions.js"></script>
+      <script language="javascript" type="text/javascript" src="./modules/wNumb.js"></script>
+      <script language="javascript" type="text/javascript" src="./modules/jquery-ui.js"></script>      
 
       <!--style and script for buttons submenu-->
 
@@ -41,19 +45,36 @@
           left: 46%;
           z-index: 100;
         }
+
+        #slider {
+          position: absolute;
+          right: 10%;
+          top: 50%;
+          width: 300px;
+        }
+        #reset-sliders{
+          position: absolute;
+          right: 2%;
+        }
+        .ui-menu{
+          background: rgb(255, 255, 255); /* Fallback for older browsers without RGBA-support */
+          background: rgba(255, 255, 255, 0.5);
+          overflow-y: scroll;
+          overflow-x: hidden;
+          max-height: 60%;
+        }
+        
+
       </style>
 
       <!-- End of styling and script for submenus -->
 
-
-      <!--<script language="javascript" type="text/javascript">
-        $(window).load(function() {
-          $('#loading').hide();
-        });
-      </script>  -->
     </head>
     
     <body onload="onLoad()">
+      <script language="javascript" type="text/javascript" src="./modules/nouislider.js"></script>
+
+
       <div id="loading">
         <img id="loading-image" src="images/loading.gif" alt="Loading..." />
       </div>
@@ -103,6 +124,10 @@
               <button id="clearButton" data-toggle="tooltip" 
                   title="Remove color for all selected species" type="button" 
                   class="btn btn-danger">Clear</button>
+              <button class="btn btn-danger" id="reset-sliders"
+                    type="button" data-toogle="tooptip"
+                    title="Reset the slider to encompass all values">Reset lengths</button>
+              <div class="sliders" id="slider"></div>
             </form>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -127,6 +152,8 @@
         </div>
       </div>
       <div id="popup_description" style="display: none"></div>
+      <!-- slider script has to be after the button has been called and onload-->
+
 
     </body>
 

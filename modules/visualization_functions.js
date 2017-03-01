@@ -4,7 +4,9 @@ function getArray(){
 }
 // initiates vivagraph main functions  
 function onLoad() {
-    var list=[];   //list to store references already ploted as nodes
+    var list=[];   // list to store references already ploted as nodes
+    var list_lengths=[] // list to store the lengths of all nodes
+    var list_species =[] // lists all species
     var g = Viva.Graph.graph();
     getArray().done(function(json){
       $.each(json, function(sequence_info,dict_dist){
@@ -12,6 +14,8 @@ function onLoad() {
         var sequence = sequence_info.split("_").slice(0,2).join("_");
         var species = sequence_info.split("_").slice(2,4).join(" ");
         var seq_length = sequence_info.split("_").slice(-1).join("");
+        list_lengths.push(seq_length); // appends all lengths to this list
+        list_species.push(species); //appends all species to this list
         if (list.indexOf(sequence) < 0) {    //checks if sequence is not in list to prevent adding multiple nodes for each sequence
           g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font>"+ sequence,
                               species:"<font color='#468499'>Species: </font>"+species,
@@ -56,7 +60,7 @@ function onLoad() {
       // Sets parameters to be passed to WebglCircle in order to change 
       // node shape, setting color and size.
       var nodeColor = 0x666370; // hex rrggbb
-      nodeSize = 12;                  
+      nodeSize = 20;                  
       // Starts graphics render
       function renderGraph(){
           var graphics = Viva.Graph.View.webglGraphics();
@@ -94,12 +98,16 @@ function onLoad() {
             change_color=true;
             console.log('Single click on node: ' + node.id);
             var nodeUI = graphics.getNodeUI(node.id);
-            //statement when node and linked nodes are still in default color
+            // statement when node and linked nodes are still in default color
             if (nodeUI.color == nodeColor) {    
               color_to_use=[0xc89933,0x000000FF,0x7c3912];
             }
-            //statement when linked node is selected
+            // statement when linked node is selected
             else if(nodeUI.color == 0x7c3912){
+              color_to_use=[0xc89933,0x000000FF,0x7c3912];
+            }
+            // statement when node is shaded
+            else if(nodeUI.color == 0xcdc8b1){
               color_to_use=[0xc89933,0x000000FF,0x7c3912];
             }
             // statement do deselect node and linked nodes
@@ -200,12 +208,29 @@ function onLoad() {
             }
           });
 
+        // Form search box utils
+        // first get a list with unique array entries
+        uniqueArray = list_species.filter(function(item, pos) {
+            return list_species.indexOf(item) == pos;
+        })
+
+        $('#ui-id-l').css({"background-color": "lightblue;"})
+
+        // then sort it
+        optArray = uniqueArray.sort();
+        // then applying autocomplete function
+        $(function () {
+          $(formValueId).autocomplete({
+            source: optArray
+          });
+        });
+
         // Form and button for search box
+        changed_nodes = [];
         $('#submitButton').click(function(event){
           var query = $('#formValueId').val()
           console.log("search query: "+ query);
           event.preventDefault();
-          changed_nodes = [];
           g.forEachNode(function (node) {
             var nodeUI = graphics.getNodeUI(node.id);
             var species = node.data.species.split(">").slice(-1).toString();
@@ -218,7 +243,6 @@ function onLoad() {
         });
         // Button to clear the selected nodes by form
         $('#clearButton').click(function(event){
-          console.log(changed_nodes);
           g.forEachNode(function (node) {
             var nodeUI = graphics.getNodeUI(node.id);
             if (changed_nodes.indexOf(node.id) >= 0){
@@ -226,6 +250,51 @@ function onLoad() {
             }                       
           });
           renderer.rerender();
+        });
+
+        //** slider button and other options **//
+
+        // sets the limits of buttons and slider
+
+        var min = Math.min.apply(null, list_lengths),
+            max = Math.max.apply(null, list_lengths);
+
+        //generates and costumizes slider itself
+        var slider = document.getElementById('slider');
+
+        noUiSlider.create(slider, {
+          start: [min, max],
+          behaviour: 'snap',   //snaps the closest slider
+          tooltips: true,
+          connect: true,
+          range: {
+            'min': min,
+            'max': max
+          },
+          format: wNumb({
+            decimals: 0,
+          }),
+        });
+
+        //event handler for slider
+        slider.noUiSlider.on('set', function (event) {
+          var slider_max = slider.noUiSlider.get()[1],
+              slider_min = slider.noUiSlider.get()[0];
+          g.forEachNode(function (node) {
+            var node_length = node.data.seq_length.split(">").slice(-1).toString();
+            var nodeUI = graphics.getNodeUI(node.id);
+            if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)){
+              nodeUI.color = 0xcdc8b1; // shades nodes
+            }
+            else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)){
+              nodeUI.color = nodeColor; //return nodes to original color
+            }
+          });
+          renderer.rerender();
+        });
+        // resets the slider
+        $('#reset-sliders').click(function(event){
+          slider.noUiSlider.set([min, max]);
         });
 
       }          
