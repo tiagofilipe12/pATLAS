@@ -45,25 +45,54 @@
           left: 46%;
           z-index: 100;
         }
-
+        /*slider related costumization*/
         #slider {
           position: absolute;
           right: 10%;
-          top: 50%;
+          top: 60%;
           width: 300px;
+          height: 12px;
         }
+
+        .noUi-connect{
+          background-color: #337ab7;
+        }
+
+        .noUi-handle{
+          border: 1px solid #878787;
+          border-radius: 100%;
+          background: #d0d0d0;
+          box-shadow: none;
+        }
+        /*redefines the size of handlers*/
+        .noUi-handle.noUi-handle-lower,
+        .noUi-handle.noUi-handle-upper{
+          width: 23px;
+          height: 23px;
+        }
+        /* Handle stripes - removing them;
+         */
+        .noUi-handle:before,.noUi-handle:after {
+          display: none;
+        }
+        /*moves the tooltips to bottom instead of top*/
+        .noUi-tooltip{
+          padding:1px;
+          font-size:14;
+        }
+
         #reset-sliders{
           position: absolute;
           right: 2%;
         }
+        /*this takes the jquery-ui interface to edit it*/
         .ui-menu{
           background: rgb(255, 255, 255); /* Fallback for older browsers without RGBA-support */
           background: rgba(255, 255, 255, 0.5);
           overflow-y: scroll;
           overflow-x: hidden;
           max-height: 60%;
-        }
-        
+        }        
 
       </style>
 
