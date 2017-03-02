@@ -1,22 +1,25 @@
 // load JSON file
 function getArray(){
-      return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
+      return $.getJSON('example.json');   // change the input file name
 }
 // initiates vivagraph main functions  
 function onLoad() {
     var list=[];   // list to store references already ploted as nodes
     var list_lengths=[] // list to store the lengths of all nodes
     var list_species =[] // lists all species
+    var list_genera = [] //list all genera
     var g = Viva.Graph.graph();
     getArray().done(function(json){
       $.each(json, function(sequence_info,dict_dist){
         // next we need to retrieve each information type independently
         var sequence = sequence_info.split("_").slice(0,2).join("_");
         var species = sequence_info.split("_").slice(2,4).join(" ");
+        var genus = sequence_info.split("_").slice(2,3).join(" ");
         var seq_length = sequence_info.split("_").slice(-1).join("");
         var log_length = Math.log(parseInt(seq_length)); //ln seq length
         list_lengths.push(seq_length); // appends all lengths to this list
         list_species.push(species); //appends all species to this list
+        list_genera.push(genus)
         //checks if sequence is not in list to prevent adding multiple nodes for each sequence
         if (list.indexOf(sequence) < 0) {    
           g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font>"+ sequence,
@@ -215,12 +218,19 @@ function onLoad() {
             }
           });
 
+        // search by specific genera //
+        // first get a list with unique array entries for genera
+        uniqueArray_genera = list_genera.filter(function(item, pos) {
+            return list_genera.indexOf(item) == pos;
+        })
+        console.log(uniqueArray_genera.length)
+
         // Form search box utils
-        // first get a list with unique array entries
+        // first get a list with unique array entries for species
         uniqueArray = list_species.filter(function(item, pos) {
             return list_species.indexOf(item) == pos;
         })
-
+        console.log(uniqueArray.length)
         // then sort it
         optArray = uniqueArray.sort();
         // then applying autocomplete function
