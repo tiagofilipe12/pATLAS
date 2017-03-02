@@ -14,6 +14,7 @@ from functools import partial
 import tqdm
 import operator	
 from utils.hist_util import plot_histogram
+#import utils.family_fetch
 from operator import itemgetter
 import json
 
@@ -55,6 +56,10 @@ def master_fasta(fastas, output_tag, mother_directory):
 	out_file = os.path.join(mother_directory, "master_fasta_{}.fas".format(output_tag))
 	master_fasta = open(out_file, "w")
 	sequence_info = {}
+	## creates a list file, listing all genera in input sequences
+	genus_out = os.path.join(mother_directory, "genera_list_{}.lst".format(output_tag))
+	genus_output = open(genus_out, "w")
+	genera =[]
 	for filename in fastas:
 		fasta = open(filename,"r")
 		for x,line in enumerate(fasta):
@@ -66,11 +71,17 @@ def master_fasta(fastas, output_tag, mother_directory):
 				linesplit = line.strip().split("_") ## splits fasta headers by _ character
 				sequence = "_".join(linesplit[0:2]).replace(">","")
 				species = "_".join(linesplit[7:9])
+			    ## genus related functions
+				genus = linesplit[7]
+				genera.append(genus)
 			else:
 				length += len(line)	## necessary since fasta sequences may be spread in multiple lines
 			master_fasta.write(line)
 		sequence_info[sequence] = (species, str(length))	## adds to dict last entry of each input file
 	master_fasta.close()
+	## writes genera list to output file
+	genus_output.write('\n'.join(str(i) for i in list(set(genera))))
+	genus_output.close()
 	return out_file, sequence_info
 
 # Creates temporary fasta files in a tmp directory in order to give to mash the file as a unique genome to compare against all genomes
@@ -212,6 +223,10 @@ def main():
 	print "Creating main database..."
 	print
 	main_fasta, sequence_info = master_fasta(fastas, output_tag, mother_directory)
+
+	#########################
+	### genera block here ###
+	#########################
 
 	## runs mash related functions
 	print "***********************************"
