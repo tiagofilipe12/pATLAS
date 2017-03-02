@@ -1,5 +1,11 @@
+/*fixes navigation bar to top of the page*/
+.navbar.navbar-default{
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
 #buttonStuff{
-  position: absolute;
+  position: fixed;
   bottom:2%;
   left:48%;
 }
@@ -29,7 +35,7 @@
 /*slider related costumization*/
 #slider {
   position: absolute;
-  right: 10%;
+  right: 12%;
   top: 60%;
   width: 300px;
   height: 12px;
