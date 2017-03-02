@@ -23,9 +23,30 @@
         <img id="loading-image" src="images/loading.gif" alt="Loading..." />
       </div>
 
+      <!-- Modal for length-->
+      <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Filter nodes by sequence length</h4>
+            </div>
+            <div class="modal-body" id="modal-body-length">
+              <div class="sliders" id="slider"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- Starts navigation bar -->
       <!--<nav class="navbar navbar-default navbar-fixed-top"> -->      
-      <nav class="navbar navbar-default">
+      <nav class="navbar navbar-default" id="navigation_bar">
         <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
@@ -43,21 +64,25 @@
 
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-<!--            <ul class="nav navbar-nav">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+            <ul class="nav navbar-nav">
+              <li class="dropdown" id="filter_dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Filters <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
+                  <!-- Trigger the modal with a button -->
+                  <li><a href="#" data-toggle="modal" data-target="#myModal">Length</a></li>                  
                   <li role="separator" class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">One more separated link</a></li>
+                  <li><a href="#">Taxa</a></li>
+                  <!--<li role="separator" class="divider"></li>
+                  <li><a href="#">One more separated link</a></li>-->
                 </ul>
               </li>
-            </ul>-->
+            </ul>
             <form class="navbar-form navbar-left">
+              <button class="btn btn-info" id="reset-sliders"
+                      type="button" data-toogle="tooptip"
+                      title="Reset all applied filters">Reset filters</button>
+            </form>
+            <form class="navbar-form navbar-right">
               <div class="form-group">
                 <input id="formValueId" type="text" class="form-control" placeholder="Search by species"/>
               </div>
@@ -66,11 +91,7 @@
                   class="btn btn-default">Submit</button>
               <button id="clearButton" data-toggle="tooltip" 
                   title="Remove color for all selected species" type="button" 
-                  class="btn btn-danger">Clear</button>
-              <button class="btn btn-danger" id="reset-sliders"
-                    type="button" data-toogle="tooptip"
-                    title="Reset the slider to encompass all values">Reset lengths</button>
-              <div class="sliders" id="slider"></div>
+                  class="btn btn-danger">Clear</button>              
             </form>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->

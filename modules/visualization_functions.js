@@ -223,14 +223,12 @@ function onLoad() {
         uniqueArray_genera = list_genera.filter(function(item, pos) {
             return list_genera.indexOf(item) == pos;
         })
-        console.log(uniqueArray_genera.length)
 
         // Form search box utils
         // first get a list with unique array entries for species
         uniqueArray = list_species.filter(function(item, pos) {
             return list_species.indexOf(item) == pos;
         })
-        console.log(uniqueArray.length)
         // then sort it
         optArray = uniqueArray.sort();
         // then applying autocomplete function
