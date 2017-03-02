@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-      return $.getJSON('example.json');   // change the input file name
+      return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
 }
 // initiates vivagraph main functions  
 function onLoad() {
@@ -14,12 +14,16 @@ function onLoad() {
         var sequence = sequence_info.split("_").slice(0,2).join("_");
         var species = sequence_info.split("_").slice(2,4).join(" ");
         var seq_length = sequence_info.split("_").slice(-1).join("");
+        var log_length = Math.log(parseInt(seq_length)); //ln seq length
         list_lengths.push(seq_length); // appends all lengths to this list
         list_species.push(species); //appends all species to this list
-        if (list.indexOf(sequence) < 0) {    //checks if sequence is not in list to prevent adding multiple nodes for each sequence
+        //checks if sequence is not in list to prevent adding multiple nodes for each sequence
+        if (list.indexOf(sequence) < 0) {    
           g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font>"+ sequence,
                               species:"<font color='#468499'>Species: </font>"+species,
-                              seq_length: "<font color='#468499'>seq_length: </font>"+seq_length});
+                              seq_length: "<font color='#468499'>seq_length: </font>"+seq_length,
+                              log_length: log_length 
+          });
           list.push(sequence_info);
           }
           // loops between all arrays of array pairing sequence and distances
@@ -38,7 +42,7 @@ function onLoad() {
           gravity : -1.2,
           theta : 1
       });
-      precompute(1000, renderGraph);
+      precompute(1500, renderGraph);
       function precompute(iterations, callback) {
           // let's run 10 iterations per event loop cycle:
         var i = 0;
@@ -60,8 +64,10 @@ function onLoad() {
       // Sets parameters to be passed to WebglCircle in order to change 
       // node shape, setting color and size.
       var nodeColor = 0x666370; // hex rrggbb
-      nodeSize = 20;                  
-      // Starts graphics render
+      min_nodeSize = 2; // a value that assures that the node is 
+      //displayed without incresing the size of big nodes too much  
+
+      //* Starts graphics renderer *//
       function renderGraph(){
           var graphics = Viva.Graph.View.webglGraphics();
           //** block #1 for node customization **//
@@ -72,6 +78,7 @@ function onLoad() {
           // second, change the node ui model, which can be understood
           // by the custom shader:
           graphics.node(function (node) {
+            nodeSize = min_nodeSize * node.data.log_length
             return new WebglCircle(nodeSize, nodeColor);
           });
 
@@ -213,8 +220,6 @@ function onLoad() {
         uniqueArray = list_species.filter(function(item, pos) {
             return list_species.indexOf(item) == pos;
         })
-
-        $('#ui-id-l').css({"background-color": "lightblue;"})
 
         // then sort it
         optArray = uniqueArray.sort();
