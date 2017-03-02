@@ -45,7 +45,13 @@ To run _visualization.html_ a json file containing a dictionary of nodes and dis
 
 **Example usage:**
 
+* General interface:
+
 ![](https://github.com/tiagofilipe12/MASHix/blob/master/images/example_usage.gif)
+
+* Filter options:
+
+![](https://github.com/tiagofilipe12/MASHix/blob/master/images/example_usage_2.gif)
 
 More comming soon...
 
