@@ -34,8 +34,35 @@
 }
 /*modal for length body increase*/
 #modal-body-length{
-  height: 100px;
+  height: 200px;
 }
+/*input min value*/
+#min-modal{
+  position: absolute;
+  left: 5%;
+  top: 0%;
+}
+
+#slider_input_min{
+  position: absolute;
+  width: 100px;
+  height: 20px;
+}
+
+/*input max value*/
+#max-modal{
+  position: absolute;
+  right:5%;
+  top:0%;
+}
+
+#slider_input_max{
+  position: absolute;
+  right:2%;
+  width: 100px;
+  height: 20px;
+}
+
 /*slider related costumization*/
 #slider {
   position: absolute;
@@ -66,7 +93,7 @@
 }
 /*moves the tooltips to bottom instead of top*/
 .noUi-tooltip{
-  padding:1px;
+  padding:4px;
   font-size:14;
 }
 

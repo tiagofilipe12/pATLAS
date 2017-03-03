@@ -34,7 +34,15 @@
               <h4 class="modal-title">Filter nodes by sequence length</h4>
             </div>
             <div class="modal-body" id="modal-body-length">
-              <div class="sliders" id="slider"></div>
+              <div id="min-modal">
+                <h6>Set minimum:</h6>
+                <input id="slider_input_min" min="1" type="number">
+              </div>
+              <div id="max-modal">
+                <h6>Set maximum:</h6>
+                <input id="slider_input_max" min="1" type="number">
+              </div>
+              <div class="sliders noUi-target" id="slider"></div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
