@@ -36,11 +36,11 @@
             <div class="modal-body" id="modal-body-length">
               <div id="min-modal">
                 <h6>Set minimum:</h6>
-                <input id="slider_input_min" min="1" type="number">
+                <input id="slider_input_min" min="1" type="number" step="1000">
               </div>
               <div id="max-modal">
                 <h6>Set maximum:</h6>
-                <input id="slider_input_max" min="1" type="number">
+                <input id="slider_input_max" min="1" type="number" step="1000">
               </div>
               <div class="sliders noUi-target" id="slider"></div>
             </div>
@@ -74,7 +74,11 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
               <li class="dropdown" id="filter_dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Filters <span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" 
+                data-toggle="dropdown" role="button" 
+                aria-haspopup="true"
+                aria-expanded="false">Filters <span class="caret"></span>
+                </a>
                 <ul class="dropdown-menu">
                   <!-- Trigger the modal with a button -->
                   <li><a href="#" data-toggle="modal" data-target="#myModal">Length</a></li>                  
