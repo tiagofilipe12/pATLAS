@@ -71,6 +71,33 @@
   width: 80%;
   height: 12px;
 }
+/* customizes taxa filters buttons */
+#modal-body-taxa{
+  height: 320px
+}
+
+#order_dropdown{
+  position: absolute;
+  left:5%;
+}
+#family_dropdown{
+  position: absolute;
+  left:30%;
+}
+#genus_dropdown{
+  position: absolute;
+  right:30%;
+}
+#species_dropdown{
+  position: absolute;
+  right: 5%;
+}
+#displayCurrent{
+  position: relative;
+  width: 100%;
+  top: 17%;
+}
+
 .noUi-connect{
   background-color: #337ab7;
 }

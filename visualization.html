@@ -24,10 +24,10 @@
       </div>
 
       <!-- Modal for length-->
-      <div id="myModal" class="modal fade" role="dialog">
+      <div id="lengthModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
-          <!-- Modal content-->
+          <!-- Modal content for lenght-->
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -52,6 +52,90 @@
         </div>
       </div>
 
+            <!-- Modal for taxa-->
+      <div id="taxaModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content for lenght-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Filter nodes by species taxa</h4>
+            </div>
+            <div class="modal-body" id="modal-body-taxa">
+              <!--A search box-->
+              <div class="form-group">
+                <input id="formTaxaid" type="text" class="form-control" placeholder="Search"/>
+              </div>
+              <!--dropdown for order-->
+              <div class="dropdown" id="order_dropdown">
+                <button id="orderButton" type="button" 
+                  data-toggle="dropdown" title="Select an order" 
+                  class="btn btn-default dropdown-toggle">Order
+                  <span class="caret"></span></button>                 
+                  <ul class="dropdown-menu" id>   
+                    <li><a href="#">test1</a></li>          
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">test2</a></li>
+                  </ul>                
+              </div>
+              <!--dropdown for family-->
+              <div class="dropdown" id="family_dropdown">
+                <button id="familyButton" type="button" 
+                  data-toggle="dropdown" title="Select an order" 
+                  class="btn btn-default dropdown-toggle">Family
+                  <span class="caret"></span></button>                 
+                  <ul class="dropdown-menu">   
+                    <li><a href="#">test1</a></li>          
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">test2</a></li>
+                  </ul>                
+              </div>
+              <!--dropdown for genus-->
+              <div class="dropdown" id="genus_dropdown">
+                <button id="genusButton" type="button" 
+                  data-toggle="dropdown" title="Select an order" 
+                  class="btn btn-default dropdown-toggle">Genus
+                  <span class="caret"></span></button>                 
+                  <ul class="dropdown-menu">   
+                    <li><a href="#">test1</a></li>          
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">test2</a></li>
+                  </ul>                
+              </div>
+              <!--dropdown for species-->
+              <div class="dropdown" id="species_dropdown">
+                <button id="speciesButton" type="button" 
+                  data-toggle="dropdown" title="Select an order" 
+                  class="btn btn-default dropdown-toggle">Species
+                  <span class="caret"></span></button>                 
+                  <ul class="dropdown-menu">   
+                    <li><a href="#">test1</a></li>          
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">test2</a></li>
+                  </ul>                
+              </div>
+              <div class="panel-group" id="displayCurrent">
+                <div class="panel panel-info" >
+                  <div class="panel-heading">Current filters</div>
+                  <div class="panel-body">
+                    <p>order: ..</p> 
+                    <p>family: ..</p> 
+                    <p>genus: ..</p> 
+                    <p>species: ..</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- Starts navigation bar -->
       <!--<nav class="navbar navbar-default navbar-fixed-top"> -->      
       <nav class="navbar navbar-default" id="navigation_bar">
@@ -67,7 +151,8 @@
             <a class="navbar-brand" style="color: #bb271c" 
                 data-toggle="tooltip" title="Go to MASHix GitHub" 
                 href="https://github.com/tiagofilipe12/MASHix" 
-                target="_blank"><strong>MASHix</strong></a>
+                target="_blank"><strong>MASHix</strong>
+            </a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -77,13 +162,13 @@
                 <a href="#" class="dropdown-toggle" 
                 data-toggle="dropdown" role="button" 
                 aria-haspopup="true"
-                aria-expanded="false">Filters <span class="caret"></span>
+                aria-expanded="false">Filters<span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- Trigger the modal with a button -->
-                  <li><a href="#" data-toggle="modal" data-target="#myModal">Length</a></li>                  
+                  <li><a href="#" data-toggle="modal" data-target="#lengthModal">Length</a></li>                  
                   <li role="separator" class="divider"></li>
-                  <li><a href="#">Taxa</a></li>
+                  <li><a href="#" data-toggle="modal" data-target="#taxaModal">Taxa</a></li>
                   <!--<li role="separator" class="divider"></li>
                   <li><a href="#">One more separated link</a></li>-->
                 </ul>
@@ -96,14 +181,14 @@
             </form>
             <form class="navbar-form navbar-right">
               <div class="form-group">
-                <input id="formValueId" type="text" class="form-control" placeholder="Search by species"/>
+                <input id="formValueId" type="text" class="form-control" placeholder="Quick search species"/>
               </div>
               <button id="submitButton" type="submit" data-toggle="tooltip" 
                   title="Highlight species nodes" 
                   class="btn btn-default">Submit</button>
               <button id="clearButton" data-toggle="tooltip" 
                   title="Remove color for all selected species" type="button" 
-                  class="btn btn-danger">Clear</button>              
+                  class="btn btn-danger">Clear</button>
             </form>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
