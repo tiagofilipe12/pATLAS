@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
-## Last update: 2/3/2017
+## Last update: 3/3/2017
 ## Author: T.F. Jesus
 ## This script aids MASHix.py getting family names for each genera of bacteria
 
 import os
 import sys
+import json
 
 ## parses input genera list file
 def get_genera(genera_file):
@@ -44,16 +45,15 @@ def fetch_taxid(taxa_list, names_file):
 ## function to gather parentid and if parent id is family stops
 def family_taxid(taxid_dic, nodes_file):
 	nodes = open(nodes_file, "r")
-	#family_taxid_list = []
 	parent_taxid_dic = {}
 	for line in nodes:
 		field_delimiter = line.split("|")
-		## search only in bacteria
+		## search only in bacteria, invertebrates
 		## searches if values are ids
-		if field_delimiter[4].strip() == "0" and field_delimiter[0].strip() in taxid_dic.values():
-			parent_taxid = field_delimiter[1].strip()
-			parent_taxid_dic[field_delimiter[0].strip()] = parent_taxid
-		## meter um else aqui para o dicionario nao ficar vazio para esta entrada
+		if field_delimiter[4].strip() == "0" or field_delimiter[4].strip() == "4":
+			if field_delimiter[0].strip() in taxid_dic.values():
+				parent_taxid = field_delimiter[1].strip()
+				parent_taxid_dic[field_delimiter[0].strip()] = parent_taxid
 
 	nodes.close()
 	print "parent_taxid_list: " + str(len(parent_taxid_dic))
@@ -72,6 +72,7 @@ def fetch_taxid_by_id(parent_taxid_dic, names_file):
 			taxa_name = field_delimiter[1].strip()
 			taxa_name_dic[field_delimiter[0].strip()] = taxa_name
 
+
 	print "taxid_list: "+ str(len(taxa_name_dic))
 	print
 	name.close()
@@ -82,16 +83,16 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic, or
 	for k in taxid_dic:
 		## get family!!
 		if parent_taxid_dic[taxid_dic[k]]:
-			print parent_taxid_dic[taxid_dic[k]]
 			family = family_taxid_dic[parent_taxid_dic[taxid_dic[k]]]
-			print family
 		## get order!!
-		elif order_dic[parent_taxid_dic[taxid_dic[k]]]:			
-			order = order_taxid_dic[order_dic[parent_taxid_dic[taxid_dic[k]]]]
-			print order
-			super_dic[k] = (family, order)
+			if order_dic[parent_taxid_dic[taxid_dic[k]]]:			
+				order = order_taxid_dic[order_dic[parent_taxid_dic[taxid_dic[k]]]]
+				super_dic[k] = (family, order)
+			else:
+				super_dic[k] = (family, "")
 		else:
 			super_dic[k] = ("", "")
+	return super_dic
 
 def main():
 	try:
@@ -129,6 +130,8 @@ def main():
 	print "creating dictionary with tree of taxa relationships..."
 
 	super_dic = build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic, order_taxid_dic)
+	output_file = open("taxa_tree.json", "w")
+	output_file.write(json.dumps(super_dic))
 
 if __name__ == "__main__":
     main()
