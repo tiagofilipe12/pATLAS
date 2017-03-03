@@ -265,6 +265,10 @@ function onLoad() {
           renderer.rerender();
         });
 
+        //** species related filters for dropdown **//
+
+
+
         //** slider button and other options **//
 
         // sets the limits of buttons and slider
@@ -278,7 +282,6 @@ function onLoad() {
         noUiSlider.create(slider, {
           start: [min, max],
           behaviour: 'snap',   //snaps the closest slider
-          tooltips: true,
           connect: true,
           range: {
             'min': min,
@@ -386,6 +389,7 @@ function onLoad() {
         $('#reset-sliders').click(function(event){
           slider.noUiSlider.set([min, max]);
         });
+
 
       }          
     });
