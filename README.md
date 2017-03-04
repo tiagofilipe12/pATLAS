@@ -65,7 +65,7 @@ Outputs all files to: full path to first input file --> string given to '-o' opt
 
 2. **load MASHix_browser.html**
 
-   This html loads the JSON file retrieved by MASHix.py and runs vivagraph.js in order to plot the connections (using MASH distances) between closely related  nodes (genomes/sequences). **VERY IMPORTANT: in order to run _MASHix_browser.html_ make sure you copy .json file to the main folder of MASHix, where _MASHix_browser.html_ is stored, otherwise it won't do anything** (see [more above](https://github.com/tiagofilipe12/MASHix#MASHix_browserhtml)).
+   This html loads the JSON file retrieved by MASHix.py and runs vivagraph.js in order to plot the connections (using MASH distances) between closely related  nodes (genomes/sequences). **VERY IMPORTANT: in order to run _MASHix_browser.html_ make sure you copy .json file to the main folder of MASHix, where _MASHix_browser.html_ is stored, otherwise it won't do anything** (see [more above](https://github.com/tiagofilipe12/MASHix#mashix_browserhtml)).
 
    Open _MASHix_browser.html_ with **firefox** or follow [these instructions](http://www.chrome-allow-file-access-from-file.com/) to allow **google chrome** to access filesystem. _MASHix_browser.html_ is currently saved along (in the same folder) with the .js scripts and .json file created with MASHix.py in order to be properly read.
 
