@@ -1,7 +1,12 @@
 // load JSON file
 function getArray(){
-      return $.getJSON('example.json');   // change the input file name
+  return $.getJSON('example.json');   // change the input file name
 }
+// load JSON file with taxa dictionary
+function getArray_taxa(){
+  return $.getJSON('taxa_tree.json');   // change the input file name
+}
+
 // initiates vivagraph main functions  
 function onLoad() {
     var list=[];   // list to store references already ploted as nodes
@@ -9,6 +14,7 @@ function onLoad() {
     var list_species =[] // lists all species
     var list_genera = [] //list all genera
     var g = Viva.Graph.graph();
+
     getArray().done(function(json){
       $.each(json, function(sequence_info,dict_dist){
         // next we need to retrieve each information type independently
@@ -96,7 +102,7 @@ function onLoad() {
           //*************//
           //***ZOOMING***//
           //*************//
-          
+
           // opens events in webgl such as mouse hoverings or clicks
 
           $('#zoom_in').click(function (e) {
@@ -192,10 +198,7 @@ function onLoad() {
 
         //** Loading Screen goes off **//
         document.getElementById('loading').style.visibility="hidden";
-        document.getElementById('couve-flor').style.visibility="visible";       
-
-
-
+        document.getElementById('couve-flor').style.visibility="visible";
 
         //***************//
         //*** BUTTONS ***//
@@ -233,22 +236,88 @@ function onLoad() {
             }
           });
 
+        //*******************//
+        //****Taxa Filter****//
+        //*******************//
+
         // search by specific genera //
+
         // first get a list with unique array entries for genera
         uniqueArray_genera = list_genera.filter(function(item, pos) {
             return list_genera.indexOf(item) == pos;
         })
+        // load json taxa_tree.json if button is clicked by user//
+        var list_orders = [],
+            list_families = [];
+        getArray_taxa().done(function(json){
+          $.each(json, function(genus,other){
+            family = other[0]
+            order = other[1]
+            if (uniqueArray_genera.indexOf(genus) >= 0){
+              if (list_families.indexOf(family) < 0){
+                list_families.push(family);
+              }
+              if (list_orders.indexOf(order) < 0){
+                list_orders.push(order);
+              }
+            }
+
+          });
+
+          //add other category for sequences with no taxa tree in dictionary json
+          list_orders.push("other");
+          list_families.push("other");
+        
+          //append all order present in dataset
+          var storeOrderId = [],
+              storeFamilyId = [],
+              storeGenusId = [];
+          for (var i = 0; i < list_orders.length; i++){
+            var orderId = "id=order" + list_orders[i];
+            storeOrderId.push(orderId);
+            $('#orderList').append("<li><a href='#'"+ orderId +">"+
+                                    list_orders[i] +
+                                    "</a></li>");
+          }
+          //append all families present in dataset
+          for (var i = 0; i < list_families.length; i++){
+            var familyId = "id=family" + list_families[i];
+            storeFamilyId.push(familyId);
+            $('#familyList').append("<li><a href='#'"+ familyId +">"+
+                                    list_families[i] +
+                                    "</a></li>");
+          } 
+          //append all genera present in dataset
+          for (var i = 0; i < uniqueArray_genera.length; i++){
+            var genusId = "id=genus" + uniqueArray_genera[i];
+            storeGenusId.push(genusId);
+            $('#genusList').append("<li><a href='#'"+ genusId +">"+
+                                    uniqueArray_genera[i] +
+                                    "</a></li>");
+          }   
+        });
+
+        // fill panel group displaying current selected taxa filters //
+        var tempVar = "Test";  // variable added only to complete the actual implementation. to delete...
+        $('#displayCurrentBox').append("<p>Order: " + tempVar + " </p>",
+                                      "<p>Family: " + tempVar + " </p>",
+                                      "<p>Genus: " + tempVar + " </p>",
+                                      "<p>Species: " + tempVar + " </p>");
+
+        //************************//
+        //****Fast Form filter****//
+        //************************//
 
         // Form search box utils
         // first get a list with unique array entries for species
         uniqueArray = list_species.filter(function(item, pos) {
             return list_species.indexOf(item) == pos;
-        })
+        });
         // then sort it
         optArray = uniqueArray.sort();
         // then applying autocomplete function
         $(function () {
-          $(formValueId).autocomplete({
+          $('#formValueId').autocomplete({
             source: optArray
           });
         });
@@ -280,9 +349,9 @@ function onLoad() {
           renderer.rerender();
         });
 
-        //** species related filters for dropdown **//
-
-
+        //*********************//
+        //****Length filter****//
+        //*********************//
 
         //** slider button and other options **//
 

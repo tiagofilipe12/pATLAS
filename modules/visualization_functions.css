@@ -85,28 +85,53 @@
   height: 320px
 }
 
+/* taxa filter dropdowns editing */
+#orderList.dropdown-menu{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 300px;
+}
 #order_dropdown{
   position: absolute;
   left:5%;
+}
+#familyList.dropdown-menu{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 300px;
 }
 #family_dropdown{
   position: absolute;
   left:30%;
 }
+#genusList.dropdown-menu{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 300px;
+}
 #genus_dropdown{
   position: absolute;
   right:30%;
+}
+#speciesList.dropdown-menu{
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 300px;
 }
 #species_dropdown{
   position: absolute;
   right: 5%;
 }
+
 #displayCurrent{
   position: relative;
   width: 100%;
   top: 17%;
 }
 
+/*end of taxa filter popup*/
+
+/*noUi related customizatins*/
 .noUi-connect{
   background-color: #337ab7;
 }

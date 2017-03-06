@@ -73,10 +73,9 @@
                   data-toggle="dropdown" title="Select an order" 
                   class="btn btn-default dropdown-toggle">Order
                   <span class="caret"></span></button>                 
-                  <ul class="dropdown-menu" id>   
-                    <li><a href="#">test1</a></li>          
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">test2</a></li>
+                  <ul class="dropdown-menu" id="orderList">   
+                    <!--Populated by visualization_functions.js-->
+
                   </ul>                
               </div>
               <!--dropdown for family-->
@@ -85,10 +84,9 @@
                   data-toggle="dropdown" title="Select an order" 
                   class="btn btn-default dropdown-toggle">Family
                   <span class="caret"></span></button>                 
-                  <ul class="dropdown-menu">   
-                    <li><a href="#">test1</a></li>          
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">test2</a></li>
+                  <ul class="dropdown-menu" id="familyList">   
+                    <!--Populated by visualization_functions.js-->
+
                   </ul>                
               </div>
               <!--dropdown for genus-->
@@ -97,10 +95,8 @@
                   data-toggle="dropdown" title="Select an order" 
                   class="btn btn-default dropdown-toggle">Genus
                   <span class="caret"></span></button>                 
-                  <ul class="dropdown-menu">   
-                    <li><a href="#">test1</a></li>          
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">test2</a></li>
+                  <ul class="dropdown-menu" id="genusList">   
+                    <!--Populated by visualization_functions.js-->
                   </ul>                
               </div>
               <!--dropdown for species-->
@@ -109,20 +105,15 @@
                   data-toggle="dropdown" title="Select an order" 
                   class="btn btn-default dropdown-toggle">Species
                   <span class="caret"></span></button>                 
-                  <ul class="dropdown-menu">   
-                    <li><a href="#">test1</a></li>          
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">test2</a></li>
+                  <ul class="dropdown-menu" id="speciesList">   
+                    <!--Populated by visualization_functions.js-->
                   </ul>                
               </div>
               <div class="panel-group" id="displayCurrent">
                 <div class="panel panel-info" >
                   <div class="panel-heading">Current filters</div>
-                  <div class="panel-body">
-                    <p>order: ..</p> 
-                    <p>family: ..</p> 
-                    <p>genus: ..</p> 
-                    <p>species: ..</p>
+                  <div class="panel-body" id="displayCurrentBox">
+                    <!--Populated by visualization_functions.js-->
                   </div>
                 </div>
               </div>
@@ -168,7 +159,8 @@
                   <!-- Trigger the modal with a button -->
                   <li><a href="#" data-toggle="modal" data-target="#lengthModal">Length</a></li>                  
                   <li role="separator" class="divider"></li>
-                  <li><a href="#" data-toggle="modal" data-target="#taxaModal">Taxa</a></li>
+                  <li><a href="#" id="taxaClick"
+                        data-toggle="modal" data-target="#taxaModal">Taxa</a></li>
                   <!--<li role="separator" class="divider"></li>
                   <li><a href="#">One more separated link</a></li>-->
                 </ul>
