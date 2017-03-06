@@ -4,11 +4,20 @@
   top: 0;
   width: 100%;
 }
+
 #buttonStuff{
   position: fixed;
-  bottom:2%;
-  left:48%;
+  bottom: 2%;
+  width: 170px;
+  left: 50%;
+  transform: translateX(-46%);
 }
+
+/*set glyphicon size*/
+.glyphicon {
+    font-size: 15px;
+}
+
 #couve-flor{
   height: 90%;
   width: 100%;
@@ -29,8 +38,8 @@
 #loading-image {
   position: absolute;
   top: 45%;
-  left: 46%;
-  z-index: 100;
+  left: 50%;
+  transform: translateX(-49%);
 }
 /*modal for length body increase*/
 #modal-body-length{

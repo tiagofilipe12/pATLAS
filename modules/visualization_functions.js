@@ -93,8 +93,20 @@ function onLoad() {
           });                      
           renderer.run();
 
-
+          //*************//
+          //***ZOOMING***//
+          //*************//
+          
           // opens events in webgl such as mouse hoverings or clicks
+
+          $('#zoom_in').click(function (e) {
+              e.preventDefault();
+              renderer.zoomIn();
+          });
+          $('#zoom_out').click(function (e) {
+              e.preventDefault();
+              renderer.zoomOut();
+          });
 
           //**************//
           //*** EVENTS ***//
@@ -181,6 +193,9 @@ function onLoad() {
         //** Loading Screen goes off **//
         document.getElementById('loading').style.visibility="hidden";
         document.getElementById('couve-flor').style.visibility="visible";       
+
+
+
 
         //***************//
         //*** BUTTONS ***//
