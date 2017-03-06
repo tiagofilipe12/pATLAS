@@ -240,10 +240,15 @@ function onLoad() {
         //****Taxa Filter****//
         //*******************//
 
+        // list with unique species in dataset
+        var uniqueArray_species = list_species.filter(function(item, pos) {
+            return list_species.indexOf(item) == pos;
+        });
+
         // search by specific genera //
 
         // first get a list with unique array entries for genera
-        uniqueArray_genera = list_genera.filter(function(item, pos) {
+        var uniqueArray_genera = list_genera.filter(function(item, pos) {
             return list_genera.indexOf(item) == pos;
         })
         // load json taxa_tree.json if button is clicked by user//
@@ -271,7 +276,8 @@ function onLoad() {
           //append all order present in dataset
           var storeOrderId = [],
               storeFamilyId = [],
-              storeGenusId = [];
+              storeGenusId = [],
+              storeSpeciesId = [];
           for (var i = 0; i < list_orders.length; i++){
             var orderId = "id=order" + list_orders[i];
             storeOrderId.push(orderId);
@@ -294,6 +300,14 @@ function onLoad() {
             $('#genusList').append("<li><a href='#'"+ genusId +">"+
                                     uniqueArray_genera[i] +
                                     "</a></li>");
+          }
+          //append all species present in dataset
+          for (var i = 0; i < uniqueArray_species.length; i++){
+            var speciesId = "id=genus" + uniqueArray_genera[i];
+            storeSpeciesId.push(speciesId);
+            $('#speciesList').append("<li><a href='#'"+ speciesId +">"+
+                                    uniqueArray_species[i] +
+                                    "</a></li>");
           }   
         });
 
@@ -310,11 +324,9 @@ function onLoad() {
 
         // Form search box utils
         // first get a list with unique array entries for species
-        uniqueArray = list_species.filter(function(item, pos) {
-            return list_species.indexOf(item) == pos;
-        });
+        // see above...uniqueArray_species definition
         // then sort it
-        optArray = uniqueArray.sort();
+        optArray = uniqueArray_species.sort();
         // then applying autocomplete function
         $(function () {
           $('#formValueId').autocomplete({
