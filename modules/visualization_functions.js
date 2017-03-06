@@ -20,6 +20,11 @@ function onLoad() {
         // next we need to retrieve each information type independently
         var sequence = sequence_info.split("_").slice(0,2).join("_");
         var species = sequence_info.split("_").slice(2,4).join(" ");
+        // added to check for errors in database regarding species characterization
+        if (species[0] == " "){
+          var species = sequence_info.split("_").slice(3,4) + " sp";
+        }
+        // and continues
         var genus = sequence_info.split("_").slice(2,3).join(" ");
         var seq_length = sequence_info.split("_").slice(-1).join("");
         var log_length = Math.log(parseInt(seq_length)); //ln seq length
@@ -244,13 +249,16 @@ function onLoad() {
         var uniqueArray_species = list_species.filter(function(item, pos) {
             return list_species.indexOf(item) == pos;
         });
-
+        // then sort it
+        var sortedArray_species = uniqueArray_species.sort();
         // search by specific genera //
 
         // first get a list with unique array entries for genera
         var uniqueArray_genera = list_genera.filter(function(item, pos) {
             return list_genera.indexOf(item) == pos;
-        })
+        });
+        // then sort it
+        var sortedArray_genera = uniqueArray_genera.sort();
         // load json taxa_tree.json if button is clicked by user//
         var list_orders = [],
             list_families = [];
@@ -258,7 +266,7 @@ function onLoad() {
           $.each(json, function(genus,other){
             family = other[0]
             order = other[1]
-            if (uniqueArray_genera.indexOf(genus) >= 0){
+            if (sortedArray_genera.indexOf(genus) >= 0){
               if (list_families.indexOf(family) < 0){
                 list_families.push(family);
               }
@@ -294,19 +302,20 @@ function onLoad() {
                                     "</a></li>");
           } 
           //append all genera present in dataset
-          for (var i = 0; i < uniqueArray_genera.length; i++){
-            var genusId = "id=genus" + uniqueArray_genera[i];
+          for (var i = 0; i < sortedArray_genera.length; i++){
+            var genusId = "id=genus" + sortedArray_genera[i];
             storeGenusId.push(genusId);
             $('#genusList').append("<li><a href='#'"+ genusId +">"+
-                                    uniqueArray_genera[i] +
+                                    sortedArray_genera[i] +
                                     "</a></li>");
           }
           //append all species present in dataset
-          for (var i = 0; i < uniqueArray_species.length; i++){
-            var speciesId = "id=genus" + uniqueArray_genera[i];
+          for (var i = 0; i < sortedArray_species.length; i++){
+            var speciesId = "id=genus" + sortedArray_species[i];
             storeSpeciesId.push(speciesId);
+            console.log(speciesId)
             $('#speciesList').append("<li><a href='#'"+ speciesId +">"+
-                                    uniqueArray_species[i] +
+                                    sortedArray_species[i] +
                                     "</a></li>");
           }   
         });
@@ -323,14 +332,11 @@ function onLoad() {
         //************************//
 
         // Form search box utils
-        // first get a list with unique array entries for species
-        // see above...uniqueArray_species definition
-        // then sort it
-        optArray = uniqueArray_species.sort();
+
         // then applying autocomplete function
         $(function () {
           $('#formValueId').autocomplete({
-            source: optArray
+            source: sortedArray_species
           });
         });
 
