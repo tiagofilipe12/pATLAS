@@ -388,6 +388,23 @@ function onLoad() {
                 divstringClass.innerHTML = divstringClass.innerHTML +", " +tempVar;
               }
               existingTaxon.push(stringClass) //used to store previous string and for comparing with new one
+
+              //perform actions when submit button is clicked.
+              $('#taxaModalSubmit').click(function(event){
+                var query = $('#p_Species').innerHTML
+                console.log(query)
+                event.preventDefault();
+                g.forEachNode(function (node) {
+                  var nodeUI = graphics.getNodeUI(node.id);
+                  var species = node.data.species.split(">").slice(-1).toString();
+                  console.log(species)
+                  if (species == query){
+                    nodeUI.color = 0xf71735;
+                    changed_nodes.push(node.id);
+                  }
+                });
+                renderer.rerender();
+              });
             });
           }
 
