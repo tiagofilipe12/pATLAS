@@ -7,6 +7,7 @@ function getArray_taxa(){
   return $.getJSON('taxa_tree.json');   // change the input file name
 }
 
+
 // initiates vivagraph main functions  
 function onLoad() {
     var list=[];   // list to store references already ploted as nodes
@@ -317,54 +318,81 @@ function onLoad() {
               storeGenusId = [],
               storeSpeciesId = [];
           for (var i = 0; i < sortedArray_order.length; i++){
-            var order_tag = "order" + sortedArray_order[i]
+            var order_tag = "order" + sortedArray_order[i];
             var orderId = "id='" + order_tag +"'";
             storeOrderId.push(order_tag);
-            $('#orderList').append("<li><a href='#'"+ orderId +">"+
+            $('#orderList').append("<li class='OrderClass'><a href='#' "+ orderId +">"+
                                     sortedArray_order[i] +
                                     "</a></li>");
           }
-          $('#orderList').append("<li><a href='#' id='otherId' > \
+          $('#orderList').append("<li class='OrderClass'><a href='#' id='otherId' > \
                                     <em>Other</em></a></li>");
           storeOrderId.push("id=otherId");
           //append all families present in dataset
           for (var i = 0; i < sortedArray_family.length; i++){
-            var family_tag = "family" + sortedArray_family[i]
+            var family_tag = "family" + sortedArray_family[i];
             var familyId = "id='" +family_tag+"'";
             storeFamilyId.push(family_tag);
-            $('#familyList').append("<li><a href='#'"+ familyId +">"+
+            $('#familyList').append("<li class='FamilyClass'><a href='#'"+ familyId +">"+
                                     sortedArray_family[i] +
                                     "</a></li>");
           }
-          $('#familyList').append("<li><a href='#' id='otherId' > \
+          $('#familyList').append("<li class='FamilyClass'><a href='#' id='otherId' > \
                                     <em>Other</em></a></li>");
           storeFamilyId.push("id=otherId"); 
           //append all genera present in dataset
           for (var i = 0; i < sortedArray_genera.length; i++){
-            var genus_tag = "genus" + sortedArray_genera[i]
+            var genus_tag = "genus" + sortedArray_genera[i];
             var genusId = "id='" + genus_tag  + "'";
             storeGenusId.push(genus_tag);
-            $('#genusList').append("<li><a href='#'"+ genusId +">"+
+            $('#genusList').append("<li class='GenusClass'><a href='#'"+ genusId +">"+
                                     sortedArray_genera[i] +
                                     "</a></li>");
           }
           //append all species present in dataset
           for (var i = 0; i < sortedArray_species.length; i++){
-            var species_tag = "genus" + sortedArray_species[i]
+            var species_tag = "genus" + sortedArray_species[i];
             var speciesId = "id='" + species_tag + "'";
             storeSpeciesId.push(speciesId);
-            $('#speciesList').append("<li><a href='#'"+ speciesId +">"+
+            $('#speciesList').append("<li class='SpeciesClass'><a href='#'"+ speciesId +">"+
                                     sortedArray_species[i] +
                                     "</a></li>");
           }
+          
+
+          // clickable <li> and control of displayer of current filters
+          var firstInstance = true;
+          var existingTaxon = [];
+          var classArray = ['.OrderClass', '.FamilyClass', '.GenusClass', '.SpeciesClass'];
+          var idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species'];
+          for (var i = 0; i<classArray.length; i++){
+            $(classArray[i]).on('click', function(e){
+              // empties the text in this div for the first intance
+              if (firstInstance == true){                
+                for (var x=0;x<idsArrays.length;x++){
+                  console.log(idsArrays[x])
+                  $('#'+idsArrays[x]).empty()
+                }
+                firstInstance = false
+              }
+              // fill panel group displaying current selected taxa filters //
+              var stringClass = this.className.slice(0,-5)
+              var tempVar = this.firstChild.innerHTML
+              // checks if a taxon is already in display
+              var divstringClass = document.getElementById("p_"+stringClass);
+              if (existingTaxon.indexOf(stringClass) < 0) {
+                divstringClass.innerHTML = stringClass +": "+ tempVar;
+                console.log("<p id=p_"+ stringClass +">"+stringClass+": " + tempVar + " </p>")
+              }
+              else {
+                divstringClass.innerHTML = divstringClass.innerHTML +", " +tempVar;
+              }
+              existingTaxon.push(stringClass) //used to store previous string and for comparing with new one
+            });
+          }
+
         });
 
-        // fill panel group displaying current selected taxa filters //
-        var tempVar = "Test";  // variable added only to complete the actual implementation. to delete...
-        $('#displayCurrentBox').append("<p>Order: " + tempVar + " </p>",
-                                      "<p>Family: " + tempVar + " </p>",
-                                      "<p>Genus: " + tempVar + " </p>",
-                                      "<p>Species: " + tempVar + " </p>");
 
         //************************//
         //****Fast Form filter****//
@@ -378,8 +406,6 @@ function onLoad() {
             source: sortedArray_species
           });
         });
-
-
 
         //*********************//
         //****Length filter****//
