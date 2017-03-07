@@ -291,11 +291,13 @@ function onLoad() {
 
         // load json taxa_tree.json if button is clicked by user//
         var list_orders = [],
-            list_families = [];
+            list_families = [],
+            dict_genera = {};
         getArray_taxa().done(function(json){
           $.each(json, function(genus,other){
             family = other[0]
             order = other[1]
+            dict_genera[genus]=[family,order]; //append the list to this dict to be used later
             if (sortedArray_genera.indexOf(genus) >= 0){
               if (list_families.indexOf(family) < 0){
                 list_families.push(family);
@@ -357,12 +359,12 @@ function onLoad() {
             $('#speciesList').append("<li class='SpeciesClass'><a href='#'"+ speciesId +">"+
                                     sortedArray_species[i] +
                                     "</a></li>");
-          }
-          
+          }          
 
           // clickable <li> and control of displayer of current filters
           var firstInstance = true;
-          var existingTaxon = [];
+          var existingTaxon = [],
+              taxaInList = [];
           var classArray = ['.OrderClass', '.FamilyClass', '.GenusClass', '.SpeciesClass'];
           var idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species'];
           for (var i = 0; i<classArray.length; i++){
@@ -370,7 +372,6 @@ function onLoad() {
               // empties the text in this div for the first intance
               if (firstInstance == true){                
                 for (var x=0;x<idsArrays.length;x++){
-                  console.log(idsArrays[x])
                   $('#'+idsArrays[x]).empty()
                 }
                 firstInstance = false
@@ -378,35 +379,73 @@ function onLoad() {
               // fill panel group displaying current selected taxa filters //
               var stringClass = this.className.slice(0,-5)
               var tempVar = this.firstChild.innerHTML
+              
+              console.log(tempVar)
+              console.log(taxaInList)
               // checks if a taxon is already in display
               var divstringClass = document.getElementById("p_"+stringClass);
               if (existingTaxon.indexOf(stringClass) < 0) {
                 divstringClass.innerHTML = stringClass +": "+ tempVar;
-                console.log("<p id=p_"+ stringClass +">"+stringClass+": " + tempVar + " </p>")
               }
               else {
-                divstringClass.innerHTML = divstringClass.innerHTML +", " +tempVar;
+                if (taxaInList.indexOf(tempVar) < 0){
+                  divstringClass.innerHTML = divstringClass.innerHTML +", " +tempVar;
+                }
               }
-              existingTaxon.push(stringClass) //used to store previous string and for comparing with new one
+              if (taxaInList.indexOf(tempVar) < 0){
+                taxaInList.push(tempVar);  //user to store all clicked taxa
+              }
+              existingTaxon.push(stringClass); //used to store previous string and for comparing with new one
 
-              //perform actions when submit button is clicked.
-              $('#taxaModalSubmit').click(function(event){
-                var query = $('#p_Species').innerHTML
-                console.log(query)
-                event.preventDefault();
-                g.forEachNode(function (node) {
-                  var nodeUI = graphics.getNodeUI(node.id);
-                  var species = node.data.species.split(">").slice(-1).toString();
-                  console.log(species)
-                  if (species == query){
-                    nodeUI.color = 0xf71735;
-                    changed_nodes.push(node.id);
-                  }
-                });
-                renderer.rerender();
-              });
+
+
+
             });
+
           }
+
+
+
+          //perform actions when submit button is clicked. INCOMPLETE... takes query from previous  section
+          $('#taxaModalSubmit').click(function(event){
+
+            event.preventDefault();
+            // now processes the current selection
+              
+              var species_query = document.getElementById("p_Species").innerHTML,
+                  genus_query = document.getElementById("p_Genus").innerHTML,
+                  family_query = document.getElementById("p_Family").innerHTML,
+                  order_query = document.getElementById("p_Order").innerHTML;
+
+              var selectedSpecies = species_query.replace("Species: ", "").split(/[\s,]+,/),
+                  selectedGenus = genus_query.replace("Genus: ", "").split(/[\s,]+,/),
+                  selectedFamily = family_query.replace("Family: ", "").split(/[\s,]+,/),
+                  selectedOrder = order_query.replace("Order: ", "").split(/[\s,]+,/);
+
+              finalSpeciesList = [];
+              //console.log(selectedGenus)
+              //console.log(dict_genera)
+              for (key=0; key<selectedGenus; key++){
+                console.log(selectedGenus[key])
+                if (selectedGenus[key] in dict_genera){
+                  var family = dict_genera[selectedGenus[key]][0];
+                  var order = dict_genera[selectedGenus[key]][1];
+                  //console.log(family);
+                  //console.log(order);
+                }
+              }
+            //renders the graph for the desired species
+            g.forEachNode(function (node) {
+              var nodeUI = graphics.getNodeUI(node.id);
+              var species = node.data.species.split(">").slice(-1).toString();
+              console.log(species)
+              if (species == query){
+                nodeUI.color = 0xf71735;
+                changed_nodes.push(node.id);
+              }
+            });
+            renderer.rerender();
+          });
 
         });
 
