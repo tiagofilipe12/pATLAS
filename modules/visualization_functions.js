@@ -470,13 +470,13 @@ function onLoad() {
           // create color pallete
           var color = d3.schemeCategory20;
           console.log(color)
-          var arrayColorsIsolates = [];
+          var arrayColors = [];
           
           console.log(selectedSpecies)
           for (i in selectedSpecies){
             console.log(color[i])
-            arrayColorsIsolates.push(color[i].replace('#', '0x'));
-            console.log(arrayColorsIsolates)
+            arrayColors.push(color[i].replace('#', '0x'));
+            console.log(arrayColors)
           }
 
           //renders the graph for the desired species
