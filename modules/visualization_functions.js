@@ -306,7 +306,6 @@ function onLoad() {
                 list_orders.push(order);
               }
             }
-
           });
 
           //sort families and orders alphabetically
@@ -380,8 +379,6 @@ function onLoad() {
               var stringClass = this.className.slice(0,-5)
               var tempVar = this.firstChild.innerHTML
               
-              console.log(tempVar)
-              console.log(taxaInList)
               // checks if a taxon is already in display
               var divstringClass = document.getElementById("p_"+stringClass);
               if (existingTaxon.indexOf(stringClass) < 0) {
@@ -396,59 +393,71 @@ function onLoad() {
                 taxaInList.push(tempVar);  //user to store all clicked taxa
               }
               existingTaxon.push(stringClass); //used to store previous string and for comparing with new one
-
-
-
-
             });
-
           }
-
-
-
-          //perform actions when submit button is clicked. INCOMPLETE... takes query from previous  section
-          $('#taxaModalSubmit').click(function(event){
-
+          
+          //***** Clear selection button *****//
+          $('#taxaModalClear').click(function(event){
+            console.log(idsArrays)
             event.preventDefault();
-            // now processes the current selection
-              
-              var species_query = document.getElementById("p_Species").innerHTML,
-                  genus_query = document.getElementById("p_Genus").innerHTML,
-                  family_query = document.getElementById("p_Family").innerHTML,
-                  order_query = document.getElementById("p_Order").innerHTML;
-
-              var selectedSpecies = species_query.replace("Species: ", "").split(/[\s,]+,/),
-                  selectedGenus = genus_query.replace("Genus: ", "").split(/[\s,]+,/),
-                  selectedFamily = family_query.replace("Family: ", "").split(/[\s,]+,/),
-                  selectedOrder = order_query.replace("Order: ", "").split(/[\s,]+,/);
-
-              finalSpeciesList = [];
-              //console.log(selectedGenus)
-              //console.log(dict_genera)
-              for (key=0; key<selectedGenus; key++){
-                console.log(selectedGenus[key])
-                if (selectedGenus[key] in dict_genera){
-                  var family = dict_genera[selectedGenus[key]][0];
-                  var order = dict_genera[selectedGenus[key]][1];
-                  //console.log(family);
-                  //console.log(order);
-                }
-              }
-            //renders the graph for the desired species
-            g.forEachNode(function (node) {
-              var nodeUI = graphics.getNodeUI(node.id);
-              var species = node.data.species.split(">").slice(-1).toString();
-              console.log(species)
-              if (species == query){
-                nodeUI.color = 0xf71735;
-                changed_nodes.push(node.id);
-              }
-            });
-            renderer.rerender();
+            for (var x=0;x<idsArrays.length;x++){
+              // empty field
+              $('#'+idsArrays[x]).empty()
+              // reset to default of html
+              $('#'+idsArrays[x]).append(idsArrays[x].replace("p_","") + ": No filters applied")
+              // resets the lists and checkers for the panel
+              firstInstance = true;
+              existingTaxon = [];
+              taxaInList = [];
+            }
           });
-
         });
+        
+        //***** Submit button for taxa filter *****//
 
+        //perform actions when submit button is clicked. INCOMPLETE... takes query from previous  section
+        $('#taxaModalSubmit').click(function(event){
+          event.preventDefault();
+          // now processes the current selection              
+          var species_query = document.getElementById("p_Species").innerHTML,
+              genus_query = document.getElementById("p_Genus").innerHTML,
+              family_query = document.getElementById("p_Family").innerHTML,
+              order_query = document.getElementById("p_Order").innerHTML;
+          var selectedSpecies = species_query.replace("Species: ", "").split(/[\s,]+,/),
+              selectedGenus = genus_query.replace("Genus: ", "").split(/[\s,]+,/),
+              selectedFamily = family_query.replace("Family: ", "").split(/[\s,]+,/),
+              selectedOrder = order_query.replace("Order: ", "").split(/[\s,]+,/);
+          // appends genus to selectedGenus according with the family and order
+          console.log(dict_genera)
+          $.each(dict_genera, function(genus,pair){
+            var family = pair[0];
+            var order = pair[1];
+            if (selectedFamily.indexOf(family) >= 0 ){
+              selectedGenus.push(genus);
+            }
+            else if (selectedOrder.indexOf(order) >= 0){
+              selectedGenus.push(genus);
+            }
+          });
+          //renders the graph for the desired species
+          g.forEachNode(function (node) {
+            var nodeUI = graphics.getNodeUI(node.id);
+            var species = node.data.species.split(">").slice(-1).toString();
+            var genus = species.split(" ")[0];
+            //console.log(genus)
+            //checks if genus is in selection
+            if (selectedGenus.indexOf(genus) >= 0){
+              nodeUI.color = 0xf71735;
+              changed_nodes.push(node.id);
+            }
+            //checks if species is in selection
+            else if (selectedSpecies.indexOf(species) >= 0){
+              nodeUI.color = 0xf71735;
+              changed_nodes.push(node.id);
+            }
+          });
+          renderer.rerender();
+        });
 
         //************************//
         //****Fast Form filter****//
