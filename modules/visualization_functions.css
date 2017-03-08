@@ -172,3 +172,14 @@
   overflow-x: hidden;
   max-height: 60%;
 }        
+
+/*alert boxes*/
+
+#alertId{
+  position:absolute;
+  z-index: 99 !important; 
+  top:7%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+

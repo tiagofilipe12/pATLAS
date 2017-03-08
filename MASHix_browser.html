@@ -11,7 +11,8 @@
       <script language="javascript" type="text/javascript" src="./bootstrap-3.3.7-dist/js/bootstrap.js"></script>  
       <script language="javascript" type="text/javascript" src="./modules/visualization_functions.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/wNumb.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/jquery-ui.js"></script>      
+      <script language="javascript" type="text/javascript" src="./modules/jquery-ui.js"></script>
+      <script language="javascript" type="text/javascript" src="./modules/d3.js"></script>      
 
     </head>
     
@@ -132,6 +133,12 @@
           </div>
 
         </div>
+      </div>
+
+      <!--Alert message to check that some selection is made-->
+      <div class="alert alert-warning alert-dismissable fade in" id="alertId" style="display: none;">
+        <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
+        <strong>Warning!</strong> No filters were selected. No changes will be made!
       </div>
 
       <!-- Starts navigation bar -->
