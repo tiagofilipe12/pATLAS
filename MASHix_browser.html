@@ -25,7 +25,7 @@
       </div>
 
       <!-- Modal for length-->
-      <div id="lengthModal" class="modal fade" role="dialog">
+      <div id="lengthModal" class="modal fade" role="dialog" tabindex="-1">
         <div class="modal-dialog">
 
           <!-- Modal content for lenght-->
@@ -54,7 +54,7 @@
       </div>
 
             <!-- Modal for taxa-->
-      <div id="taxaModal" class="modal fade" role="dialog">
+      <div id="taxaModal" class="modal fade" role="dialog" tabindex="-1">
         <div class="modal-dialog">
 
           <!-- Modal content for lenght-->
@@ -173,10 +173,12 @@
                 </a>
                 <ul class="dropdown-menu">
                   <!-- Trigger the modal with a button -->
-                  <li><a href="#" data-toggle="modal" data-target="#lengthModal">Length</a></li>                  
+                  <li><a href="#" data-toggle="modal" data-backdrop="static" 
+                        data-target="#lengthModal">Length</a></li>                  
                   <li role="separator" class="divider"></li>
                   <li><a href="#" id="taxaClick"
-                        data-toggle="modal" data-target="#taxaModal">Taxa</a></li>
+                        data-toggle="modal" data-backdrop="static" 
+                        data-target="#taxaModal">Taxa</a></li>
                   <!--<li role="separator" class="divider"></li>
                   <li><a href="#">One more separated link</a></li>-->
                 </ul>
