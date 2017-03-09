@@ -136,13 +136,13 @@
       </div>
 
       <!--Alert message to check that some selection is made-->
-      <div class="alert alert-danger alert-dismissable fade in" id="alertId" style="display: none;">
+      <div class="alert alert-danger alert-dismissable fade in" id="alertId" style="display: none">
         <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
         <strong>Warning!</strong> No filters were selected. No changes will be made!
       </div>
 
             <!--Alert message to check that some selection is made-->
-      <div class="alert alert-warning alert-dismissable fade in" id="alertId_multi" style="display: none;">
+      <div class="alert alert-warning alert-dismissable fade in" id="alertId_multi" style="display: none">
         <button type="button" class="close" id="alertClose_multi" aria-hidden="true" data-hide="true">&times;</button>
         <strong>Attention!</strong> Multiple levels of taxa were selected. Output will highlight all selected taxa in  <font color="#f71735">red!</font>
       </div>
@@ -211,8 +211,23 @@
       </nav>
 
       <div id="couve-flor" > 
+        <!--hidden div for color legend-->
+        <div class="panel-group" id="colorLegend" style="display: none">
+          <div class="panel panel-default" >
+            <div class="panel-heading">Color legend</div>
+            <div class="panel-body">
+              <!--Populated by visualization_functions.js-->
+              <ul class="legend" id="colorLegendBox">
+                <li class="centeredList"><span class="squareLegend" style="background-color: #ff00ff"></span> Taxa 1</li>
+                <li class="centeredList"><span class="squareLegend" style="background-color: #0000ff"></span> Taxa 2</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <div id="buttonStuff">
           <div class="btn-group">
+
             <!-- Buttons that overlay the graph and interact with it -->
             <button id="playpauseButton" data-toggle="tooltip" 
                     title="Play/Pause" type="button" 

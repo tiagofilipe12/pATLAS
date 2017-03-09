@@ -361,11 +361,11 @@ function onLoad() {
           }          
 
           // clickable <li> and control of displayer of current filters
-          var firstInstance = true;
-          var existingTaxon = [],
-              taxaInList = [];
+          firstInstance = true; //global variable
+          existingTaxon = [],   //global variable
+              taxaInList = [];   //global variable
           var classArray = ['.OrderClass', '.FamilyClass', '.GenusClass', '.SpeciesClass'];
-          var idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species'];
+          idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species']; //global variable
           for (var i = 0; i<classArray.length; i++){
             $(classArray[i]).on('click', function(e){
               // empties the text in this div for the first intance
@@ -397,7 +397,9 @@ function onLoad() {
           }
 
           //***** Clear selection button *****//
+          clear = false; //added to control the colors being triggered after clearing
           $('#taxaModalClear').click(function(event){
+            clear = true;
             event.preventDefault();
             for (var x=0;x<idsArrays.length;x++){
               // empty field
@@ -477,85 +479,93 @@ function onLoad() {
           var color = d3.schemeCategory20;
 
           //renders the graph for the desired taxon if more than one taxon type is selected
-         
-          //var Alert_multi = false;
-          if (counter > 1){
-            Alert_multi = true;  
-            g.forEachNode(function (node) {
-              var nodeUI = graphics.getNodeUI(node.id);
-              var species = node.data.species.split(">").slice(-1).toString();
-              var genus = species.split(" ")[0];
-              //console.log(genus)
-              //checks if genus is in selection
-              if (selectedGenus.indexOf(genus) >= 0){
-                nodeUI.color = 0xf71735;
-                changed_nodes.push(node.id);
-              }
-              //checks if species is in selection
-              else if (selectedSpecies.indexOf(species) >= 0){
-                nodeUI.color = 0xf71735;
-                changed_nodes.push(node.id);
-              }
-            });
-            renderer.rerender();
+            var store_lis = "" // a variable to store all <li> generated for legend
+            if (counter > 1){
+              Alert_multi = true;  
+              g.forEachNode(function (node) {
+                var nodeUI = graphics.getNodeUI(node.id);
+                var species = node.data.species.split(">").slice(-1).toString();
+                var genus = species.split(" ")[0];
+                //console.log(genus)
+                //checks if genus is in selection
+                if (selectedGenus.indexOf(genus) >= 0){
+                  nodeUI.color = 0xf71735;
+                  changed_nodes.push(node.id);
+                }
+                //checks if species is in selection
+                else if (selectedSpecies.indexOf(species) >= 0){
+                  nodeUI.color = 0xf71735;
+                  changed_nodes.push(node.id);
+                }
+              });
+              renderer.rerender();
+              store_lis= '<li class="centeredList"><span class="squareLegend" style="background-color:#f71735" ></span>multi-level selected taxa</li>';
 
-            // displays alert
-            // first check if filters are applied in order to avoid displaying when there are no filters
-            for (i in alertArrays){
-              if (alertArrays[i][0] != "No filters applied"){
-                var divAlert = document.getElementById('alertId_multi');
-                divAlert.style.display = "block";
+              // displays alert
+              // first check if filters are applied in order to avoid displaying when there are no filters
+              for (i in alertArrays){
+                if (alertArrays[i][0] != "No filters applied"){
+                  var divAlert = document.getElementById('alertId_multi');
+                  divAlert.style.display = "block";
 
-                // control the alertClose button
+                  // control the alertClose button
 
-                $('#alertClose_multi').click(function() {
-                   $('#alertId_multi').hide();  // hide this div
-                });
-                // auto hide after 5 seconds without closing the div
-
-                window.setTimeout(function() { $("#alertId_multi").hide(); }, 5000);
-              }
-            }
-
-          }
-          //renders the graph for the desired taxon if one taxon type is selected
-          //allows for different colors between taxa of the same level
-          //still not fully implemented
-          else if(counter = 1){
-            // first cycle between all the arrays to find which one is not empty
-            for (array in alertArrays) {
-              // selects the not empty array
-              console.log(alertArrays[array])
-              if (alertArrays[array] != "") {
-                var currentSelection = alertArrays[array];
-                // performs the actual interaction for color picking and assigning
-                for (i in currentSelection){
-                  currentColor = color[i].replace('#', '0x')
-                  console.log(currentSelection[i])
-                  console.log(currentSelection[i].split(" ")[0])
-                  //cycles nodes
-                  g.forEachNode(function (node) {
-                    var nodeUI = graphics.getNodeUI(node.id);
-                    var species = node.data.species.split(">").slice(-1).toString();
-                    var genus = species.split(" ")[0];
-                    //console.log(genus)
-                    //checks if genus is in selection
-                    if (currentSelection[i].split(" ")[0] == genus){
-                      nodeUI.color = currentColor;
-                      changed_nodes.push(node.id);
-                    }
-                    //checks if species is in selection
-                    else if (currentSelection[i] == species){
-                      nodeUI.color = currentColor;
-                      changed_nodes.push(node.id);
-                    }
+                  $('#alertClose_multi').click(function() {
+                     $('#alertId_multi').hide();  // hide this div
                   });
-                  renderer.rerender();
+                  // auto hide after 5 seconds without closing the div
+
+                  window.setTimeout(function() { $("#alertId_multi").hide(); }, 5000);
+
                 }
               }
             }
-          }
-        });
+            //renders the graph for the desired taxon if one taxon type is selected
+            //allows for different colors between taxa of the same level
+            //still not fully implemented
+            else if(counter = 1){
+              // first cycle between all the arrays to find which one is not empty
+              for (array in alertArrays) {
+                // selects the not empty array
+                console.log(alertArrays[array])
+                if (alertArrays[array] != "") {
+                  var currentSelection = alertArrays[array];
+                  // performs the actual interaction for color picking and assigning
+                  for (i in currentSelection){
+                    currentColor = color[i].replace('#', '0x')
+                    style_color = "background-color:" + color[i]
+                    console.log(currentSelection[i])
+                    console.log(currentSelection[i].split(" ")[0])
+                    store_lis= store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>' + currentSelection[i] + '</li>';
+                    //cycles nodes
+                    g.forEachNode(function (node) {
+                      var nodeUI = graphics.getNodeUI(node.id);
+                      var species = node.data.species.split(">").slice(-1).toString();
+                      var genus = species.split(" ")[0];
+                      //console.log(genus)
+                      //checks if genus is in selection
+                      if (currentSelection[i].split(" ")[0] == genus){
+                        nodeUI.color = currentColor;
+                        changed_nodes.push(node.id);
+                      }
+                      //checks if species is in selection
+                      else if (currentSelection[i] == species){
+                        nodeUI.color = currentColor;
+                        changed_nodes.push(node.id);
+                      }
+                    });
+                    renderer.rerender();
+                  }
+                }
+              }
+
+            }
+             // show legend //
+            showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
+            showLegend.style.display = "block";
+            $('#colorLegendBox').empty();
+            $('#colorLegendBox').append(store_lis)
+          });
 
         //************************//
         //****Fast Form filter****//
@@ -693,6 +703,25 @@ function onLoad() {
         // resets the slider
         $('#reset-sliders').click(function(event){
           slider.noUiSlider.set([min, max]);
+          showLegend.style.display = "none";
+          for (var x=0;x<idsArrays.length;x++){
+            // empty field
+            $('#'+idsArrays[x]).empty()
+            // reset to default of html
+            $('#'+idsArrays[x]).append(idsArrays[x].replace("p_","") + ": No filters applied")
+            // resets the lists and checkers for the panel
+            firstInstance = true;
+            existingTaxon = [];
+            taxaInList = [];
+          }
+        });
+        // resets colors of selection
+        $('#taxaModalClear').click(function(event){
+          if (clear = true ){
+            slider.noUiSlider.set([min, max]);
+            showLegend.style.display = "none";
+            clear = false;
+          }
         });
 
 

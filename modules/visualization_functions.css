@@ -178,7 +178,7 @@
 #alertId{
   position:absolute;
   z-index: 99 !important; 
-  top:7%;
+  top:10%;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -186,9 +186,36 @@
 #alertId_multi{
   position:absolute;
   z-index: 99 !important; 
-  top:7%;
+  top:10%;
   left: 50%;
   transform: translateX(-50%);
 }
 
+/*color legend*/
+
+#colorLegend{
+  position: absolute;
+  z-index: 99 !important;
+  right:2%;
+  bottom:2%;
+}
+
+.legend { 
+  list-style-type: none; 
+  text-align: center;
+  padding: 0px;
+  overflow: hidden;
+}
+
+.legend span { 
+  border: 1px solid #ccc; 
+  float: left; 
+  width: 12px; 
+  height: 12px; 
+  margin: 2px; 
+}
+.centeredList{
+  padding: 2px;
+  display: block;
+}
 
