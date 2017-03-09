@@ -476,7 +476,7 @@ function onLoad() {
           });
 
           // create color pallete
-          var color = d3.schemeCategory20;
+          color = d3.schemeCategory20;
           console.log(counter)
           var noLegend = false
 
