@@ -136,9 +136,15 @@
       </div>
 
       <!--Alert message to check that some selection is made-->
-      <div class="alert alert-warning alert-dismissable fade in" id="alertId" style="display: none;">
+      <div class="alert alert-danger alert-dismissable fade in" id="alertId" style="display: none;">
         <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
         <strong>Warning!</strong> No filters were selected. No changes will be made!
+      </div>
+
+            <!--Alert message to check that some selection is made-->
+      <div class="alert alert-warning alert-dismissable fade in" id="alertId_multi" style="display: none;">
+        <button type="button" class="close" id="alertClose_multi" aria-hidden="true" data-hide="true">&times;</button>
+        <strong>Attention!</strong> Multiple levels of taxa were selected. Output will highlight all selected taxa in  <font color="#f71735">red!</font>
       </div>
 
       <!-- Starts navigation bar -->

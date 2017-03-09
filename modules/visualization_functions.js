@@ -477,8 +477,10 @@ function onLoad() {
           var color = d3.schemeCategory20;
 
           //renders the graph for the desired taxon if more than one taxon type is selected
-          console.log(counter)
-          if (counter > 1){  
+         
+          //var Alert_multi = false;
+          if (counter > 1){
+            Alert_multi = true;  
             g.forEachNode(function (node) {
               var nodeUI = graphics.getNodeUI(node.id);
               var species = node.data.species.split(">").slice(-1).toString();
@@ -496,6 +498,25 @@ function onLoad() {
               }
             });
             renderer.rerender();
+
+            // displays alert
+            // first check if filters are applied in order to avoid displaying when there are no filters
+            for (i in alertArrays){
+              if (alertArrays[i][0] != "No filters applied"){
+                var divAlert = document.getElementById('alertId_multi');
+                divAlert.style.display = "block";
+
+                // control the alertClose button
+
+                $('#alertClose_multi').click(function() {
+                   $('#alertId_multi').hide();  // hide this div
+                });
+                // auto hide after 5 seconds without closing the div
+
+                window.setTimeout(function() { $("#alertId_multi").hide(); }, 5000);
+              }
+            }
+
           }
           //renders the graph for the desired taxon if one taxon type is selected
           //allows for different colors between taxa of the same level
