@@ -441,7 +441,7 @@ function onLoad() {
           for (i in alertArrays){
             if (alertArrays[i][0] == "No filters applied"){
               Alert = true;
-              var counter = 4  //counter used to check if more than one dropdown has selected options
+              counter = 4  //counter used to check if more than one dropdown has selected options
             }
             else if (alertArrays[i] != ""){
               counter = counter + 1;
@@ -477,10 +477,12 @@ function onLoad() {
 
           // create color pallete
           var color = d3.schemeCategory20;
+          console.log(counter)
+          var noLegend = false
 
           //renders the graph for the desired taxon if more than one taxon type is selected
             var store_lis = "" // a variable to store all <li> generated for legend
-            if (counter > 1){
+            if (counter > 1 && counter < 4){
               Alert_multi = true;  
               g.forEachNode(function (node) {
                 var nodeUI = graphics.getNodeUI(node.id);
@@ -499,7 +501,7 @@ function onLoad() {
                 }
               });
               renderer.rerender();
-              store_lis= '<li class="centeredList"><span class="squareLegend" style="background-color:#f71735" ></span>multi-level selected taxa</li>';
+              store_lis= '<li class="centeredList"><span class="squareLegend" style="background-color:#f71735" ></span>&nbsp;multi-level selected taxa</li>';
 
               // displays alert
               // first check if filters are applied in order to avoid displaying when there are no filters
@@ -523,7 +525,7 @@ function onLoad() {
             //renders the graph for the desired taxon if one taxon type is selected
             //allows for different colors between taxa of the same level
             //still not fully implemented
-            else if(counter = 1){
+            else if(counter == 1){
               // first cycle between all the arrays to find which one is not empty
               for (array in alertArrays) {
                 // selects the not empty array
@@ -534,15 +536,12 @@ function onLoad() {
                   for (i in currentSelection){
                     currentColor = color[i].replace('#', '0x')
                     style_color = "background-color:" + color[i]
-                    console.log(currentSelection[i])
-                    console.log(currentSelection[i].split(" ")[0])
-                    store_lis= store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>' + currentSelection[i] + '</li>';
+                    store_lis= store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
                     //cycles nodes
                     g.forEachNode(function (node) {
                       var nodeUI = graphics.getNodeUI(node.id);
                       var species = node.data.species.split(">").slice(-1).toString();
                       var genus = species.split(" ")[0];
-                      //console.log(genus)
                       //checks if genus is in selection
                       if (currentSelection[i].split(" ")[0] == genus){
                         nodeUI.color = currentColor;
@@ -560,11 +559,18 @@ function onLoad() {
               }
 
             }
+            else{
+              noLegend = true
+            }
+
              // show legend //
-            showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
-            showLegend.style.display = "block";
-            $('#colorLegendBox').empty();
-            $('#colorLegendBox').append(store_lis)
+            if (noLegend == false) {
+              showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
+              showLegend.style.display = "block";
+              $('#colorLegendBox').empty();
+              $('#colorLegendBox').append(store_lis + 
+                '<li class="centeredList"><span class="squareLegend" style="background-color:#666370" ></span>&nbsp;unselected</li>')
+            }
           });
 
         //************************//

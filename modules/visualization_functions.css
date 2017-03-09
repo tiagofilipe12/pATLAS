@@ -202,7 +202,7 @@
 
 .legend { 
   list-style-type: none; 
-  text-align: center;
+  text-align: left;
   padding: 0px;
   overflow: hidden;
 }
@@ -218,4 +218,3 @@
   padding: 2px;
   display: block;
 }
-
