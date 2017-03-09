@@ -418,6 +418,8 @@ function onLoad() {
 
         //perform actions when submit button is clicked. 
 
+        noLegend = false // sets legend to hidden state by default
+
         $('#taxaModalSubmit').click(function(event){
           event.preventDefault();
           // now processes the current selection              
@@ -425,17 +427,18 @@ function onLoad() {
               genus_query = document.getElementById("p_Genus").innerHTML,
               family_query = document.getElementById("p_Family").innerHTML,
               order_query = document.getElementById("p_Order").innerHTML;
-          var selectedSpecies = species_query.replace("Species: ", "").split(", "),
-              selectedGenus = genus_query.replace("Genus: ", "").split(", "),
-              selectedFamily = family_query.replace("Family: ", "").split(", "),
-              selectedOrder = order_query.replace("Order: ", "").split(", ");
+          var selectedSpecies = species_query.replace("Species: ", "").split(", ").filter(Boolean),
+              selectedGenus = genus_query.replace("Genus: ", "").split(", ").filter(Boolean),
+              selectedFamily = family_query.replace("Family: ", "").split(", ").filter(Boolean),
+              selectedOrder = order_query.replace("Order: ", "").split(", ").filter(Boolean);
+
 
 
           //**** Alert for taxa filter ****//
           // print alert if no filters are selected
           counter = 0 // counts the number of taxa type that has not been selected
 
-          var alertArrays = [selectedSpecies, selectedGenus, selectedFamily, selectedOrder];
+          var alertArrays = {"order": selectedOrder, "family": selectedFamily, "genus": selectedGenus, "species": selectedSpecies};
           var divAlert = document.getElementById('alertId');
           var Alert = false;
           for (i in alertArrays){
@@ -463,32 +466,56 @@ function onLoad() {
 
           //**** End Alert for taxa filter ****//
 
+          //make tmpselectedGenus an associative array since it is the base of family and order arrays
+
+          assocFamilyGenus = {};
+          assocOrderGenus = {};
+
           // appends genus to selectedGenus according with the family and order
           $.each(dict_genera, function(genus,pair){
             var family = pair[0];
             var order = pair[1];
             if (selectedFamily.indexOf(family) >= 0 ){
               selectedGenus.push(genus);
+              if (!(family in assocFamilyGenus)){
+                assocFamilyGenus[family] = [];
+                assocFamilyGenus[family].push(genus);
+              }
+              else{
+                assocFamilyGenus[family].push(genus);
+              }
+
             }
             else if (selectedOrder.indexOf(order) >= 0){
               selectedGenus.push(genus);
-            }
+              if (!(order in assocOrderGenus)){
+                assocOrderGenus[order] = [];
+                assocOrderGenus[order].push(genus);
+              }
+              else{
+                assocOrderGenus[order].push(genus);
+              }
+            }         
+            
           });
+          console.log(selectedGenus)
+          //console.log(assocOrderGenus)
+          //console.log(assocFamilyGenus)
 
           // create color pallete
           color = d3.schemeCategory20;
-          console.log(counter)
-          var noLegend = false
+          //console.log(counter)
+          
 
           //renders the graph for the desired taxon if more than one taxon type is selected
             var store_lis = "" // a variable to store all <li> generated for legend
+            var firstIteration = true; // bolean to control the upper taxa level (order or family)
             if (counter > 1 && counter < 4){
               Alert_multi = true;  
               g.forEachNode(function (node) {
                 var nodeUI = graphics.getNodeUI(node.id);
                 var species = node.data.species.split(">").slice(-1).toString();
                 var genus = species.split(" ")[0];
-                //console.log(genus)
                 //checks if genus is in selection
                 if (selectedGenus.indexOf(genus) >= 0){
                   nodeUI.color = 0xf71735;
@@ -524,41 +551,58 @@ function onLoad() {
             }
             //renders the graph for the desired taxon if one taxon type is selected
             //allows for different colors between taxa of the same level
-            //still not fully implemented
+
             else if(counter == 1){
               // first cycle between all the arrays to find which one is not empty
               for (array in alertArrays) {
                 // selects the not empty array
-                console.log(alertArrays[array])
-                if (alertArrays[array] != "") {
+                if (alertArrays[array] != "" && firstIteration == true) {
                   var currentSelection = alertArrays[array];
                   // performs the actual interaction for color picking and assigning
                   for (i in currentSelection){
                     currentColor = color[i].replace('#', '0x')
                     style_color = "background-color:" + color[i]
-                    store_lis= store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
-                    //cycles nodes
-                    g.forEachNode(function (node) {
-                      var nodeUI = graphics.getNodeUI(node.id);
-                      var species = node.data.species.split(">").slice(-1).toString();
-                      var genus = species.split(" ")[0];
-                      //checks if genus is in selection
-                      if (currentSelection[i].split(" ")[0] == genus){
-                        nodeUI.color = currentColor;
-                        changed_nodes.push(node.id);
+                    //console.log(style_color)
+                    //console.log(currentSelection)
+                    store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
+                    
+                    if (selectedGenus != undefined){
+                      for (gen in selectedGenus) {
+                        //console.log(selectedGenus[gen])                     
+
+                        //cycles nodes
+                        g.forEachNode(function (node) {
+                          var nodeUI = graphics.getNodeUI(node.id);
+                          var species = node.data.species.split(">").slice(-1).toString();
+                          var genus = species.split(" ")[0];
+                          //checks if genus is in selection
+                          if (selectedGenus[gen] == genus){
+                            nodeUI.color = currentColor;
+                            changed_nodes.push(node.id);
+
+                          }
+
+                        });
+                        index = selectedGenus.indexOf(selectedGenus[gen]);
+                        console.log(index)
+                        selectedGenus.splice(index,1)
+                        console.log(selectedGenus)
                       }
-                      //checks if species is in selection
-                      else if (currentSelection[i] == species){
-                        nodeUI.color = currentColor;
-                        changed_nodes.push(node.id);
-                      }
-                    });
+                    }
+                    //checks if species is in selection
+                    else if (currentSelection[i] == species){
+                      nodeUI.color = currentColor;
+                      changed_nodes.push(node.id);
+                    }
+                    
                     renderer.rerender();
                   }
+                  firstIteration = false; // stops getting lower levels
                 }
               }
 
             }
+            // used to control if no selection was made avoiding to display the legend
             else{
               noLegend = true
             }
