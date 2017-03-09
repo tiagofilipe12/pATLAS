@@ -437,12 +437,11 @@ function onLoad() {
           var divAlert = document.getElementById('alertId');
           var Alert = false;
           for (i in alertArrays){
-            console.log(alertArrays[i])
             if (alertArrays[i][0] == "No filters applied"){
               Alert = true;
               var counter = 4  //counter used to check if more than one dropdown has selected options
             }
-            else if (alertArrays[i][0] == ""){
+            else if (alertArrays[i] != ""){
               counter = counter + 1;
             }
           }
@@ -476,7 +475,6 @@ function onLoad() {
 
           // create color pallete
           var color = d3.schemeCategory20;
-          var arrayColors = [];
 
           //renders the graph for the desired taxon if more than one taxon type is selected
           console.log(counter)
@@ -503,10 +501,37 @@ function onLoad() {
           //allows for different colors between taxa of the same level
           //still not fully implemented
           else if(counter = 1){
-            console.log(selectedSpecies)
-            for (i in selectedSpecies){
-              arrayColors.push(color[i].replace('#', '0x'));
-              console.log(arrayColors);
+            // first cycle between all the arrays to find which one is not empty
+            for (array in alertArrays) {
+              // selects the not empty array
+              console.log(alertArrays[array])
+              if (alertArrays[array] != "") {
+                var currentSelection = alertArrays[array];
+                // performs the actual interaction for color picking and assigning
+                for (i in currentSelection){
+                  currentColor = color[i].replace('#', '0x')
+                  console.log(currentSelection[i])
+                  console.log(currentSelection[i].split(" ")[0])
+                  //cycles nodes
+                  g.forEachNode(function (node) {
+                    var nodeUI = graphics.getNodeUI(node.id);
+                    var species = node.data.species.split(">").slice(-1).toString();
+                    var genus = species.split(" ")[0];
+                    //console.log(genus)
+                    //checks if genus is in selection
+                    if (currentSelection[i].split(" ")[0] == genus){
+                      nodeUI.color = currentColor;
+                      changed_nodes.push(node.id);
+                    }
+                    //checks if species is in selection
+                    else if (currentSelection[i] == species){
+                      nodeUI.color = currentColor;
+                      changed_nodes.push(node.id);
+                    }
+                  });
+                  renderer.rerender();
+                }
+              }
             }
           }
         });
