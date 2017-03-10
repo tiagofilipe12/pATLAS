@@ -501,7 +501,7 @@ function onLoad() {
           });
 
           // create color pallete
-          color = d3.schemeCategory20;
+          //color = d3.schemeCategory20;
 
           // helper function to color according with family and order
           function node_coloring_taxa(tempArray){
@@ -527,7 +527,6 @@ function onLoad() {
           var store_lis = "" // a variable to store all <li> generated for legend
           var firstIteration = true; // bolean to control the upper taxa level (order or family)
           if (counter > 1 && counter < 4){
-            Alert_multi = true;  
             g.forEachNode(function (node) {
               var nodeUI = graphics.getNodeUI(node.id);
               var species = node.data.species.split(">").slice(-1).toString();
