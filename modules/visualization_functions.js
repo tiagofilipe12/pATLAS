@@ -471,7 +471,8 @@ function onLoad() {
           assocFamilyGenus = {};
           assocOrderGenus = {};
 
-          // appends genus to selectedGenus according with the family and order
+          // appends genus to selectedGenus according with the family and order for single-color selection
+          // also appends to associative arrays for family and order for multi-color selection
           $.each(dict_genera, function(genus,pair){
             var family = pair[0];
             var order = pair[1];
@@ -498,13 +499,35 @@ function onLoad() {
             }         
             
           });
-          console.log(selectedGenus)
-          //console.log(assocOrderGenus)
+          //console.log(selectedGenus)
+          console.log(assocOrderGenus)
           //console.log(assocFamilyGenus)
 
           // create color pallete
           color = d3.schemeCategory20;
           //console.log(counter)
+
+          // helper function to color according with family and order
+          function node_coloring_taxa(tempArray){
+            currentColor = color[i].replace('#', '0x');
+            style_color = "background-color:" + color[i];
+            store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
+
+            for (gen in tempArray){
+              //cycles nodes
+              g.forEachNode(function (node) {
+                var nodeUI = graphics.getNodeUI(node.id);
+                var species = node.data.species.split(">").slice(-1).toString();
+                var genus = species.split(" ")[0];
+                //checks if genus is in selection
+                if (tempArray[gen] == genus){
+                  nodeUI.color = currentColor;
+                  changed_nodes.push(node.id);
+                }
+              });
+              var check = false;                        
+            }
+          }  
           
 
           //renders the graph for the desired taxon if more than one taxon type is selected
@@ -555,44 +578,53 @@ function onLoad() {
             else if(counter == 1){
               // first cycle between all the arrays to find which one is not empty
               for (array in alertArrays) {
+                console.log("alert array: " + alertArrays[array])
                 // selects the not empty array
                 if (alertArrays[array] != "" && firstIteration == true) {
                   var currentSelection = alertArrays[array];
                   // performs the actual interaction for color picking and assigning
+                  var check = true; 
                   for (i in currentSelection){
-                    currentColor = color[i].replace('#', '0x')
-                    style_color = "background-color:" + color[i]
-                    //console.log(style_color)
-                    //console.log(currentSelection)
-                    store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
-                    
-                    if (selectedGenus != undefined){
-                      for (gen in selectedGenus) {
-                        //console.log(selectedGenus[gen])                     
+                    console.log("current:" +currentSelection)
 
-                        //cycles nodes
-                        g.forEachNode(function (node) {
-                          var nodeUI = graphics.getNodeUI(node.id);
-                          var species = node.data.species.split(">").slice(-1).toString();
-                          var genus = species.split(" ")[0];
-                          //checks if genus is in selection
-                          if (selectedGenus[gen] == genus){
-                            nodeUI.color = currentColor;
-                            changed_nodes.push(node.id);
-
-                          }
-
-                        });
-                        index = selectedGenus.indexOf(selectedGenus[gen]);
-                        console.log(index)
-                        selectedGenus.splice(index,1)
-                        console.log(selectedGenus)
-                      }
+                    // orders //                    
+                    if (alertArrays["order"] != "" && check == true){
+                      console.log("check = "+check)
+                      var tempArray = assocOrderGenus[currentSelection[i]];                     
                     }
-                    //checks if species is in selection
-                    else if (currentSelection[i] == species){
-                      nodeUI.color = currentColor;
-                      changed_nodes.push(node.id);
+
+                    // families //
+                    else if (alertArrays["family"] != "" && check == true){
+                      console.log(currentSelection[i])
+                      console.log("check = "+check)
+                      //console.log(assocFamilyGenus[currentSelection[i]])
+                      var tempArray = assocFamilyGenus[currentSelection[i]];
+                    }
+
+                    // executres node function for family and orders
+                    node_coloring_taxa(tempArray);
+                    
+                    // genus and species //
+
+                    if (alertArrays["genus"] != "" || alertArrays["species"] != ""){                      
+                      currentColor = color[i].replace('#', '0x');
+                      style_color = "background-color:" + color[i];
+                      store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
+                      //cycles nodes
+                      g.forEachNode(function (node) {
+                        var nodeUI = graphics.getNodeUI(node.id);
+                        var species = node.data.species.split(">").slice(-1).toString();
+                        var genus = species.split(" ")[0];
+                        //checks if genus is in selection
+                        if (currentSelection[i] == genus){
+                          nodeUI.color = currentColor;
+                          changed_nodes.push(node.id);
+                        }
+                        else if (currentSelection[i]==species){
+                          nodeUI.color = currentColor;
+                          changed_nodes.push(node.id);
+                        }
+                      });                                        
                     }
                     
                     renderer.rerender();
