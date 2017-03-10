@@ -499,20 +499,15 @@ function onLoad() {
             }         
             
           });
-          //console.log(selectedGenus)
-          console.log(assocOrderGenus)
-          //console.log(assocFamilyGenus)
 
           // create color pallete
           color = d3.schemeCategory20;
-          //console.log(counter)
 
           // helper function to color according with family and order
           function node_coloring_taxa(tempArray){
             currentColor = color[i].replace('#', '0x');
             style_color = "background-color:" + color[i];
             store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
-
             for (gen in tempArray){
               //cycles nodes
               g.forEachNode(function (node) {
@@ -526,124 +521,108 @@ function onLoad() {
                 }
               });
             }
-          }  
-          
+          }           
 
           //renders the graph for the desired taxon if more than one taxon type is selected
-            var store_lis = "" // a variable to store all <li> generated for legend
-            var firstIteration = true; // bolean to control the upper taxa level (order or family)
-            if (counter > 1 && counter < 4){
-              Alert_multi = true;  
-              g.forEachNode(function (node) {
-                var nodeUI = graphics.getNodeUI(node.id);
-                var species = node.data.species.split(">").slice(-1).toString();
-                var genus = species.split(" ")[0];
-                //checks if genus is in selection
-                if (selectedGenus.indexOf(genus) >= 0){
-                  nodeUI.color = 0xf71735;
-                  changed_nodes.push(node.id);
-                }
-                //checks if species is in selection
-                else if (selectedSpecies.indexOf(species) >= 0){
-                  nodeUI.color = 0xf71735;
-                  changed_nodes.push(node.id);
-                }
-              });
-              renderer.rerender();
-              store_lis= '<li class="centeredList"><span class="squareLegend" style="background-color:#f71735" ></span>&nbsp;multi-level selected taxa</li>';
-
-              // displays alert
-              // first check if filters are applied in order to avoid displaying when there are no filters
-              for (i in alertArrays){
-                if (alertArrays[i][0] != "No filters applied"){
-                  var divAlert = document.getElementById('alertId_multi');
-                  divAlert.style.display = "block";
-
-                  // control the alertClose button
-
-                  $('#alertClose_multi').click(function() {
-                     $('#alertId_multi').hide();  // hide this div
-                  });
-                  // auto hide after 5 seconds without closing the div
-
-                  window.setTimeout(function() { $("#alertId_multi").hide(); }, 5000);
-
-                }
+          var store_lis = "" // a variable to store all <li> generated for legend
+          var firstIteration = true; // bolean to control the upper taxa level (order or family)
+          if (counter > 1 && counter < 4){
+            Alert_multi = true;  
+            g.forEachNode(function (node) {
+              var nodeUI = graphics.getNodeUI(node.id);
+              var species = node.data.species.split(">").slice(-1).toString();
+              var genus = species.split(" ")[0];
+              //checks if genus is in selection
+              if (selectedGenus.indexOf(genus) >= 0){
+                nodeUI.color = 0xf71735;
+                changed_nodes.push(node.id);
+              }
+              //checks if species is in selection
+              else if (selectedSpecies.indexOf(species) >= 0){
+                nodeUI.color = 0xf71735;
+                changed_nodes.push(node.id);
+              }
+            });
+            renderer.rerender();
+            store_lis= '<li class="centeredList"><span class="squareLegend" style="background-color:#f71735" ></span>&nbsp;multi-level selected taxa</li>';
+            // displays alert
+            // first check if filters are applied in order to avoid displaying when there are no filters
+            for (i in alertArrays){
+              if (alertArrays[i][0] != "No filters applied"){
+                var divAlert = document.getElementById('alertId_multi');
+                divAlert.style.display = "block";
+                // control the alertClose button
+                $('#alertClose_multi').click(function() {
+                    $('#alertId_multi').hide();  // hide this div
+                });
+                // auto hide after 5 seconds without closing the div
+                window.setTimeout(function() { $("#alertId_multi").hide(); }, 5000);
               }
             }
-            //renders the graph for the desired taxon if one taxon type is selected
-            //allows for different colors between taxa of the same level
-
-            else if(counter == 1){
-              // first cycle between all the arrays to find which one is not empty
-              for (array in alertArrays) {
-                console.log("alert array: " + alertArrays[array])
-                // selects the not empty array
-                if (alertArrays[array] != "" && firstIteration == true) {
-                  var currentSelection = alertArrays[array];
-                  // performs the actual interaction for color picking and assigning
-                  for (i in currentSelection){
-                    console.log("current:" +currentSelection)
-
-                    // orders //                    
-                    if (alertArrays["order"] != ""){
-                      var tempArray = assocOrderGenus[currentSelection[i]];                     
-                    }
-
-                    // families //
-                    else if (alertArrays["family"] != ""){
-                      console.log(currentSelection[i])
-                      //console.log(assocFamilyGenus[currentSelection[i]])
-                      var tempArray = assocFamilyGenus[currentSelection[i]];
-                    }
-
+          }
+          //renders the graph for the desired taxon if one taxon type is selected
+          //allows for different colors between taxa of the same level
+          else if(counter == 1){
+            // first cycle between all the arrays to find which one is not empty
+            for (array in alertArrays) {
+              // selects the not empty array
+              if (alertArrays[array] != "" && firstIteration == true) {
+                var currentSelection = alertArrays[array];
+                // performs the actual interaction for color picking and assigning
+                for (i in currentSelection){
+                  // orders //                    
+                  if (alertArrays["order"] != ""){
+                    var tempArray = assocOrderGenus[currentSelection[i]]; 
                     // executres node function for family and orders
-                    node_coloring_taxa(tempArray);
-                    
-                    // genus and species //
-
-                    if (alertArrays["genus"] != "" || alertArrays["species"] != ""){                      
-                      currentColor = color[i].replace('#', '0x');
-                      style_color = "background-color:" + color[i];
-                      store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
-                      //cycles nodes
-                      g.forEachNode(function (node) {
-                        var nodeUI = graphics.getNodeUI(node.id);
-                        var species = node.data.species.split(">").slice(-1).toString();
-                        var genus = species.split(" ")[0];
-                        //checks if genus is in selection
-                        if (currentSelection[i] == genus){
-                          nodeUI.color = currentColor;
-                          changed_nodes.push(node.id);
-                        }
-                        else if (currentSelection[i]==species){
-                          nodeUI.color = currentColor;
-                          changed_nodes.push(node.id);
-                        }
-                      });                                        
-                    }
-                    
-                    renderer.rerender();
+                    node_coloring_taxa(tempArray);                     
                   }
-                  firstIteration = false; // stops getting lower levels
+                  // families //
+                  else if (alertArrays["family"] != ""){
+                    var tempArray = assocFamilyGenus[currentSelection[i]];
+                    // executres node function for family and orders
+                    node_coloring_taxa(tempArray);  
+                  }
+                
+                  // genus and species //
+                  else if (alertArrays["genus"] != "" || alertArrays["species"] != ""){
+                    currentColor = color[i].replace('#', '0x');
+                    style_color = "background-color:" + color[i];
+                    store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
+                    //cycles nodes
+                    g.forEachNode(function (node) {
+                      var nodeUI = graphics.getNodeUI(node.id);
+                      var species = node.data.species.split(">").slice(-1).toString();
+                      var genus = species.split(" ")[0];
+                      //checks if genus is in selection
+                      if (currentSelection[i] == genus){
+                        nodeUI.color = currentColor;
+                        changed_nodes.push(node.id);
+                      }
+                      else if (currentSelection[i]==species){
+                        nodeUI.color = currentColor;
+                        changed_nodes.push(node.id);
+                      }
+                    });
+                  }
+                  renderer.rerender();
                 }
+                firstIteration = false; // stops getting lower levels
               }
-
             }
-            // used to control if no selection was made avoiding to display the legend
-            else{
-              noLegend = true
-            }
-
-             // show legend //
-            if (noLegend == false) {
-              showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
-              showLegend.style.display = "block";
-              $('#colorLegendBox').empty();
-              $('#colorLegendBox').append(store_lis + 
-                '<li class="centeredList"><span class="squareLegend" style="background-color:#666370" ></span>&nbsp;unselected</li>')
-            }
-          });
+          }
+          // used to control if no selection was made avoiding to display the legend
+          else{
+            noLegend = true
+          }
+            // show legend //
+          if (noLegend == false) {
+            showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
+            showLegend.style.display = "block";
+            $('#colorLegendBox').empty();
+            $('#colorLegendBox').append(store_lis + 
+              '<li class="centeredList"><span class="squareLegend" style="background-color:#666370" ></span>&nbsp;unselected</li>')
+          }
+        });
 
         //************************//
         //****Fast Form filter****//
