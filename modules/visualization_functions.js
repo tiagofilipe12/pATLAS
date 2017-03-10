@@ -598,6 +598,7 @@ function onLoad() {
                         nodeUI.color = currentColor;
                         changed_nodes.push(node.id);
                       }
+                      // checks if species is in selection
                       else if (currentSelection[i]==species){
                         nodeUI.color = currentColor;
                         changed_nodes.push(node.id);
