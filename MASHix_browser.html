@@ -12,7 +12,7 @@
       <script language="javascript" type="text/javascript" src="./modules/visualization_functions.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/wNumb.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/jquery-ui.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/custom_colors.js"></script>      
+      <script language="javascript" type="text/javascript" src="./modules/node_handling/custom_colors.js"></script>      
 
     </head>
     
@@ -195,6 +195,12 @@
                       type="button" data-toogle="tooptip"
                       title="Reset all applied filters">Reset filters</button>
             </form>
+            <form class="navbar-form navbar-left">
+              <button class="btn btn-warning" id="Re_run"
+                      type="button" data-toogle="tooptip"
+                      title="Re-run for the selected taxa" style="display: none">Re-run selection</button>
+            </form>
+            <form cl
             <form class="navbar-form navbar-right">
               <div class="form-group">
                 <input id="formValueId" type="text" class="form-control" placeholder="Quick search species"/>

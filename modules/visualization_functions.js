@@ -621,6 +621,8 @@ function onLoad() {
             $('#colorLegendBox').empty();
             $('#colorLegendBox').append(store_lis + 
               '<li class="centeredList"><span class="squareLegend" style="background-color:#666370" ></span>&nbsp;unselected</li>')
+            showRerun = document.getElementById('Re_run'); // rerun 
+            showRerun.style.display = "block";
           }
         });
 
@@ -761,6 +763,7 @@ function onLoad() {
         $('#reset-sliders').click(function(event){
           slider.noUiSlider.set([min, max]);
           showLegend.style.display = "none";
+          showRerun.style.display = "none";
           for (var x=0;x<idsArrays.length;x++){
             // empty field
             $('#'+idsArrays[x]).empty()
@@ -777,6 +780,7 @@ function onLoad() {
           if (clear = true ){
             slider.noUiSlider.set([min, max]);
             showLegend.style.display = "none";
+            showRerun.style.display = "none";
             clear = false;
           }
         });
