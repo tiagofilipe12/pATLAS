@@ -525,7 +525,6 @@ function onLoad() {
                   changed_nodes.push(node.id);
                 }
               });
-              var check = false;                        
             }
           }  
           
@@ -583,20 +582,17 @@ function onLoad() {
                 if (alertArrays[array] != "" && firstIteration == true) {
                   var currentSelection = alertArrays[array];
                   // performs the actual interaction for color picking and assigning
-                  var check = true; 
                   for (i in currentSelection){
                     console.log("current:" +currentSelection)
 
                     // orders //                    
-                    if (alertArrays["order"] != "" && check == true){
-                      console.log("check = "+check)
+                    if (alertArrays["order"] != ""){
                       var tempArray = assocOrderGenus[currentSelection[i]];                     
                     }
 
                     // families //
-                    else if (alertArrays["family"] != "" && check == true){
+                    else if (alertArrays["family"] != ""){
                       console.log(currentSelection[i])
-                      console.log("check = "+check)
                       //console.log(assocFamilyGenus[currentSelection[i]])
                       var tempArray = assocFamilyGenus[currentSelection[i]];
                     }
