@@ -2480,7 +2480,7 @@ function createGraph(options) {
   }
 
   function createUniqueLink(fromId, toId, data) {
-    var linkId = fromId.toString() + '👉 ' + toId.toString();
+    var linkId = fromId.toString() + ' --> ' + toId.toString();
     var isMultiEdge = multiEdges.hasOwnProperty(linkId);
     if (isMultiEdge || getLink(fromId, toId)) {
       if (!isMultiEdge) {
