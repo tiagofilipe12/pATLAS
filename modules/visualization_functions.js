@@ -57,7 +57,7 @@ function onLoad() {
           gravity : -1.2,
           theta : 1
       });
-      precompute(1500, renderGraph);
+      precompute(1000, renderGraph);
       function precompute(iterations, callback) {
           // let's run 10 iterations per event loop cycle:
         var i = 0;
@@ -663,7 +663,7 @@ function onLoad() {
         }); // allows to update the slider?
 
         //event handler for slider
-        slider.noUiSlider.on('set', function (event) {
+        slider.noUiSlider.on('update', function (event) {
           var slider_max = slider.noUiSlider.get()[1],
               slider_min = slider.noUiSlider.get()[0];
           g.forEachNode(function (node) {
@@ -775,7 +775,7 @@ function onLoad() {
         });
         // runs the re run operation for the selected species
         $('#Re_run').click(function(event){
-          node_removal_taxa(g, graphics, nodeColor);
+          node_removal_taxa(g, graphics, nodeColor, renderer);
           //slider.noUiSlider.destroy(); // destroys the slider in order to rebuild it
         });
 
