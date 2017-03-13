@@ -14,7 +14,7 @@ function onLoad() {
     var list_lengths=[] // list to store the lengths of all nodes
     var list_species =[] // lists all species
     var list_genera = [] //list all genera
-    var g = Viva.Graph.graph();
+    g = Viva.Graph.graph();
 
     getArray().done(function(json){
       $.each(json, function(sequence_info,dict_dist){
@@ -499,9 +499,6 @@ function onLoad() {
             
           });
 
-          // create color pallete
-          //color = d3.schemeCategory20;
-
           // helper function to color according with family and order
           function node_coloring_taxa(tempArray){
             currentColor = color[i].replace('#', '0x');
@@ -663,7 +660,7 @@ function onLoad() {
           format: wNumb({
             decimals: 0,
           }),
-        });
+        }); // allows to update the slider?
 
         //event handler for slider
         slider.noUiSlider.on('set', function (event) {
@@ -761,8 +758,10 @@ function onLoad() {
         // resets the slider
         $('#reset-sliders').click(function(event){
           slider.noUiSlider.set([min, max]);
-          showLegend.style.display = "none";
-          showRerun.style.display = "none";
+          if (typeof showLegend !== 'undefined'){
+            showLegend.style.display = "none";
+            showRerun.style.display = "none";
+          }
           for (var x=0;x<idsArrays.length;x++){
             // empty field
             $('#'+idsArrays[x]).empty()
@@ -776,17 +775,18 @@ function onLoad() {
         });
         // runs the re run operation for the selected species
         $('#Re_run').click(function(event){
-          console.log("executing re run...")
           node_removal_taxa(g, graphics, nodeColor);
+          //slider.noUiSlider.destroy(); // destroys the slider in order to rebuild it
         });
 
         // resets colors of selection
         $('#taxaModalClear').click(function(event){
-          showLegend = ""; // added to pass the object not found
           if (clear = true ){
             slider.noUiSlider.set([min, max]);
-            showLegend.style.display = "none";
-            showRerun.style.display = "none";
+            if (typeof showLegend !== 'undefined'){
+              showLegend.style.display = "none";
+              showRerun.style.display = "none";
+            }
             
 
             clear = false;
