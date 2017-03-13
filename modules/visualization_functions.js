@@ -153,7 +153,6 @@ function onLoad() {
             g.forEachLinkedNode(node.id, function(linkedNode, link){
               var linkUI = graphics.getLinkUI(link.id);                            
               linkUI.color=color_to_use[1];
-              //console.log(linkedNode.id)
               var linked_nodeUI = graphics.getNodeUI(linkedNode.id);
               if (linked_nodeUI.color != 0xc89933) {
                 linked_nodeUI.color = color_to_use[2];
@@ -775,12 +774,21 @@ function onLoad() {
             taxaInList = [];
           }
         });
+        // runs the re run operation for the selected species
+        $('#Re_run').click(function(event){
+          console.log("executing re run...")
+          node_removal_taxa(g, graphics, nodeColor);
+        });
+
         // resets colors of selection
         $('#taxaModalClear').click(function(event){
+          showLegend = ""; // added to pass the object not found
           if (clear = true ){
             slider.noUiSlider.set([min, max]);
             showLegend.style.display = "none";
             showRerun.style.display = "none";
+            
+
             clear = false;
           }
         });
