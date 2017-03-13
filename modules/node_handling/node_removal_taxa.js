@@ -1,7 +1,6 @@
 // function to remove all nodes that have no default color
 function node_removal_taxa(g, graphics, nodeColor, renderer){
   console.log("executing re run...")
-  var unchanged_nodes = [];
   g.forEachNode(function (node) {
     var nodeUI = graphics.getNodeUI(node.id);
     // first check if nodeUI has default color
@@ -22,7 +21,8 @@ function node_removal_taxa(g, graphics, nodeColor, renderer){
       console.log("removing all nodes without any links")
       g.removeNode(node.id)
     };
+    renderer.rerender();
   });
-  renderer.run();
+  
 }
 
