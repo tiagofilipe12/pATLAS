@@ -618,7 +618,9 @@ function onLoad() {
             $('#colorLegendBox').append(store_lis + 
               '<li class="centeredList"><span class="squareLegend" style="background-color:#666370" ></span>&nbsp;unselected</li>')
             showRerun = document.getElementById('Re_run'); // rerun 
+            showGoback = document.getElementById('go_back'); // goback
             showRerun.style.display = "block";
+            showGoback.style.display = "block";
           }
         });
 
@@ -761,6 +763,8 @@ function onLoad() {
           if (typeof showLegend !== 'undefined'){
             showLegend.style.display = "none";
             showRerun.style.display = "none";
+            showGoback.style.display = "none";
+            document.getElementById("go_back").className += " disabled";
           }
           for (var x=0;x<idsArrays.length;x++){
             // empty field
@@ -778,6 +782,12 @@ function onLoad() {
           // functions from node_removal_taxa.js
           listNodesRm=node_removal_taxa(g, graphics, nodeColor, renderer);
           actual_removal(g, listNodesRm, renderer);
+          document.getElementById("go_back").className=document.getElementById("go_back").className.replace( /(?:^|\s)disabled(?!\S)/g , '' );
+        });
+        // returns to the initial tree by reloading the page
+        $('#go_back').click(function(event){
+          console.log("returning to main")
+          window.location.reload();   // a temporary fix to go back to full dataset
         });
 
         // resets colors of selection
@@ -787,9 +797,9 @@ function onLoad() {
             if (typeof showLegend !== 'undefined'){
               showLegend.style.display = "none";
               showRerun.style.display = "none";
-            }
-            
-
+              showGoback.style.display = "none";
+              document.getElementById("go_back").className += " disabled";
+            }  
             clear = false;
           }
         });
