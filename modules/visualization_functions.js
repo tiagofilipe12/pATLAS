@@ -40,7 +40,7 @@ function onLoad() {
                               log_length: log_length 
           });
           list.push(sequence_info);
-          }
+        }
           // loops between all arrays of array pairing sequence and distances
         for (var i = 0; i < dict_dist.length; i++){
           var pairs = dict_dist[i];
@@ -660,7 +660,7 @@ function onLoad() {
           format: wNumb({
             decimals: 0,
           }),
-        }); // allows to update the slider?
+        }); 
 
         //event handler for slider
         slider.noUiSlider.on('update', function (event) {
@@ -775,8 +775,9 @@ function onLoad() {
         });
         // runs the re run operation for the selected species
         $('#Re_run').click(function(event){
-          node_removal_taxa(g, graphics, nodeColor, renderer);
-          //slider.noUiSlider.destroy(); // destroys the slider in order to rebuild it
+          // functions from node_removal_taxa.js
+          listNodesRm=node_removal_taxa(g, graphics, nodeColor, renderer);
+          actual_removal(g, listNodesRm, renderer);
         });
 
         // resets colors of selection
@@ -795,7 +796,6 @@ function onLoad() {
 
 
       }          
-    //aqui
     });
 }
 //** block #2 for node customization **//
