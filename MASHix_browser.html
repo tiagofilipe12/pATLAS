@@ -195,16 +195,21 @@
             <form class="navbar-form navbar-left">
               <button class="btn btn-info" id="reset-sliders"
                       type="button" data-toogle="tooptip"
-                      title="Reset all applied filters">Reset filters</button>
+                      title="Reset all applied filters (legacy)">Reset filters</button>
             </form>
             <form class="navbar-form navbar-left">
               <div class="btn-group">
-                <button class="btn btn-default" id="Re_run"
-                        type="button" data-toogle="tooptip"
-                        title="Re-run for the selected taxa" style="display: none">Re-run selection</button>
                 <button class="btn btn-default disabled" id="go_back"
                         type="button" data-toogle="tooptip"
-                        title="Return to full tree view" style="display: none">Go to Initial tree</button>
+                        title="Return to full tree view" style="display: none"><span class="glyphicon glyphicon-home"></span></button>
+                <button class="btn btn-default" id="Re_run"
+                        type="button" data-toogle="tooptip"
+                        title="Apply filters" style="display: none"><span class="glyphicon glyphicon-filter"></span></button>
+                <!--for now this button is disabled since it does not have funcitonality-->
+                <button class="btn btn-default disabled" id="download_ds"
+                        type="button" data-toogle="tooptip"
+                        title="Download current selection (Currently unavailable)" style="display: none"><span class="glyphicon glyphicon-save"></span></button>
+
               </div>
             </form>
             <form cl

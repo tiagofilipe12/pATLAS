@@ -617,10 +617,12 @@ function onLoad() {
             $('#colorLegendBox').empty();
             $('#colorLegendBox').append(store_lis + 
               '<li class="centeredList"><span class="squareLegend" style="background-color:#666370" ></span>&nbsp;unselected</li>')
-            showRerun = document.getElementById('Re_run'); // rerun 
-            showGoback = document.getElementById('go_back'); // goback
+            showRerun = document.getElementById('Re_run'); 
+            showGoback = document.getElementById('go_back'); 
+            showDownload = document.getElementById('download_ds'); 
             showRerun.style.display = "block";
             showGoback.style.display = "block";
+            showDownload.style.display = "block";
           }
         });
 
@@ -765,6 +767,7 @@ function onLoad() {
             showRerun.style.display = "none";
             showGoback.style.display = "none";
             document.getElementById("go_back").className += " disabled";
+            showDownload.style.display = "none";
           }
           for (var x=0;x<idsArrays.length;x++){
             // empty field
@@ -799,6 +802,7 @@ function onLoad() {
               showRerun.style.display = "none";
               showGoback.style.display = "none";
               document.getElementById("go_back").className += " disabled";
+              showDownload.style.display = "none";
             }  
             clear = false;
           }
