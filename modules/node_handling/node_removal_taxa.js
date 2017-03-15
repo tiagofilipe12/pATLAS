@@ -42,7 +42,8 @@ function node_removal_taxa(g, graphics, nodeColor, renderer, layout){
 }
 
 // function that actually removes the nodes
-function actual_removal(g, listNodesRm, renderer, layout){
+function actual_removal(g, graphics, nodeColor, renderer, layout){
+  listNodesRm=node_removal_taxa(g, graphics, nodeColor, renderer, layout);
   for (id in listNodesRm){
     nodeId = listNodesRm[id]
     g.removeNode(nodeId)
@@ -52,7 +53,20 @@ function actual_removal(g, listNodesRm, renderer, layout){
   $('#playpauseButton').empty();
   $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>');
   paused = false;
-  // resumes actual selection
-  renderer.resume();  
+  // resumes actual selection and hides loading screen
+  $("#loading").hide();
+  renderer.resume();
+  
 
+}
+
+// still usuless functions
+
+
+// a function to display the loader mask
+function show_div(callback){
+  $("#loading").show();
+  console.log("showing loader")
+  // if callback exist execute it
+  callback && callback();
 }

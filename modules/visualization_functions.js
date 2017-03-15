@@ -7,7 +7,6 @@ function getArray_taxa(){
   return $.getJSON('taxa_tree.json');   // change the input file name
 }
 
-
 // initiates vivagraph main functions  
 function onLoad() {
     var list=[];   // list to store references already ploted as nodes
@@ -57,6 +56,7 @@ function onLoad() {
           gravity : -1.2,
           theta : 1
       });
+      // precompute before redering
       precompute(1000, renderGraph);
       function precompute(iterations, callback) {
           // let's run 10 iterations per event loop cycle:
@@ -202,7 +202,9 @@ function onLoad() {
         renderer.pause(); 
 
         //** Loading Screen goes off **//
-        document.getElementById('loading').style.visibility="hidden";
+        //$("#loading").hide();
+        //$("#couve-flor").show();
+        $("#loading").hide();
         document.getElementById('couve-flor').style.visibility="visible";
 
         //***************//
@@ -783,14 +785,16 @@ function onLoad() {
         // runs the re run operation for the selected species
         $('#Re_run').click(function(event){
           //** Loading Screen goes on **//
-          //document.getElementById('couve-flor').style.visibility="hidden";
-          //document.getElementById('loading').style.visibility="visible";
-          
-          // functions from node_removal_taxa.js
-          listNodesRm=node_removal_taxa(g, graphics, nodeColor, renderer, layout);
-          actual_removal(g, listNodesRm, renderer, layout);
+          show_div( function(){
+            // removes nodes
+            actual_removal(g, graphics, nodeColor, renderer, layout)
+          });
+          // removes disabled from go_back button
           document.getElementById("go_back").className=document.getElementById("go_back").className.replace( /(?:^|\s)disabled(?!\S)/g , '' );
+
         });
+
+
         // returns to the initial tree by reloading the page
         $('#go_back').click(function(event){
           console.log("returning to main")
