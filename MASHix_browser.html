@@ -15,7 +15,10 @@
       <script language="javascript" type="text/javascript" src="./modules/node_handling/custom_colors.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/node_handling/circle_nodes.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/node_handling/node_removal_taxa.js"></script> 
-      <script language="javascript" type="text/javascript" src="./modules/visualization_functions.js"></script>     
+      <script language="javascript" type="text/javascript" src="./modules/visualization_functions.js"></script>  
+      <!--test toggle button-->
+      <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+      <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>   
 
     </head>
     
@@ -188,8 +191,7 @@
                   <li><a href="#" id="taxaClick"
                         data-toggle="modal" data-backdrop="static" 
                         data-target="#taxaModal">Taxa</a></li>
-                  <!--<li role="separator" class="divider"></li>
-                  <li><a href="#">One more separated link</a></li>-->
+
                 </ul>
               </li>
             </ul>
@@ -213,8 +215,11 @@
 
               </div>
             </form>
-            <form cl
             <form class="navbar-form navbar-right">
+              <input checked data-toggle="toggle" type="checkbox" 
+                      data-onstyle="success" data-offstyle="default" 
+                      data-on="Node mode on" data-off="Node mode off" 
+                      title="Enable/Disable node selection mode">
               <div class="form-group">
                 <input id="formValueId" type="text" class="form-control" placeholder="Quick search species"/>
               </div>
@@ -237,8 +242,7 @@
             <div class="panel-body">
               <!--Populated by visualization_functions.js-->
               <ul class="legend" id="colorLegendBox">
-                <li class="centeredList"><span class="squareLegend" style="background-color: #ff00ff"></span> Taxa 1</li>
-                <li class="centeredList"><span class="squareLegend" style="background-color: #0000ff"></span> Taxa 2</li>
+
               </ul>
             </div>
           </div>
