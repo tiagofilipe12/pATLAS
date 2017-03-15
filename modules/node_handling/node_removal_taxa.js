@@ -1,6 +1,7 @@
 // function to search all nodes that have no default color and are linked to nodes with no default color
-function node_removal_taxa(g, graphics, nodeColor, renderer){
+function node_removal_taxa(g, graphics, nodeColor, renderer, layout){
   console.log("executing re run...")
+
   listNodesRm = [];
   listNodesnoRm = [];
 
@@ -21,8 +22,14 @@ function node_removal_taxa(g, graphics, nodeColor, renderer){
         // if different from default color but node has default color, then don't rm
         else if (linked_nodeUI.color != nodeColor && listNodesnoRm.indexOf(node.id) < 0){
           listNodesnoRm.push(node.id);
+          // returns all nodes that are linked to nodes with changed color to center
+          layout.setNodePosition(node.id, 0, 0);
         }
       });
+    }
+    // returns nodes with changed color to central position
+    else{
+      layout.setNodePosition(node.id, 0, 0);
     }
   });
 
@@ -35,10 +42,17 @@ function node_removal_taxa(g, graphics, nodeColor, renderer){
 }
 
 // function that actually removes the nodes
-function actual_removal(g, listNodesRm, renderer){
+function actual_removal(g, listNodesRm, renderer, layout){
   for (id in listNodesRm){
     nodeId = listNodesRm[id]
     g.removeNode(nodeId)
   }
-  renderer.rerender();
+
+  // change play button in order to be properly set to pause
+  $('#playpauseButton').empty();
+  $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>');
+  paused = false;
+  // resumes actual selection
+  renderer.resume();  
+
 }

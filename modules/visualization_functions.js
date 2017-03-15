@@ -52,8 +52,8 @@ function onLoad() {
       // previously used to check the number of nodes provided
       var layout = Viva.Graph.Layout.forceDirected(g, {
           springLength : 30,
-          springCoeff : 0.0001,
-          dragCoeff : 0.01,
+          springCoeff : 0.0001,  
+          dragCoeff : 0.01, //sets how fast nodes will separate from origin, the higher the value the slower
           gravity : -1.2,
           theta : 1
       });
@@ -226,8 +226,9 @@ function onLoad() {
           });
 
         // Buttons to control force play/pause using bootstrap navigation bar
-        var paused = true;
+        paused = true;
         $('#playpauseButton').on('click', function(e) {
+          console.log(paused)
           $('#playpauseButton').empty();
           if (paused == true) {                          
               renderer.resume();
@@ -782,9 +783,13 @@ function onLoad() {
         });
         // runs the re run operation for the selected species
         $('#Re_run').click(function(event){
+          //** Loading Screen goes on **//
+          //document.getElementById('couve-flor').style.visibility="hidden";
+          //document.getElementById('loading').style.visibility="visible";
+          
           // functions from node_removal_taxa.js
-          listNodesRm=node_removal_taxa(g, graphics, nodeColor, renderer);
-          actual_removal(g, listNodesRm, renderer);
+          listNodesRm=node_removal_taxa(g, graphics, nodeColor, renderer, layout);
+          actual_removal(g, listNodesRm, renderer, layout);
           document.getElementById("go_back").className=document.getElementById("go_back").className.replace( /(?:^|\s)disabled(?!\S)/g , '' );
         });
         // returns to the initial tree by reloading the page
