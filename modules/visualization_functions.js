@@ -123,41 +123,50 @@ function onLoad() {
           //**************//
           //*** EVENTS ***//
           //**************//
+          toggle_status = false //default state
+          $('#toggle-event').change(function() {
+            toggle_status = $(this).prop('checked');
+          });
 
           var events = Viva.Graph.webglInputEvents(graphics, g);
           store_nodes=[];  //list used to store nodes
           // changes the color of node and links (and respective linked nodes) of this node when clicked
+          console.log(toggle_status)
+          
           events.click(function (node) {
             store_nodes.push(node.id);
             change_color=true;
             console.log('Single click on node: ' + node.id);
             var nodeUI = graphics.getNodeUI(node.id);
-            // statement when node and linked nodes are still in default color
-            if (nodeUI.color == nodeColor) {    
-              color_to_use=[0xc89933,0x000000FF,0x7c3912];
-            }
-            // statement when linked node is selected
-            else if(nodeUI.color == 0x7c3912){
-              color_to_use=[0xc89933,0x000000FF,0x7c3912];
-            }
-            // statement when node is shaded
-            else if(nodeUI.color == 0xcdc8b1){
-              color_to_use=[0xc89933,0x000000FF,0x7c3912];
-            }
-            // statement do deselect node and linked nodes
-            else {
-              // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
-              color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];
-            }
-            nodeUI.color = color_to_use[0];
-            g.forEachLinkedNode(node.id, function(linkedNode, link){
-              var linkUI = graphics.getLinkUI(link.id);                            
-              linkUI.color=color_to_use[1];
-              var linked_nodeUI = graphics.getNodeUI(linkedNode.id);
-              if (linked_nodeUI.color != 0xc89933) {
-                linked_nodeUI.color = color_to_use[2];
+            if (toggle_status == true){   // if statement to check if toggle button is enabled
+              // statement when node and linked nodes are still in default color
+              if (nodeUI.color == nodeColor) {    
+                color_to_use=[0xc89933,0x000000FF,0x7c3912];
               }
-            });
+              // statement when linked node is selected
+              else if(nodeUI.color == 0x7c3912){
+                color_to_use=[0xc89933,0x000000FF,0x7c3912];
+              }
+              // statement when node is shaded
+              else if(nodeUI.color == 0xcdc8b1){
+                color_to_use=[0xc89933,0x000000FF,0x7c3912];
+              }
+              // statement do deselect node and linked nodes
+              else {
+                // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
+                color_to_use=[nodeColor,0xb3b3b3ff,nodeColor];
+              }
+              nodeUI.color = color_to_use[0];
+              g.forEachLinkedNode(node.id, function(linkedNode, link){
+                var linkUI = graphics.getLinkUI(link.id);                            
+                linkUI.color=color_to_use[1];
+                var linked_nodeUI = graphics.getNodeUI(linkedNode.id);
+                if (linked_nodeUI.color != 0xc89933) {
+                  linked_nodeUI.color = color_to_use[2];
+                }
+
+              });
+            }
             renderer.rerender();
           });
 
