@@ -14,8 +14,10 @@
       <!--custom js-->
       <script language="javascript" type="text/javascript" src="./modules/node_handling/custom_colors.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/node_handling/circle_nodes.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/node_handling/node_removal_taxa.js"></script> 
-      <script language="javascript" type="text/javascript" src="./modules/visualization_functions.js"></script>  
+      <script language="javascript" type="text/javascript" src="./modules/node_handling/node_removal_taxa.js"></script>
+      <script language="javascript" type="text/javascript" src="./modules/node_handling/toggle_nodes.js"></script> 
+      <script language="javascript" type="text/javascript" src="./modules/visualization_functions.js"></script> 
+      <script language="javascript" type="text/javascript" src="./modules/alternative_loading.js"></script>
       <!--test toggle button-->
       <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
       <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>   
@@ -27,7 +29,9 @@
 
 
       <div id="loading">
-        <img id="loading-image" src="images/loading.gif" alt="Loading..." />
+        <img id="loading-image" src="images/loading.gif" alt="Loading..." ondblclick="alternative_loading()"/>
+        <!-- Cortesy of Mickael Silva -->
+        <img id="loading-image-alt" src="images/pok_easter.gif" alt="Loading..." />
       </div>
 
       <!-- Modal for length-->
@@ -153,6 +157,12 @@
         <strong>Attention!</strong> Multiple levels of taxa were selected. Output will highlight all selected taxa in  <font color="#f71735">red!</font>
       </div>
 
+      <!--Alert message to check that some selection is made-->
+      <div class="alert alert-danger alert-dismissable fade in" id="alertId_node" style="display: none">
+        <button type="button" class="close" id="alertClose_node" aria-hidden="true" data-hide="true">&times;</button>
+        <strong>Warning!</strong> To enable filter dropdown options, disable "Node mode on" on the leftside switcher!
+      </div>
+
       <!-- Starts navigation bar -->
       <!--<nav class="navbar navbar-default navbar-fixed-top"> -->      
       <nav class="navbar navbar-default" id="navigation_bar">
@@ -180,7 +190,7 @@
               <li class="dropdown" id="filter_dropdown">
                 <a href="#" class="dropdown-toggle" 
                 data-toggle="dropdown" role="button" 
-                aria-haspopup="true"
+                aria-haspopup="true" id="href_toogle"
                 aria-expanded="false">Filters<span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">

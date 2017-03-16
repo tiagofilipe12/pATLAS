@@ -36,14 +36,26 @@
     text-align: center;
 }
 #loading-image {
-  position: absolute;
-  top: 45%;
+  position: fixed;
+  top: 50%;
   left: 50%;
-  transform: translateX(-49%);
+  display: block;
+  transform: translate(-50%, -50%);
+}
+#loading-image-alt{
+  display: none;
+  position: absolute;
+  width:200px; 
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
 }
 /*modal for length body increase*/
 #modal-body-length{
   height: 130px;
+
 }
 /*input min value*/
 #min-modal{
@@ -175,7 +187,7 @@
 
 /*alert boxes*/
 
-#alertId{
+.alert{
   position:absolute;
   z-index: 99 !important; 
   top:10%;
@@ -183,13 +195,6 @@
   transform: translateX(-50%);
 }
 
-#alertId_multi{
-  position:absolute;
-  z-index: 99 !important; 
-  top:10%;
-  left: 50%;
-  transform: translateX(-50%);
-}
 
 /*color legend*/
 
