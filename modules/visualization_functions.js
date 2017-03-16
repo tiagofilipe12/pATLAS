@@ -335,38 +335,38 @@ function onLoad() {
               sortedArray_family = list_families.sort();
         
           //append all order present in dataset
-          var storeOrderId = [],
-              storeFamilyId = [],
-              storeGenusId = [],
-              storeSpeciesId = [];
+          //var storeOrderId = [],
+           //   storeFamilyId = [],
+           //   storeGenusId = [],
+              //storeSpeciesId = [];
           for (var i = 0; i < sortedArray_order.length; i++){
             var order_tag = "order" + sortedArray_order[i];
             var orderId = "id='" + order_tag +"'";
-            storeOrderId.push(order_tag);
+            //storeOrderId.push(order_tag);
             $('#orderList').append("<li class='OrderClass'><a href='#' "+ orderId +">"+
                                     sortedArray_order[i] +
                                     "</a></li>");
           }
           $('#orderList').append("<li class='OrderClass'><a href='#' id='otherId' > \
                                     <em>Other</em></a></li>");
-          storeOrderId.push("id=otherId");
+          //storeOrderId.push("id=otherId");
           //append all families present in dataset
           for (var i = 0; i < sortedArray_family.length; i++){
             var family_tag = "family" + sortedArray_family[i];
             var familyId = "id='" +family_tag+"'";
-            storeFamilyId.push(family_tag);
+            //storeFamilyId.push(family_tag);
             $('#familyList').append("<li class='FamilyClass'><a href='#'"+ familyId +">"+
                                     sortedArray_family[i] +
                                     "</a></li>");
           }
           $('#familyList').append("<li class='FamilyClass'><a href='#' id='otherId' > \
                                     <em>Other</em></a></li>");
-          storeFamilyId.push("id=otherId"); 
+          //storeFamilyId.push("id=otherId"); 
           //append all genera present in dataset
           for (var i = 0; i < sortedArray_genera.length; i++){
             var genus_tag = "genus" + sortedArray_genera[i];
             var genusId = "id='" + genus_tag  + "'";
-            storeGenusId.push(genus_tag);
+            //storeGenusId.push(genus_tag);
             $('#genusList').append("<li class='GenusClass'><a href='#'"+ genusId +">"+
                                     sortedArray_genera[i] +
                                     "</a></li>");
@@ -375,7 +375,7 @@ function onLoad() {
           for (var i = 0; i < sortedArray_species.length; i++){
             var species_tag = "genus" + sortedArray_species[i];
             var speciesId = "id='" + species_tag + "'";
-            storeSpeciesId.push(speciesId);
+            //storeSpeciesId.push(speciesId);
             $('#speciesList').append("<li class='SpeciesClass'><a href='#'"+ speciesId +">"+
                                     sortedArray_species[i] +
                                     "</a></li>");
