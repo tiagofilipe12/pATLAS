@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('example.json');   // change the input file name
+  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -805,10 +805,10 @@ function onLoad() {
         // runs the re run operation for the selected species
         $('#Re_run').click(function(event){
           //** Loading Screen goes on **//
-          show_div( function(){
+          show_div(     
             // removes nodes
             actual_removal(g, graphics, nodeColor, renderer, layout)
-          });
+          );
           // removes disabled from go_back button
           document.getElementById("go_back").className=document.getElementById("go_back").className.replace( /(?:^|\s)disabled(?!\S)/g , '' );
 
