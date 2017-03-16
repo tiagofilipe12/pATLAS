@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
+  return $.getJSON('example.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
