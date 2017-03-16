@@ -121,12 +121,23 @@ function onLoad() {
           });
 
           //**************//
-          //*** EVENTS ***//
+          //*** TOGGLE ***//
           //**************//
+          //** This section controls the connection between the toggle button on the leftside ***//
+          //** and the dropdown on the right side **//
+
           toggle_status = false //default state
+          $('#toggle-event').bootstrapToggle('off') // set to default off
           $('#toggle-event').change(function() {
             toggle_status = $(this).prop('checked');
-          });
+            toggle_manager(toggle_status);
+          });          
+
+
+          //**************//
+          //*** EVENTS ***//
+          //**************//
+
 
           var events = Viva.Graph.webglInputEvents(graphics, g);
           store_nodes=[];  //list used to store nodes
