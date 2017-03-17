@@ -440,6 +440,7 @@ function onLoad() {
               existingTaxon.push(stringClass); //used to store previous string and for comparing with new one
             });
           }
+          console.log(taxaInList)
 
           //***** Clear selection button *****//
           clear = false; //added to control the colors being triggered after clearing
@@ -553,6 +554,10 @@ function onLoad() {
           //renders the graph for the desired taxon if more than one taxon type is selected
           var store_lis = "" // a variable to store all <li> generated for legend
           var firstIteration = true; // bolean to control the upper taxa level (order or family)
+
+          // first restores all nodes to default color
+          node_color_reset(graphics, g, graphics, nodeColor);
+
           if (counter > 1 && counter < 4){
             g.forEachNode(function (node) {
               var nodeUI = graphics.getNodeUI(node.id);
@@ -600,13 +605,13 @@ function onLoad() {
                   if (alertArrays["order"] != ""){
                     var tempArray = assocOrderGenus[currentSelection[i]]; 
                     // executres node function for family and orders
-                    node_coloring_taxa(tempArray);                     
+                    store_lis=node_coloring_taxa(tempArray, g, graphics, store_lis, currentSelection);        
                   }
                   // families //
                   else if (alertArrays["family"] != ""){
                     var tempArray = assocFamilyGenus[currentSelection[i]];
                     // executres node function for family and orders
-                    node_coloring_taxa(tempArray);  
+                    store_lis=node_coloring_taxa(tempArray, g, graphics, store_lis, currentSelection); 
                   }
                 
                   // genus and species //

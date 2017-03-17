@@ -71,7 +71,7 @@ function show_div(callback){
 }
 
 // helper function to color according with family and order
-function node_coloring_taxa(tempArray){
+function node_coloring_taxa(tempArray, g, graphics, store_lis, currentSelection){
   currentColor = color[i].replace('#', '0x');
   style_color = "background-color:" + color[i];
   store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
@@ -81,7 +81,6 @@ function node_coloring_taxa(tempArray){
       var nodeUI = graphics.getNodeUI(node.id);
       var species = node.data.species.split(">").slice(-1).toString();
       var genus = species.split(" ")[0];
-
       
       //checks if genus is in selection
       if (tempArray[gen] == genus){
@@ -90,4 +89,16 @@ function node_coloring_taxa(tempArray){
       }
     });
   }
+  return store_lis
 }       
+
+// function to reset node colors
+function node_color_reset(graphics, g, graphics, nodeColor){
+  g.forEachNode(function (node) {
+    var nodeUI = graphics.getNodeUI(node.id);
+    //reset all nodes before changing colors because of the second instance of filters
+    if (nodeUI.color != nodeColor){
+      nodeUI.color = nodeColor;
+    }
+  });
+}
