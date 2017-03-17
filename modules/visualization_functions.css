@@ -95,7 +95,7 @@
 }
 /* customizes taxa filters buttons */
 #modal-body-taxa{
-  height: 320px
+  height: 270px
 }
 
 /* taxa filter dropdowns editing */
@@ -139,13 +139,20 @@
 #displayCurrent{
   position: relative;
   width: 100%;
-  top: 17%;
+  top: 25%;
 
 }
 #displayCurrentBox{
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 150px;
+  height: 130px;
+}
+
+.header_taxa{
+  font-size: 10px;
+  color: #959595;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 /*end of taxa filter popup*/

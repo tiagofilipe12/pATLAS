@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('example.json');   // change the input file name
+  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -343,43 +343,61 @@ function onLoad() {
             var order_tag = "order" + sortedArray_order[i];
             var orderId = "id='" + order_tag +"'";
             //storeOrderId.push(order_tag);
-            $('#orderList').append("<li class='OrderClass'><a href='#' "+ orderId +">"+
+            //$('#orderList').append("<li class='OrderClass'><a href='#' "+ orderId +">"+
+            //                        sortedArray_order[i] +
+            //                        "</a></li>");
+            $('#orderList').append("<option class='OrderClass'>"+
                                     sortedArray_order[i] +
-                                    "</a></li>");
+                                    "</option>");
           }
-          $('#orderList').append("<li class='OrderClass'><a href='#' id='otherId' > \
-                                    <em>Other</em></a></li>");
+          $('#orderList').append("<option class='OrderClass'> \
+                                    <em>Other</em></option>");
           //storeOrderId.push("id=otherId");
           //append all families present in dataset
           for (var i = 0; i < sortedArray_family.length; i++){
             var family_tag = "family" + sortedArray_family[i];
             var familyId = "id='" +family_tag+"'";
             //storeFamilyId.push(family_tag);
-            $('#familyList').append("<li class='FamilyClass'><a href='#'"+ familyId +">"+
+            //$('#familyList').append("<li class='FamilyClass'><a href='#'"+ familyId +">"+
+            //                        sortedArray_family[i] +
+            //                        "</a></li>");
+            $('#familyList').append("<option class='FamilyClass'>"+
                                     sortedArray_family[i] +
-                                    "</a></li>");
+                                    "</option>");
           }
-          $('#familyList').append("<li class='FamilyClass'><a href='#' id='otherId' > \
-                                    <em>Other</em></a></li>");
+          $('#familyList').append("<option class='FamilyClass'> \
+                                    <em>Other</em></li>");
           //storeFamilyId.push("id=otherId"); 
           //append all genera present in dataset
           for (var i = 0; i < sortedArray_genera.length; i++){
             var genus_tag = "genus" + sortedArray_genera[i];
             var genusId = "id='" + genus_tag  + "'";
             //storeGenusId.push(genus_tag);
-            $('#genusList').append("<li class='GenusClass'><a href='#'"+ genusId +">"+
+            //$('#genusList').append("<li class='GenusClass'><a href='#'"+ genusId +">"+
+            //                        sortedArray_genera[i] +
+            //                        "</a></li>");
+            $('#genusList').append("<option class='GenusClass'>"+
                                     sortedArray_genera[i] +
-                                    "</a></li>");
+                                    "</option>");
           }
           //append all species present in dataset
           for (var i = 0; i < sortedArray_species.length; i++){
             var species_tag = "genus" + sortedArray_species[i];
             var speciesId = "id='" + species_tag + "'";
             //storeSpeciesId.push(speciesId);
-            $('#speciesList').append("<li class='SpeciesClass'><a href='#'"+ speciesId +">"+
+            //$('#speciesList').append("<li class='SpeciesClass'><a href='#'"+ speciesId +">"+
+            //                        sortedArray_species[i] +
+            //                        "</a></li>");
+            $('#speciesList').append("<option class='SpeciesClass'>"+
                                     sortedArray_species[i] +
-                                    "</a></li>");
-          }          
+                                    "</option>");
+          }
+
+          //updates options provided to bootstrap-select
+          $('#orderList').selectpicker("refresh");
+          $('#familyList').selectpicker("refresh");
+          $('#genusList').selectpicker("refresh");
+          $('#speciesList').selectpicker("refresh");          
 
           // clickable <li> and control of displayer of current filters
           firstInstance = true; //global variable
@@ -406,8 +424,14 @@ function onLoad() {
                 divstringClass.innerHTML = stringClass +": "+ tempVar;
               }
               else {
+                // if taxa is already not in list then append
                 if (taxaInList.indexOf(tempVar) < 0){
                   divstringClass.innerHTML = divstringClass.innerHTML +", " +tempVar;
+                }
+                // if it is already in list then remove it and remove from list taxaInList
+                else{
+                  divstringClass.innerHTML = divstringClass.innerHTML.replace(", " +tempVar, "");
+                  taxaInList.splice(taxaInList.indexOf(tempVar));
                 }
               }
               if (taxaInList.indexOf(tempVar) < 0){
@@ -424,14 +448,19 @@ function onLoad() {
             event.preventDefault();
             for (var x=0;x<idsArrays.length;x++){
               // empty field
-              $('#'+idsArrays[x]).empty()
+              $('#'+idsArrays[x]).empty();
               // reset to default of html
-              $('#'+idsArrays[x]).append(idsArrays[x].replace("p_","") + ": No filters applied")
+              $('#'+idsArrays[x]).append(idsArrays[x].replace("p_","") + ": No filters applied");
               // resets the lists and checkers for the panel
               firstInstance = true;
               existingTaxon = [];
               taxaInList = [];
             }
+            // resets dropdown selections
+            $('#orderList').selectpicker('deselectAll');
+            $('#familyList').selectpicker('deselectAll');
+            $('#genusList').selectpicker('deselectAll');
+            $('#speciesList').selectpicker('deselectAll');
           });
         });
         
@@ -801,6 +830,11 @@ function onLoad() {
             existingTaxon = [];
             taxaInList = [];
           }
+          // resets dropdown selections
+          $('#orderList').selectpicker('deselectAll');
+          $('#familyList').selectpicker('deselectAll');
+          $('#genusList').selectpicker('deselectAll');
+          $('#speciesList').selectpicker('deselectAll');
         });
         // runs the re run operation for the selected species
         $('#Re_run').click(function(event){

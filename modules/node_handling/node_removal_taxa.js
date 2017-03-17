@@ -57,7 +57,7 @@ function actual_removal(g, graphics, nodeColor, renderer, layout){
     $("#loading").hide();
     // slow down the spreading of nodes
     // the more removed nodes --> less selected nodes --> slower spread
-    layout.simulator.dragCoeff(0.1 + (listNodesRm.length*0.0001)); 
+    layout.simulator.dragCoeff(0.1 + (listNodesRm.length*0.000001)); 
     renderer.resume();
   }, 1000);
 }
