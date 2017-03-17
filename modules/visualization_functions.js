@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
+  return $.getJSON('example.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -548,27 +548,7 @@ function onLoad() {
               }
             }         
             
-          });
-
-          // helper function to color according with family and order
-          function node_coloring_taxa(tempArray){
-            currentColor = color[i].replace('#', '0x');
-            style_color = "background-color:" + color[i];
-            store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
-            for (gen in tempArray){
-              //cycles nodes
-              g.forEachNode(function (node) {
-                var nodeUI = graphics.getNodeUI(node.id);
-                var species = node.data.species.split(">").slice(-1).toString();
-                var genus = species.split(" ")[0];
-                //checks if genus is in selection
-                if (tempArray[gen] == genus){
-                  nodeUI.color = currentColor;
-                  changed_nodes.push(node.id);
-                }
-              });
-            }
-          }           
+          });    
 
           //renders the graph for the desired taxon if more than one taxon type is selected
           var store_lis = "" // a variable to store all <li> generated for legend

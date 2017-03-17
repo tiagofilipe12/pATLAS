@@ -69,3 +69,25 @@ function show_div(callback){
   // if callback exist execute it
   callback && callback();
 }
+
+// helper function to color according with family and order
+function node_coloring_taxa(tempArray){
+  currentColor = color[i].replace('#', '0x');
+  style_color = "background-color:" + color[i];
+  store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
+  for (gen in tempArray){
+    //cycles nodes
+    g.forEachNode(function (node) {
+      var nodeUI = graphics.getNodeUI(node.id);
+      var species = node.data.species.split(">").slice(-1).toString();
+      var genus = species.split(" ")[0];
+
+      
+      //checks if genus is in selection
+      if (tempArray[gen] == genus){
+        nodeUI.color = currentColor;
+        changed_nodes.push(node.id);
+      }
+    });
+  }
+}       
