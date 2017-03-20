@@ -85,6 +85,7 @@ function node_coloring_taxa(tempArray, g, graphics, store_lis, currentSelection)
       //checks if genus is in selection
       if (tempArray[gen] == genus){
         nodeUI.color = currentColor;
+        nodeUI.backupColor = nodeUI.color;
         changed_nodes.push(node.id);
       }
     });
@@ -93,12 +94,14 @@ function node_coloring_taxa(tempArray, g, graphics, store_lis, currentSelection)
 }       
 
 // function to reset node colors
-function node_color_reset(graphics, g, graphics, nodeColor){
+function node_color_reset(graphics, g, nodeColor, renderer){
   g.forEachNode(function (node) {
     var nodeUI = graphics.getNodeUI(node.id);
     //reset all nodes before changing colors because of the second instance of filters
     if (nodeUI.color != nodeColor){
       nodeUI.color = nodeColor;
+      nodeUI.backupColor = nodeUI.color;
     }
   });
+  renderer.rerender();
 }

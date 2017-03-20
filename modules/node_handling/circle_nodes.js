@@ -7,6 +7,7 @@
 function WebglCircle(size, color) {
     this.size = size;
     this.color = color;
+    this.backupColor = color;
 }
 // Next comes the hard part - implementation of API for custom shader
 // program, used by webgl renderer:

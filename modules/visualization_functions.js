@@ -274,6 +274,7 @@ function onLoad() {
             var species = node.data.species.split(">").slice(-1).toString();
             if (species == query){
               nodeUI.color = 0xf71735;
+              nodeUI.backupColor = nodeUI.color;
               changed_nodes.push(node.id);
             }
           });
@@ -284,7 +285,8 @@ function onLoad() {
           g.forEachNode(function (node) {
             var nodeUI = graphics.getNodeUI(node.id);
             if (changed_nodes.indexOf(node.id) >= 0){
-              nodeUI.color = nodeColor; 
+              nodeUI.color = nodeColor;
+              nodeUI.backupColor = nodeUI.color; 
             }                       
           });
           renderer.rerender();
@@ -457,8 +459,8 @@ function onLoad() {
             $('#genusList').selectpicker('deselectAll');
             $('#speciesList').selectpicker('deselectAll');
 
-            //if (clear = true ){
-          slider.noUiSlider.set([min, max]);
+            slider.noUiSlider.set([min, max]);
+            node_color_reset(graphics, g, nodeColor, renderer);
             if (typeof showLegend !== 'undefined'){
               showLegend.style.display = "none";
               showRerun.style.display = "none";
@@ -471,9 +473,7 @@ function onLoad() {
         
         //***** Submit button for taxa filter *****//
 
-        //perform actions when submit button is clicked. 
-
-        
+        //perform actions when submit button is clicked.         
 
         $('#taxaModalSubmit').click(function(event){
           noLegend = false // sets legend to hidden state by default
@@ -561,7 +561,7 @@ function onLoad() {
           var firstIteration = true; // bolean to control the upper taxa level (order or family)
 
           // first restores all nodes to default color
-          node_color_reset(graphics, g, graphics, nodeColor);
+          node_color_reset(graphics, g, nodeColor, renderer);
 
           if (counter > 1 && counter < 4){
             g.forEachNode(function (node) {
@@ -571,11 +571,13 @@ function onLoad() {
               //checks if genus is in selection
               if (selectedGenus.indexOf(genus) >= 0){
                 nodeUI.color = 0xf71735;
+                nodeUI.backupColor = nodeUI.color;
                 changed_nodes.push(node.id);
               }
               //checks if species is in selection
               else if (selectedSpecies.indexOf(species) >= 0){
                 nodeUI.color = 0xf71735;
+                nodeUI.backupColor = nodeUI.color;
                 changed_nodes.push(node.id);
               }
             });
@@ -630,13 +632,15 @@ function onLoad() {
                       var species = node.data.species.split(">").slice(-1).toString();
                       var genus = species.split(" ")[0];
                       //checks if genus is in selection
-                      if (currentSelection[i] == genus){
+                      if (currentSelection[i] == genus){                        
                         nodeUI.color = currentColor;
+                        nodeUI.backupColor = nodeUI.color;
                         changed_nodes.push(node.id);
                       }
                       // checks if species is in selection
                       else if (currentSelection[i]==species){
                         nodeUI.color = currentColor;
+                        nodeUI.backupColor = nodeUI.color;
                         changed_nodes.push(node.id);
                       }
                     });
@@ -707,22 +711,27 @@ function onLoad() {
           }),
         }); 
 
-        //event handler for slider
-        slider.noUiSlider.on('update', function (event) {
-          var slider_max = slider.noUiSlider.get()[1],
-              slider_min = slider.noUiSlider.get()[0];
-          g.forEachNode(function (node) {
-            var node_length = node.data.seq_length.split(">").slice(-1).toString();
-            var nodeUI = graphics.getNodeUI(node.id);
-            if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)){
-              nodeUI.color = 0xcdc8b1; // shades nodes
-            }
-            else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)){
-              nodeUI.color = nodeColor; //return nodes to original color
-            }
+        // event handler for slider
+        // trigger only if clicked to avoid looping through the nodes again
+        $('#length_filter').click(function(event){
+          slider.noUiSlider.on('set', function (event) {
+            var slider_max = slider.noUiSlider.get()[1],
+                slider_min = slider.noUiSlider.get()[0];
+            g.forEachNode(function (node) {
+              //console.log(node.id)
+              var node_length = node.data.seq_length.split(">").slice(-1).toString();
+              var nodeUI = graphics.getNodeUI(node.id);
+              if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)){
+                nodeUI.color = 0xcdc8b1; // shades nodes
+              }
+              else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)){
+                nodeUI.color = nodeUI.backupColor; //return nodes to original color
+              }
+            });
+            renderer.rerender();
           });
-          renderer.rerender();
         });
+
 
         // inputs mins and maxs for slider
         var inputMin = document.getElementById("slider_input_min"),
@@ -803,6 +812,7 @@ function onLoad() {
         // resets the slider
         $('#reset-sliders').click(function(event){
           slider.noUiSlider.set([min, max]);
+          node_color_reset(graphics, g, nodeColor, renderer);
           if (typeof showLegend !== 'undefined'){
             showLegend.style.display = "none";
             showRerun.style.display = "none";
