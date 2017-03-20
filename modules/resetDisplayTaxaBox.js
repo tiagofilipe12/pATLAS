@@ -13,7 +13,7 @@ function resetDisplayTaxaBox(idsArrays){
   }
 }
 
-// function to remove a specific string from an idsArrays
+// function to remove a specific string from an array
 function stringRmArray(string, array){
   for (var i=array.length-1; i>=0; i--){
     if (array[i] === string){
