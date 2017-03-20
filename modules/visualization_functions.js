@@ -417,51 +417,71 @@ function onLoad() {
               // fill panel group displaying current selected taxa filters //
               var stringClass = this.className.slice(0,-5)
               var tempVar = this.firstChild.innerHTML
+              console.log(stringClass)
+              console.log(tempVar)
               
               // checks if a taxon is already in display
               var divstringClass = document.getElementById("p_"+stringClass);
-              if (existingTaxon.indexOf(stringClass) < 0) {
+              if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
+                console.log("1")
                 divstringClass.innerHTML = stringClass +": "+ tempVar;
+              }
+              // checks if selection is in list and is the last element present... removing it
+              else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar) {
+                console.log("#5")
+                console.log(divstringClass.innerHTML)
+                // resets displayCurrentBox
+                resetDisplayTaxaBox(idsArrays);
+                // removes tempVar from taxaInList
+                //taxaInList.splice(taxaInList.indexOf(tempVar));
+
               }
               else {
                 // if taxa is already not in list then append
                 if (taxaInList.indexOf(tempVar) < 0){
                   divstringClass.innerHTML = divstringClass.innerHTML +", " +tempVar;
+                  console.log("2")
                 }
                 // if it is already in list then remove it and remove from list taxaInList
                 else{
                   divstringClass.innerHTML = divstringClass.innerHTML.replace(", " +tempVar, "");
                   taxaInList.splice(taxaInList.indexOf(tempVar));
+                  console.log("3")
                 }
               }
               if (taxaInList.indexOf(tempVar) < 0){
                 taxaInList.push(tempVar);  //user to store all clicked taxa
+                console.log("4")
               }
               existingTaxon.push(stringClass); //used to store previous string and for comparing with new one
             });
           }
-          console.log(taxaInList)
 
           //***** Clear selection button *****//
-          clear = false; //added to control the colors being triggered after clearing
+          //clear = false; //added to control the colors being triggered after clearing
+          console.log(idsArrays)
           $('#taxaModalClear').click(function(event){
-            clear = true;
+            //clear = true;
             event.preventDefault();
-            for (var x=0;x<idsArrays.length;x++){
-              // empty field
-              $('#'+idsArrays[x]).empty();
-              // reset to default of html
-              $('#'+idsArrays[x]).append(idsArrays[x].replace("p_","") + ": No filters applied");
-              // resets the lists and checkers for the panel
-              firstInstance = true;
-              existingTaxon = [];
-              taxaInList = [];
-            }
+            resetDisplayTaxaBox(idsArrays);
+
             // resets dropdown selections
             $('#orderList').selectpicker('deselectAll');
             $('#familyList').selectpicker('deselectAll');
             $('#genusList').selectpicker('deselectAll');
             $('#speciesList').selectpicker('deselectAll');
+
+            //if (clear = true ){
+              slider.noUiSlider.set([min, max]);
+              if (typeof showLegend !== 'undefined'){
+                  showLegend.style.display = "none";
+                  showRerun.style.display = "none";
+                  showGoback.style.display = "none";
+                  document.getElementById("go_back").className += " disabled";
+                  showDownload.style.display = "none";
+                }  
+            //  clear = false;
+            //}
           });
         });
         
@@ -805,16 +825,8 @@ function onLoad() {
             document.getElementById("go_back").className += " disabled";
             showDownload.style.display = "none";
           }
-          for (var x=0;x<idsArrays.length;x++){
-            // empty field
-            $('#'+idsArrays[x]).empty()
-            // reset to default of html
-            $('#'+idsArrays[x]).append(idsArrays[x].replace("p_","") + ": No filters applied")
-            // resets the lists and checkers for the panel
-            firstInstance = true;
-            existingTaxon = [];
-            taxaInList = [];
-          }
+          resetDisplayTaxaBox(idsArrays)
+
           // resets dropdown selections
           $('#orderList').selectpicker('deselectAll');
           $('#familyList').selectpicker('deselectAll');
@@ -839,22 +851,6 @@ function onLoad() {
           console.log("returning to main")
           window.location.reload();   // a temporary fix to go back to full dataset
         });
-
-        // resets colors of selection
-        $('#taxaModalClear').click(function(event){
-          if (clear = true ){
-            slider.noUiSlider.set([min, max]);
-            if (typeof showLegend !== 'undefined'){
-              showLegend.style.display = "none";
-              showRerun.style.display = "none";
-              showGoback.style.display = "none";
-              document.getElementById("go_back").className += " disabled";
-              showDownload.style.display = "none";
-            }  
-            clear = false;
-          }
-        });
-
 
       }          
     });
