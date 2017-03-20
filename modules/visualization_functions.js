@@ -335,47 +335,30 @@ function onLoad() {
               sortedArray_family = list_families.sort();
         
           //append all order present in dataset
-          //var storeOrderId = [],
-           //   storeFamilyId = [],
-           //   storeGenusId = [],
-              //storeSpeciesId = [];
+
           for (var i = 0; i < sortedArray_order.length; i++){
             var order_tag = "order" + sortedArray_order[i];
             var orderId = "id='" + order_tag +"'";
-            //storeOrderId.push(order_tag);
-            //$('#orderList').append("<li class='OrderClass'><a href='#' "+ orderId +">"+
-            //                        sortedArray_order[i] +
-            //                        "</a></li>");
             $('#orderList').append("<option class='OrderClass'>"+
                                     sortedArray_order[i] +
                                     "</option>");
           }
           $('#orderList').append("<option class='OrderClass'> \
                                     <em>Other</em></option>");
-          //storeOrderId.push("id=otherId");
           //append all families present in dataset
           for (var i = 0; i < sortedArray_family.length; i++){
             var family_tag = "family" + sortedArray_family[i];
             var familyId = "id='" +family_tag+"'";
-            //storeFamilyId.push(family_tag);
-            //$('#familyList').append("<li class='FamilyClass'><a href='#'"+ familyId +">"+
-            //                        sortedArray_family[i] +
-            //                        "</a></li>");
             $('#familyList').append("<option class='FamilyClass'>"+
                                     sortedArray_family[i] +
                                     "</option>");
           }
           $('#familyList').append("<option class='FamilyClass'> \
                                     <em>Other</em></li>");
-          //storeFamilyId.push("id=otherId"); 
           //append all genera present in dataset
           for (var i = 0; i < sortedArray_genera.length; i++){
             var genus_tag = "genus" + sortedArray_genera[i];
             var genusId = "id='" + genus_tag  + "'";
-            //storeGenusId.push(genus_tag);
-            //$('#genusList').append("<li class='GenusClass'><a href='#'"+ genusId +">"+
-            //                        sortedArray_genera[i] +
-            //                        "</a></li>");
             $('#genusList').append("<option class='GenusClass'>"+
                                     sortedArray_genera[i] +
                                     "</option>");
@@ -384,10 +367,6 @@ function onLoad() {
           for (var i = 0; i < sortedArray_species.length; i++){
             var species_tag = "genus" + sortedArray_species[i];
             var speciesId = "id='" + species_tag + "'";
-            //storeSpeciesId.push(speciesId);
-            //$('#speciesList').append("<li class='SpeciesClass'><a href='#'"+ speciesId +">"+
-            //                        sortedArray_species[i] +
-            //                        "</a></li>");
             $('#speciesList').append("<option class='SpeciesClass'>"+
                                     sortedArray_species[i] +
                                     "</option>");
@@ -420,21 +399,19 @@ function onLoad() {
               
               // checks if a taxon is already in display
               var divstringClass = document.getElementById("p_"+stringClass);
-              removal = false;
+              removal=false;
               if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
                 divstringClass.innerHTML = stringClass +": "+ tempVar;
-                console.log("1)")
-                removal =false;
+                console.log("1")
+                removal=false;
               }
               // checks if selection is in list and is the last element present... removing it
               else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar && taxaInList.length == 1) {
                 console.log("2")
+                console.log("length taxa in list: "+taxaInList.length)
                 // resets displayCurrentBox
                 resetDisplayTaxaBox(idsArrays);
                 removal=true;
-                // removes tempVar from taxaInList
-                //taxaInList.splice(taxaInList.indexOf(tempVar));
-
               }
               else {
                 // if taxa is already not in list then append
@@ -445,10 +422,18 @@ function onLoad() {
                 }
                 // if it is already in list then remove it and remove from list taxaInList
                 else{
-                  console.log("5")
-                  divstringClass.innerHTML = divstringClass.innerHTML.replace(", " +tempVar, "");
-                  taxaInList.splice(taxaInList.indexOf(tempVar));
-                  removal = true
+                  console.log("5")                  
+                  if (taxaInList[0]){
+                    tempString=tempVar+",";
+                  }
+                  else{
+                    tempString = ", "+tempVar;
+                  }
+                  divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "");
+
+                  taxaInList=stringRmArray(tempVar, taxaInList);
+                  console.log(taxaInList)
+                  removal=true;
                 }
               }
               if (taxaInList.indexOf(tempVar) < 0 && removal == false){
@@ -458,7 +443,6 @@ function onLoad() {
               existingTaxon.push(stringClass); //used to store previous string and for comparing with new one
             });
           }
-          console.log($("select[id='#orderList'] option:selected").length);
 
           //***** Clear selection button *****//
           //clear = false; //added to control the colors being triggered after clearing

@@ -12,3 +12,13 @@ function resetDisplayTaxaBox(idsArrays){
     taxaInList = [];
   }
 }
+
+// function to remove a specific string from an idsArrays
+function stringRmArray(string, array){
+  for (var i=array.length-1; i>=0; i--){
+    if (array[i] === string){
+      array.splice(i,1);
+    }
+  }
+  return array
+}
