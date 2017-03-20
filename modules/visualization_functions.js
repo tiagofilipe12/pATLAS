@@ -404,13 +404,12 @@ function onLoad() {
               removal=false;
               if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
                 divstringClass.innerHTML = stringClass +": "+ tempVar;
-                console.log("1")
+                //console.log("1")
                 removal=false;
               }
               // checks if selection is in list and is the last element present... removing it
               else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar && taxaInList.length == 1) {
-                console.log("2")
-                console.log("length taxa in list: "+taxaInList.length)
+                //console.log("2")
                 // resets displayCurrentBox
                 resetDisplayTaxaBox(idsArrays);
                 removal=true;
@@ -418,33 +417,28 @@ function onLoad() {
               else {
                 // if taxa is already not in list then append
                 if (taxaInList.indexOf(tempVar) < 0){
-                  console.log("3")
+                  //console.log("3")
                   divstringClass.innerHTML = divstringClass.innerHTML +"," +tempVar;
                   removal=false;
                 }
                 // if it is already in list then remove it and remove from list taxaInList
                 else{
-                  console.log("5") 
-                  console.log(taxaInList[0])                 
+                  //console.log("5") 
                   if (taxaInList[0] == tempVar){
-                    console.log("5.1")
+                    //console.log("5.1")
                     tempString=tempVar+",";
                   }
                   else{
-                    console.log("5.2")
+                    //console.log("5.2")
                     tempString = ","+tempVar;
                   }
-                  console.log(tempString)
                   divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "");
-                  console.log(divstringClass.innerHTML)
-
                   taxaInList=stringRmArray(tempVar, taxaInList);
-                  console.log(taxaInList)
                   removal=true;
                 }
               }
               if (taxaInList.indexOf(tempVar) < 0 && removal == false){
-                console.log("6")
+                //console.log("6")
                 taxaInList.push(tempVar);  //user to store all clicked taxa
               }
               existingTaxon.push(stringClass); //used to store previous string and for comparing with new one
