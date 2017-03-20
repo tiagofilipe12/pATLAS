@@ -417,21 +417,21 @@ function onLoad() {
               // fill panel group displaying current selected taxa filters //
               var stringClass = this.className.slice(0,-5)
               var tempVar = this.firstChild.innerHTML
-              console.log(stringClass)
-              console.log(tempVar)
               
               // checks if a taxon is already in display
               var divstringClass = document.getElementById("p_"+stringClass);
+              removal = false;
               if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
-                console.log("1")
                 divstringClass.innerHTML = stringClass +": "+ tempVar;
+                console.log("1)")
+                removal =false;
               }
               // checks if selection is in list and is the last element present... removing it
-              else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar) {
-                console.log("#5")
-                console.log(divstringClass.innerHTML)
+              else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar && taxaInList.length == 1) {
+                console.log("2")
                 // resets displayCurrentBox
                 resetDisplayTaxaBox(idsArrays);
+                removal=true;
                 // removes tempVar from taxaInList
                 //taxaInList.splice(taxaInList.indexOf(tempVar));
 
@@ -439,27 +439,29 @@ function onLoad() {
               else {
                 // if taxa is already not in list then append
                 if (taxaInList.indexOf(tempVar) < 0){
+                  console.log("3")
                   divstringClass.innerHTML = divstringClass.innerHTML +", " +tempVar;
-                  console.log("2")
+                  removal=false;
                 }
                 // if it is already in list then remove it and remove from list taxaInList
                 else{
+                  console.log("5")
                   divstringClass.innerHTML = divstringClass.innerHTML.replace(", " +tempVar, "");
                   taxaInList.splice(taxaInList.indexOf(tempVar));
-                  console.log("3")
+                  removal = true
                 }
               }
-              if (taxaInList.indexOf(tempVar) < 0){
+              if (taxaInList.indexOf(tempVar) < 0 && removal == false){
+                console.log("6")
                 taxaInList.push(tempVar);  //user to store all clicked taxa
-                console.log("4")
               }
               existingTaxon.push(stringClass); //used to store previous string and for comparing with new one
             });
           }
+          console.log($("select[id='#orderList'] option:selected").length);
 
           //***** Clear selection button *****//
           //clear = false; //added to control the colors being triggered after clearing
-          console.log(idsArrays)
           $('#taxaModalClear').click(function(event){
             //clear = true;
             event.preventDefault();
@@ -472,16 +474,14 @@ function onLoad() {
             $('#speciesList').selectpicker('deselectAll');
 
             //if (clear = true ){
-              slider.noUiSlider.set([min, max]);
-              if (typeof showLegend !== 'undefined'){
-                  showLegend.style.display = "none";
-                  showRerun.style.display = "none";
-                  showGoback.style.display = "none";
-                  document.getElementById("go_back").className += " disabled";
-                  showDownload.style.display = "none";
-                }  
-            //  clear = false;
-            //}
+          slider.noUiSlider.set([min, max]);
+            if (typeof showLegend !== 'undefined'){
+              showLegend.style.display = "none";
+              showRerun.style.display = "none";
+              showGoback.style.display = "none";
+              document.getElementById("go_back").className += " disabled";
+              showDownload.style.display = "none";
+            }  
           });
         });
         
@@ -489,9 +489,10 @@ function onLoad() {
 
         //perform actions when submit button is clicked. 
 
-        noLegend = false // sets legend to hidden state by default
+        
 
         $('#taxaModalSubmit').click(function(event){
+          noLegend = false // sets legend to hidden state by default
           event.preventDefault();
           // now processes the current selection              
           var species_query = document.getElementById("p_Species").innerHTML,
