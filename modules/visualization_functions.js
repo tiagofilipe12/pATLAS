@@ -508,6 +508,7 @@ function onLoad() {
           }
           if (Alert == true){
             divAlert.style.display = "block";
+            showLegend.style.display = "none"; // removes legend when this warning is raised
             Alert = false;
           }
           // control the alertClose button
