@@ -417,7 +417,7 @@ function onLoad() {
                 // if taxa is already not in list then append
                 if (taxaInList.indexOf(tempVar) < 0){
                   console.log("3")
-                  divstringClass.innerHTML = divstringClass.innerHTML +", " +tempVar;
+                  divstringClass.innerHTML = divstringClass.innerHTML +"," +tempVar;
                   removal=false;
                 }
                 // if it is already in list then remove it and remove from list taxaInList
@@ -427,7 +427,7 @@ function onLoad() {
                     tempString=tempVar+",";
                   }
                   else{
-                    tempString = ", "+tempVar;
+                    tempString = ","+tempVar;
                   }
                   divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "");
 
@@ -483,12 +483,12 @@ function onLoad() {
               genus_query = document.getElementById("p_Genus").innerHTML,
               family_query = document.getElementById("p_Family").innerHTML,
               order_query = document.getElementById("p_Order").innerHTML;
-          var selectedSpecies = species_query.replace("Species: ", "").split(", ").filter(Boolean),
-              selectedGenus = genus_query.replace("Genus: ", "").split(", ").filter(Boolean),
-              selectedFamily = family_query.replace("Family: ", "").split(", ").filter(Boolean),
+          var selectedSpecies = species_query.replace("Species: ", "").split(",").filter(Boolean),
+              selectedGenus = genus_query.replace("Genus: ", "").split(",").filter(Boolean),
+              selectedFamily = family_query.replace("Family: ", "").split(",").filter(Boolean),
               selectedOrder = order_query.replace("Order: ", "").split(", ").filter(Boolean);
 
-
+          console.log(selectedSpecies);
 
           //**** Alert for taxa filter ****//
           // print alert if no filters are selected
