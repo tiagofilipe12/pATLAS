@@ -424,14 +424,19 @@ function onLoad() {
                 }
                 // if it is already in list then remove it and remove from list taxaInList
                 else{
-                  console.log("5")                  
-                  if (taxaInList[0]){
+                  console.log("5") 
+                  console.log(taxaInList[0])                 
+                  if (taxaInList[0] == tempVar){
+                    console.log("5.1")
                     tempString=tempVar+",";
                   }
                   else{
+                    console.log("5.2")
                     tempString = ","+tempVar;
                   }
+                  console.log(tempString)
                   divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "");
+                  console.log(divstringClass.innerHTML)
 
                   taxaInList=stringRmArray(tempVar, taxaInList);
                   console.log(taxaInList)
