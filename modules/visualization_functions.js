@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('example.json');   // change the input file name
+  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -670,6 +670,15 @@ function onLoad() {
             showGoback.style.display = "block";
             showDownload.style.display = "block";
           }
+        });
+
+        //*************//
+        //****READS****//
+        //*************//
+        $("#reads_filter").click(function(event){
+          console.log("clicked")
+          event.preventDefault();
+          read_coloring(g, graphics, renderer);
         });
 
         //************************//

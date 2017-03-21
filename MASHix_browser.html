@@ -34,7 +34,10 @@
       <script language="javascript" type="text/javascript" src="./modules/color_pick/jscolor.min.js"></script>
       <!--<link rel="stylesheet" href="./modules/color_pick/.css">-->
       <script language="javascript" type="text/javascript" src="./modules/color_pick/get_color.js"></script>
-
+      <!--chroma to generate colors for reads-->
+      <script language="javascript" type="text/javascript" src="./modules/chroma/chroma.min.js"></script>
+      <!--load reads-->
+      <script language="javascript" type="text/javascript" src="./modules/reads_coloring.js"></script>
 
     </head>
     
@@ -240,6 +243,9 @@
                   <li><a href="#" 
                         data-toggle="modal" data-backdrop="static" 
                         data-target="#taxaModal" id="taxa_filter">Taxa</a></li>
+                  <li role="separator" class="divider"></li>
+                  <!--executes reads_coloring.js-->
+                  <li><a href="#" id="reads_filter">Reads mapping</a></li>
 
                 </ul>
               </li>
