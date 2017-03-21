@@ -6,7 +6,7 @@ Note: each header in fasta is considered a reference.
 
 ---
 
-###Dependencies:
+### Dependencies:
 
 * python2.7 and packages commonly distributed along with it.
 
@@ -21,11 +21,11 @@ Note: This script exports a JSON file to be loaded with [VivaGraphJS](https://gi
 ---
 ## How do I run this thing? aka Usage
 
-###MASHix.py
+### MASHix.py
 
 The first thing you have to do is run MASHix.py in order to calculate distances between all the genomes in a fasta, using [MASH](http://mash.readthedocs.io/en/latest/). MASHix.py does all the processing, thus you don't need to worry about fasta concatenation or header processing. Also, it runs all MASH commands required to obtain a pairwise matrix (though it do not exports one because it will not be human readable for large datasets).
 
-####Options:
+#### Options:
 
 **'-i'**,**'--input_references'** - 'Provide the input fasta files to parse. This will inputs will be joined in a master fasta.'
 
@@ -39,7 +39,7 @@ The first thing you have to do is run MASHix.py in order to calculate distances 
 
 **'-hist'**, **'--histograms'** - 'Checks the distribution of distances values ploting histograms.'
 
-###MASHix_browser.html
+### MASHix_browser.html
 
 To run _MASHix_browser.html_ a json file containing a dictionary of nodes and distances between pairs of nodes is required. MASHix.py can be used for that purpose. However, note that json file must be copied to MASHix main directory where _MASHix_browser.html_ is stored so it can be properly/fully executed.
 
@@ -57,7 +57,7 @@ More comming soon...
 
 ---
 
-###Outputs
+### Outputs
 
 Outputs all files to: full path to first input file --> string given to '-o' option --> results.
 
@@ -71,7 +71,7 @@ Outputs all files to: full path to first input file --> string given to '-o' opt
 
    Note: Large datasets, which may have huge number of links between nodes (genomes/sequences) may suffer from slow loading times. So, in order to avoid this, before loading the MASHix_browser.html, first check the two graphical outputs retrieved by MASHix.py.
 
-###Keyboard shortcuts
+### Keyboard shortcuts
 
 * "shift+l" - Opens length filters 
 * "shift+t" - Opens taxa filters
