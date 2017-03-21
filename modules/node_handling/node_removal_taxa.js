@@ -74,7 +74,7 @@ function show_div(callback){
 function node_coloring_taxa(tempArray, g, graphics, store_lis, currentSelection){
   currentColor = color[i].replace('#', '0x');
   style_color = "background-color:" + color[i];
-  store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
+  store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>';
   for (gen in tempArray){
     //cycles nodes
     g.forEachNode(function (node) {

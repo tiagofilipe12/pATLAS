@@ -582,7 +582,8 @@ function onLoad() {
               }
             });
             renderer.rerender();
-            store_lis= '<li class="centeredList"><span class="squareLegend" style="background-color:#f71735" ></span>&nbsp;multi-level selected taxa</li>';
+            store_lis= '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#f71735"></button>&nbsp;multi-level selected taxa</li>';
+            console.log(store_lis)
             // displays alert
             // first check if filters are applied in order to avoid displaying when there are no filters
             for (i in alertArrays){
@@ -625,7 +626,7 @@ function onLoad() {
                   else if (alertArrays["genus"] != "" || alertArrays["species"] != ""){
                     currentColor = color[i].replace('#', '0x');
                     style_color = "background-color:" + color[i];
-                    store_lis = store_lis + '<li class="centeredList"><span class="squareLegend" style=' + style_color + '></span>&nbsp;' + currentSelection[i] + '</li>';
+                    store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>';
                     //cycles nodes
                     g.forEachNode(function (node) {
                       var nodeUI = graphics.getNodeUI(node.id);
@@ -661,7 +662,7 @@ function onLoad() {
             showLegend.style.display = "block";
             $('#colorLegendBox').empty();
             $('#colorLegendBox').append(store_lis + 
-              '<li class="centeredList"><span class="squareLegend" style="background-color:#666370" ></span>&nbsp;unselected</li>')
+              '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
             showRerun = document.getElementById('Re_run'); 
             showGoback = document.getElementById('go_back'); 
             showDownload = document.getElementById('download_ds'); 

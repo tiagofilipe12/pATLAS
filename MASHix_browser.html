@@ -30,6 +30,10 @@
       <!--load mousetrap for keyboard shortcuts-->
       <script language="javascript" type="text/javascript" src="./modules/keyboard_control/mousetrap.min.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/keyboard_control/keyboard_shortcuts.js"></script>
+      <!--color picker options-->
+      <script language="javascript" type="text/javascript" src="./modules/color_pick/jscolor.min.js"></script>
+      <!--<link rel="stylesheet" href="./modules/color_pick/.css">-->
+      <script language="javascript" type="text/javascript" src="./modules/color_pick/get_color.js"></script>
 
 
     </head>
@@ -283,12 +287,13 @@
 
       <div id="couve-flor" > 
         <!--hidden div for color legend-->
-        <div class="panel-group" id="colorLegend" style="display: none">
+        <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">
           <div class="panel panel-default" >
             <div class="panel-heading">Color legend</div>
             <div class="panel-body">
-              <!--Populated by visualization_functions.js-->
+              
               <ul class="legend" id="colorLegendBox">
+                <!--Populated by visualization_functions.js-->
 
               </ul>
             </div>
