@@ -245,11 +245,15 @@
                         data-target="#taxaModal" id="taxa_filter">Taxa</a></li>
                   <li role="separator" class="divider"></li>
                   <!--executes reads_coloring.js-->
-                  <li><a href="#" id="reads_filter">Reads mapping</a></li>
+                  <li><a href="#" id="reads_filter">Single reads</a></li>
+                  <li role="separator" class="divider"></li>
+                  <!--executes reads_coloring.js-->
+                  <li><a href="#" id="pairwise_filter">Reads pairwise</a></li>
 
                 </ul>
               </li>
             </ul>
+
             <form class="navbar-form navbar-left">
               <button class="btn btn-info" id="reset-sliders"
                       type="button" data-toogle="tooptip"
@@ -339,7 +343,7 @@
         </div>
         <div id="popup_description" style="display: none"></div>
       </div>
-
+      <!--<input id="provideFile" type="file" style="visibility:hidden" />-->
     </body>
 
 </html>

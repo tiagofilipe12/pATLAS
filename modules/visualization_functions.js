@@ -676,9 +676,19 @@ function onLoad() {
         //****READS****//
         //*************//
         $("#reads_filter").click(function(event){
+          //$('#provideFile').click();    // opens file manager
           console.log("clicked")
           event.preventDefault();
           read_coloring(g, graphics, renderer);
+        });
+        $("#pairwise_filter").click(function(event){
+          //$('#provideFile').click();    // opens file manager
+          console.log("clicked_2")
+          event.preventDefault();
+          pairwise_comparison(      // executes functions from reads_coloring.js
+            diff_to_node_color(g, graphics, renderer)
+          );
+          renderer.rerender();
         });
 
         //************************//
