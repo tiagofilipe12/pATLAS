@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
+  return $.getJSON('example.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -142,7 +142,6 @@ function onLoad() {
           var events = Viva.Graph.webglInputEvents(graphics, g);
           store_nodes=[];  //list used to store nodes
           // changes the color of node and links (and respective linked nodes) of this node when clicked
-          console.log(toggle_status)
           
           events.click(function (node) {
             store_nodes.push(node.id);
@@ -210,10 +209,8 @@ function onLoad() {
                                         'position':'fixed', 
                                         'z-index':2
                                         });
-            //console.log('Mouse entered node: ' + node.id);
           }).mouseLeave(function (node) {
             $('#popup_description').css({'display':'none'});
-            //console.log('Mouse left node: ' + node.id);
           });
           //** mouse hovering block end **//                        
         renderer.rerender();
@@ -404,12 +401,10 @@ function onLoad() {
               removal=false;
               if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
                 divstringClass.innerHTML = stringClass +": "+ tempVar;
-                //console.log("1")
                 removal=false;
               }
               // checks if selection is in list and is the last element present... removing it
               else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar && taxaInList.length == 1) {
-                //console.log("2")
                 // resets displayCurrentBox
                 resetDisplayTaxaBox(idsArrays);
                 removal=true;
@@ -417,19 +412,15 @@ function onLoad() {
               else {
                 // if taxa is already not in list then append
                 if (taxaInList.indexOf(tempVar) < 0){
-                  //console.log("3")
                   divstringClass.innerHTML = divstringClass.innerHTML +"," +tempVar;
                   removal=false;
                 }
                 // if it is already in list then remove it and remove from list taxaInList
                 else{
-                  //console.log("5") 
                   if (taxaInList[0] == tempVar){
-                    //console.log("5.1")
                     tempString=tempVar+",";
                   }
                   else{
-                    //console.log("5.2")
                     tempString = ","+tempVar;
                   }
                   divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "");
@@ -438,7 +429,6 @@ function onLoad() {
                 }
               }
               if (taxaInList.indexOf(tempVar) < 0 && removal == false){
-                //console.log("6")
                 taxaInList.push(tempVar);  //user to store all clicked taxa
               }
               existingTaxon.push(stringClass); //used to store previous string and for comparing with new one
@@ -485,9 +475,7 @@ function onLoad() {
           var selectedSpecies = species_query.replace("Species: ", "").split(",").filter(Boolean),
               selectedGenus = genus_query.replace("Genus: ", "").split(",").filter(Boolean),
               selectedFamily = family_query.replace("Family: ", "").split(",").filter(Boolean),
-              selectedOrder = order_query.replace("Order: ", "").split(", ").filter(Boolean);
-
-          console.log(selectedSpecies);
+              selectedOrder = order_query.replace("Order: ", "").split(",").filter(Boolean);
 
           //**** Alert for taxa filter ****//
           // print alert if no filters are selected
@@ -583,7 +571,6 @@ function onLoad() {
             });
             renderer.rerender();
             store_lis= '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#f71735"></button>&nbsp;multi-level selected taxa</li>';
-            console.log(store_lis)
             // displays alert
             // first check if filters are applied in order to avoid displaying when there are no filters
             for (i in alertArrays){
@@ -687,8 +674,7 @@ function onLoad() {
           event.preventDefault();
           pairwise_comparison(      // executes functions from reads_coloring.js
             diff_to_node_color(g, graphics, renderer)
-          );
-          renderer.rerender();
+          );          
         });
 
         //************************//
