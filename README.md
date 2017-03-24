@@ -75,5 +75,6 @@ Outputs all files to: full path to first input file --> string given to '-o' opt
 
 * "shift+l" - Opens length filters 
 * "shift+t" - Opens taxa filters
+* "shift+t" - Opens Reads filters
 * "shift+p" - pause/play rendering animation
 * "shift+r" - Removes all applied filters

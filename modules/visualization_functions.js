@@ -680,7 +680,7 @@ function onLoad() {
         });
 
         $('#cancel_infile').click(function(event){
-          var reader;
+          reader="";
           //var progress = document.querySelector('.percent');
           abortRead(reader);
         });
