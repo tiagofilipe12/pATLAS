@@ -1,29 +1,39 @@
-// load reads JSON file with reads of interest
-function getArray_read(){
-  return $.getJSON('all_plasmidVRSA66296_55x.json');   // change the input file name
-} 
-
-// load reads JSON file with reads to be compared with
-function getArray_read_2(){
-  return $.getJSON('all_plasmidEfae66296_t2.json');   // change the input file name
-} 
-
 // single read displayer
 function read_coloring(g, graphics, renderer){
-  readColorArray=[];
-  getArray_read().done(function(json){
-    $.each(json, function(gi,perc){
-      read_color = chroma.mix('lightsalmon', 'maroon', perc).hex().replace('#', '0x');
-      node_iter(read_color,gi,g,graphics);
-    });
-  });
-  //chroma.scale(['lightsalmon', 'maroon'])
+  var readColorArray=[];
+  console.log(read_json)
+  var readString=read_json.replace(/[{}"]/g,'').split(",");
+  for (string in readString){
+    gi = readString[string].split(":")[0].replace(" ","");
+    perc = parseFloat(readString[string].split(":")[1].replace(" ",""));
+    read_color = chroma.mix('lightsalmon', 'maroon', perc).hex().replace('#', '0x');
+    node_iter(read_color,gi,g,graphics);
+  };
+  // control all related divs
   showRerun = document.getElementById('Re_run'); 
   showGoback = document.getElementById('go_back'); 
   showDownload = document.getElementById('download_ds'); 
   showRerun.style.display = "block";
   showGoback.style.display = "block";
   showDownload.style.display = "block";
+  renderer.rerender();
+  $("#loading").hide();
+};
+
+//function to get new interval and its function
+function range_conversion(perc,perc2,c,d){
+  
+  //x is the difference between the two values that can range between -1 and 1 ([a,b])
+  //c,d represent the new interval between [c,d]
+  // these two are constant since the range of the differences will allways be between -1 and 1
+  a=-1;
+  b=1;
+
+  var x=(perc-perc2);
+
+  var y=(x-a)*((d-c)/(b-a))+c
+
+  return y
 }
 
 // pairwise comparison of multiple reads
@@ -42,7 +52,9 @@ function pairwise_comparison(g,graphics,renderer, callback){
               existGi = true;              
               list_common_gi[gi] =[];              
             }
-            diff = ((perc-perc2)+1)/2;
+            x=perc-perc2
+            diff = range_conversion(perc,perc2,0.25,1); // must be changed
+            //diff = ((perc-perc2)+1)/2; //old value
             list_common_gi[gi].push(diff);
 
           }
@@ -64,7 +76,7 @@ function pairwise_comparison(g,graphics,renderer, callback){
     $.each(json2, function(gi2,perc2){
       if (!(gi2 in list_common_gi)){
         //perc = 0;
-        diff = 0;
+        diff = 0.25;
         list_common_gi[gi2] =[];
         list_common_gi[gi2].push(diff)
       }
@@ -79,14 +91,13 @@ function diff_to_node_color(g,graphics,renderer){
   list_common_gi=pairwise_comparison(g,graphics,renderer);
   setTimeout(function () {
     for (gi in list_common_gi){
-      read_color = chroma.mix('blue', 'red', parseFloat(list_common_gi[gi])).hex().replace('#', '0x');
+      read_color = chroma.mix('yellow', 'maroon', parseFloat(list_common_gi[gi])).hex().replace('#', '0x');
       node_iter(read_color,gi,g,graphics);
 
     }
     renderer.rerender();
     $("#loading").hide();
   },1000);  
-  //chroma.scale(['blue', 'yellow'])
 }
 
 // function to iterate through nodes
@@ -99,20 +110,5 @@ function node_iter(read_color,gi,g,graphics){
       nodeUI.backupColor = nodeUI.color;
     }
   });
-  //renderer.rerender();
 }
 
-// remove from here in future
-// function to load file
-function readSingleFile(e) {
-  var file = e.target.files[0];
-  if (!file) {
-    return;
-  }
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var contents = e.target.result;
-    displayContents(contents);
-  };
-  reader.readAsText(file);
-}

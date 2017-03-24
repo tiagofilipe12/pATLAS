@@ -9,10 +9,10 @@ function getArray_taxa(){
 
 // initiates vivagraph main functions  
 function onLoad() {
-    var list=[];   // list to store references already ploted as nodes
-    var list_lengths=[] // list to store the lengths of all nodes
-    var list_species =[] // lists all species
-    var list_genera = [] //list all genera
+    var list = [];   // list to store references already ploted as nodes
+    var list_lengths= []; // list to store the lengths of all nodes
+    var list_species = []; // lists all species
+    var list_genera = []; //list all genera
     g = Viva.Graph.graph();
 
     getArray().done(function(json){
@@ -30,7 +30,7 @@ function onLoad() {
         var log_length = Math.log(parseInt(seq_length)); //ln seq length
         list_lengths.push(seq_length); // appends all lengths to this list
         list_species.push(species); //appends all species to this list
-        list_genera.push(genus)
+        list_genera.push(genus);
         //checks if sequence is not in list to prevent adding multiple nodes for each sequence
         if (list.indexOf(sequence) < 0) {    
           g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font>"+ sequence,
@@ -662,14 +662,16 @@ function onLoad() {
         //*************//
         //****READS****//
         //*************//
-        $("#reads_filter").click(function(event){
-          //$('#provideFile').click();    // opens file manager
+        $("#fileSubmit").click(function(event){
           console.log("clicked")
           event.preventDefault();
-          read_coloring(g, graphics, renderer);
+          $("#loading").show();
+          setTimeout(function () {          
+            read_coloring(g, graphics, renderer);
+          },100);
         });
-        $("#pairwise_filter").click(function(event){
-          //$('#provideFile').click();    // opens file manager
+        // replace this in the above with an if statement to check the checkbox implementation
+        $("#mfilesSubmit").click(function(event){
           console.log("clicked_2")
           event.preventDefault();
           pairwise_comparison(      // executes functions from reads_coloring.js
@@ -855,4 +857,21 @@ function onLoad() {
 
       }          
     });
+
+    //************************************************//
+    // control the infile input and related functions //
+    //************************************************//
+    read_json=handleFileSelect("infile","#file_text");
+    if (document.getElementById(id_string).checked == true){
+      //run alternative mode for comparison
+    }
+    //read_json=document.getElementById('infile').addEventListener('change', handleFileSelect("#file_text"), false);
+    //read_json2=document.getElementById('infile2').addEventListener('change', handleFileSelect("#file_text2"), false);
+    
+    $('#cancel_infile').click(function (e) {
+      var reader;
+      var progress = document.querySelector('.percent');
+      abortRead(reader);
+    });
+
 }

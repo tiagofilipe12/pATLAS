@@ -95,7 +95,11 @@
 }
 /* customizes taxa filters buttons */
 #modal-body-taxa{
-  height: 270px
+  height: 270px;
+}
+
+#modal-body-file{
+  height: 100px;
 }
 
 /* taxa filter dropdowns editing */
@@ -240,4 +244,3 @@
   padding: 2px;
   display: block;
 }
-
