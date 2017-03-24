@@ -679,6 +679,12 @@ function onLoad() {
           );          
         });
 
+        $('#cancel_infile').click(function(event){
+          var reader;
+          //var progress = document.querySelector('.percent');
+          abortRead(reader);
+        });
+
         //************************//
         //****Fast Form filter****//
         //************************//
@@ -868,10 +874,6 @@ function onLoad() {
     //read_json=document.getElementById('infile').addEventListener('change', handleFileSelect("#file_text"), false);
     //read_json2=document.getElementById('infile2').addEventListener('change', handleFileSelect("#file_text2"), false);
     
-    $('#cancel_infile').click(function (e) {
-      var reader;
-      var progress = document.querySelector('.percent');
-      abortRead(reader);
-    });
+
 
 }
