@@ -43,7 +43,7 @@ The first thing you have to do is run MASHix.py in order to calculate distances 
 
 To run _MASHix_browser.html_ a json file containing a dictionary of nodes and distances between pairs of nodes is required. MASHix.py can be used for that purpose. However, note that json file must be copied to MASHix main directory where _MASHix_browser.html_ is stored so it can be properly/fully executed.
 
-**Example usage: (outdated)**
+#### Example usage: (outdated)
 
 * General interface:
 
@@ -54,6 +54,15 @@ To run _MASHix_browser.html_ a json file containing a dictionary of nodes and di
 ![](https://github.com/tiagofilipe12/MASHix/blob/master/images/example_usage_2.gif)
 
 More comming soon...
+
+
+#### Keyboard shortcuts
+
+* "shift+l" - Opens length filters 
+* "shift+t" - Opens taxa filters
+* "shift+i" - Opens Reads filters
+* "shift+p" - pause/play rendering animation
+* "shift+r" - Removes all applied filters
 
 ---
 
@@ -71,10 +80,3 @@ Outputs all files to: full path to first input file --> string given to '-o' opt
 
    Note: Large datasets, which may have huge number of links between nodes (genomes/sequences) may suffer from slow loading times. So, in order to avoid this, before loading the MASHix_browser.html, first check the two graphical outputs retrieved by MASHix.py.
 
-### Keyboard shortcuts
-
-* "shift+l" - Opens length filters 
-* "shift+t" - Opens taxa filters
-* "shift+i" - Opens Reads filters
-* "shift+p" - pause/play rendering animation
-* "shift+r" - Removes all applied filters
