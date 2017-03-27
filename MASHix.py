@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-## Last update: 16/2/2017
+## Last update: 20/3/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix for each pairwise comparison between libraries
 ## Note: each header in fasta is considered a reference
