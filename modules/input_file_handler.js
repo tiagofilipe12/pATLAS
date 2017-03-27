@@ -3,7 +3,8 @@ function abortRead(reader) {
   console.log("canceled reading of file")  
   // cancels the loading it self
   document.getElementById("file_text").value = "";
-  reader.abort();
+  read_json="";
+  console.log(read_json)
 }
 
 // function to handle ONE file at a time (per button)

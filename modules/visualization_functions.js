@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('example.json');   // change the input file name
+  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -662,26 +662,27 @@ function onLoad() {
         //*************//
         //****READS****//
         //*************//
+
         $("#fileSubmit").click(function(event){
           console.log("clicked")
           event.preventDefault();
           $("#loading").show();
+          //if (document.getElementById('check_file').checked){
+          //  alert("May be not... for now")
+          //}
+          //else{
           setTimeout(function () {          
             read_coloring(g, graphics, renderer);
           },100);
-        });
-        // replace this in the above with an if statement to check the checkbox implementation
-        $("#mfilesSubmit").click(function(event){
-          console.log("clicked_2")
-          event.preventDefault();
-          pairwise_comparison(      // executes functions from reads_coloring.js
-            diff_to_node_color(g, graphics, renderer)
-          );          
+            
+          //}
+          // used to hide when function is not executed properly
+          setTimeout(function(){
+            $("#loading").hide();
+          },100);
         });
 
         $('#cancel_infile').click(function(event){
-          reader="";
-          //var progress = document.querySelector('.percent');
           abortRead(reader);
         });
 
@@ -867,13 +868,7 @@ function onLoad() {
     //************************************************//
     // control the infile input and related functions //
     //************************************************//
-    read_json=handleFileSelect("infile","#file_text");
-    if (document.getElementById(id_string).checked == true){
-      //run alternative mode for comparison
-    }
-    //read_json=document.getElementById('infile').addEventListener('change', handleFileSelect("#file_text"), false);
-    //read_json2=document.getElementById('infile2').addEventListener('change', handleFileSelect("#file_text2"), false);
-    
 
+    read_json=handleFileSelect("infile","#file_text");
 
 }
