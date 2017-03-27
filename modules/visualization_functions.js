@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
+  return $.getJSON('example.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -13,6 +13,7 @@ function onLoad() {
     var list_lengths= []; // list to store the lengths of all nodes
     var list_species = []; // lists all species
     var list_genera = []; //list all genera
+    var list_gi = [];
     g = Viva.Graph.graph();
 
     getArray().done(function(json){
@@ -28,9 +29,11 @@ function onLoad() {
         var genus = sequence_info.split("_").slice(2,3).join(" ");
         var seq_length = sequence_info.split("_").slice(-1).join("");
         var log_length = Math.log(parseInt(seq_length)); //ln seq length
+
         list_lengths.push(seq_length); // appends all lengths to this list
         list_species.push(species); //appends all species to this list
         list_genera.push(genus);
+        list_gi.push(sequence)
         //checks if sequence is not in list to prevent adding multiple nodes for each sequence
         if (list.indexOf(sequence) < 0) {    
           g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font>"+ sequence,
@@ -268,25 +271,19 @@ function onLoad() {
           event.preventDefault();
           g.forEachNode(function (node) {
             var nodeUI = graphics.getNodeUI(node.id);
-            var species = node.data.species.split(">").slice(-1).toString();
-            if (species == query){
-              nodeUI.color = 0xf71735;
-              nodeUI.backupColor = nodeUI.color;
-              changed_nodes.push(node.id);
+            var sequence = node.data.sequence.split(">").slice(-1).toString();
+            nodeUI = graphics.getNodeUI(node.id);
+            var x= nodeUI.position.x,
+                y= nodeUI.position.y
+            if (sequence == query){
+              // centers graph visualization in a given node, searching for gi
+              renderer.moveTo(x,y)
             }
           });
-          renderer.rerender();
         });
         // Button to clear the selected nodes by form
         $('#clearButton').click(function(event){
-          g.forEachNode(function (node) {
-            var nodeUI = graphics.getNodeUI(node.id);
-            if (changed_nodes.indexOf(node.id) >= 0){
-              nodeUI.color = nodeColor;
-              nodeUI.backupColor = nodeUI.color; 
-            }                       
-          });
-          renderer.rerender();
+          document.getElementById("formValueId").value = "";
         });
 
         //*******************//
@@ -695,7 +692,7 @@ function onLoad() {
         // then applying autocomplete function
         $(function () {
           $('#formValueId').autocomplete({
-            source: sortedArray_species
+            source: list_gi
           });
         });
 

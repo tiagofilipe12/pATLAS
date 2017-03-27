@@ -12,10 +12,14 @@
   left: 50%;
   transform: translateX(-46%);
 }
+/*resize search box for gi*/
+#formValueId{
+  width: 130px;
+}
 
 /*set glyphicon size*/
 .glyphicon {
-    font-size: 15px;
+  font-size: 15px;
 }
 
 #couve-flor{
@@ -24,16 +28,16 @@
   visibility:hidden;
 }
 #loading {
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    position: fixed;
-    display: block;
-    opacity: 0.9;
-    background-color: #fff;
-    z-index: 99;
-    text-align: center;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  display: block;
+  opacity: 0.9;
+  background-color: #fff;
+  z-index: 99;
+  text-align: center;
 }
 #loading-image {
   position: fixed;
