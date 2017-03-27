@@ -661,7 +661,6 @@ function onLoad() {
         //*************//
 
         $("#fileSubmit").click(function(event){
-          console.log("clicked")
           event.preventDefault();
           $("#loading").show();
           //if (document.getElementById('check_file').checked){
@@ -857,6 +856,17 @@ function onLoad() {
         $('#go_back').click(function(event){
           console.log("returning to main")
           window.location.reload();   // a temporary fix to go back to full dataset
+        });
+
+        //**********************//
+        //** Distances filter **//
+        //**********************//
+        $('#distances_filter').click(function(event){
+          event.preventDefault();
+          $("#loading").show();
+          setTimeout(function(){
+            link_color(g, graphics, renderer)
+          },100);
         });
 
       }          

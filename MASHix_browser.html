@@ -2,7 +2,7 @@
     <head>
       <meta charset="UTF-8"/> 
       <title>Plasmid Clustering</title>
-      <script language="javascript" type="text/javascript" src="./modules/vivagraph.js"></script>
+      <script language="javascript" type="text/javascript" src="./modules/vivagraph/dist/vivagraph.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/jquery-3.1.1.js"></script>
       <link rel="stylesheet" href="./bootstrap-3.3.7-dist/css/bootstrap.css">
       <link rel="stylesheet" href="./modules/nouislider.css">
@@ -91,6 +91,35 @@
 
         </div>
       </div>
+
+      <!-- Modal for distances-->
+      <!--<div id="distancesModal" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+
+          <!-- Modal content for lenght-->
+          <!--<div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Displays link distances with different colors</h4>
+            </div>
+            <div class="modal-body" id="modal-body-length">
+              <div id="min-modal">
+                <h6 class="header_taxa">Set minimum:</h6>
+                <input id="slider_input_min" min="0" type="number" step="0.01">
+              </div>
+              <div id="max-modal">
+                <h6 class="header_taxa">Set maximum:</h6>
+                <input id="slider_input_max" min="0" type="number" step="0.01">
+              </div>
+              <div class="sliders noUi-target" id="slider"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesSubmit">Ok</button>
+            </div>
+          </div>
+
+        </div>
+      </div>-->
 
       <!-- Modal for length-->
       <div id="lengthModal" class="modal fade" role="dialog" tabindex="-1">
@@ -262,10 +291,9 @@
                   <!--executes reads_coloring.js-->
                   <li><a href="#" data-toggle="modal" data-backdrop="static" 
                         data-target="#fileModal" id="reads_filter">Reads</a></li>
-<!--                  <li role="separator" class="divider"></li>
-                  <!--executes reads_coloring.js-->
-                  <!--<li><a href="#" data-toggle="modal" data-backdrop="static" 
-                        data-target="#filesModal" id="pairwise_filter">Reads pairwise</a></li>-->
+                  <li role="separator" class="divider"></li>
+                  <li><a href="#" data-toggle="modal" data-backdrop="static" 
+                        data-target="#distancesModal" id="distances_filter">Distances</a></li>
 
                 </ul>
               </li>

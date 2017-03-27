@@ -37,3 +37,19 @@ function node_iter(read_color,gi,g,graphics){
   });
 }
 
+///////////////////
+// link coloring //
+///////////////////
+
+function link_color(g, graphics, renderer){
+  g.forEachLink(function(link){
+    var dist = link.data*10
+    var linkUI = graphics.getLinkUI(link.id)
+    link_color = chroma.mix('#CAE368', '#65B661', dist).hex().replace('#', '0x') + "FF";
+    // since linkUI seems to use alpha in its color definition we had to set alpha to 100% 
+    //opacity by adding "FF" at the end of color string
+    linkUI.color = link_color
+  });
+  renderer.rerender();
+  $("#loading").hide();
+}
