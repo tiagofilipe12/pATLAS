@@ -41,14 +41,34 @@ function node_iter(read_color,gi,g,graphics){
 // link coloring //
 ///////////////////
 
-function link_color(g, graphics, renderer){
+function link_coloring(g, graphics, renderer){
+  console.log(document.getElementById("colorForm").value);
   g.forEachLink(function(link){
     var dist = link.data*10
     var linkUI = graphics.getLinkUI(link.id)
-    link_color = chroma.mix('#CAE368', '#65B661', dist).hex().replace('#', '0x') + "FF";
+    if (document.getElementById("colorForm").value == "Green color scheme" || document.getElementById("colorForm").value == ""){
+      link_color = chroma.mix('#CAE368', '#65B661', dist).hex().replace('#', '0x') + "FF";
+    }
+    else if (document.getElementById("colorForm").value == "Blue color scheme"){
+      link_color = chroma.mix('#73C2FF', '#025D8C', dist).hex().replace('#', '0x') + "FF";
+    }
+    else if (document.getElementById("colorForm").value == "Red color scheme"){
+      link_color = chroma.mix('#E87833', '#4D0E1C', dist).hex().replace('#', '0x') + "FF";
+    }   
+    
     // since linkUI seems to use alpha in its color definition we had to set alpha to 100% 
     //opacity by adding "FF" at the end of color string
     linkUI.color = link_color
+  });
+  renderer.rerender();
+  $("#loading").hide();
+}
+
+// option to return links to their default color
+function reset_link_color(g,graphics,renderer){
+  g.forEachLink(function(link){
+    var linkUI = graphics.getLinkUI(link.id)
+    linkUI.color = 0xb3b3b3ff
   });
   renderer.rerender();
   $("#loading").hide();

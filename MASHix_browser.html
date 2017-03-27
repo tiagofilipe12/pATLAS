@@ -4,11 +4,11 @@
       <title>Plasmid Clustering</title>
       <script language="javascript" type="text/javascript" src="./modules/vivagraph/dist/vivagraph.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/jquery-3.1.1.js"></script>
-      <link rel="stylesheet" href="./bootstrap-3.3.7-dist/css/bootstrap.css">
+      <link rel="stylesheet" href="./modules/bootstrap-3.3.7-dist/css/bootstrap.css">
       <link rel="stylesheet" href="./modules/nouislider.css">
       <link rel="stylesheet" href="./modules/jquery-ui.css">
       <link rel="stylesheet" href="./modules/visualization_functions.css">
-      <script language="javascript" type="text/javascript" src="./bootstrap-3.3.7-dist/js/bootstrap.js"></script> 
+      <script language="javascript" type="text/javascript" src="./modules/bootstrap-3.3.7-dist/js/bootstrap.js"></script> 
       <script language="javascript" type="text/javascript" src="./modules/wNumb.js"></script>
       <script language="javascript" type="text/javascript" src="./modules/jquery-ui.js"></script>
       <!--custom js-->
@@ -93,33 +93,37 @@
       </div>
 
       <!-- Modal for distances-->
-      <!--<div id="distancesModal" class="modal fade" role="dialog" tabindex="-1">
+      <div id="distancesModal" class="modal fade" role="dialog" tabindex="-1">
         <div class="modal-dialog">
 
           <!-- Modal content for lenght-->
-          <!--<div class="modal-content">
+          <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Displays link distances with different colors</h4>
+              <h4 class="modal-title">Display distances with a gradient of color?</h4>
             </div>
-            <div class="modal-body" id="modal-body-length">
-              <div id="min-modal">
-                <h6 class="header_taxa">Set minimum:</h6>
-                <input id="slider_input_min" min="0" type="number" step="0.01">
+            <div class="modal-body" id="modal-body-file">
+              <div class="dropdown" id="color_scheme">
+                <div class="header_taxa">Select a color scheme</div>
+                <select class="selectpicker" title="Green color scheme" id="colorForm" width="auto" data-size="7" data-header="Select a color"> 
+                  <option></option>
+                  <option class='OrderClass' data-content="<span class='label label-success'>Green color scheme</span">Green color scheme</option>
+                  <option data-divider="true"></option>
+                  <option class='OrderClass' data-content="<span class='label label-primary'>Blue color scheme</span">Blue color scheme</option>
+                  <option data-divider="true"></option>
+                  <option class='OrderClass' data-content="<span class='label label-danger'>Red color scheme</span">Red color scheme</option>
+                  <option></option>
+                </select>
               </div>
-              <div id="max-modal">
-                <h6 class="header_taxa">Set maximum:</h6>
-                <input id="slider_input_max" min="0" type="number" step="0.01">
-              </div>
-              <div class="sliders noUi-target" id="slider"></div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesSubmit">Ok</button>
+              <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesSubmit">Yes</button>
+              <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesCancel">No</button>
             </div>
           </div>
 
         </div>
-      </div>-->
+      </div>
 
       <!-- Modal for length-->
       <div id="lengthModal" class="modal fade" role="dialog" tabindex="-1">
@@ -161,16 +165,15 @@
               <h4 class="modal-title">Filter nodes by species taxa</h4>
             </div>
             <div class="modal-body" id="modal-body-taxa">
-              <!--A search box-->
-              <!--<div class="form-group">
-                <input id="formTaxaid" type="text" class="form-control" placeholder="Search"/>
-              </div>-->
+
               <!--dropdown for order-->
               <div class="dropdown" id="order_dropdown">
                 <div class="header_taxa">Order filter</div>
 
                   <!--</ul> -->
-                <select class="selectpicker" multiple data-width="100px" data-selected-text-format="count" data-live-search="true" title="No items selected" id="orderList">
+                <select class="selectpicker" multiple data-width="100px" 
+                        data-selected-text-format="count" data-live-search="true" 
+                        title="No items selected" id="orderList">
                   <!--populated by visualization_function.js-->
 
                 </select>                 
@@ -180,7 +183,9 @@
                 <div class="header_taxa">Family filter</div>
 
                   <!--</ul> -->
-                <select class="selectpicker" multiple data-width="100px" data-selected-text-format="count" data-live-search="true" title="No items selected" id="familyList">
+                <select class="selectpicker" multiple data-width="100px" 
+                        data-selected-text-format="count" data-live-search="true" 
+                        title="No items selected" id="familyList">
                   <!--populated by visualization_function.js-->
 
                 </select>                
@@ -189,7 +194,9 @@
               <div class="dropdown" id="genus_dropdown">
                 <div class="header_taxa">Genus filter</div>
 
-                <select class="selectpicker" multiple data-width="100px" data-selected-text-format="count" data-live-search="true" title="No items selected" id="genusList">
+                <select class="selectpicker" multiple data-width="100px" 
+                        data-selected-text-format="count" data-live-search="true" 
+                        title="No items selected" id="genusList">
                   <!--populated by visualization_function.js-->
 
                 </select>                 
@@ -200,7 +207,9 @@
                 <div class="header_taxa">Species filter</div>
 
                 <!--example select dropdown-->
-                <select class="selectpicker" multiple data-width="100px" data-selected-text-format="count" data-live-search="true" title="No items selected" id="speciesList">
+                <select class="selectpicker" multiple data-width="100px" 
+                        data-selected-text-format="count" data-live-search="true" 
+                        title="No items selected" id="speciesList">
                   <!--populated by visualization_function.js-->
 
                 </select>              
@@ -300,10 +309,17 @@
             </ul>
 
             <form class="navbar-form navbar-left">
-              <button class="btn btn-info" id="reset-sliders"
-                      type="button" data-toogle="tooptip"
-                      title="Reset all applied filters">Reset filters</button>
-            </form>
+              <div class="btn-group">
+                <button class="btn btn-info" id="reset-sliders"
+                        type="button" data-toogle="tooptip"
+                        title="Reset all applied filters">Reset nodes</button>
+              
+                <button class="btn btn-info" id="reset-links"
+                        type="button" data-toogle="tooptip"
+                        title="Reset all applied filters" disabled="disabled" autocomplete="off">Reset links</button>
+              </form>
+            </div>
+
             <form class="navbar-form navbar-left">
               <div class="btn-group">
                 <button class="btn btn-default disabled" id="go_back"

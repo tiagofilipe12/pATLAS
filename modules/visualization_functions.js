@@ -663,10 +663,6 @@ function onLoad() {
         $("#fileSubmit").click(function(event){
           event.preventDefault();
           $("#loading").show();
-          //if (document.getElementById('check_file').checked){
-          //  alert("May be not... for now")
-          //}
-          //else{
           setTimeout(function () {          
             read_coloring(g, graphics, renderer);
           },100);
@@ -681,6 +677,27 @@ function onLoad() {
         $('#cancel_infile').click(function(event){
           abortRead(reader);
         });
+
+        //**********************//
+        //** Distances filter **//
+        //**********************//
+        $('#distancesSubmit').click(function(event){
+          event.preventDefault();
+          $("#loading").show();
+          setTimeout(function(){
+            link_coloring(g, graphics, renderer)
+          },100);
+          document.getElementById('reset-links').disabled = "";
+        });
+
+        $('#reset-links').click(function(event){
+          event.preventDefault();
+          $("#loading").show();
+          setTimeout(function(){
+            reset_link_color(g,graphics,renderer)
+          },100);
+          document.getElementById('reset-links').disabled = "disabled"
+        })
 
         //************************//
         //****Fast Form filter****//
@@ -856,17 +873,6 @@ function onLoad() {
         $('#go_back').click(function(event){
           console.log("returning to main")
           window.location.reload();   // a temporary fix to go back to full dataset
-        });
-
-        //**********************//
-        //** Distances filter **//
-        //**********************//
-        $('#distances_filter').click(function(event){
-          event.preventDefault();
-          $("#loading").show();
-          setTimeout(function(){
-            link_color(g, graphics, renderer)
-          },100);
         });
 
       }          
