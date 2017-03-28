@@ -47,13 +47,13 @@ function link_coloring(g, graphics, renderer){
     var dist = link.data*10
     var linkUI = graphics.getLinkUI(link.id)
     if (document.getElementById("colorForm").value == "Green color scheme" || document.getElementById("colorForm").value == ""){
-      link_color = chroma.mix('#CAE368', '#65B661', dist).hex().replace('#', '0x') + "FF";
+      link_color = chroma.mix('#65B661', '#CAE368', dist).hex().replace('#', '0x') + "FF";
     }
     else if (document.getElementById("colorForm").value == "Blue color scheme"){
-      link_color = chroma.mix('#73C2FF', '#025D8C', dist).hex().replace('#', '0x') + "FF";
+      link_color = chroma.mix('#025D8C', '#73C2FF', dist).hex().replace('#', '0x') + "FF";
     }
     else if (document.getElementById("colorForm").value == "Red color scheme"){
-      link_color = chroma.mix('#E87833', '#4D0E1C', dist).hex().replace('#', '0x') + "FF";
+      link_color = chroma.mix('#4D0E1C', '#E87833', dist).hex().replace('#', '0x') + "FF";
     }   
     
     // since linkUI seems to use alpha in its color definition we had to set alpha to 100% 
