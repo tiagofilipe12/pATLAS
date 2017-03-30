@@ -320,21 +320,24 @@
                 <button class="btn btn-info" id="reset-links"
                         type="button" data-toogle="tooptip"
                         title="Reset all applied filters" disabled="disabled" autocomplete="off">Reset links</button>
-              </form>
+              <!--</form>-->
             </div>
 
-            <form class="navbar-form navbar-left">
+            <!--<form class="navbar-form navbar-left">-->
               <div class="btn-group">
                 <button class="btn btn-default disabled" id="go_back"
                         type="button" data-toogle="tooptip"
-                        title="Return to full tree view" style="display: none"><span class="glyphicon glyphicon-home"></span></button>
+                        title="Return to full tree view" style="display: none">
+                        <span class="glyphicon glyphicon-home"></span></button>
                 <button class="btn btn-default" id="Re_run"
                         type="button" data-toogle="tooptip"
-                        title="Apply filters" style="display: none"><span class="glyphicon glyphicon-filter"></span></button>
+                        title="Apply filters" style="display: none">
+                        <span class="glyphicon glyphicon-filter"></span></button>
                 <!--for now this button is disabled since it does not have funcitonality-->
                 <button class="btn btn-default disabled" id="download_ds"
                         type="button" data-toogle="tooptip"
-                        title="Download current selection (Currently unavailable)" style="display: none"><span class="glyphicon glyphicon-save"></span></button>
+                        title="Download current selection (Currently unavailable)" style="display: none">
+                        <span class="glyphicon glyphicon-save"></span></button>
 
               </div>
 
@@ -348,12 +351,14 @@
               <div class="form-group">
                 <input id="formValueId" type="text" class="form-control" placeholder="Enter a gi"/>
               </div>
-              <button id="submitButton" type="submit" data-toggle="tooltip" 
-                  title="Centers node at the provided gi position" 
-                  class="btn btn-default">Center gi</button>
-              <button id="clearButton" data-toggle="tooltip" 
-                  title="Remove color for all selected species" type="button" 
-                  class="btn btn-info">Clear</button>
+              <div class="btn-group">
+                <button id="submitButton" type="submit" data-toggle="tooltip" 
+                    title="Centers node at the provided gi position" 
+                    class="btn btn-default">Center gi</button>
+                <button id="clearButton" data-toggle="tooltip" 
+                    title="Remove color for all selected species" type="button" 
+                    class="btn btn-info">Clear</button>
+              </div>
             </form>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->

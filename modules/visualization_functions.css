@@ -14,12 +14,12 @@
 }
 /*resize search box for gi*/
 #formValueId{
-  width: 130px;
+  width: 90px;
 }
 
 /*set glyphicon size*/
 .glyphicon {
-  font-size: 15px;
+  font-size: 100%;
 }
 
 #couve-flor{
@@ -90,7 +90,7 @@
 }
 
 /*slider related costumization*/
-#slider {
+#slider{
   position: absolute;
   left:10%;
   bottom:20%;
@@ -125,8 +125,6 @@
 }
 #order_dropdown{
   text-align: center;
-  /*position: absolute;
-  left:5%;*/
 }
 #familyList.dropdown-menu{
   overflow-y: scroll;
@@ -135,8 +133,6 @@
 }
 #family_dropdown{
   text-align: center;
-  /*position: absolute;
-  left:30%;*/
 }
 #genusList.dropdown-menu{
   overflow-y: scroll;
@@ -145,8 +141,6 @@
 }
 #genus_dropdown{
   text-align: center;
-  /*position: absolute;
-  right:30%;*/
 }
 #speciesList.dropdown-menu{
   overflow-y: scroll;
@@ -155,8 +149,6 @@
 }
 #species_dropdown{
   text-align: center;
-  /*position: absolute;
-  right: 5%;*/
 }
 
 #displayCurrent{
