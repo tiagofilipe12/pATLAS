@@ -96,7 +96,7 @@ def genomes_parser(main_fasta, output_tag, mother_directory):
 			gi = "_".join(tab_split[0].strip().split("_")[0:2])
 			if out_handle:
 				out_handle.close()
-			out_handle = open(os.path.join(out_file + gi, "w")
+			out_handle = open(os.path.join(out_file + gi), "w")
 			list_genomes_files.append(os.path.join(out_file + gi))
 			out_handle.write(line)
 		else:
