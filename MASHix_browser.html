@@ -165,13 +165,14 @@
               <h4 class="modal-title">Filter nodes by species taxa</h4>
             </div>
             <div class="modal-body" id="modal-body-taxa">
+              <div class="row">
 
               <!--dropdown for order-->
-              <div class="dropdown" id="order_dropdown">
+              <div class="dropdown col-sm-3" id="order_dropdown">
                 <div class="header_taxa">Order filter</div>
 
                   <!--</ul> -->
-                <select class="selectpicker" multiple data-width="100px" 
+                <select class="selectpicker" multiple data-width="80%" 
                         data-selected-text-format="count" data-live-search="true" 
                         title="No items selected" id="orderList">
                   <!--populated by visualization_function.js-->
@@ -179,11 +180,11 @@
                 </select>                 
               </div>
               <!--dropdown for family-->
-              <div class="dropdown" id="family_dropdown">
+              <div class="dropdown col-sm-3" id="family_dropdown">
                 <div class="header_taxa">Family filter</div>
 
                   <!--</ul> -->
-                <select class="selectpicker" multiple data-width="100px" 
+                <select class="selectpicker" multiple data-width="80%" 
                         data-selected-text-format="count" data-live-search="true" 
                         title="No items selected" id="familyList">
                   <!--populated by visualization_function.js-->
@@ -191,10 +192,10 @@
                 </select>                
               </div>
               <!--dropdown for genus-->
-              <div class="dropdown" id="genus_dropdown">
+              <div class="dropdown col-sm-3" id="genus_dropdown">
                 <div class="header_taxa">Genus filter</div>
 
-                <select class="selectpicker" multiple data-width="100px" 
+                <select class="selectpicker" multiple data-width="80%" 
                         data-selected-text-format="count" data-live-search="true" 
                         title="No items selected" id="genusList">
                   <!--populated by visualization_function.js-->
@@ -203,30 +204,32 @@
               </div>
               <!--dropdown for species-->
 
-              <div class="dropdown" id="species_dropdown">
+              <div class="dropdown col-sm-3" id="species_dropdown">
                 <div class="header_taxa">Species filter</div>
 
                 <!--example select dropdown-->
-                <select class="selectpicker" multiple data-width="100px" 
+                <select class="selectpicker" multiple data-width="80%" 
                         data-selected-text-format="count" data-live-search="true" 
                         title="No items selected" id="speciesList">
                   <!--populated by visualization_function.js-->
 
                 </select>              
               </div>
-              <div class="panel-group" id="displayCurrent">
-                <div class="panel panel-info" >
-                  <div class="panel-heading">Current filters</div>
-                  <div class="panel-body" id="displayCurrentBox">
-                    <!--Populated by visualization_functions.js-->
-                    <p id="p_Order">Order: No filters applied</p>
-                    <p id="p_Family">Family: No filters applied</p>
-                    <p id="p_Genus">Genus: No filters applied</p>
-                    <p id="p_Species">Species: No filters applied</p>
+              </div>
+              <div class="row">
+                <div class="panel-group" id="displayCurrent">
+                  <div class="panel panel-info" >
+                    <div class="panel-heading">Current filters</div>
+                    <div class="panel-body" id="displayCurrentBox">
+                      <!--Populated by visualization_functions.js-->
+                      <p id="p_Order">Order: No filters applied</p>
+                      <p id="p_Family">Family: No filters applied</p>
+                      <p id="p_Genus">Genus: No filters applied</p>
+                      <p id="p_Species">Species: No filters applied</p>
+                    </div>
                   </div>
                 </div>
               </div>
-
             </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-default" 
