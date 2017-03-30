@@ -93,10 +93,11 @@ def genomes_parser(main_fasta, output_tag, mother_directory):
 	out_handle = None
 	for x, line in enumerate(if_handle):		## x coupled with enumerate creates a counter for every loop
 		if line.startswith(">"):
+			gi = "_".join(tab_split[0].strip().split("_")[0:2])
 			if out_handle:
 				out_handle.close()
-			out_handle = open(os.path.join(out_file + str(x)), "w")
-			list_genomes_files.append(os.path.join(out_file + str(x)))
+			out_handle = open(os.path.join(out_file + gi, "w")
+			list_genomes_files.append(os.path.join(out_file + gi))
 			out_handle.write(line)
 		else:
 			out_handle.write(line)
