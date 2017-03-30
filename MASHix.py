@@ -17,6 +17,7 @@ from utils.hist_util import plot_histogram
 #import utils.family_fetch
 from operator import itemgetter
 import json
+from db_manager.db_app import db, models
 
 ## function to create output directories tree
 def output_tree(infile, tag):
@@ -51,6 +52,12 @@ def header_fix(input_header):
 		input_header=input_header.replace(char, '_')
 	return input_header
 
+def search_substing(string):
+	plasmid_search = re.search('plasmid(.+?)__', string)
+	if plasmid_search:
+		plasmid_name=plasmid_search.group(1).replace("_","")
+
+
 ## Function to create a master fasta file from several fasta databases. One fasta is enought though
 def master_fasta(fastas, output_tag, mother_directory):
 	out_file = os.path.join(mother_directory, "master_fasta_{}.fas".format(output_tag))
@@ -65,19 +72,28 @@ def master_fasta(fastas, output_tag, mother_directory):
 		for x,line in enumerate(fasta):
 			if line.startswith(">"):
 				if x != 0:
-					sequence_info[sequence] = (species, length)	#outputs dict at the beggining of each new entry
+					sequence_info[accession] = (species, length, gi, plasmid_name)	#outputs dict at the beggining of each new entry
 				length = 0 	# resets sequence length for every > found
 				line = header_fix(line)
 				linesplit = line.strip().split("_") ## splits fasta headers by _ character
-				sequence = "_".join(linesplit[0:2]).replace(">","")
+				gi = "_".join(linesplit[0:2]).replace(">","")
 				species = "_".join(linesplit[7:9])
+				## if statements to handle some exceptions already found
+				if "plasmid" in species:
+					species = "unknown"
+				elif "origin" in species:
+					species = "unknown"
+				##
+				accession = "_".join(linesplit[3:5])
+				## searches plasmid_name in line given that it may be variable its position
+				plasmid_name = search_substing(line)
 			    ## genus related functions
 				genus = linesplit[7]
 				genera.append(genus)
 			else:
 				length += len(line)	## necessary since fasta sequences may be spread in multiple lines
 			master_fasta.write(line)
-		sequence_info[sequence] = (species, str(length))	## adds to dict last entry of each input file
+		sequence_info[accession] = (species, str(length), gi, plasmid_name)	## adds to dict last entry of each input file
 	master_fasta.close()
 	## writes genera list to output file
 	genus_output.write('\n'.join(str(i) for i in list(set(genera))))
@@ -173,12 +189,13 @@ def mash_distance_matrix(mother_directory, sequence_info):
 		trace_list=[]	## list to append every distance value with p-value>0.05 in each sequence/genome	
 		for line in input_f:
 			tab_split = line.split("\t")
-			reference = "_".join(tab_split[0].strip().split("_")[0:2])
+			#gi = "_".join(tab_split[0].strip().split("_")[0:2])
+			accession = "_".join(linesplit[3:5])
 			sequence = "_".join(tab_split[1].strip().split("_")[0:2])
 			mash_dist = tab_split[2].strip()
 			p_value = tab_split[3].strip()
 			## Added new reference string in order to parse easier within visualization_functions.js
-			string_reference = "{}_{}_{}".format(reference, sequence_info[reference][0], sequence_info[reference][1])
+			string_reference = "{}_{}_{}".format(reference, sequence_info[accession][0], sequence_info[accession][1])
 			## there is no need to store all values since we are only interested in representing the significant ones 
 			## and those that correlate well with ANI (mashdist<=0.1)
 			if float(p_value) < 0.05 and reference != sequence and float(mash_dist) < 0.1:
@@ -187,8 +204,8 @@ def mash_distance_matrix(mother_directory, sequence_info):
 		if temporary_list:
 			x += len(temporary_list)
 			## Added new sequence string in order to parse easier within visualization_functions.js
-			string_sequence = "{}_{}_{}".format(sequence, sequence_info[sequence][0], sequence_info[sequence][1])
-			master_dict[string_sequence]=temporary_list
+			string_sequence = "{}_{}_{}".format(sequence, sequence_info[accession][0], sequence_info[accession][1])
+			master_dict[accession]=temporary_list
 		lists_traces.append(trace_list)
 
 	out_file.write(json.dumps(master_dict))
