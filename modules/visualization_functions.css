@@ -60,42 +60,45 @@
 /*modal for length body increase*/
 #modal-body-length{
   height: 15%;
+  overflow: auto;
 
 }
 /*input min value*/
 #min-modal{
-  position: absolute;
-  left: 5%;
-  top: 0%;
+  /*position: absolute;*/
+  text-align: center;
+  /*left: 5%;*/
+  /*top: 0%;*/
 }
 
 #slider_input_min{
-  position: absolute;
-  width: 120%;
+  /*position: absolute;*/
+  width: 50%;
   height: 10%;
 }
 
 /*input max value*/
 #max-modal{
-  position: absolute;
-  right:5%;
-  top:0%;
+  /*position: absolute;*/
+  text-align: center;
+  /*right:5%;*/
+  /*top:0%;*/
 }
 
 #slider_input_max{
-  position: absolute;
-  right:2%;
-  width: 120%;
+  /*position: absolute;*/
+  /*right:2%;*/
+  width: 50%;
   height: 12px;
 }
 
 /*slider related costumization*/
 #slider{
-  position: absolute;
-  left:10%;
-  bottom:20%;
-  width: 80%;
-  height: 8%;
+  /*position: absolute;*/
+  margin:5%;
+  /*bottom:20%;*/
+  width: 90%;
+  height: 10%;
 }
 /* customizes taxa filters buttons */
 #modal-body-taxa{
@@ -143,6 +146,7 @@
   text-align: center;
 }
 #speciesList.dropdown-menu{
+  overflow: visible;
   overflow-y: scroll;
   overflow-x: hidden;
   height: 50%;
@@ -153,16 +157,17 @@
 
 #displayCurrent{
   position: relative;
-  width: 92%;
+  width: 96%;
   height: 80%;
-  left:4%;
-  top: 5%;
-
+  margin: 2%;
 }
 #displayCurrentBox{
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 60%;
+}
+#modal-body-taxa{
+    padding: 15px; 
+    overflow-y: auto; 
 }
 
 .header_taxa{

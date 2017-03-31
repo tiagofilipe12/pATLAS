@@ -136,15 +136,21 @@
               <h4 class="modal-title">Filter nodes by sequence length</h4>
             </div>
             <div class="modal-body" id="modal-body-length">
-              <div id="min-modal">
-                <h6 class="header_taxa">Set minimum:</h6>
-                <input id="slider_input_min" min="1" type="number" step="1000">
+              <div class="row">
+                <div class='col-md-6' id="min-modal">
+                  <h6 class="header_taxa">Set minimum:</h6>
+                  <input id="slider_input_min" min="1" type="number" step="1000">
+                </div>
+                <div class='col-md-6' id="max-modal">
+                  <h6 class="header_taxa">Set maximum:</h6>
+                  <input id="slider_input_max" min="1" type="number" step="1000">
+                </div>
               </div>
-              <div id="max-modal">
-                <h6 class="header_taxa">Set maximum:</h6>
-                <input id="slider_input_max" min="1" type="number" step="1000">
+              <div class="row">
+                <div class='col-md-12'>
+                  <div class="sliders noUi-target" id="slider"></div>
+                </div>
               </div>
-              <div class="sliders noUi-target" id="slider"></div>
             </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-default" data-dismiss="modal" id="lengthSubmit">Ok</button>
@@ -167,65 +173,67 @@
             <div class="modal-body" id="modal-body-taxa">
               <div class="row">
 
-              <!--dropdown for order-->
-              <div class="dropdown col-sm-3" id="order_dropdown">
-                <div class="header_taxa">Order filter</div>
+                <!--dropdown for order-->
+                <div class="dropdown col-sm-3" id="order_dropdown">
+                  <div class="header_taxa">Order filter</div>
 
-                  <!--</ul> -->
-                <select class="selectpicker" multiple data-width="80%" 
-                        data-selected-text-format="count" data-live-search="true" 
-                        title="No items selected" id="orderList">
-                  <!--populated by visualization_function.js-->
+                    <!--</ul> -->
+                  <select class="selectpicker" multiple data-width="80%" 
+                          data-selected-text-format="count" data-live-search="true" 
+                          title="No items selected" id="orderList">
+                    <!--populated by visualization_function.js-->
 
-                </select>                 
-              </div>
-              <!--dropdown for family-->
-              <div class="dropdown col-sm-3" id="family_dropdown">
-                <div class="header_taxa">Family filter</div>
+                  </select>                 
+                </div>
+                <!--dropdown for family-->
+                <div class="dropdown col-sm-3" id="family_dropdown">
+                  <div class="header_taxa">Family filter</div>
 
-                  <!--</ul> -->
-                <select class="selectpicker" multiple data-width="80%" 
-                        data-selected-text-format="count" data-live-search="true" 
-                        title="No items selected" id="familyList">
-                  <!--populated by visualization_function.js-->
+                    <!--</ul> -->
+                  <select class="selectpicker" multiple data-width="80%" 
+                          data-selected-text-format="count" data-live-search="true" 
+                          title="No items selected" id="familyList">
+                    <!--populated by visualization_function.js-->
 
-                </select>                
-              </div>
-              <!--dropdown for genus-->
-              <div class="dropdown col-sm-3" id="genus_dropdown">
-                <div class="header_taxa">Genus filter</div>
+                  </select>                
+                </div>
+                <!--dropdown for genus-->
+                <div class="dropdown col-sm-3" id="genus_dropdown">
+                  <div class="header_taxa">Genus filter</div>
 
-                <select class="selectpicker" multiple data-width="80%" 
-                        data-selected-text-format="count" data-live-search="true" 
-                        title="No items selected" id="genusList">
-                  <!--populated by visualization_function.js-->
+                  <select class="selectpicker" multiple data-width="80%" 
+                          data-selected-text-format="count" data-live-search="true" 
+                          title="No items selected" id="genusList">
+                    <!--populated by visualization_function.js-->
 
-                </select>                 
-              </div>
-              <!--dropdown for species-->
+                  </select>                 
+                </div>
+                <!--dropdown for species-->
 
-              <div class="dropdown col-sm-3" id="species_dropdown">
-                <div class="header_taxa">Species filter</div>
+                <div class="dropdown col-sm-3" id="species_dropdown">
+                  <div class="header_taxa">Species filter</div>
 
-                <!--example select dropdown-->
-                <select class="selectpicker" multiple data-width="80%" 
-                        data-selected-text-format="count" data-live-search="true" 
-                        title="No items selected" id="speciesList">
-                  <!--populated by visualization_function.js-->
+                  <!--example select dropdown-->
+                  <select class="selectpicker" multiple data-width="80%" 
+                          data-selected-text-format="count" data-live-search="true" 
+                          title="No items selected" id="speciesList">
+                    <!--populated by visualization_function.js-->
 
-                </select>              
-              </div>
+                  </select>              
+                </div>
               </div>
               <div class="row">
-                <div class="panel-group" id="displayCurrent">
-                  <div class="panel panel-info" >
-                    <div class="panel-heading">Current filters</div>
-                    <div class="panel-body" id="displayCurrentBox">
-                      <!--Populated by visualization_functions.js-->
-                      <p id="p_Order">Order: No filters applied</p>
-                      <p id="p_Family">Family: No filters applied</p>
-                      <p id="p_Genus">Genus: No filters applied</p>
-                      <p id="p_Species">Species: No filters applied</p>
+                <div class='col-md-12'>
+                  <div class="panel-group" id="displayCurrent">
+                    <div class="panel panel-info" >
+                      <div class="panel-heading">Current filters</div>
+                      <div class="panel-body" id="displayCurrentBox">
+                        <!--Populated by visualization_functions.js-->
+                        <p id="p_Order">Order: No filters applied</p>
+                        <p id="p_Family">Family: No filters applied</p>
+                        <p id="p_Genus">Genus: No filters applied</p>
+                        <p id="p_Species">Species: No filters applied</p>
+                      </div>
                     </div>
                   </div>
                 </div>
