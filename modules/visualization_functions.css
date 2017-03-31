@@ -100,13 +100,14 @@
   width: 90%;
   height: 10%;
 }
-/* customizes taxa filters buttons */
+/* customizes taxa filters buttons
 #modal-body-taxa{
   height: 30%;
-}
+}*/
 
 #modal-body-file{
   height: 10%;
+  overflow: auto;
 }
 #color_scheme{
   position: absolute;
@@ -166,8 +167,9 @@
   overflow-x: hidden;
 }
 #modal-body-taxa{
-    padding: 15px; 
-    overflow-y: auto; 
+  height: 30%;
+  padding: 15px; 
+  overflow-y: auto; 
 }
 
 .header_taxa{
