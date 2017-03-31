@@ -100,16 +100,15 @@
   width: 90%;
   height: 10%;
 }
-/* customizes taxa filters buttons
-#modal-body-taxa{
-  height: 30%;
-}*/
+
+/* customizes taxa filters buttons*/
 
 #modal-body-file{
   height: 10%;
   overflow: auto;
 }
 #color_scheme{
+  text-align: center;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -125,7 +124,6 @@
 #orderList.dropdown-menu{
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 50%;
 }
 #order_dropdown{
   text-align: center;
@@ -133,7 +131,6 @@
 #familyList.dropdown-menu{
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 50%;
 }
 #family_dropdown{
   text-align: center;
@@ -141,7 +138,6 @@
 #genusList.dropdown-menu{
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 50%;
 }
 #genus_dropdown{
   text-align: center;
@@ -150,25 +146,30 @@
   overflow: visible;
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 50%;
 }
+#speciesList.dropdown-menu open{
+  right:0;
+}
+
 #species_dropdown{
   text-align: center;
 }
 
 #displayCurrent{
   position: relative;
-  width: 96%;
+  /*width: 96%;
   height: 80%;
-  margin: 2%;
+  margin: 2%;*/
 }
 #displayCurrentBox{
   overflow-y: scroll;
   overflow-x: hidden;
 }
-#modal-body-taxa{
-  height: 30%;
-  padding: 15px; 
+#modal-body-taxa-1{
+  margin-bottom: 5%; 
+}
+
+#modal-body-taxa-2{
   overflow-y: auto; 
 }
 
@@ -244,14 +245,6 @@
   overflow: hidden;
 }
 
-/*.legend span { 
-  border: 1px solid #ccc; 
-  float: left; 
-  width: 12px; 
-  height: 12px; 
-  margin: 2px; 
-}*/
-
 .jscolor{
   width: 10px;
   height: 12px;
@@ -264,3 +257,4 @@
   padding: 2px;
   display: block;
 }
+
