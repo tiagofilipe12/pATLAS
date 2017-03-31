@@ -3,9 +3,6 @@
 
 
 ---
-
-
----
 ## How do I run this thing? aka Usage
 
 ### MASHix.py
@@ -42,6 +39,11 @@ The first thing you have to do is run MASHix.py in order to calculate distances 
 **'-no_rm'**, **'--no-remove'** - 'Specify if you do not want to remove the output concatenated fasta.'
 
 **'-hist'**, **'--histograms'** - 'Checks the distribution of distances values ploting histograms.'
+
+
+
+---
+
 
 ### pATLAS.html
 
