@@ -45,7 +45,6 @@ function node_iter(read_color,gi,g,graphics){
 ///////////////////
 
 function link_coloring(g, graphics, renderer){
-  console.log(document.getElementById("colorForm").value);
   g.forEachLink(function(link){
     var dist = link.data*10
     var linkUI = graphics.getLinkUI(link.id)
