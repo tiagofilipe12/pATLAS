@@ -96,6 +96,7 @@ function node_coloring_taxa(tempArray, g, graphics, store_lis, currentSelection)
 
 // function to reset node colors
 function node_color_reset(graphics, g, nodeColor, renderer){
+  document.getElementById('taxa_label').style.display = "none"; //hide label
   g.forEachNode(function (node) {
     var nodeUI = graphics.getNodeUI(node.id);
     //reset all nodes before changing colors because of the second instance of filters

@@ -73,3 +73,40 @@ function reset_link_color(g,graphics,renderer){
   renderer.rerender();
   $("#loading").hide();
 }
+
+// *** color scale legend *** //
+
+function color_legend(){
+  showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
+  showLegend.style.display = "block";
+  if (document.getElementById("colorForm").value == "Green color scheme" || document.getElementById("colorForm").value == ""){
+    scale = ['#65B661', '#CAE368'];
+  }
+  else if (document.getElementById("colorForm").value == "Blue color scheme"){
+    scale = ['#025D8C', '#73C2FF'];
+  }
+  else if (document.getElementById("colorForm").value == "Red color scheme"){
+    scale = ['#4D0E1C', '#E87833'];
+  }
+  showLegend.style.display = "block";
+  palette(scale[1],scale[0], 20); 
+
+}
+
+// get pallete
+function palette(min, max, x) { // x is the number of colors to the gradient
+  var tmpArray = new Array(x);//create an empty array with length x
+  scale=chroma.scale([min,max]);
+  style_width=100/x;
+  $('#scaleLegend').empty();
+  for (var i=0;i<tmpArray.length;i++){
+    color_element=scale(i/x).hex();
+    console.log('<span class="grad-step" style="background-color:'+color_element+'; width:'+style_width+'%"></span>')
+    $('#scaleLegend').append('<span class="grad-step" style="background-color:'+color_element+'; width:'+style_width+'%"></span>')
+
+  }
+  $('#scaleLegend').append('<div class="header_taxa" id="min">0</div>');
+  $('#scaleLegend').append('<div class="header_taxa" id="med">0.5</div>');
+  $('#scaleLegend').append('<div class="header_taxa" id="max">1</div>');
+  document.getElementById('distance_label').style.display = "block"; //show label
+}

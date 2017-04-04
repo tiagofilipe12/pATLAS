@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
+  return $.getJSON('example.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -447,8 +447,18 @@ function onLoad() {
 
             slider.noUiSlider.set([min, max]);
             node_color_reset(graphics, g, nodeColor, renderer);
-            if (typeof showLegend !== 'undefined'){
+            //document.getElementById('taxa_label').style.display = "none"; //hide label
+            if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === ""){
               showLegend.style.display = "none";
+              showRerun.style.display = "none";
+              showGoback.style.display = "none";
+              document.getElementById("go_back").className += " disabled";
+              showDownload.style.display = "none";
+            }
+            else{
+              //showLegend.style.display = "none";
+              $('#colorLegendBox').empty()
+              document.getElementById('taxa_label').style.display = "none"; //hide label
               showRerun.style.display = "none";
               showGoback.style.display = "none";
               document.getElementById("go_back").className += " disabled";
@@ -546,6 +556,7 @@ function onLoad() {
           var firstIteration = true; // bolean to control the upper taxa level (order or family)
 
           // first restores all nodes to default color
+          //document.getElementById('taxa_label').style.display = "none"; //hide label
           node_color_reset(graphics, g, nodeColor, renderer);
 
           if (counter > 1 && counter < 4){
@@ -644,6 +655,7 @@ function onLoad() {
           if (noLegend == false) {
             showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
             showLegend.style.display = "block";
+            document.getElementById('taxa_label').style.display = "block"; //show label
             $('#colorLegendBox').empty();
             $('#colorLegendBox').append(store_lis + 
               '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
@@ -687,12 +699,21 @@ function onLoad() {
           setTimeout(function(){
             link_coloring(g, graphics, renderer)
           },100);
+          color_legend();
           document.getElementById('reset-links').disabled = "";
         });
 
         $('#reset-links').click(function(event){
           event.preventDefault();
-          $("#loading").show();
+          document.getElementById('distance_label').style.display = "none"; //hide label
+          if ($('#colorLegendBox').html() === ""){
+            $('#scaleLegend').empty();
+            showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
+            showLegend.style.display = "none";
+          }
+          else{
+            $('#scaleLegend').empty();
+          }
           setTimeout(function(){
             reset_link_color(g,graphics,renderer)
           },100);
@@ -840,14 +861,24 @@ function onLoad() {
         // resets the slider
         $('#reset-sliders').click(function(event){
           slider.noUiSlider.set([min, max]);
+          //document.getElementById('taxa_label').style.display = "none"; //hide label
           node_color_reset(graphics, g, nodeColor, renderer);
-          if (typeof showLegend !== 'undefined'){
-            showLegend.style.display = "none";
-            showRerun.style.display = "none";
-            showGoback.style.display = "none";
-            document.getElementById("go_back").className += " disabled";
-            showDownload.style.display = "none";
-          }
+            if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === ""){
+              showLegend.style.display = "none";
+              showRerun.style.display = "none";
+              showGoback.style.display = "none";
+              document.getElementById("go_back").className += " disabled";
+              showDownload.style.display = "none";
+            }
+            else{
+              //showLegend.style.display = "none";
+              $('#colorLegendBox').empty()
+              document.getElementById('taxa_label').style.display = "none"; //hide label
+              showRerun.style.display = "none";
+              showGoback.style.display = "none";
+              document.getElementById("go_back").className += " disabled";
+              showDownload.style.display = "none";
+            }  
           resetDisplayTaxaBox(idsArrays)
 
           // resets dropdown selections

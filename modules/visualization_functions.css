@@ -258,4 +258,36 @@
   display: block;
 }
 
+/*styling of scale legend*/
 
+.gradient {
+  white-space: nowrap;
+  text-align: center;
+}
+.grad-step {
+  display: inline-block;
+  height: 20px;
+}
+
+#min {
+  margin: 1%;
+  position: absolute;
+  left: 10%;
+  font-size: 11px;
+}
+
+#med {
+  margin: 1%;
+  position: absolute;
+  right: 25%;
+  left: 25%;
+  text-align: center;
+  font-size: 11px;
+}
+
+#max {
+  margin: 1%;
+  position: absolute;
+  right: 10%;
+  font-size: 11px;
+}
