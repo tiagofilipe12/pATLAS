@@ -2,15 +2,18 @@
 function read_coloring(g, graphics, renderer){
   var readColorArray=[];
   //console.log(read_json)
+  var readMode = true;
   var readString=read_json.replace(/[{}"]/g,'').split(",");
   for (string in readString){
     gi = readString[string].split(":")[0].replace(" ","");
     perc = parseFloat(readString[string].split(":")[1].replace(" ",""));
     if (document.getElementById('check_file').checked){
       read_color = chroma.mix('yellow', 'maroon', perc).hex().replace('#', '0x');
+      palette('yellow', 'maroon', 20, readMode)
     }
     else{
       read_color = chroma.mix('lightsalmon', 'maroon', perc).hex().replace('#', '0x');
+      palette('lightsalmon', 'maroon', 20, readMode)
     }
     node_iter(read_color,gi,g,graphics);
   };
@@ -75,10 +78,8 @@ function reset_link_color(g,graphics,renderer){
 }
 
 // *** color scale legend *** //
-
-function color_legend(){
-  showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
-  showLegend.style.display = "block";
+// for distances
+function color_legend(readMode){
   if (document.getElementById("colorForm").value == "Green color scheme" || document.getElementById("colorForm").value == ""){
     scale = ['#65B661', '#CAE368'];
   }
@@ -88,25 +89,39 @@ function color_legend(){
   else if (document.getElementById("colorForm").value == "Red color scheme"){
     scale = ['#4D0E1C', '#E87833'];
   }
-  showLegend.style.display = "block";
-  palette(scale[1],scale[0], 20); 
+  palette(scale[1],scale[0], 20, readMode); 
 
 }
 
 // get pallete
-function palette(min, max, x) { // x is the number of colors to the gradient
+function palette(min, max, x, readMode) { // x is the number of colors to the gradient
+  showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
+  showLegend.style.display = "block";
   var tmpArray = new Array(x);//create an empty array with length x
   scale=chroma.scale([min,max]);
   style_width=100/x;
-  $('#scaleLegend').empty();
-  for (var i=0;i<tmpArray.length;i++){
-    color_element=scale(i/x).hex();
-    console.log('<span class="grad-step" style="background-color:'+color_element+'; width:'+style_width+'%"></span>')
-    $('#scaleLegend').append('<span class="grad-step" style="background-color:'+color_element+'; width:'+style_width+'%"></span>')
-
+  if (readMode==='undefined'||readMode!=true){
+    $('#scaleLegend').empty();
+    for (var i=0;i<tmpArray.length;i++){
+      color_element=scale(i/x).hex();
+      $('#scaleLegend').append('<span class="grad-step" style="background-color:'+color_element+'; width:'+style_width+'%"></span>')
+    }
+    $('#scaleLegend').append('<div class="header_taxa" id="min">0</div>');
+    $('#scaleLegend').append('<div class="header_taxa" id="med">0.5</div>');
+    $('#scaleLegend').append('<div class="header_taxa" id="max">1</div>');
+    document.getElementById('distance_label').style.display = "block"; //show label
   }
-  $('#scaleLegend').append('<div class="header_taxa" id="min">0</div>');
-  $('#scaleLegend').append('<div class="header_taxa" id="med">0.5</div>');
-  $('#scaleLegend').append('<div class="header_taxa" id="max">1</div>');
-  document.getElementById('distance_label').style.display = "block"; //show label
+  else{
+    readMode==false
+    $('#readLegend').empty();
+    for (var i=0;i<tmpArray.length;i++){
+      color_element=scale(i/x).hex();
+      $('#readLegend').append('<span class="grad-step" style="background-color:'+color_element+'; width:'+style_width+'%"></span>')
+    }
+    $('#readLegend').append('<div class="header_taxa" id="min">0</div>');
+    $('#readLegend').append('<div class="header_taxa" id="med">0.5</div>');
+    $('#readLegend').append('<div class="header_taxa" id="max">1</div>');
+    document.getElementById('read_label').style.display = "block"; //show label
+  }
 }
+

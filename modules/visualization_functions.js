@@ -447,7 +447,6 @@ function onLoad() {
 
             slider.noUiSlider.set([min, max]);
             node_color_reset(graphics, g, nodeColor, renderer);
-            //document.getElementById('taxa_label').style.display = "none"; //hide label
             if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === ""){
               showLegend.style.display = "none";
               showRerun.style.display = "none";
@@ -456,7 +455,6 @@ function onLoad() {
               showDownload.style.display = "none";
             }
             else{
-              //showLegend.style.display = "none";
               $('#colorLegendBox').empty()
               document.getElementById('taxa_label').style.display = "none"; //hide label
               showRerun.style.display = "none";
@@ -699,7 +697,8 @@ function onLoad() {
           setTimeout(function(){
             link_coloring(g, graphics, renderer)
           },100);
-          color_legend();
+          var readMode = false;
+          color_legend(readMode);
           document.getElementById('reset-links').disabled = "";
         });
 
@@ -861,7 +860,6 @@ function onLoad() {
         // resets the slider
         $('#reset-sliders').click(function(event){
           slider.noUiSlider.set([min, max]);
-          //document.getElementById('taxa_label').style.display = "none"; //hide label
           node_color_reset(graphics, g, nodeColor, renderer);
             if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === ""){
               showLegend.style.display = "none";
@@ -869,15 +867,18 @@ function onLoad() {
               showGoback.style.display = "none";
               document.getElementById("go_back").className += " disabled";
               showDownload.style.display = "none";
+              document.getElementById('read_label').style.display = "none"; //hide label
+              $('#readLegend').empty()
             }
             else{
-              //showLegend.style.display = "none";
               $('#colorLegendBox').empty()
               document.getElementById('taxa_label').style.display = "none"; //hide label
               showRerun.style.display = "none";
               showGoback.style.display = "none";
               document.getElementById("go_back").className += " disabled";
               showDownload.style.display = "none";
+              document.getElementById('read_label').style.display = "none"; //hide label
+              $('#readLegend').empty()
             }  
           resetDisplayTaxaBox(idsArrays)
 
