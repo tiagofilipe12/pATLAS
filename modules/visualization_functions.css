@@ -57,6 +57,12 @@
   transform: translate(-50%, -50%);
 
 }
+
+#boldDivider{
+  height: 2px;
+  background-color: #A9A9A9; /*darkgrey*/
+}
+
 /*modal for length body increase*/
 #modal-body-length{
   height: 200px;
