@@ -8,8 +8,8 @@ function read_coloring(g, graphics, renderer){
     gi = readString[string].split(":")[0].replace(" ","");
     perc = parseFloat(readString[string].split(":")[1].replace(" ",""));
     if (document.getElementById('check_file').checked){
-      read_color = chroma.mix('yellow', 'maroon', perc).hex().replace('#', '0x');
-      palette('yellow', 'maroon', 20, readMode)
+      read_color = chroma.mix('#b0b000', 'maroon', perc).hex().replace('#', '0x');
+      palette('#b0b000', 'maroon', 20, readMode)
     }
     else{
       read_color = chroma.mix('lightsalmon', 'maroon', perc).hex().replace('#', '0x');
