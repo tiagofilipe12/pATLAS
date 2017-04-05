@@ -101,13 +101,14 @@ function palette(min, max, x, readMode) { // x is the number of colors to the gr
   style_width=100/x;
   if (readMode==='undefined'||readMode!=true){
     $('#scaleLegend').empty();
-    for (var i=0;i<tmpArray.length;i++){
+    // this loop should be reversed since the higher values will have a lighter color
+    for (var i=tmpArray.length-1;i>=0;i--){
       color_element=scale(i/x).hex();
       $('#scaleLegend').append('<span class="grad-step" style="background-color:'+color_element+'; width:'+style_width+'%"></span>')
     }
     $('#scaleLegend').append('<div class="header_taxa" id="min">0</div>');
-    $('#scaleLegend').append('<div class="header_taxa" id="med">0.5</div>');
-    $('#scaleLegend').append('<div class="header_taxa" id="max">1</div>');
+    $('#scaleLegend').append('<div class="header_taxa" id="med">0.05</div>');
+    $('#scaleLegend').append('<div class="header_taxa" id="max">0.1</div>');
     document.getElementById('distance_label').style.display = "block"; //show label
   }
   else{

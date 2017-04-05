@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('example.json');   // change the input file name
+  return $.getJSON('demo.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -766,7 +766,6 @@ function onLoad() {
             var slider_max = slider.noUiSlider.get()[1],
                 slider_min = slider.noUiSlider.get()[0];
             g.forEachNode(function (node) {
-              //console.log(node.id)
               var node_length = node.data.seq_length.split(">").slice(-1).toString();
               var nodeUI = graphics.getNodeUI(node.id);
               if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)){
