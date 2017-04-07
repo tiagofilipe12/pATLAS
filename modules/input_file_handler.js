@@ -38,23 +38,3 @@ function handleFileSelect(infile_id,text_id) {
     }
   }, false);
 }
-
-// function that controls checkbox
-//function validate(id_string){
-//  if (document.getElementById(id_string).checked && first_file==true){
-//    console.log("stuff")
-    // removes attribute that prevents click to open dialog
-//    document.getElementById("2nd_file_dialog").removeAttribute("onclick");
-//    document.getElementById("span_2ndFile").removeAttribute("disabled");
-//    document.getElementById("file_text2").removeAttribute("disabled");
-    //document.getElementById("span_2ndFile").disabled = false;
-//  }
-//  else {
-//    console.log("success too");
-    // adds the attribute that prevents click from opening the dialog again
-//    document.getElementById("2nd_file_dialog").setAttribute("onclick","return false");
-//    document.getElementById("span_2ndFile").setAttribute("disabled","disabled");
-//    document.getElementById("file_text2").setAttribute("disabled","disabled");
-    //document.getElementById("span_2ndFile").disabled = true;
-//  }
-//}
