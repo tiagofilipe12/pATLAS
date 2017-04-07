@@ -557,7 +557,7 @@ function onLoad() {
           //document.getElementById('taxa_label').style.display = "none"; //hide label
           node_color_reset(graphics, g, nodeColor, renderer);
 
-          if (counter > 1 && counter < 4){
+          if (counter > 1 && counter <= 4){
             g.forEachNode(function (node) {
               var nodeUI = graphics.getNodeUI(node.id);
               var species = node.data.species.split(">").slice(-1).toString();
