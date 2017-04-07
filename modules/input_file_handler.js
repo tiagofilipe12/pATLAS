@@ -8,7 +8,7 @@ function abortRead(reader) {
 
 // function to handle ONE file at a time (per button)
 //infile_id refers to the button id and text_id referes to the text form that reads the file
-function handleFileSelect(infile_id,text_id) {
+function handleFileSelect(infile_id,text_id, callback) {
   console.log(infile_id)
   console.log(text_id)
   document.getElementById(infile_id).addEventListener('change', function(e){
@@ -29,11 +29,10 @@ function handleFileSelect(infile_id,text_id) {
       //opens the instance of the reader
       var reader = new FileReader();
 
-      reader.onload = (function(f){
-        return function(event){
-          read_json = this.result;
-        };
-      })(files[0]);
+      reader.onload = function(f){
+        callback(this.result);
+      };
+
       reader.readAsText(files[0]);
     }
   }, false);
