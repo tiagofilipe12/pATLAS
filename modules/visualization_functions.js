@@ -882,6 +882,8 @@ function onLoad() {
     // control the infile input and related functions //
     //************************************************//
 
-    read_json=handleFileSelect("infile","#file_text");
+    handleFileSelect("infile","#file_text", function(new_read_json){
+      read_json = new_read_json;
+    });
 
 }
