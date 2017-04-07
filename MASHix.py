@@ -30,14 +30,6 @@ def output_tree(infile, tag):
 			pass
 	return mother_directory
 
-## Removes keys from dictionary that are present in another list
-## Currently this functions is not being used
-#def key_removal(temporary_dict, comparisons_made):
-#	for key in temporary_dict.keys():
-#		if key in comparisons_made:
-#			del temporary_dict[key]
-#	return temporary_dict
-
 ## Checks if a directory exists and if not creates one.
 def folderexist(directory):
 	if not directory.endswith("/"):
@@ -56,7 +48,6 @@ def search_substing(string):
 	plasmid_search = re.search('plasmid(.+?)__', string)
 	if plasmid_search:
 		plasmid_name=plasmid_search.group(1).replace("_","")
-
 
 ## Function to create a master fasta file from several fasta databases. One fasta is enought though
 def master_fasta(fastas, output_tag, mother_directory):

@@ -7,6 +7,7 @@ function abortRead(reader) {
 }
 
 // function to handle ONE file at a time (per button)
+//infile_id refers to the button id and text_id referes to the text form that reads the file
 function handleFileSelect(infile_id,text_id) {
   console.log(infile_id)
   console.log(text_id)
