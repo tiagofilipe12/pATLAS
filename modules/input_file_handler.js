@@ -29,9 +29,9 @@ function handleFileSelect(infile_id,text_id, callback) {
       var reader = new FileReader();
 
       reader.onload = function(f){
-        read_json = callback(this.result);
+        callback(this.result);
       };
-      
+
       reader.readAsText(files[0]);
     }
   }, false);
