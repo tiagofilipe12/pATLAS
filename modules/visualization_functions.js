@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('demo.json');   // change the input file name
+  return $.getJSON('test.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -36,9 +36,9 @@ function onLoad() {
         list_gi.push(sequence)
         //checks if sequence is not in list to prevent adding multiple nodes for each sequence
         if (list.indexOf(sequence) < 0) {    
-          g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font>"+ sequence,
-                              species:"<font color='#468499'>Species: </font>"+species,
-                              seq_length: "<font color='#468499'>seq_length: </font>"+seq_length,
+          g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font>" + sequence.link("https://www.ncbi.nlm.nih.gov/nuccore/"+sequence),
+                              species:"<font color='#468499'>Species: </font>" + species,
+                              seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
                               log_length: log_length 
           });
           list.push(sequence_info);
@@ -141,15 +141,15 @@ function onLoad() {
           //*** EVENTS ***//
           //**************//
 
-
           var events = Viva.Graph.webglInputEvents(graphics, g);
           store_nodes=[];  //list used to store nodes
           // changes the color of node and links (and respective linked nodes) of this node when clicked
-          
+          click_check=false;    // controls the handling of hoverings
           events.click(function (node) {
             store_nodes.push(node.id);
             change_color=true;
             console.log('Single click on node: ' + node.id);
+            click_check=true;
             var nodeUI = graphics.getNodeUI(node.id);
             if (toggle_status == true){   // if statement to check if toggle button is enabled
               // statement when node and linked nodes are still in default color
@@ -211,12 +211,22 @@ function onLoad() {
                                         'top':domPos.y, 
                                         'position':'fixed', 
                                         'z-index':2
-                                        });
+                                        });        
           }).mouseLeave(function (node) {
-            $('#popup_description').css({'display':'none'});
+            // if node is not clicked then mouse hover can disappear
+            if (click_check==true){
+              console.log("true")
+              $('#popup_description').css({'display':'block'});
+            }
+            else{
+              console.log("false")
+              $('#popup_description').css({'display':'none'});
+            }
           });
+          
           //** mouse hovering block end **//                        
         renderer.rerender();
+
         // by default the animation on forces is paused since 
         // it may be computational intensive for old computers
         renderer.pause(); 
@@ -554,7 +564,6 @@ function onLoad() {
           var firstIteration = true; // bolean to control the upper taxa level (order or family)
 
           // first restores all nodes to default color
-          //document.getElementById('taxa_label').style.display = "none"; //hide label
           node_color_reset(graphics, g, nodeColor, renderer);
 
           if (counter > 1 && counter <= 4){
