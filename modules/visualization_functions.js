@@ -147,9 +147,15 @@ function onLoad() {
           click_check=false;    // controls the handling of hoverings
           events.click(function (node) {
             store_nodes.push(node.id);
-            change_color=true;
+            // allows the control of the hovering appearing and locking
+            if (click_check==false){
+              click_check=true;
+            }
+            else{
+              click_check=false;
+              $('#popup_description').css({'display':'none'});
+            }
             console.log('Single click on node: ' + node.id);
-            click_check=true;
             var nodeUI = graphics.getNodeUI(node.id);
             if (toggle_status == true){   // if statement to check if toggle button is enabled
               // statement when node and linked nodes are still in default color
@@ -215,11 +221,9 @@ function onLoad() {
           }).mouseLeave(function (node) {
             // if node is not clicked then mouse hover can disappear
             if (click_check==true){
-              console.log("true")
               $('#popup_description').css({'display':'block'});
             }
             else{
-              console.log("false")
               $('#popup_description').css({'display':'none'});
             }
           });
