@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('test.json');   // change the input file name
+  return $.getJSON('example.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -285,7 +285,8 @@ function onLoad() {
           event.preventDefault();
           g.forEachNode(function (node) {
             var nodeUI = graphics.getNodeUI(node.id);
-            var sequence = node.data.sequence.split(">").slice(-1).toString();
+            var sequence = node.data.sequence.split(">")[3].split("<")[0];
+            console.log(sequence)
             nodeUI = graphics.getNodeUI(node.id);
             var x= nodeUI.position.x,
                 y= nodeUI.position.y
