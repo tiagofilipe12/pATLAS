@@ -36,7 +36,7 @@ function onLoad() {
         list_gi.push(sequence)
         //checks if sequence is not in list to prevent adding multiple nodes for each sequence
         if (list.indexOf(sequence) < 0) {    
-          g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/"+sequence+"' target='_blank'>"+ sequence + "</a>",
+          g.addNode(sequence_info,{sequence:"<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/"+sequence.split("_")[1]+"' target='_blank'>"+ sequence + "</a>",
                               species:"<font color='#468499'>Species: </font>" + species,
                               seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
                               log_length: log_length 
