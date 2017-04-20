@@ -19,23 +19,19 @@ function read_coloring(list_gi, g, graphics, renderer){
       if (perc >= 0.5){
         // perc values had to be normalized to the percentage value between 0
         // and 1
-        read_color = chroma.mix('#b0b000', 'maroon', (perc - 0.5)*2).hex()
-        .replace('#',
-        '0x');
+        read_color = chroma.mix('#eacc00', 'maroon', (perc - 0.5)*2).hex()
+        .replace('#', '0x');
       } else {
-        read_color = chroma.mix('blue', '#b0b000', perc*2).hex()
-        .replace('#',
-        '0x');
+        read_color = chroma.mix('blue', '#eacc00', perc*2).hex()
+        .replace('#', '0x');
       }
-      scale=chroma.scale(['blue', '#b0b000', 'maroon']);
+      scale=chroma.scale(['blue', '#eacc00', 'maroon']);
       palette(scale , 20, readMode)
-    }
-    else{
+    } else{
       read_color = chroma.mix('lightsalmon', 'maroon', perc).hex().replace('#', '0x');
       scale=chroma.scale(['lightsalmon', 'maroon']);
       palette(scale, 20, readMode)
     }
-    console.log(perc)
     node_iter(read_color,gi,g,graphics, perc);
 
   };
@@ -54,8 +50,6 @@ function read_coloring(list_gi, g, graphics, renderer){
 // function to iterate through nodes
 function node_iter(read_color,gi,g,graphics, perc){
   g.forEachNode(function (node) {
-
-
     // if statement added for parsing singletons into the graph visualization
     if (node.id.indexOf("singleton") > -1){
       nodeGI = node.id.split("_").slice(1,3).join("_");
