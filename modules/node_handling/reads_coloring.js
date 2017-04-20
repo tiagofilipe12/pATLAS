@@ -16,12 +16,24 @@ function read_coloring(list_gi, g, graphics, renderer){
     }
     //perc = parseFloat(readString[string].split(":")[1].replace(" ",""));
     if (document.getElementById('check_file').checked){
-      read_color = chroma.mix('#b0b000', 'maroon', perc).hex().replace('#', '0x');
-      palette('#b0b000', 'maroon', 20, readMode)
+      if (perc >= 0.5){
+        // perc values had to be normalized to the percentage value between 0
+        // and 1
+        read_color = chroma.mix('#b0b000', 'maroon', (perc - 0.5)*2).hex()
+        .replace('#',
+        '0x');
+      } else {
+        read_color = chroma.mix('blue', '#b0b000', perc*2).hex()
+        .replace('#',
+        '0x');
+      }
+      scale=chroma.scale(['blue', '#b0b000', 'maroon']);
+      palette(scale , 20, readMode)
     }
     else{
       read_color = chroma.mix('lightsalmon', 'maroon', perc).hex().replace('#', '0x');
-      palette('lightsalmon', 'maroon', 20, readMode)
+      scale=chroma.scale(['lightsalmon', 'maroon']);
+      palette(scale, 20, readMode)
     }
     console.log(perc)
     node_iter(read_color,gi,g,graphics, perc);
@@ -113,11 +125,10 @@ function color_legend(readMode){
 }
 
 // get pallete
-function palette(min, max, x, readMode) { // x is the number of colors to the gradient
+function palette(scale, x, readMode) { // x is the number of colors to the gradient
   showLegend = document.getElementById('colorLegend'); // global variable to be reset by the button reset-filters
   showLegend.style.display = "block";
   var tmpArray = new Array(x);//create an empty array with length x
-  scale=chroma.scale([min,max]);
   style_width=100/x;
   if (readMode==='undefined'||readMode!=true){
     $('#scaleLegend').empty();
