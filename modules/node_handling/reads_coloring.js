@@ -1,11 +1,17 @@
 // single read displayer
-function read_coloring(g, graphics, renderer){
+function read_coloring(list_gi, g, graphics, renderer){
   var readColorArray=[];
-  //console.log(read_json)
   var readMode = true;
   var readString=read_json.replace(/[{}"]/g,'').split(",");
   for (string in readString){
     gi = readString[string].split(":")[0].replace(" ","");
+    if (list_gi.indexOf(gi) <= -1){
+      g.addNode('singleton_'+gi,{sequence:"<font color='#468499'>seq_id: </font><a "+
+      "href='https://www.ncbi.nlm.nih.gov/nuccore/"+gi.split("_")[1]+"' target='_blank'>"+ gi + "</a>",
+        log_length: 10
+      });
+      list_gi.push(gi);
+    }
     perc = parseFloat(readString[string].split(":")[1].replace(" ",""));
     if (document.getElementById('check_file').checked){
       read_color = chroma.mix('#b0b000', 'maroon', perc).hex().replace('#', '0x');
@@ -26,12 +32,19 @@ function read_coloring(g, graphics, renderer){
   showDownload.style.display = "block";
   renderer.rerender();
   $("#loading").hide();
+  return list_gi
+
 };
 
 // function to iterate through nodes
 function node_iter(read_color,gi,g,graphics){
   g.forEachNode(function (node) {
-    nodeGI=node.id.split("_").slice(0,2).join("_");
+    // if statement added for parsing singletons into the graph visualization
+    if (node.id.indexOf("singleton") > -1){
+      nodeGI = node.id.split("_").slice(1,3).join("_");
+    } else {
+      nodeGI = node.id.split("_").slice(0,2).join("_");
+    }
     var nodeUI = graphics.getNodeUI(node.id);
     if (gi == nodeGI){
       nodeUI.color = read_color;

@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('example.json');   // change the input file name
+  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -688,7 +688,7 @@ function onLoad() {
           event.preventDefault();
           $("#loading").show();
           setTimeout(function () {          
-            read_coloring(g, graphics, renderer);
+            list_gi = read_coloring(list_gi, g, graphics, renderer);
           },100);
             
           //}
