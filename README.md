@@ -18,13 +18,7 @@ Comming soon...
 
 ---
 
-### Outputs
-
-Outputs all files to: full path to first input file --> string given to '-o' option --> results.
-
-1. Outputs two plots in two .html files, one plot for the number of genomes with a given mash distances (average, meadian, maximum and minimum) and another plot the number of genomes with a given significant pairwise differences.
-
-2. **load pATLAS.html**
+1. **load pATLAS.html**
 
    This html loads the JSON file retrieved by [MASHix.py](https://github.com/tiagofilipe12/MASHix) and runs vivagraph.js in order to plot the connections (using MASH distances) between closely related  nodes (genomes/sequences). **VERY IMPORTANT: in order to run _pATLAS.html_ make sure you copy .json file to the main folder of MASHix, where _pATLAS.html_ is stored, otherwise it won't do anything**.
 
