@@ -1,6 +1,6 @@
 // load JSON file
 function getArray(){
-  return $.getJSON('import_to_vivagraph01_all.json');   // change the input file name
+  return $.getJSON('example.json');   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa(){
@@ -207,6 +207,8 @@ function onLoad() {
                                             node.data.species+
                                             "<br />"+
                                             node.data.seq_length+
+                                            "<br />"+
+                                            node.data.percentage+
                                             "</div>");
             $('#popup_description').css({'padding': '10px 10px 10px 10px', 
                                         'border':'1px solid grey', 
@@ -286,7 +288,7 @@ function onLoad() {
           g.forEachNode(function (node) {
             var nodeUI = graphics.getNodeUI(node.id);
             var sequence = node.data.sequence.split(">")[3].split("<")[0];
-            console.log(sequence)
+            //console.log(sequence)
             nodeUI = graphics.getNodeUI(node.id);
             var x= nodeUI.position.x,
                 y= nodeUI.position.y
