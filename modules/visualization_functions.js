@@ -696,7 +696,7 @@ function onLoad () {
         event.preventDefault()
         $('#loading').show()
         setTimeout(function () {
-          list_gi = read_coloring(list_gi, g, graphics, renderer)
+          assembly(assembly_json)
         }, 100)
 
           // }
