@@ -686,12 +686,35 @@ function onLoad () {
       })
 
       $('#cancel_infile').click(function (event) {
-        abortRead(reader)
+        abortRead(read_json)
       })
 
-        //* *********************//
-        //* * Distances filter **//
-        //* *********************//
+      //********** ***//
+      //** Assembly **//
+      //********** ***//
+      $('#assemblySubmit').click(function (event) {
+        event.preventDefault()
+        $('#loading').show()
+        setTimeout(function () {
+          list_gi = read_coloring(list_gi, g, graphics, renderer)
+        }, 100)
+
+          // }
+          // used to hide when function is not executed properly
+        setTimeout(function () {
+          $('#loading').hide()
+        }, 100)
+      })
+
+      $('#cancel_assembly').click(function (event) {
+        abortRead(assembly_json)
+      })
+
+
+
+      //* *********************//
+      //* * Distances filter **//
+      //* *********************//
       $('#distancesSubmit').click(function (event) {
         event.preventDefault()
         $('#loading').show()
@@ -907,4 +930,11 @@ function onLoad () {
   handleFileSelect('infile', '#file_text', function (new_read_json) {
     read_json = new_read_json
   })
+
+  handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {
+    assembly_json = new_assembly_json
+  })
+
 }
+
+

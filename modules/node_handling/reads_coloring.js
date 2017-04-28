@@ -33,19 +33,18 @@ function read_coloring (list_gi, g, graphics, renderer) {
       palette(scale, 20, readMode)
     }
     node_iter(read_color, gi, g, graphics, perc)
-
-  };
+  }
   // control all related divs
-  showRerun = document.getElementById('Re_run') 
-  showGoback = document.getElementById('go_back') 
-  showDownload = document.getElementById('download_ds') 
-  showRerun.style.display = 'block';
-  showGoback.style.display = 'block';
-  showDownload.style.display = 'block';
+  showRerun = document.getElementById('Re_run')
+  showGoback = document.getElementById('go_back')
+  showDownload = document.getElementById('download_ds')
+  showRerun.style.display = 'block'
+  showGoback.style.display = 'block'
+  showDownload.style.display = 'block'
   renderer.rerender()
   $('#loading').hide()
   return list_gi
-};
+}
 
 // function to iterate through nodes
 function node_iter (read_color, gi, g, graphics, perc) {
@@ -75,11 +74,11 @@ function link_coloring (g, graphics, renderer) {
     var dist = link.data * 10
     var linkUI = graphics.getLinkUI(link.id)
     if (document.getElementById('colorForm').value == 'Green color scheme' || document.getElementById('colorForm').value == '') {
-      link_color = chroma.mix('#65B661', '#CAE368', dist).hex().replace('#', '0x') + 'FF';
-    }    else if (document.getElementById('colorForm').value == 'Blue color scheme') {
-      link_color = chroma.mix('#025D8C', '#73C2FF', dist).hex().replace('#', '0x') + 'FF';
-    }    else if (document.getElementById('colorForm').value == 'Red color scheme') {
-      link_color = chroma.mix('#4D0E1C', '#E87833', dist).hex().replace('#', '0x') + 'FF';
+      link_color = chroma.mix('#65B661', '#CAE368', dist).hex().replace('#', '0x') + 'FF'
+    } else if (document.getElementById('colorForm').value == 'Blue color scheme') {
+      link_color = chroma.mix('#025D8C', '#73C2FF', dist).hex().replace('#', '0x') + 'FF'
+    } else if (document.getElementById('colorForm').value == 'Red color scheme') {
+      link_color = chroma.mix('#4D0E1C', '#E87833', dist).hex().replace('#', '0x') + 'FF'
     }
 
     // since linkUI seems to use alpha in its color definition we had to set alpha to 100%
@@ -105,20 +104,19 @@ function reset_link_color (g, graphics, renderer) {
 function color_legend (readMode) {
   if (document.getElementById('colorForm').value == 'Green color scheme' || document.getElementById('colorForm').value == '') {
     scale = ['#65B661', '#CAE368']
-  }  else if (document.getElementById('colorForm').value == 'Blue color scheme') {
+  } else if (document.getElementById('colorForm').value == 'Blue color scheme') {
     scale = ['#025D8C', '#73C2FF']
-  }  else if (document.getElementById('colorForm').value == 'Red color scheme') {
+  } else if (document.getElementById('colorForm').value == 'Red color scheme') {
     scale = ['#4D0E1C', '#E87833']
   }
-  palette(scale[1], scale[0], 20, readMode) 
-
+  palette(scale[1], scale[0], 20, readMode)
 }
 
 // get pallete
 function palette (scale, x, readMode) { // x is the number of colors to the gradient
   showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
-  showLegend.style.display = 'block';
-  var tmpArray = new Array(x)//create an empty array with length x
+  showLegend.style.display = 'block'
+  var tmpArray = new Array(x)// create an empty array with length x
   style_width = 100 / x
   if (readMode === 'undefined' || readMode != true) {
     $('#scaleLegend').empty()
@@ -130,8 +128,8 @@ function palette (scale, x, readMode) { // x is the number of colors to the grad
     $('#scaleLegend').append('<div class="header_taxa" id="min">0</div>')
     $('#scaleLegend').append('<div class="header_taxa" id="med">0.05</div>')
     $('#scaleLegend').append('<div class="header_taxa" id="max">0.1</div>')
-    document.getElementById('distance_label').style.display = 'block'; // show label
-  }  else {
+    document.getElementById('distance_label').style.display = 'block' // show label
+  } else {
     readMode == false
     $('#readLegend').empty()
     for (var i = 0; i < tmpArray.length; i++) {
@@ -141,6 +139,6 @@ function palette (scale, x, readMode) { // x is the number of colors to the grad
     $('#readLegend').append('<div class="header_taxa" id="min">0</div>')
     $('#readLegend').append('<div class="header_taxa" id="med">0.5</div>')
     $('#readLegend').append('<div class="header_taxa" id="max">1</div>')
-    document.getElementById('read_label').style.display = 'block'; // show label
+    document.getElementById('read_label').style.display = 'block' // show label
   }
 }
