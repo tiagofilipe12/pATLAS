@@ -1,6 +1,6 @@
-function alternative_loading(){
+function alternative_loading () {
   $('#loading-image').click(function (e) {
-    $('#loading-image').hide();
-    $('#loading-image-alt').show();
-  });
+    $('#loading-image').hide()
+    $('#loading-image-alt').show()
+  })
 }
