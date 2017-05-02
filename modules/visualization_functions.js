@@ -1,6 +1,6 @@
 // load JSON file
 function getArray () {
-  return $.getJSON('example.json')   // change the input file name
+  return $.getJSON('test.json')   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa () {
@@ -36,19 +36,21 @@ function onLoad () {
       list_gi.push(sequence)
         // checks if sequence is not in list to prevent adding multiple nodes for each sequence
       if (list.indexOf(sequence) < 0) {
-        g.addNode(sequence_info, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split('_')[1] + "' target='_blank'>" + sequence + '</a>',
+        // links are broken since NCBI links use gis instead of accessions 
+        // however this should be parsed through the database
+        g.addNode(sequence, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split('_')[1] + "' target='_blank'>" + sequence + '</a>',
           species: "<font color='#468499'>Species: </font>" + species,
           seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
           log_length: log_length
         })
-        list.push(sequence_info)
+        list.push(sequence)
       }
           // loops between all arrays of array pairing sequence and distances
       for (var i = 0; i < dict_dist.length; i++) {
         var pairs = dict_dist[i]
-        var reference_info = pairs[0]  // stores references in a unique variable
+        var reference = pairs[0].split('_').slice(0, 2).join('_')  // stores references in a unique variable
         var distance = pairs[1]   // stores distances in a unique variable
-        g.addLink(sequence_info, reference_info, distance)
+        g.addLink(sequence, reference, distance)
       };
     })
       // previously used to check the number of nodes provided
@@ -696,7 +698,7 @@ function onLoad () {
         event.preventDefault()
         $('#loading').show()
         setTimeout(function () {
-          assembly(assembly_json)
+          assembly(assembly_json, g, graphics, renderer)
         }, 100)
 
           // }
