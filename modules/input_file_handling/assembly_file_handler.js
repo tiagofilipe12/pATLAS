@@ -1,4 +1,4 @@
-function assembly (assembly_json, g, graphics, renderer) {
+function assembly (list_gi, assembly_json, g, graphics, renderer) {
   console.log(assembly_json)
     // removes everything within []
   var assemblyString = assembly_json.replace(/[{}"[ ]/g, '').split('],')
@@ -20,7 +20,21 @@ function assembly (assembly_json, g, graphics, renderer) {
     var accession = node_entry.split('_').slice(0, 2).join('_')
     var dist = node_entry.split(',')[1]
     console.log(accession)
-    g.addLink(contig_name, accession, dist)
+    console.log(list_gi)
+    if (accession in list_gi){
+        console.log("something")
+      g.addLink(contig_name, accession, dist)
+    } else {
+        console.log("something2")
+      // links wont work because ncbi uses gis and not accessions
+      g.addNode(accession, {sequence: "<font color='#468499'>seq_id: </font><a " +
+      "href='https://www.ncbi.nlm.nih.gov/nuccore/" + accession.split('_')[1] + "' target='_blank'>" + accession + '</a>',
+        log_length: 10
+        // percentage: "<font color='#468499'>percentage: </font>" + perc
+      })
+      g.addLink(contig_name, accession, dist)
+      list_gi.push(accession)
+    }
   }
   // control all related divs
   showRerun = document.getElementById('Re_run')

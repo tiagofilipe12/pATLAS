@@ -698,7 +698,7 @@ function onLoad () {
         event.preventDefault()
         $('#loading').show()
         setTimeout(function () {
-          assembly(assembly_json, g, graphics, renderer)
+          assembly(list_gi, assembly_json, g, graphics, renderer)
         }, 100)
 
           // }
