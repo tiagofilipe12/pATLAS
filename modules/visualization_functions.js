@@ -38,7 +38,7 @@ function onLoad () {
       if (list.indexOf(sequence) < 0) {
         // links are broken since NCBI links use gis instead of accessions 
         // however this should be parsed through the database
-        g.addNode(sequence, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split('_')[1] + "' target='_blank'>" + sequence + '</a>',
+        g.addNode(sequence, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence + "' target='_blank'>" + sequence + '</a>',
           species: "<font color='#468499'>Species: </font>" + species,
           seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
           log_length: log_length

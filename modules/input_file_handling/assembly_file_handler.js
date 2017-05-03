@@ -19,16 +19,12 @@ function assembly (list_gi, assembly_json, g, graphics, renderer) {
     }
     var accession = node_entry.split('_').slice(0, 2).join('_')
     var dist = node_entry.split(',')[1]
-    console.log(accession)
-    console.log(list_gi)
     if (accession in list_gi){
-        console.log("something")
       g.addLink(contig_name, accession, dist)
     } else {
-        console.log("something2")
       // links wont work because ncbi uses gis and not accessions
       g.addNode(accession, {sequence: "<font color='#468499'>seq_id: </font><a " +
-      "href='https://www.ncbi.nlm.nih.gov/nuccore/" + accession.split('_')[1] + "' target='_blank'>" + accession + '</a>',
+      "href='https://www.ncbi.nlm.nih.gov/nuccore/" + accession + "' target='_blank'>" + accession + '</a>',
         log_length: 10
         // percentage: "<font color='#468499'>percentage: </font>" + perc
       })
