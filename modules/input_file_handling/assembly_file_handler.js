@@ -24,6 +24,7 @@ function assembly (list_gi, assembly_json, g, graphics, renderer) {
     } else {
       // links wont work because ncbi uses gis and not accessions
       g.addNode(accession, {sequence: "<font color='#468499'>seq_id: </font><a " +
+      // accession has no version
       "href='https://www.ncbi.nlm.nih.gov/nuccore/" + accession + "' target='_blank'>" + accession + '</a>',
         log_length: 10
         // percentage: "<font color='#468499'>percentage: </font>" + perc
