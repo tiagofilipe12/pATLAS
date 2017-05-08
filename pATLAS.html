@@ -327,44 +327,82 @@
           </div>
 
 
+
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li class="dropdown" id="filter_dropdown">
+              <li class="dropdown dropdown-accordion" data-accordion="#accordion" id="filter_dropdown">
                 <a href="#" class="dropdown-toggle" 
                 data-toggle="dropdown" role="button" 
                 aria-haspopup="true" id="href_toogle"
                 aria-expanded="false">Menu<span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu">
-                  <!-- Trigger the modal with a button -->
-                  <li><a href="#" data-toggle="modal" data-backdrop="static" 
-                        data-target="#lengthModal" id="length_filter">Length</a></li>                  
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#" 
-                        data-toggle="modal" data-backdrop="static" 
-                        data-target="#taxaModal" id="taxa_filter">Taxa</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#" data-toggle="modal" data-backdrop="static" 
-                        data-target="#distancesModal" id="distances_filter">Distances</a></li>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h4 class="panel-title">
+                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                          Filters</a>
+                        </h4>
+                      </div>
+                      <div id="collapse1" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                          <!-- Trigger the modal with a button -->
+                          <li><a href="#" data-toggle="modal" data-backdrop="static" 
+                                data-target="#lengthModal" id="length_filter">Length</a></li>                  
+                          <li role="separator" class="divider"></li>
+                          <li><a href="#" 
+                                data-toggle="modal" data-backdrop="static" 
+                                data-target="#taxaModal" id="taxa_filter">Taxa</a></li>
+                          <li role="separator" class="divider"></li>
+                          <li><a href="#" data-toggle="modal" data-backdrop="static" 
+                                data-target="#distancesModal" id="distances_filter">Distances</a></li>  
+                        </div>  
+                      </div>            
+                    </div>
+                  <!--<li role="separator" class="divider" id="boldDivider"></li>-->
+                  <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h4 class="panel-title">
+                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                          AR / REPs</a>
+                        </h4>
+                      </div>
+                      <div id="collapse2" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                          <li><a href="#" data-toggle="modal" data-backdrop="static"
+                                id="resistances_filter">Resistance
+                          </a></li>
+                          <li role="separator" class="divider"></li>
+                          <li><a href="#" data-toggle="modal" data-backdrop="static"
+                                id="families_filter">Plasmid families
+                          </a></li> 
+                        </div>  
+                      </div>            
+                    </div>
 
-                  <li role="separator" class="divider" id="boldDivider"></li>
-                  <li><a href="#" data-toggle="modal" data-backdrop="static"
-                         id="resistances_filter">Resistance
-                  </a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#" data-toggle="modal" data-backdrop="static"
-                         id="families_filter">Plasmid families
-                  </a></li>
-
-                  <li role="separator" class="divider" id="boldDivider"></li>
-                  <!--executes reads_coloring.js-->
-                  <li><a href="#" data-toggle="modal" data-backdrop="static" 
-                        data-target="#fileModal" id="reads_filter">Reads</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#" data-toggle="modal" data-backdrop="static" 
-                        data-target="#assemblyModal" id="assembly_filter">Assembly</a></li>
-
+                  <!--<li role="separator" class="divider" id="boldDivider"></li>-->
+                  <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">
+                        <h4 class="panel-title">
+                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                          Sequences</a>
+                        </h4>
+                      </div>
+                      <div id="collapse3" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                          <li><a href="#" data-toggle="modal" data-backdrop="static" 
+                                data-target="#fileModal" id="reads_filter">Mapping</a></li>
+                          <li role="separator" class="divider"></li>
+                          <li><a href="#" data-toggle="modal" data-backdrop="static" 
+                                data-target="#assemblyModal" id="assembly_filter">Assembly</a></li>
+                        </div>  
+                      </div>            
+                    </div>
+                  </div>
                 </ul>
               </li>
             </ul>
@@ -469,7 +507,8 @@
                     type="button">
               <span class="glyphicon glyphicon-zoom-out"></span>
             </button>
-          </div>          
+          </div> 
+      
           <!-- End buttons -->
         </div>
         <div id="popup_description" style="display: none"></div>

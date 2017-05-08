@@ -1,6 +1,6 @@
 // load JSON file
 function getArray () {
-  return $.getJSON('test.json')   // change the input file name
+  return $.getJSON('example.json')   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa () {
@@ -23,7 +23,7 @@ function onLoad () {
       var species = sequence_info.split('_').slice(2, 4).join(' ')
         // added to check for errors in database regarding species characterization
       if (species[0] == ' ') {
-        var species = sequence_info.split('_').slice(3, 4) + ' sp'
+        species = sequence_info.split('_').slice(3, 4) + ' sp'
       }
         // and continues
       var genus = sequence_info.split('_').slice(2, 3).join(' ')
@@ -936,6 +936,17 @@ function onLoad () {
     assembly_json = new_assembly_json
   })
 
+    // Collapse accordion every time dropdown is shown
+  $('.dropdown-accordion').on('show.bs.dropdown', function () {
+    var accordion = $(this).find($(this).data('accordion'));
+    accordion.find('.panel-collapse.in').collapse('hide');
+  });
+
+  // Prevent dropdown to be closed when we click on an accordion link
+  $('.dropdown-accordion').on('click', 'a[data-toggle="collapse"]', function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    $($(this).data('parent')).find('.panel-collapse.in').collapse('hide');
+    $($(this).attr('href')).collapse('show');
+  })
 }
-
-

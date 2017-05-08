@@ -1,6 +1,7 @@
 # Files to be ignored #
 #######################
 .idea/
+.vscode/
 all_plasmidEfae66296_t2.json
 all_plasmidEfae66296_t2_vs_all_plasmidVRSA66296_55x.json
 all_plasmidVRSA66296_55x.json
