@@ -305,160 +305,159 @@
         <strong>Warning!</strong> To enable filter dropdown options, disable "Node mode on" on the leftside switcher!
       </div>
 
-      <!-- Starts navigation bar -->
-      <!--<nav class="navbar navbar-default navbar-fixed-top"> -->      
-      <nav class="navbar navbar-default" id="navigation_bar">
-        <div class="container-fluid">
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" 
-                    data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" 
-                    aria-expanded="false">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" style="color: #bb271c" 
-                data-toggle="tooltip" title="Go to pATLAS GitHub" 
-                href="https://github.com/tiagofilipe12/pATLAS"
-                target="_blank"><strong>pATLAS</strong>
-            </a>
-          </div>
-
-
-
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-              <li class="dropdown dropdown-accordion" data-accordion="#accordion" id="filter_dropdown">
-                <a href="#" class="dropdown-toggle" 
-                data-toggle="dropdown" role="button" 
-                aria-haspopup="true" id="href_toogle"
-                aria-expanded="false">Menu<span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                  <div class="panel-group" id="accordion">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h4 class="panel-title">
-                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                          Filters</a>
-                        </h4>
-                      </div>
-                      <div id="collapse1" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                          <!-- Trigger the modal with a button -->
-                          <li><a href="#" data-toggle="modal" data-backdrop="static" 
-                                data-target="#lengthModal" id="length_filter">Length</a></li>                  
-                          <li role="separator" class="divider"></li>
-                          <li><a href="#" 
+      <div id="wrapper" class="toggled">
+      <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                  <a class="navbar-brand" style="color: #F37259" 
+                      data-toggle="tooltip" title="Go to pATLAS GitHub" 
+                      href="https://github.com/tiagofilipe12/pATLAS"
+                      target="_blank"><strong>pATLAS</strong>
+                  </a>
+                </li>
+                <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
+                    <a href="#">Filters</a>
+                    <div id="collapse1" class="panel-collapse collapse">
+                       <ul class="list-group">
+                          <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static" 
+                                data-target="#lengthModal" id="length_filter">Length</button>                  
+                          <button class="list-group-item" href="#" 
                                 data-toggle="modal" data-backdrop="static" 
-                                data-target="#taxaModal" id="taxa_filter">Taxa</a></li>
-                          <li role="separator" class="divider"></li>
-                          <li><a href="#" data-toggle="modal" data-backdrop="static" 
-                                data-target="#distancesModal" id="distances_filter">Distances</a></li>  
-                        </div>  
-                      </div>            
+                                data-target="#taxaModal" id="taxa_filter">Taxa</button>
+                          <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static" 
+                              data-target="#distancesModal" id="distances_filter">Distances</button>
+                          </li>
+                       </ul>
                     </div>
-                  <!--<li role="separator" class="divider" id="boldDivider"></li>-->
-                  <div class="panel-group" id="accordion">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h4 class="panel-title">
-                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-                          AR / REPs</a>
-                        </h4>
-                      </div>
-                      <div id="collapse2" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                          <li><a href="#" data-toggle="modal" data-backdrop="static"
-                                id="resistances_filter">Resistance
-                          </a></li>
-                          <li role="separator" class="divider"></li>
-                          <li><a href="#" data-toggle="modal" data-backdrop="static"
-                                id="families_filter">Plasmid families
-                          </a></li> 
-                        </div>  
-                      </div>            
-                    </div>
-
-                  <!--<li role="separator" class="divider" id="boldDivider"></li>-->
-                  <div class="panel-group" id="accordion">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">
-                        <h4 class="panel-title">
-                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
-                          Sequences</a>
-                        </h4>
-                      </div>
-                      <div id="collapse3" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                          <li><a href="#" data-toggle="modal" data-backdrop="static" 
-                                data-target="#fileModal" id="reads_filter">Mapping</a></li>
-                          <li role="separator" class="divider"></li>
-                          <li><a href="#" data-toggle="modal" data-backdrop="static" 
-                                data-target="#assemblyModal" id="assembly_filter">Assembly</a></li>
-                        </div>  
-                      </div>            
-                    </div>
-                  </div>
-                </ul>
-              </li>
+                </li>
+                <li data-toggle="collapse" data-target="#collapse2" class="collapse_groups">
+                    <a href="#">AR / REPs</a>                    
+                    <div id="collapse2" class="panel-collapse collapse">
+                      <ul class="list-group">
+                        <button class="button list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                              id="resistances_filter" >Resistance
+                        </button>
+                        <button class="button list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                              id="families_filter" >Plasmids
+                        </button> 
+                      </ul>  
+                    </div>                    
+                </li>
+                <li data-toggle="collapse" data-target="#collapse3" class="collapse_groups">
+                    <a href="#">Sequences</a>
+                    <div id="collapse3" class="panel-collapse collapse">
+                       <ul class="list-group">
+                          <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static" 
+                                  data-target="#fileModal" id="reads_filter">Mapping</button>
+                          <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static" 
+                                  data-target="#assemblyModal" id="assembly_filter">Assembly</button>
+                       </ul> 
+                    </div>   
+                </li>
+<!--            <li class="collapse_groups">
+                    <a href="#">Events</a>
+                </li>
+                <li class="collapse_groups">
+                    <a href="#">About</a>
+                </li>
+                <li class="collapse_groups">
+                    <a href="#">Services</a>
+                </li>-->
+                <li class="collapse_groups">
+                    <a href="#">About</a>
+                </li>
             </ul>
+        </div>
+      </div> <!--closes wrapper div-->
 
-            <form class="navbar-form navbar-left">
-              <div class="btn-group">
-                <button class="btn btn-info" id="reset-sliders"
-                        type="button" data-toogle="tooptip"
-                        title="Reset all applied filters">Reset nodes</button>
-              
-                <button class="btn btn-info" id="reset-links"
-                        type="button" data-toogle="tooptip"
-                        title="Reset all applied filters" disabled="disabled" autocomplete="off">Reset links</button>
-              <!--</form>-->
+        <!-- Starts navigation bar -->
+        <!--<nav class="navbar navbar-default navbar-fixed-top"> -->      
+        <div class="navbar navbar-default navbar-fixed-top" id="navigation_bar">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" 
+                      data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" 
+                      aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
             </div>
 
-            <!--<form class="navbar-form navbar-left">-->
-              <div class="btn-group">
-                <button class="btn btn-default disabled" id="go_back"
-                        type="button" data-toogle="tooptip"
-                        title="Return to full tree view" style="display: none">
-                        <span class="glyphicon glyphicon-home"></span></button>
-                <button class="btn btn-default" id="Re_run"
-                        type="button" data-toogle="tooptip"
-                        title="Apply filters" style="display: none">
-                        <span class="glyphicon glyphicon-filter"></span></button>
-                <!--for now this button is disabled since it does not have funcitonality-->
-                <button class="btn btn-default disabled" id="download_ds"
-                        type="button" data-toogle="tooptip"
-                        title="Download current selection (Currently unavailable)" style="display: none">
-                        <span class="glyphicon glyphicon-save"></span></button>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li class="dropdown dropdown-accordion" data-accordion="#accordion" id="filter_dropdown">
+                  <a href="#menu-toggle" id="menu-toggle" class="btn-lg">                  
+                    <span class="glyphicon glyphicon-menu-hamburger">
+                  </a>
+              </ul>
 
+              <form class="navbar-form navbar-left">
+                <div class="btn-group">
+                  <button class="btn btn-info" id="reset-sliders"
+                          type="button" data-toogle="tooptip"
+                          title="Reset all applied filters">Reset nodes</button>
+                
+                  <button class="btn btn-info" id="reset-links"
+                          type="button" data-toogle="tooptip"
+                          title="Reset all applied filters" disabled="disabled" autocomplete="off">Reset links</button>
+                <!--</form>-->
               </div>
 
+              <!--<form class="navbar-form navbar-left">-->
+                <div class="btn-group">
+                  <button class="btn btn-default disabled" id="go_back"
+                          type="button" data-toogle="tooptip"
+                          title="Return to full tree view" style="display: none">
+                          <span class="glyphicon glyphicon-home"></span></button>
+                  <button class="btn btn-default" id="Re_run"
+                          type="button" data-toogle="tooptip"
+                          title="Apply filters" style="display: none">
+                          <span class="glyphicon glyphicon-filter"></span></button>
+                  <!--for now this button is disabled since it does not have funcitonality-->
+                  <button class="btn btn-default disabled" id="download_ds"
+                          type="button" data-toogle="tooptip"
+                          title="Download current selection (Currently unavailable)" style="display: none">
+                          <span class="glyphicon glyphicon-save"></span></button>
 
-            </form>
-            <form class="navbar-form navbar-right">
-              <input checked data-toggle="toggle" type="checkbox" 
-                      data-onstyle="success" data-offstyle="default" 
-                      data-on="Node mode on" data-off="Node mode off" 
-                      title="Enable/Disable node selection mode" id="toggle-event">
-              <div class="form-group">
-                <input id="formValueId" type="text" class="form-control" placeholder="Enter a gi"/>
-              </div>
-              <div class="btn-group">
-                <button id="submitButton" type="submit" data-toggle="tooltip" 
-                    title="Centers node at the provided gi position" 
-                    class="btn btn-default">Center gi</button>
-                <button id="clearButton" data-toggle="tooltip" 
-                    title="Remove color for all selected species" type="button" 
-                    class="btn btn-info">Clear</button>
-              </div>
-            </form>
-          </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-      </nav>
+                </div>
+
+
+              </form>
+              <form class="navbar-form navbar-right">
+                <input checked data-toggle="toggle" type="checkbox" 
+                        data-onstyle="success" data-offstyle="default" 
+                        data-on="Node mode on" data-off="Node mode off" 
+                        title="Enable/Disable node selection mode" id="toggle-event">
+                <div class="form-group">
+                  <input id="formValueId" type="text" class="form-control" placeholder="Enter a gi"/>
+                </div>
+                <div class="btn-group">
+                  <button id="submitButton" type="submit" data-toggle="tooltip" 
+                      title="Centers node at the provided gi position" 
+                      class="btn btn-default">Center gi</button>
+                  <button id="clearButton" data-toggle="tooltip" 
+                      title="Remove color for all selected species" type="button" 
+                      class="btn btn-info">Clear</button>
+                </div>
+              </form>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </div>
+      
+
+      <!-- /#wrapper -->
+      <!-- Menu Toggle Script -->
+      <script>
+      $("#menu-toggle").click(function(e) {
+          e.preventDefault();
+          $("#wrapper").toggleClass("toggled");
+      });
+      </script>
 
       <div id="couve-flor" > 
         <!--hidden div for color legend-->
