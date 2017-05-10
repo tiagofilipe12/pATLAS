@@ -720,6 +720,7 @@ function onLoad () {
       $('#distancesSubmit').click(function (event) {
         event.preventDefault()
         $('#loading').show()
+        $('#scaleLegend').empty()
         setTimeout(function () {
           link_coloring(g, graphics, renderer)
         }, 100)

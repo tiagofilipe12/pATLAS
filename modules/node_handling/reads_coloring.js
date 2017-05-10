@@ -103,13 +103,13 @@ function reset_link_color (g, graphics, renderer) {
 // for distances
 function color_legend (readMode) {
   if (document.getElementById('colorForm').value == 'Green color scheme' || document.getElementById('colorForm').value == '') {
-    scale = ['#65B661', '#CAE368']
+    scale = chroma.scale(['#65B661', '#CAE368'])
   } else if (document.getElementById('colorForm').value == 'Blue color scheme') {
-    scale = ['#025D8C', '#73C2FF']
+    scale = chroma.scale(['#025D8C', '#73C2FF'])
   } else if (document.getElementById('colorForm').value == 'Red color scheme') {
-    scale = ['#4D0E1C', '#E87833']
+    scale = chroma.scale(['#4D0E1C', '#E87833'])
   }
-  palette(scale[1], scale[0], 20, readMode)
+  palette(scale, 20, readMode)
 }
 
 // get pallete
