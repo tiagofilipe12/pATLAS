@@ -7,6 +7,15 @@
   background-color: #524F52;
 }
 
+.toggle-handle{
+   background-color: #999999;
+}
+
+.btn.btn-success.toggle-on{
+  color: black;
+  background-color: #BCCBBC;
+}
+
 #menu-toggle {
     text-decoration: none;
     outline: none;
