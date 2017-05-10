@@ -1,3 +1,4 @@
+var first_click_menu = true
 // load JSON file
 function getArray () {
   return $.getJSON('example.json')   // change the input file name
@@ -936,4 +937,17 @@ function onLoad () {
     assembly_json = new_assembly_json
   })
 
+  //******************************* *//
+  //      Menu Button controls       //
+  //******************************* *//
+  
+  $('#menu-toggle').on('click', function (e) {
+    if (first_click_menu == true) {
+      $('#menu-toggle').css({'color': '#fff'});
+      first_click_menu = false
+    } else {
+      $('#menu-toggle').css({'color': '#999999'})
+      first_click_menu = true
+    }
+  })
 }

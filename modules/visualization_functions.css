@@ -9,6 +9,7 @@
 
 #menu-toggle {
     text-decoration: none;
+    outline: none;
     color: #999999;
 }
 
@@ -473,10 +474,9 @@
 }
 .collapse_groups a{
   /*background-color: #657E84;*/
-  border-style: solid;
-  
+  border-style: solid;  
   color: white !important;
   border-color: grey; 
   border-width: 1px 0px 1px 0px;
-
+  outline: none;
 }
