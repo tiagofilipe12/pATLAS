@@ -26,9 +26,7 @@ class Card(db.Model):
          return '<Card %r>' % (self.json_entry)
 
 class Positive(db.Model):
-    __tablename__ = "positive"class Author(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
+    __tablename__ = "positive"
     plasmid_id = db.Column(db.String, primary_key=True)
     json_entry = db.Column(JSON)
 
