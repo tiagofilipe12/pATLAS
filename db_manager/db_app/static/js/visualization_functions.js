@@ -5,7 +5,7 @@ function getArray () {
 }
 // load JSON file with taxa dictionary
 function getArray_taxa () {
-  return $.getJSON('taxa_tree.json')   // change the input file name
+  return $.getJSON('/taxa')   // change the input file name
 }
 
 // initiates vivagraph main functions
