@@ -2,55 +2,56 @@
     <head>
       <meta charset="UTF-8"/> 
       <title>Plasmid Atlas</title>
-      <script language="javascript" type="text/javascript" src="./modules/vivagraph/dist/vivagraph.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/jquery/jquery-3.1.1.js"></script>
-      <link rel="stylesheet" href="./modules/bootstrap-3.3.7-dist/css/bootstrap.css">
-      <link rel="stylesheet" href="./modules/nouislider/nouislider.css">
-      <link rel="stylesheet" href="./modules/jquery/jquery-ui.css">
-      <link rel="stylesheet" href="./modules/visualization_functions.css">
-      <script language="javascript" type="text/javascript" src="./modules/bootstrap-3.3.7-dist/js/bootstrap.js"></script> 
-      <script language="javascript" type="text/javascript" src="./modules/input_file_handling/wNumb.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/jquery/jquery-ui.js"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/jquery/jquery-3.1.1.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/jquery/jquery-ui.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/jquery/jquery-ui.css') }}">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script> 
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/nouislider/nouislider.css') }}">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/vivagraph/dist/vivagraph.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/wNumb.js') }}"></script>
+      
       <!--custom js-->
-      <script language="javascript" type="text/javascript" src="./modules/node_handling/custom_colors.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/node_handling/circle_nodes.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/node_handling/node_removal_taxa.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/node_handling/toggle_nodes.js"></script> 
-      <script language="javascript" type="text/javascript" src="./modules/dropdown_search/dropdown_search.js"></script> 
-      <!--bootstrap select-->
-      <script language="javascript" type="text/javascript" src="./modules/bootstrap-select-1.12.2/bootstrap-select.min.js"></script>
-      <link rel="stylesheet" href="./modules/bootstrap-select-1.12.2/bootstrap-select.min.css">
-      <!-- main js script -->
-      <script language="javascript" type="text/javascript" src="./modules/visualization_functions.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/input_file_handling/alternative_loading.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/node_handling/resetDisplayTaxaBox.js"></script>
-      <!--test toggle button-->
-      <link rel="stylesheet" href="./modules/bootstrap-toggle/bootstrap-toggle.min.css">
-      <script language="javascript" type="text/javascript" src="./modules/bootstrap-toggle/bootstrap-toggle.min.js"></script>
-      <!--load mousetrap for keyboard shortcuts-->
-      <script language="javascript" type="text/javascript" src="./modules/keyboard_control/mousetrap.min.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/keyboard_control/keyboard_shortcuts.js"></script>
-      <!--color picker options-->
-      <!--<script language="javascript" type="text/javascript" src="./modules/color_pick/jscolor.min.js"></script>-->
-      <!--chroma to generate colors for reads-->
-      <script language="javascript" type="text/javascript" src="./modules/chroma/chroma.min.js"></script>
-      <!--load reads-->
-      <script language="javascript" type="text/javascript" src="./modules/node_handling/reads_coloring.js"></script>
-      <!--input files handler script-->
-      <script language="javascript" type="text/javascript" src="./modules/input_file_handling/input_file_handler.js"></script>
-      <script language="javascript" type="text/javascript" src="./modules/input_file_handling/assembly_file_handler.js"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/custom_colors.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/circle_nodes.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node_removal_taxa.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/toggle_nodes.js') }}"></script> 
 
+      <!--bootstrap select-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/bootstrap-select-1.12.2/bootstrap-select.min.css') }}">
+
+      <!-- main js script -->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/visualization_functions.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/alternative_loading.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/resetDisplayTaxaBox.js') }}"></script>
+      
+      <!--test toggle button-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/bootstrap-toggle/bootstrap-toggle.min.css') }}"></script>
+      
+      <!--load mousetrap for keyboard shortcuts-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/mousetrap.min.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/keyboard_shortcuts.js') }}"></script>
+
+      <!--chroma to generate colors for reads-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/chroma/chroma.min.js') }}"></script>
+      <!--load reads-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
+      <!--input files handler script-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>
 
     </head>
     
     <body onload="onLoad()">
-      <script language="javascript" type="text/javascript" src="./modules/nouislider/nouislider.js"></script>
-
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/nouislider/nouislider.js') }}"></script>
 
       <div id="loading">
-        <img id="loading-image" src="images/loading.gif" alt="Loading..." ondblclick="alternative_loading()"/>
+        <img id="loading-image" src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..." ondblclick="alternative_loading()"/>
         <!-- Cortesy of Mickael Silva -->
-        <img id="loading-image-alt" src="images/pok_easter.gif" alt="Loading..." />
+        <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
       </div>
 
 
@@ -308,20 +309,17 @@
       <div id="wrapper" class="toggled">
       <!-- Sidebar -->
         <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                  <a class="navbar-brand" style="color: #F37259" 
-                      data-toggle="tooltip" title="Go to pATLAS GitHub" 
-                      href="https://github.com/tiagofilipe12/pATLAS"
-                      target="_blank"><strong>pATLAS</strong>
-                  </a>
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="pATLAS" style="width:100%;height:auto;"/>
+            <ul class="sidebar-nav" id="sidebar-menus">
+                <li class="sidebar-brand">                  
+                  <!--unused space filled with img-->
                 </li>
                 <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
                     <a href="#">Filters</a>
                     <div id="collapse1" class="panel-collapse collapse">
                        <ul class="list-group">
                           <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static" 
-                                data-target="#lengthModal" id="length_filter">Length</button>                  
+                                data-target="#lengthModal" id="length_filter">Length</button>              
                           <button class="list-group-item" href="#" 
                                 data-toggle="modal" data-backdrop="static" 
                                 data-target="#taxaModal" id="taxa_filter">Taxa</button>

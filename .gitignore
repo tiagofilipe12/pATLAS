@@ -9,3 +9,6 @@ demo.json
 import_to_vivagraph01_all.json
 import_to_vivagraph_db.json
 mash_test_assembly_test_assembly_plasmid_distances.json
+
+./db_manager/db_app/templates/*.json
+./db_app/templates/deprecated/deprecated/

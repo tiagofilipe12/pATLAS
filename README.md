@@ -1,28 +1,103 @@
-# pATLAS
+# MASHix
 
-### pATLAS.html
 
-To run _pATLAS.html_ a json file containing a dictionary of nodes and distances between pairs of nodes is required. MASHix.py can be used for that purpose. However, note that json file must be copied to MASHix main directory where _pATLAS.html_ is stored so it can be properly/fully executed.
+### Description
 
-#### Example usage: (outdated)
+This script runs MASH, making a parwise comparisons between sequences in input (fasta) file(s).
 
-Comming soon...
+Note: each header in fasta is considered a reference.
 
-#### Keyboard shortcuts
+### Dependencies:
 
-* "shift+l" - Opens length filters 
-* "shift+t" - Opens taxa filters
-* "shift+i" - Opens Reads filters
-* "shift+p" - pause/play rendering animation
-* "shift+r" - Removes all applied filters
+* **Mash** - You can download mash version 1.1.1 directly here: [linux](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-Linux64-v1.1.1.tar.gz) and [OSX](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-OSX64-v1.1.1.tar.gz). Other releases were not tested but may be downloaded in Mash git [releases page](https://github.com/marbl/Mash/releases).
+
+* **Postgresql** - This script uses Postgres database to store the database - [releases page](https://www.postgresql.org/download/)
+
+To install all other dependencies just run: _pip install -r requirements.txt_
+
+### Options:
+
+#### Main options:
+
+```
+'-i','--input_references' - 'Provide the input fasta files to parse. This will inputs will be joined in a master fasta.'
+
+'-o','--output' - 'Provide an output tag'
+
+'-t', '--threads' - 'Provide the number of threads to be used'
+```
+
+#### MASH related options:
+```
+'-k','--kmers' - 'Provide the number of k-mers to be provided to mash sketch. Default: 21'
+
+'-p','--pvalue' - 'Provide the p-value to consider a distance significant. Default: 0.05'
+
+'-md','--mashdist' - 'Provide the maximum mash distance to be parsed to the matrix. Default:0.1'
+```
+
+#### Other options:
+
+```
+'-no_rm', '--no-remove' - 'Specify if you do not want to remove the output concatenated fasta.'
+
+'-hist', '--histograms' - 'Checks the distribution of distances values ploting histograms.'
+```
 
 ---
 
-1. **load pATLAS.html**
+### Database customization:
 
-   This html loads the JSON file retrieved by [MASHix.py](https://github.com/tiagofilipe12/MASHix) and runs vivagraph.js in order to plot the connections (using MASH distances) between closely related  nodes (genomes/sequences). **VERY IMPORTANT: in order to run _pATLAS.html_ make sure you copy .json file to the main folder of MASHix, where _pATLAS.html_ is stored, otherwise it won't do anything**.
+#### I don't like database name! How do I change it?
 
-   Open _pATLAS.html_ with **firefox** or follow [these instructions](http://www.chrome-allow-file-access-from-file.com/) to allow **google chrome** to access filesystem.
+Go to db_manager/config_default.py and edit the [line 5](https://github.com/tiagofilipe12/MASHix/blob/master/db_manager/config_default.py#L5):
 
-   Note: Large datasets, which may have huge number of links between nodes (genomes/sequences) may suffer from slow loading times. So, in order to avoid this, before loading the pATLAS.html, first check the two graphical outputs retrieved by [MASHix.py](https://github.com/tiagofilipe12/MASHix).
+```python
+SQLALCHEMY_DATABASE_URI = 'postgresql:///<custom_database_name>'
+```
 
+#### I don't like table name inside database! How do I change it?
+
+Go to db_manager/db_app/models.py and edit the [line 7](https://github.com/tiagofilipe12/MASHix/blob/master/db_manager/db_app/models.py#L7):
+
+```python
+ __tablename__ = "<custom_table_name>"
+```
+
+---
+
+### Database migration from one server to another
+
+#### Database export
+
+```
+pg_dump <db_name> > <file_name.sql>
+```
+
+#### Database import
+
+```
+psql -U <user_name> -d <db_name> -f <file_name.sql>
+```
+
+---
+
+### Supplementary scripts
+
+#### taxa_fetch.py
+
+This script is used to parse ncbi taxonomy to retrieve families and orders given an input list of genera of bacteria (list generated also by MASHix.py as ".lst" file).
+
+```
+taxa_fetch.py <names.dmp> <nodes.dmp> <genera.lst>
+
+```
+
+#### card_parser.py
+This script parses card nucleotide database to psql database of all entries present in a nucleotide blast database. This table will be called "card" inside your psql database
+
+Usage:
+
+```
+card_parser.py -i <input fastas> -db <blast database> -t <number of threads>
+```

@@ -350,6 +350,10 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+#sidebar-menus{
+  margin-top: 5%;
+}
+
 /* Toggle Styles */
 
 #wrapper {
@@ -367,7 +371,7 @@
 #sidebar-wrapper {
     z-index: 1000;
     position: absolute;
-    top: 5%;
+    top: 50px;
     left: 150px;
     width: 0;
     height: 95%;

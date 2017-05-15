@@ -1,7 +1,7 @@
 var first_click_menu = true
 // load JSON file
 function getArray () {
-  return $.getJSON('example.json')   // change the input file name
+  return $.getJSON('/test')   // change the input file name
 }
 // load JSON file with taxa dictionary
 function getArray_taxa () {
