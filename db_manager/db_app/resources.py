@@ -18,10 +18,8 @@ class PositiveSchema(ma.ModelSchema):
 class DatabaseSchema(ma.ModelSchema):
     class Meta:
         model = Database
-
-
-
-## define resources
+        
+## define all resources
 
 class testresources(Resource):
     def get(self):

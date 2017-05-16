@@ -1,3 +1,4 @@
+// helps set menu to close status
 var first_click_menu = true
 // load JSON file
 function getArray () {
@@ -20,14 +21,14 @@ function onLoad () {
   getArray().done(function (json) {
     $.each(json, function (sequence_info, dict_dist) {
         // next we need to retrieve each information type independently
-      var sequence = sequence_info.split('_').slice(0, 2).join('_')
-      var species = sequence_info.split('_').slice(2, 4).join(' ')
+      var sequence = sequence_info.split('_').slice(0, 3).join('_')
+      var species = sequence_info.split('_').slice(3, 5)
         // added to check for errors in database regarding species characterization
       if (species[0] == ' ') {
-        species = sequence_info.split('_').slice(3, 4) + ' sp'
+        species = sequence_info.split('_').slice(4) + ' sp'
       }
         // and continues
-      var genus = sequence_info.split('_').slice(2, 3).join(' ')
+      var genus = sequence_info.split('_').slice(3).join(' ')
       var seq_length = sequence_info.split('_').slice(-1).join('')
       var log_length = Math.log(parseInt(seq_length)) // ln seq length
 
@@ -38,7 +39,7 @@ function onLoad () {
         // checks if sequence is not in list to prevent adding multiple nodes for each sequence
       if (list.indexOf(sequence) < 0) {
         // sequence has no version of accession
-        g.addNode(sequence, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence + "' target='_blank'>" + sequence + '</a>',
+        g.addNode(sequence, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split('_').slice(0, 2).join('_') + "' target='_blank'>" + sequence + '</a>',
           species: "<font color='#468499'>Species: </font>" + species,
           seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
           log_length: log_length
@@ -48,7 +49,7 @@ function onLoad () {
           // loops between all arrays of array pairing sequence and distances
       for (var i = 0; i < dict_dist.length; i++) {
         var pairs = dict_dist[i]
-        var reference = pairs[0].split('_').slice(0, 2).join('_')  // stores references in a unique variable
+        var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
         var distance = pairs[1]   // stores distances in a unique variable
         g.addLink(sequence, reference, distance)
       };
