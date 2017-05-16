@@ -7,5 +7,4 @@ db_manager/db_app/templates/*.json
 db_manager/db_app/templates/deprecated/
 db_manager/db_app/*.pyc
 db_manager/*.pyc
-
-
+db_manager/plasmid_db/
