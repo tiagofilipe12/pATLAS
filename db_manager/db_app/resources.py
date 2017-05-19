@@ -1,7 +1,6 @@
 from models import Plasmid, Card, Positive, Database
 from db_app import db
 from flask_restful import Resource, reqparse
-from flask import request, jsonify
 
 #defining reqparse arguments
 
@@ -16,8 +15,7 @@ class testresources(Resource):
         return{ "hello":"world" }
 
 class GetSpecies(Resource):
-    def get(self):
-        
+    def get(self):        
         #object is not serializable
         species_query = db.session.query(Plasmid).filter(Plasmid.plasmid_id == args.accession).first()
         return species_query
