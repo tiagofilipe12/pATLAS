@@ -22,6 +22,12 @@ function onLoad () {
     $.each(json, function (sequence_info, dict_dist) {
         // next we need to retrieve each information type independently
       var sequence = sequence_info.split('_').slice(0, 3).join('_')
+
+      // trial request
+      $.get('/api/getspecies/', {'seq': sequence})
+
+      // end of trial request
+
       var species = sequence_info.split('_').slice(3, 5)
         // added to check for errors in database regarding species characterization
       if (species[0] == ' ') {
@@ -161,30 +167,30 @@ function onLoad () {
         if (toggle_status == true) {   // if statement to check if toggle button is enabled
               // statement when node and linked nodes are still in default color
           if (nodeUI.color == nodeColor) {
-              color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
-            }
+            color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
+          }
               // statement when linked node is selected
           else if (nodeUI.color == 0x7c3912) {
-              color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
-            }
+            color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
+          }
               // statement when node is shaded
           else if (nodeUI.color == 0xcdc8b1) {
-              color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
-            }
+            color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
+          }
               // statement do deselect node and linked nodes
           else {
                 // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
-              color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
-            }
+            color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
+          }
           nodeUI.color = color_to_use[0]
           g.forEachLinkedNode(node.id, function (linkedNode, link) {
-              var linkUI = graphics.getLinkUI(link.id)
-              linkUI.color = color_to_use[1]
-              var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-              if (linked_nodeUI.color != 0xc89933) {
+            var linkUI = graphics.getLinkUI(link.id)
+            linkUI.color = color_to_use[1]
+            var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
+            if (linked_nodeUI.color != 0xc89933) {
                 linked_nodeUI.color = color_to_use[2]
               }
-            })
+          })
         }
         renderer.rerender()
       })
@@ -223,10 +229,10 @@ function onLoad () {
       }).mouseLeave(function (node) {
             // if node is not clicked then mouse hover can disappear
         if (click_check == true) {
-            $('#popup_description').css({'display': 'block'})
-          } else {
-            $('#popup_description').css({'display': 'none'})
-          }
+          $('#popup_description').css({'display': 'block'})
+        } else {
+          $('#popup_description').css({'display': 'none'})
+        }
       })
 
           //* * mouse hovering block end **//
@@ -253,11 +259,11 @@ function onLoad () {
           var nodeUI = graphics.getNodeUI(store_nodes[id])
           nodeUI.color = color_to_use[0]
           g.forEachLinkedNode(store_nodes[id], function (linkedNode, link) {
-              var linkUI = graphics.getLinkUI(link.id)
-              linkUI.color = color_to_use[1]
-              var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-              linked_nodeUI.color = color_to_use[2]
-            })
+            var linkUI = graphics.getLinkUI(link.id)
+            linkUI.color = color_to_use[1]
+            var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
+            linked_nodeUI.color = color_to_use[2]
+          })
         }
         renderer.rerender()
       })
@@ -289,11 +295,11 @@ function onLoad () {
             // console.log(sequence)
           nodeUI = graphics.getNodeUI(node.id)
           var x = nodeUI.position.x,
-              y = nodeUI.position.y
+            y = nodeUI.position.y
           if (sequence == query) {
               // centers graph visualization in a given node, searching for gi
-              renderer.moveTo(x, y)
-            }
+            renderer.moveTo(x, y)
+          }
         })
       })
         // Button to clear the selected nodes by form
@@ -330,13 +336,13 @@ function onLoad () {
           order = other[1]
           dict_genera[genus] = [family, order] // append the list to this dict to be used later
           if (sortedArray_genera.indexOf(genus) >= 0) {
-              if (list_families.indexOf(family) < 0) {
+            if (list_families.indexOf(family) < 0) {
                 list_families.push(family)
               }
-              if (list_orders.indexOf(order) < 0) {
+            if (list_orders.indexOf(order) < 0) {
                 list_orders.push(order)
               }
-            }
+          }
         })
 
           // sort families and orders alphabetically
@@ -397,25 +403,25 @@ function onLoad () {
         for (var i = 0; i < classArray.length; i++) {
           $(classArray[i]).on('click', function (e) {
               // empties the text in this div for the first intance
-              if (firstInstance == true) {
+            if (firstInstance == true) {
                 for (var x = 0; x < idsArrays.length; x++) {
                   $('#' + idsArrays[x]).empty()
                 }
                 firstInstance = false
               }
               // fill panel group displaying current selected taxa filters //
-              var stringClass = this.className.slice(0, -5)
-              var tempVar = this.firstChild.innerHTML
+            var stringClass = this.className.slice(0, -5)
+            var tempVar = this.firstChild.innerHTML
 
               // checks if a taxon is already in display
-              var divstringClass = document.getElementById('p_' + stringClass)
-              removal = false
-              if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
+            var divstringClass = document.getElementById('p_' + stringClass)
+            removal = false
+            if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
                 divstringClass.innerHTML = stringClass + ': ' + tempVar
                 removal = false
               }
               // checks if selection is in list and is the last element present... removing it
-              else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar && taxaInList.length == 1) {
+            else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar && taxaInList.length == 1) {
                 // resets displayCurrentBox
                 resetDisplayTaxaBox(idsArrays)
                 removal = true
@@ -437,11 +443,11 @@ function onLoad () {
                   removal = true
                 }
               }
-              if (taxaInList.indexOf(tempVar) < 0 && removal == false) {
+            if (taxaInList.indexOf(tempVar) < 0 && removal == false) {
                 taxaInList.push(tempVar)  // user to store all clicked taxa
               }
-              existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
-            })
+            existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
+          })
         }
 
           //* **** Clear selection button *****//
@@ -460,19 +466,19 @@ function onLoad () {
           slider.noUiSlider.set([min, max])
           node_color_reset(graphics, g, nodeColor, renderer)
           if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
-              showLegend.style.display = 'none'
-              showRerun.style.display = 'none'
-              showGoback.style.display = 'none'
-              document.getElementById('go_back').className += ' disabled'
-              showDownload.style.display = 'none'
-            } else {
-              $('#colorLegendBox').empty()
-              document.getElementById('taxa_label').style.display = 'none' // hide label
-              showRerun.style.display = 'none'
-              showGoback.style.display = 'none'
-              document.getElementById('go_back').className += ' disabled'
-              showDownload.style.display = 'none'
-            }
+            showLegend.style.display = 'none'
+            showRerun.style.display = 'none'
+            showGoback.style.display = 'none'
+            document.getElementById('go_back').className += ' disabled'
+            showDownload.style.display = 'none'
+          } else {
+            $('#colorLegendBox').empty()
+            document.getElementById('taxa_label').style.display = 'none' // hide label
+            showRerun.style.display = 'none'
+            showGoback.style.display = 'none'
+            document.getElementById('go_back').className += ' disabled'
+            showDownload.style.display = 'none'
+          }
         })
       })
 
@@ -502,9 +508,9 @@ function onLoad () {
         var Alert = false
         for (i in alertArrays) {
           if (alertArrays[i][0] == 'No filters applied') {
-              Alert = true
-              counter = 4  // counter used to check if more than one dropdown has selected options
-            } else if (alertArrays[i] != '') {
+            Alert = true
+            counter = 4  // counter used to check if more than one dropdown has selected options
+          } else if (alertArrays[i] != '') {
               counter = counter + 1
             }
         }
@@ -536,14 +542,14 @@ function onLoad () {
           var family = pair[0]
           var order = pair[1]
           if (selectedFamily.indexOf(family) >= 0) {
-              selectedGenus.push(genus)
-              if (!(family in assocFamilyGenus)) {
+            selectedGenus.push(genus)
+            if (!(family in assocFamilyGenus)) {
                 assocFamilyGenus[family] = []
                 assocFamilyGenus[family].push(genus)
               } else {
                 assocFamilyGenus[family].push(genus)
               }
-            } else if (selectedOrder.indexOf(order) >= 0) {
+          } else if (selectedOrder.indexOf(order) >= 0) {
               selectedGenus.push(genus)
               if (!(order in assocOrderGenus)) {
                 assocOrderGenus[order] = []
@@ -563,28 +569,28 @@ function onLoad () {
 
         if (counter > 1 && counter <= 4) {
           g.forEachNode(function (node) {
-              var nodeUI = graphics.getNodeUI(node.id)
-              var species = node.data.species.split('>').slice(-1).toString()
-              var genus = species.split(' ')[0]
+            var nodeUI = graphics.getNodeUI(node.id)
+            var species = node.data.species.split('>').slice(-1).toString()
+            var genus = species.split(' ')[0]
               // checks if genus is in selection
-              if (selectedGenus.indexOf(genus) >= 0) {
+            if (selectedGenus.indexOf(genus) >= 0) {
                 nodeUI.color = 0xf71735
                 nodeUI.backupColor = nodeUI.color
                 changed_nodes.push(node.id)
               }
               // checks if species is in selection
-              else if (selectedSpecies.indexOf(species) >= 0) {
+            else if (selectedSpecies.indexOf(species) >= 0) {
                 nodeUI.color = 0xf71735
                 nodeUI.backupColor = nodeUI.color
                 changed_nodes.push(node.id)
               }
-            })
+          })
           renderer.rerender()
           store_lis = '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#f71735"></button>&nbsp;multi-level selected taxa</li>'
             // displays alert
             // first check if filters are applied in order to avoid displaying when there are no filters
           for (i in alertArrays) {
-              if (alertArrays[i][0] != 'No filters applied') {
+            if (alertArrays[i][0] != 'No filters applied') {
                 var divAlert = document.getElementById('alertId_multi')
                 divAlert.style.display = 'block'
                 // control the alertClose button
@@ -594,7 +600,7 @@ function onLoad () {
                 // auto hide after 5 seconds without closing the div
                 window.setTimeout(function () { $('#alertId_multi').hide() }, 5000)
               }
-            }
+          }
         }
           // renders the graph for the desired taxon if one taxon type is selected
           // allows for different colors between taxa of the same level
@@ -602,7 +608,7 @@ function onLoad () {
             // first cycle between all the arrays to find which one is not empty
           for (array in alertArrays) {
               // selects the not empty array
-              if (alertArrays[array] != '' && firstIteration == true) {
+            if (alertArrays[array] != '' && firstIteration == true) {
                 var currentSelection = alertArrays[array]
                 // performs the actual interaction for color picking and assigning
                 for (i in currentSelection) {
@@ -647,7 +653,7 @@ function onLoad () {
                 }
                 firstIteration = false // stops getting lower levels
               }
-            }
+          }
         }
           // used to control if no selection was made avoiding to display the legend
         else {
@@ -692,9 +698,9 @@ function onLoad () {
         abortRead(read_json)
       })
 
-      //********** ***//
-      //** Assembly **//
-      //********** ***//
+      //* ********* ***//
+      //* * Assembly **//
+      //* ********* ***//
       $('#assemblySubmit').click(function (event) {
         event.preventDefault()
         $('#loading').show()
@@ -712,8 +718,6 @@ function onLoad () {
       $('#cancel_assembly').click(function (event) {
         abortRead(assembly_json)
       })
-
-
 
       //* *********************//
       //* * Distances filter **//
@@ -791,16 +795,16 @@ function onLoad () {
       $('#length_filter').click(function (event) {
         slider.noUiSlider.on('set', function (event) {
           var slider_max = slider.noUiSlider.get()[1],
-              slider_min = slider.noUiSlider.get()[0]
+            slider_min = slider.noUiSlider.get()[0]
           g.forEachNode(function (node) {
-              var node_length = node.data.seq_length.split('>').slice(-1).toString()
-              var nodeUI = graphics.getNodeUI(node.id)
-              if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
+            var node_length = node.data.seq_length.split('>').slice(-1).toString()
+            var nodeUI = graphics.getNodeUI(node.id)
+            if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
                 nodeUI.color = 0xcdc8b1 // shades nodes
               } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
                 nodeUI.color = nodeUI.backupColor // return nodes to original color
               }
-            })
+          })
           renderer.rerender()
         })
       })
@@ -841,40 +845,40 @@ function onLoad () {
             // 38 is key up,
             // 40 is key down.
           switch (e.which) {
-              case 13:
-                setSliderHandle(handle, this.value)
-                break
+            case 13:
+              setSliderHandle(handle, this.value)
+              break
 
-              case 38:
+            case 38:
 
                 // Get step to go increase slider value (up)
-                position = step[1]
+              position = step[1]
 
                 // false = no step is set
-                if (position === false) {
+              if (position === false) {
                   position = 1
                 }
 
                 // null = edge of slider
-                if (position !== null) {
+              if (position !== null) {
                   setSliderHandle(handle, value + position)
                 }
 
-                break
+              break
 
-              case 40:
+            case 40:
 
-                position = step[0]
+              position = step[0]
 
-                if (position === false) {
+              if (position === false) {
                   position = 1
                 }
 
-                if (position !== null) {
+              if (position !== null) {
                   setSliderHandle(handle, value - position)
                 }
-                break
-            }
+              break
+          }
         })
       })
 
@@ -939,13 +943,13 @@ function onLoad () {
     assembly_json = new_assembly_json
   })
 
-  //******************************* *//
+  //* ****************************** *//
   //      Menu Button controls       //
-  //******************************* *//
-  
+  //* ****************************** *//
+
   $('#menu-toggle').on('click', function (e) {
     if (first_click_menu == true) {
-      $('#menu-toggle').css({'color': '#fff'});
+      $('#menu-toggle').css({'color': '#fff'})
       first_click_menu = false
     } else {
       $('#menu-toggle').css({'color': '#999999'})
