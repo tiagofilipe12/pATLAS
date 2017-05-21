@@ -100,7 +100,7 @@ def main():
 		nodes_file = sys.argv[2]
 		genera_file = sys.argv[3]
 	except:
-		print "Usage: family_fetch.py <names.dmp> <nodes.dmp> <genera.lst>"
+		print "Usage: taxa_fetch.py <names.dmp> <nodes.dmp> <genera.lst>"
 		print "Outputs bacteria taxa tree for all genera in input"
 		print
 		raise SystemExit

@@ -1,0 +1,515 @@
+<html>
+    <head>
+      <meta charset="UTF-8"/> 
+      <title>Plasmid Atlas</title>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/jquery/jquery-3.1.1.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/jquery/jquery-ui.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/jquery/jquery-ui.css') }}">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script> 
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/nouislider/nouislider.css') }}">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/vivagraph/dist/vivagraph.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/wNumb.js') }}"></script>
+      
+      <!--custom js-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/custom_colors.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/circle_nodes.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node_removal_taxa.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/toggle_nodes.js') }}"></script> 
+
+      <!--bootstrap select-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/bootstrap-select-1.12.2/bootstrap-select.min.css') }}">
+
+      <!-- main js script -->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/visualization_functions.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/alternative_loading.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/resetDisplayTaxaBox.js') }}"></script>
+      
+      <!--test toggle button-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/bootstrap-toggle/bootstrap-toggle.min.css') }}"></script>
+      
+      <!--load mousetrap for keyboard shortcuts-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/mousetrap.min.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/keyboard_shortcuts.js') }}"></script>
+
+      <!--chroma to generate colors for reads-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/chroma/chroma.min.js') }}"></script>
+      <!--load reads-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
+      <!--input files handler script-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>
+
+    </head>
+    
+    <body onload="onLoad()">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/nouislider/nouislider.js') }}"></script>
+
+      <div id="loading">
+        <img id="loading-image" src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..." ondblclick="alternative_loading()"/>
+        <!-- Cortesy of Mickael Silva -->
+        <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
+      </div>
+
+
+      <!-- Modal for file loading-->
+      <div id="fileModal" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+
+          <!-- Modal content for file-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Select input file</h4>
+            </div>
+            <div class="modal-body" id="modal-body-file">
+              <div class="row" id="uploadFile">
+                <div class="input-group col-md-12">
+                  <label class="input-group-btn">
+                    <span class="btn btn-info btn-file" id="span_1stFile">
+                      Upload file&hellip;<input id="infile" type="file" name="file" style="display: none;">
+                    </span>
+                  </label>
+                  <input type="text" class="form-control" id="file_text" readonly autocomplete="off">
+                </div>
+              </div>
+              <!--checkbox-->
+              <div class="row" id="uploadFileCheck">
+                <div class="checkbox col-md-12">Check for pairwise comparison mode
+                  <label>
+                    <!--autocomplete prevents checkbox from being checkd after refresh-->
+                    <input type="checkbox" id="check_file" autocomplete="off"> 
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+
+              <button type="submit" class="btn btn-default" data-dismiss="modal" id="fileSubmit">Ok</button>
+              <button class="btn btn-danger" id="cancel_infile">Clear selection</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+            <!-- Modal for file loading assembly-->
+      <div id="assemblyModal" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+
+          <!-- Modal content for lenght-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Select input file</h4>
+            </div>
+            <div class="modal-body" id="modal-body-file">
+              <div class="row" id="uploadFile">
+                <div class="input-group col-md-12">
+                  <label class="input-group-btn">
+                    <span class="btn btn-info btn-file" id="span_1stFile">
+                      Upload file&hellip;<input id="assemblyfile" type="file" name="file" style="display: none;">
+                    </span>
+                  </label>
+                  <input type="text" class="form-control" id="assembly_text" readonly autocomplete="off">
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+
+              <button type="submit" class="btn btn-default" data-dismiss="modal" id="assemblySubmit">Ok</button>
+              <button class="btn btn-danger" id="cancel_assembly">Clear selection</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Modal for distances-->
+      <div id="distancesModal" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+
+          <!-- Modal content for lenght-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Display distances with a gradient of color?</h4>
+            </div>
+            <div class="modal-body" id="modal-body-scheme">
+              <div class="dropdown" id="color_scheme">
+                <div class="header_taxa">Select a color scheme</div>
+                <select class="selectpicker" title="Green color scheme" id="colorForm" width="auto" data-size="7" data-header="Select a color"> 
+                  <option></option>
+                  <option data-content="<span class='label label-success'>Green color scheme</span">Green color scheme</option>
+                  <option data-divider="true"></option>
+                  <option data-content="<span class='label label-primary'>Blue color scheme</span">Blue color scheme</option>
+                  <option data-divider="true"></option>
+                  <option data-content="<span class='label label-danger'>Red color scheme</span">Red color scheme</option>
+                  <option></option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesSubmit">Yes</button>
+              <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesCancel">No</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Modal for length-->
+      <div id="lengthModal" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+
+          <!-- Modal content for lenght-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Filter nodes by sequence length</h4>
+            </div>
+            <div class="modal-body" id="modal-body-length">
+              <div class="row">
+                <div class='col-md-6' id="min-modal">
+                  <h6 class="header_taxa">Set minimum:</h6>
+                  <input id="slider_input_min" min="1" type="number" step="1000">
+                </div>
+                <div class='col-md-6' id="max-modal">
+                  <h6 class="header_taxa">Set maximum:</h6>
+                  <input id="slider_input_max" min="1" type="number" step="1000">
+                </div>
+              </div>
+              <div class="row">
+                <div class='col-md-12'>
+                  <div class="sliders noUi-target" id="slider"></div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-default" data-dismiss="modal" id="lengthSubmit">Ok</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+            <!-- Modal for taxa-->
+      <div id="taxaModal" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+
+          <!-- Modal content for lenght-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Filter nodes by species taxa</h4>
+            </div>
+            <div class="modal-body" id="modal-body-taxa">
+              <div class="row" id="modal-body-taxa-1">
+
+                <!--dropdown for order-->
+                <div class="dropdown col-sm-3" id="order_dropdown">
+                  <div class="header_taxa">Order filter</div>
+
+                    <!--</ul> -->
+                  <select class="selectpicker" multiple data-width="80%" 
+                          data-selected-text-format="count" data-live-search="true" 
+                          title="No items selected" id="orderList">
+                    <!--populated by visualization_function.js-->
+
+                  </select>                 
+                </div>
+                <!--dropdown for family-->
+                <div class="dropdown col-sm-3" id="family_dropdown">
+                  <div class="header_taxa">Family filter</div>
+
+                    <!--</ul> -->
+                  <select class="selectpicker" multiple data-width="80%" 
+                          data-selected-text-format="count" data-live-search="true" 
+                          title="No items selected" id="familyList">
+                    <!--populated by visualization_function.js-->
+
+                  </select>                
+                </div>
+                <!--dropdown for genus-->
+                <div class="dropdown col-sm-3" id="genus_dropdown">
+                  <div class="header_taxa">Genus filter</div>
+
+                  <select class="selectpicker" multiple data-width="80%" 
+                          data-selected-text-format="count" data-live-search="true" 
+                          title="No items selected" id="genusList">
+                    <!--populated by visualization_function.js-->
+
+                  </select>                 
+                </div>
+                <!--dropdown for species-->
+
+                <div class="dropdown col-sm-3 " id="species_dropdown">
+                  <div class="header_taxa">Species filter</div>
+
+                  <!--example select dropdown-->
+                  <select class="selectpicker" multiple data-width="80%" 
+                          data-selected-text-format="count" data-live-search="true" 
+                          title="No items selected" id="speciesList">
+                    <!--populated by visualization_function.js-->
+
+                  </select>              
+                </div>
+              </div>
+              <div class="row" id="modal-body-taxa-2">
+                <div class='col-md-12'>
+                  <div class="panel-group" id="displayCurrent">
+                    <div class="panel panel-info" >
+                      <div class="panel-heading">Current filters</div>
+                      <div class="panel-body" id="displayCurrentBox">
+                        <!--Populated by visualization_functions.js-->
+                        <p id="p_Order">Order: No filters applied</p>
+                        <p id="p_Family">Family: No filters applied</p>
+                        <p id="p_Genus">Genus: No filters applied</p>
+                        <p id="p_Species">Species: No filters applied</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-default" 
+                      data-dismiss="modal" id="taxaModalSubmit">Submit</button>
+              <button type="submit" class="btn btn-danger" 
+                      id="taxaModalClear">Clear selection</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!--Alert message to check that some selection is made-->
+      <div class="alert alert-danger alert-dismissable fade in" id="alertId" style="display: none">
+        <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
+        <strong>Warning!</strong> No filters were selected. No changes will be made!
+      </div>
+
+            <!--Alert message to check that some selection is made-->
+      <div class="alert alert-warning alert-dismissable fade in" id="alertId_multi" style="display: none">
+        <button type="button" class="close" id="alertClose_multi" aria-hidden="true" data-hide="true">&times;</button>
+        <strong>Attention!</strong> Multiple levels of taxa were selected. Output will highlight all selected taxa in  <font color="#f71735">red!</font>
+      </div>
+
+      <!--Alert message to check that some selection is made-->
+      <div class="alert alert-danger alert-dismissable fade in" id="alertId_node" style="display: none">
+        <button type="button" class="close" id="alertClose_node" aria-hidden="true" data-hide="true">&times;</button>
+        <strong>Warning!</strong> To enable filter dropdown options, disable "Node mode on" on the leftside switcher!
+      </div>
+
+      <div id="wrapper" class="toggled">
+      <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="pATLAS" style="width:100%;height:auto;"/>
+            <ul class="sidebar-nav" id="sidebar-menus">
+                <li class="sidebar-brand">                  
+                  <!--unused space filled with img-->
+                </li>
+                <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
+                    <a href="#">Filters</a>
+                    <div id="collapse1" class="panel-collapse collapse">
+                       <ul class="list-group">
+                          <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static" 
+                                data-target="#lengthModal" id="length_filter">Length</button>              
+                          <button class="list-group-item" href="#" 
+                                data-toggle="modal" data-backdrop="static" 
+                                data-target="#taxaModal" id="taxa_filter">Taxa</button>
+                          <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static" 
+                              data-target="#distancesModal" id="distances_filter">Distances</button>
+                          </li>
+                       </ul>
+                    </div>
+                </li>
+                <li data-toggle="collapse" data-target="#collapse2" class="collapse_groups">
+                    <a href="#">AR / REPs</a>                    
+                    <div id="collapse2" class="panel-collapse collapse">
+                      <ul class="list-group">
+                        <button class="button list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                              id="resistances_filter" >Resistance
+                        </button>
+                        <button class="button list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                              id="families_filter" >Plasmids
+                        </button> 
+                      </ul>  
+                    </div>                    
+                </li>
+                <li data-toggle="collapse" data-target="#collapse3" class="collapse_groups">
+                    <a href="#">Sequences</a>
+                    <div id="collapse3" class="panel-collapse collapse">
+                       <ul class="list-group">
+                          <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static" 
+                                  data-target="#fileModal" id="reads_filter">Mapping</button>
+                          <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static" 
+                                  data-target="#assemblyModal" id="assembly_filter">Assembly</button>
+                       </ul> 
+                    </div>   
+                </li>
+<!--            <li class="collapse_groups">
+                    <a href="#">Events</a>
+                </li>
+                <li class="collapse_groups">
+                    <a href="#">About</a>
+                </li>
+                <li class="collapse_groups">
+                    <a href="#">Services</a>
+                </li>-->
+                <li class="collapse_groups">
+                    <a href="#">About</a>
+                </li>
+            </ul>
+        </div>
+      </div> <!--closes wrapper div-->
+
+        <!-- Starts navigation bar -->
+        <!--<nav class="navbar navbar-default navbar-fixed-top"> -->      
+        <div class="navbar navbar-default navbar-fixed-top" id="navigation_bar">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" 
+                      data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" 
+                      aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li>
+                  <a href="#menu-toggle" id="menu-toggle" class="btn-lg">
+                    <span class="glyphicon glyphicon-menu-hamburger">
+                  </a>
+                </li>
+              </ul>
+
+              <form class="navbar-form navbar-left">
+                <div class="btn-group">
+                  <button class="btn btn-info" id="reset-sliders"
+                          type="button" data-toogle="tooptip"
+                          title="Reset all applied filters">Reset nodes</button>
+                
+                  <button class="btn btn-info" id="reset-links"
+                          type="button" data-toogle="tooptip"
+                          title="Reset all applied filters" disabled="disabled" autocomplete="off">Reset links</button>
+                <!--</form>-->
+              </div>
+
+              <!--<form class="navbar-form navbar-left">-->
+                <div class="btn-group">
+                  <button class="btn btn-default disabled" id="go_back"
+                          type="button" data-toogle="tooptip"
+                          title="Return to full tree view" style="display: none">
+                          <span class="glyphicon glyphicon-home"></span></button>
+                  <button class="btn btn-default" id="Re_run"
+                          type="button" data-toogle="tooptip"
+                          title="Apply filters" style="display: none">
+                          <span class="glyphicon glyphicon-filter"></span></button>
+                  <!--for now this button is disabled since it does not have funcitonality-->
+                  <button class="btn btn-default disabled" id="download_ds"
+                          type="button" data-toogle="tooptip"
+                          title="Download current selection (Currently unavailable)" style="display: none">
+                          <span class="glyphicon glyphicon-save"></span></button>
+                </div>
+
+              </form>
+              <form class="navbar-form navbar-right">
+                <input checked data-toggle="toggle" type="checkbox" 
+                        data-onstyle="success" data-offstyle="default" 
+                        data-on="Node mode on" data-off="Node mode off" 
+                        title="Enable/Disable node selection mode" id="toggle-event">
+                <div class="form-group">
+                  <input id="formValueId" type="text" class="form-control" placeholder="Enter an accession"/>
+                </div>
+                <div class="btn-group">
+                  <button id="submitButton" type="submit" data-toggle="tooltip" 
+                      title="Centers at the provided accession corresponding node" 
+                      class="btn btn-default">Go</button>
+                  <button id="clearButton" data-toggle="tooltip" 
+                      title="Remove color for all selected species" type="button" 
+                      class="btn btn-info">Clear</button>
+                </div>
+              </form>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </div>
+      
+
+      <!-- /#wrapper -->
+      <!-- Menu Toggle Script -->
+      <script>
+      $("#menu-toggle").click(function(e) {
+          e.preventDefault();
+          $("#wrapper").toggleClass("toggled");
+      });
+      </script>
+
+      <div id="couve-flor" > 
+        <!--hidden div for color legend-->
+        <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">
+          <div class="panel panel-default" >
+            <div class="panel-heading">Color legend</div>
+            <div class="panel-body">
+              <!--Populated by visualization_functions.js-->
+              <label id="taxa_label" style="display: none">Taxa filters</label>
+              <ul class="legend" id="colorLegendBox"></ul>
+              <!--Populated by visualization_functions.js-->
+              <label id="distance_label" style="display: none">Distance filters</label>
+              <div class="gradient" id="scaleLegend"></div>
+              <!--Populated by visualization_functions.js-->
+              <label id="read_label" style="display: none">Read filters</label>
+              <div class="gradient" id="readLegend"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="buttonStuff">
+          <div class="btn-group">
+
+            <!-- Buttons that overlay the graph and interact with it -->
+            <button id="playpauseButton" data-toggle="tooltip" 
+                    title="Play/Pause" type="button" 
+                    class="btn btn-success">
+              <span class="glyphicon glyphicon-play"></span>
+            </button>
+
+            <button id="refreshButton" data-toggle="tooltip" 
+                    title="Reset clicked nodes color (legacy)" type="button" 
+                    class="btn btn-primary">
+              <span class="glyphicon glyphicon-refresh"></span>
+            </button>
+          </div>
+          <!--zoom buttons-->
+          <div class="btn-group">
+            <button id="zoom_in" class="zoom in btn btn-default"
+                    data-toggle="tooltip" title="Zoom in" 
+                    type="button">
+              <span class="glyphicon glyphicon-zoom-in"></span>
+            </button>
+            <button id="zoom_out" class="zoom out btn btn-default"
+                    data-toggle="tooltip" title="Zoom out" 
+                    type="button">
+              <span class="glyphicon glyphicon-zoom-out"></span>
+            </button>
+          </div> 
+      
+          <!-- End buttons -->
+        </div>
+        <div id="popup_description" style="display: none"></div>
+      </div>
+
+    </body>
+
+</html>

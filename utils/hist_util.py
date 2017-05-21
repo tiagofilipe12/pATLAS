@@ -1,4 +1,4 @@
-## Last update: 15/2/2017
+## Last update: 8/5/2017
 ## Author: T.F. Jesus
 ## This is an auxiliary script for MASHix.py, which generates histograms for the lists stored in lists_traces
 
@@ -15,7 +15,7 @@ def plot_histogram(lists_traces, output_tag, mother_directory):
 	minimum=[]
 	## parsing the list to length, average, median, max and min variables
 	for trace_list in lists_traces:
-		trace_list=[x for x in trace_list if x != 0]
+		#trace_list=[x for x in trace_list if x != 0]
 		if trace_list:
 			lengths.append(len(trace_list))
 			averages.append(numpy.mean(trace_list))
@@ -25,7 +25,8 @@ def plot_histogram(lists_traces, output_tag, mother_directory):
 	sorted_lengths=sorted(lengths, reverse=True)
 	trace_lengths = go.Histogram(x=sorted_lengths, 
 								opacity=0.75, 
-								name="total number of significant distances within sequence/genome",
+								name="total number of significant distances  "
+									 "within sequence/genome",
 								xbins=dict(start=numpy.min(sorted_lengths), 
 											size= 2, 
 											end= numpy.max(sorted_lengths)))
@@ -69,15 +70,21 @@ def plot_histogram(lists_traces, output_tag, mother_directory):
 						title='Number of sequences/genomes'
 						)
 					)
-	fig = go.Figure(data=[trace_averages,trace_medians,trace_maximum,trace_minimum], layout=layout)
-	plot_url = plotly.offline.plot(fig, filename= os.path.join(mother_directory, "results", output_tag + '_avg_med_dist.html'),auto_open=False)
+	fig = go.Figure(data=[trace_averages,trace_medians,trace_maximum,
+						  trace_minimum], layout=layout)
+	plot_url = plotly.offline.plot(fig, filename= os.path.join(
+		mother_directory, "results", output_tag + '_avg_med_dist.html'),
+								   auto_open=False)
 	## second plot
 	layout2 = go.Layout(xaxis=dict(
-							title='Number of significant <i>(p-value</i> > 0.05) pairwise differences'
+							title='Number of significant <i>(p-value</i> >  '
+								  '0.05) pairwise differences'
 							),
 						yaxis=dict(
 							title='Number of sequences/genomes'
 							)
 						)
 	fig2 = go.Figure(data=[trace_lengths], layout=layout2)
-	plot_url = plotly.offline.plot(fig2, filename= os.path.join(mother_directory, "results", output_tag + '_numb_dist.html'),auto_open=False)
+	plot_url = plotly.offline.plot(fig2, filename= os.path.join(
+		mother_directory, "results", output_tag + '_numb_dist.html'),
+								   auto_open=False)
