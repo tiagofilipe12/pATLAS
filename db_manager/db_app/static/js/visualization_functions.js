@@ -23,8 +23,15 @@ function onLoad () {
         // next we need to retrieve each information type independently
       var sequence = sequence_info.split('_').slice(0, 3).join('_')
 
-      // trial request
-      $.get('/api/getspecies/', {'seq': sequence})
+      /* trial request
+        parameter name has to be the same as the one one argparse on the server
+        moved from "seq" to "accession"
+        may overload the server. try to make the request on mouseover? make the first one and put on memory the result. 
+        moved from "/api/getspecies/" to the relative path "api/getspecies/" (relative to the root)
+      */
+      $.get('api/getspecies/', {'seq': sequence}, function(data, status){
+        console.log(data, status);
+      })
 
       // end of trial request
 
