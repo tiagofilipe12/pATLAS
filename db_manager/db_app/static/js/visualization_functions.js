@@ -24,13 +24,14 @@ function onLoad () {
       var sequence = sequence_info.split('_').slice(0, 3).join('_')
 
       /* trial request
-        parameter name has to be the same as the one one reqparse on the server
-        moved from "seq" to "accession"
+        parameter name has to be the same as the one reqparse on the server, thus "accession"
         may overload the server. try to make the request on mouseover? make the first one and put on memory the result. 
-        moved from "/api/getspecies/" to the relative path "api/getspecies/" (relative to the root)
       */
       $.get('api/getspecies/', {'accession': sequence}, function (data, status) {
         console.log(data, status)
+        console.log(data.json_entry)
+        //var species2 = data.json_entry.split(':').slice(-1).toString.replace('[ }]/g','')
+        //console.log(species2)
       })
 
       // end of trial request
