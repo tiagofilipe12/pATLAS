@@ -29,8 +29,8 @@ function onLoad () {
         may overload the server. try to make the request on mouseover? make the first one and put on memory the result. 
         moved from "/api/getspecies/" to the relative path "api/getspecies/" (relative to the root)
       */
-      $.get('api/getspecies/', {'seq': sequence}, function(data, status){
-        console.log(data, status);
+      $.get('api/getspecies/', {'seq': sequence}, function (data, status) {
+        console.log(data, status)
       })
 
       // end of trial request
