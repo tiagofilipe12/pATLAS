@@ -31,25 +31,29 @@ function onLoad () {
       $.get('api/getspecies/', {'accession': sequence}, function (data, status) {
         var jsonString = JSON.parse(data.json_entry)
         // if for some reason pattern does not match anything in db pass to next loop. This way it will not break the creation of nodes.
-        //var species = jsonString.name
-            // added to check for errors in database regarding species characterization
-        if (jsonString.name.split('_').indexOf(' ') !== -1) { //conditionis never reached... TEST!
-          var specie_in = jsonString.name.split(' ')[1] + ' sp'
-          console.log(species_in)
+        // added to check for errors in database regarding species characterization
+
+        //use this for debugging jsonString coming from db
+        //console.log(data)
+        //if (data == null) {
+        //  console.log(sequence)
+        //}
+
+        if (jsonString.name.split('_')[0] === '') { 
+          var speciesIn = jsonString.name.split('_')[1] + ' sp'
         } else {
-          var species_in = jsonString.name.replace('_',' ')
+          var speciesIn = jsonString.name.replace('_',' ')
         }
         // this function must be run inside ajax call in order not to break the script
-        nodeAdding(species_in)
+        nodeAdding(speciesIn)
       })
       // function to be parsed to ajax call in order to use the variables get by the call
       function nodeAdding (species) {
-        console.log(species)
+        //console.log(species)
       
           // and continues
         var genus = species.split(' ')[0]
         var seq_length = sequence_info.split('_').slice(3)[0]
-        console.log(seq_length)
         var log_length = Math.log(parseInt(seq_length)) // ln seq lengt and parses to integer
         list_lengths.push(seq_length) // appends all lengths to this list
         list_species.push(species) // appends all species to this list
