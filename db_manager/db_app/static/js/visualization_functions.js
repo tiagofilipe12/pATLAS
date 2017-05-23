@@ -27,42 +27,48 @@ function onLoad () {
         parameter name has to be the same as the one reqparse on the server, thus "accession"
         may overload the server. try to make the request on mouseover? make the first one and put on memory the result. 
       */
+      
       $.get('api/getspecies/', {'accession': sequence}, function (data, status) {
         var jsonString = JSON.parse(data.json_entry)
-        console.log(data, status)
-        console.log(data.json_entry)
-        console.log(jsonString)
-        //var species2 = data.json_entry.split(':').slice(-1).toString.replace('[ }]/g','')
-        //console.log(species2)
+        // if for some reason pattern does not match anything in db pass to next loop. This way it will not break the creation of nodes.
+        //var species = jsonString.name
+            // added to check for errors in database regarding species characterization
+        if (jsonString.name.split('_').indexOf(' ') !== -1) { //conditionis never reached... TEST!
+          var specie_in = jsonString.name.split(' ')[1] + ' sp'
+          console.log(species_in)
+        } else {
+          var species_in = jsonString.name.replace('_',' ')
+        }
+        // this function must be run inside ajax call in order not to break the script
+        nodeAdding(species_in)
       })
-
-      // end of trial request
-
-      var species = sequence_info.split('_').slice(3, 5)
-        // added to check for errors in database regarding species characterization
-      if (species[0] == ' ') {
-        species = sequence_info.split('_').slice(4) + ' sp'
+      // function to be parsed to ajax call in order to use the variables get by the call
+      function nodeAdding (species) {
+        console.log(species)
+      
+          // and continues
+        var genus = species.split(' ')[0]
+        var seq_length = sequence_info.split('_').slice(3)[0]
+        console.log(seq_length)
+        var log_length = Math.log(parseInt(seq_length)) // ln seq lengt and parses to integer
+        list_lengths.push(seq_length) // appends all lengths to this list
+        list_species.push(species) // appends all species to this list
+        list_genera.push(genus)
+        list_gi.push(sequence)
+        
+        // checks if sequence is not in list to prevent adding multiplnodes for each sequence
+        if (list.indexOf(sequence) < 0) {
+          // sequence has no version of accession
+          g.addNode(sequence, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split('_').slice(0, 2).join('_') + "' target='_blank'>" + sequence + '</a>',
+            species: "<font color='#468499'>Species: </font>" + species,
+            seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
+            log_length: log_length
+          })
+          list.push(sequence)
+        }
       }
-        // and continues
-      var genus = sequence_info.split('_').slice(3).join(' ')
-      var seq_length = sequence_info.split('_').slice(-1).join('')
-      var log_length = Math.log(parseInt(seq_length)) // ln seq length
 
-      list_lengths.push(seq_length) // appends all lengths to this list
-      list_species.push(species) // appends all species to this list
-      list_genera.push(genus)
-      list_gi.push(sequence)
-        // checks if sequence is not in list to prevent adding multiple nodes for each sequence
-      if (list.indexOf(sequence) < 0) {
-        // sequence has no version of accession
-        g.addNode(sequence, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split('_').slice(0, 2).join('_') + "' target='_blank'>" + sequence + '</a>',
-          species: "<font color='#468499'>Species: </font>" + species,
-          seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
-          log_length: log_length
-        })
-        list.push(sequence)
-      }
-          // loops between all arrays of array pairing sequence and distances
+      // loops between all arrays of array pairing sequence and distances
       for (var i = 0; i < dict_dist.length; i++) {
         var pairs = dict_dist[i]
         var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
