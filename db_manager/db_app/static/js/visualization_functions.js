@@ -18,6 +18,7 @@ function onLoad () {
   var list_gi = []
   g = Viva.Graph.graph()
 
+  //may be wrap this in a callback function and work with precomput function in order to be triggered after this
   getArray().done(function (json) {
     $.each(json, function (sequence_info, dict_dist) {
         // next we need to retrieve each information type independently
@@ -51,7 +52,7 @@ function onLoad () {
       function nodeAdding (species) {
         //console.log(species)
       
-          // and continues
+        // and continues
         var genus = species.split(' ')[0]
         var seq_length = sequence_info.split('_').slice(3)[0]
         var log_length = Math.log(parseInt(seq_length)) // ln seq lengt and parses to integer
@@ -78,19 +79,19 @@ function onLoad () {
         var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
         var distance = pairs[1]   // stores distances in a unique variable
         g.addLink(sequence, reference, distance)
-      };
+      }
     })
-      // previously used to check the number of nodes provided
-    var layout = Viva.Graph.Layout.forceDirected(g, {
+  }) //new getArray end
+  var layout = Viva.Graph.Layout.forceDirected(g, {
       springLength: 30,
       springCoeff: 0.0001,
       dragCoeff: 0.01, // sets how fast nodes will separate from origin, the higher the value the slower
       gravity: -1.2,
       theta: 1
-    })
+  })
       // precompute before redering
-    precompute(1000, renderGraph)
-    function precompute (iterations, callback) {
+  precompute(1000, renderGraph)
+  function precompute (iterations, callback) {
           // let's run 10 iterations per event loop cycle:
       var i = 0
       while (iterations > 0 && i < 10) {
@@ -110,12 +111,12 @@ function onLoad () {
     }
       // Sets parameters to be passed to WebglCircle in order to change
       // node shape, setting color and size.
-    var nodeColor = 0x666370 // hex rrggbb
-    min_nodeSize = 2 // a value that assures that the node is
+  var nodeColor = 0x666370 // hex rrggbb
+  var min_nodeSize = 2 // a value that assures that the node is
       // displayed without incresing the size of big nodes too much
 
       //* Starts graphics renderer *//
-    function renderGraph () {
+  function renderGraph () {
       var graphics = Viva.Graph.View.webglGraphics()
           //* * block #1 for node customization **//
           // first, tell webgl graphics we want to use custom shader
@@ -182,7 +183,7 @@ function onLoad () {
           click_check = false
           $('#popup_description').css({'display': 'none'})
         }
-        console.log('Single click on node: ' + node.id)
+        //console.log('Single click on node: ' + node.id)
         var nodeUI = graphics.getNodeUI(node.id)
         if (toggle_status == true) {   // if statement to check if toggle button is enabled
               // statement when node and linked nodes are still in default color
@@ -208,8 +209,8 @@ function onLoad () {
             linkUI.color = color_to_use[1]
             var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
             if (linked_nodeUI.color != 0xc89933) {
-                linked_nodeUI.color = color_to_use[2]
-              }
+              linked_nodeUI.color = color_to_use[2]
+            }
           })
         }
         renderer.rerender()
@@ -357,11 +358,11 @@ function onLoad () {
           dict_genera[genus] = [family, order] // append the list to this dict to be used later
           if (sortedArray_genera.indexOf(genus) >= 0) {
             if (list_families.indexOf(family) < 0) {
-                list_families.push(family)
-              }
+              list_families.push(family)
+            }
             if (list_orders.indexOf(order) < 0) {
-                list_orders.push(order)
-              }
+              list_orders.push(order)
+            }
           }
         })
 
@@ -413,7 +414,7 @@ function onLoad () {
         $('#familyList').selectpicker('refresh')
         $('#genusList').selectpicker('refresh')
         $('#speciesList').selectpicker('refresh')
-
+        
           // clickable <li> and control of displayer of current filters
         firstInstance = true // global variable
         existingTaxon = [],   // global variable
@@ -424,11 +425,11 @@ function onLoad () {
           $(classArray[i]).on('click', function (e) {
               // empties the text in this div for the first intance
             if (firstInstance == true) {
-                for (var x = 0; x < idsArrays.length; x++) {
+              for (var x = 0; x < idsArrays.length; x++) {
                   $('#' + idsArrays[x]).empty()
                 }
-                firstInstance = false
-              }
+              firstInstance = false
+            }
               // fill panel group displaying current selected taxa filters //
             var stringClass = this.className.slice(0, -5)
             var tempVar = this.firstChild.innerHTML
@@ -437,22 +438,22 @@ function onLoad () {
             var divstringClass = document.getElementById('p_' + stringClass)
             removal = false
             if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
-                divstringClass.innerHTML = stringClass + ': ' + tempVar
-                removal = false
-              }
+              divstringClass.innerHTML = stringClass + ': ' + tempVar
+              removal = false
+            }
               // checks if selection is in list and is the last element present... removing it
             else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar && taxaInList.length == 1) {
                 // resets displayCurrentBox
-                resetDisplayTaxaBox(idsArrays)
-                removal = true
-              } else {
+              resetDisplayTaxaBox(idsArrays)
+              removal = true
+            } else {
                 // if taxa is already not in list then append
-                if (taxaInList.indexOf(tempVar) < 0) {
+              if (taxaInList.indexOf(tempVar) < 0) {
                   divstringClass.innerHTML = divstringClass.innerHTML + ',' + tempVar
                   removal = false
                 }
                 // if it is already in list then remove it and remove from list taxaInList
-                else {
+              else {
                   if (taxaInList[0] == tempVar) {
                     tempString = tempVar + ','
                   } else {
@@ -462,10 +463,10 @@ function onLoad () {
                   taxaInList = stringRmArray(tempVar, taxaInList)
                   removal = true
                 }
-              }
+            }
             if (taxaInList.indexOf(tempVar) < 0 && removal == false) {
-                taxaInList.push(tempVar)  // user to store all clicked taxa
-              }
+              taxaInList.push(tempVar)  // user to store all clicked taxa
+            }
             existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
           })
         }
@@ -531,8 +532,8 @@ function onLoad () {
             Alert = true
             counter = 4  // counter used to check if more than one dropdown has selected options
           } else if (alertArrays[i] != '') {
-              counter = counter + 1
-            }
+            counter = counter + 1
+          }
         }
         if (Alert == true) {
           divAlert.style.display = 'block'
@@ -564,20 +565,20 @@ function onLoad () {
           if (selectedFamily.indexOf(family) >= 0) {
             selectedGenus.push(genus)
             if (!(family in assocFamilyGenus)) {
-                assocFamilyGenus[family] = []
-                assocFamilyGenus[family].push(genus)
-              } else {
-                assocFamilyGenus[family].push(genus)
-              }
+              assocFamilyGenus[family] = []
+              assocFamilyGenus[family].push(genus)
+            } else {
+              assocFamilyGenus[family].push(genus)
+            }
           } else if (selectedOrder.indexOf(order) >= 0) {
-              selectedGenus.push(genus)
-              if (!(order in assocOrderGenus)) {
+            selectedGenus.push(genus)
+            if (!(order in assocOrderGenus)) {
                 assocOrderGenus[order] = []
                 assocOrderGenus[order].push(genus)
               } else {
                 assocOrderGenus[order].push(genus)
               }
-            }
+          }
         })
 
           // renders the graph for the desired taxon if more than one taxon type is selected
@@ -594,16 +595,16 @@ function onLoad () {
             var genus = species.split(' ')[0]
               // checks if genus is in selection
             if (selectedGenus.indexOf(genus) >= 0) {
-                nodeUI.color = 0xf71735
-                nodeUI.backupColor = nodeUI.color
-                changed_nodes.push(node.id)
-              }
+              nodeUI.color = 0xf71735
+              nodeUI.backupColor = nodeUI.color
+              changed_nodes.push(node.id)
+            }
               // checks if species is in selection
             else if (selectedSpecies.indexOf(species) >= 0) {
-                nodeUI.color = 0xf71735
-                nodeUI.backupColor = nodeUI.color
-                changed_nodes.push(node.id)
-              }
+              nodeUI.color = 0xf71735
+              nodeUI.backupColor = nodeUI.color
+              changed_nodes.push(node.id)
+            }
           })
           renderer.rerender()
           store_lis = '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#f71735"></button>&nbsp;multi-level selected taxa</li>'
@@ -611,15 +612,15 @@ function onLoad () {
             // first check if filters are applied in order to avoid displaying when there are no filters
           for (i in alertArrays) {
             if (alertArrays[i][0] != 'No filters applied') {
-                var divAlert = document.getElementById('alertId_multi')
-                divAlert.style.display = 'block'
+              var divAlert = document.getElementById('alertId_multi')
+              divAlert.style.display = 'block'
                 // control the alertClose button
-                $('#alertClose_multi').click(function () {
+              $('#alertClose_multi').click(function () {
                   $('#alertId_multi').hide()  // hide this div
                 })
                 // auto hide after 5 seconds without closing the div
-                window.setTimeout(function () { $('#alertId_multi').hide() }, 5000)
-              }
+              window.setTimeout(function () { $('#alertId_multi').hide() }, 5000)
+            }
           }
         }
           // renders the graph for the desired taxon if one taxon type is selected
@@ -629,9 +630,9 @@ function onLoad () {
           for (array in alertArrays) {
               // selects the not empty array
             if (alertArrays[array] != '' && firstIteration == true) {
-                var currentSelection = alertArrays[array]
+              var currentSelection = alertArrays[array]
                 // performs the actual interaction for color picking and assigning
-                for (i in currentSelection) {
+              for (i in currentSelection) {
                   // orders //
                   if (alertArrays['order'] != '') {
                     var tempArray = assocOrderGenus[currentSelection[i]]
@@ -671,8 +672,8 @@ function onLoad () {
                   }
                   renderer.rerender()
                 }
-                firstIteration = false // stops getting lower levels
-              }
+              firstIteration = false // stops getting lower levels
+            }
           }
         }
           // used to control if no selection was made avoiding to display the legend
@@ -820,8 +821,8 @@ function onLoad () {
             var node_length = node.data.seq_length.split('>').slice(-1).toString()
             var nodeUI = graphics.getNodeUI(node.id)
             if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
-                nodeUI.color = 0xcdc8b1 // shades nodes
-              } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
+              nodeUI.color = 0xcdc8b1 // shades nodes
+            } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
                 nodeUI.color = nodeUI.backupColor // return nodes to original color
               }
           })
@@ -876,13 +877,13 @@ function onLoad () {
 
                 // false = no step is set
               if (position === false) {
-                  position = 1
-                }
+                position = 1
+              }
 
                 // null = edge of slider
               if (position !== null) {
-                  setSliderHandle(handle, value + position)
-                }
+                setSliderHandle(handle, value + position)
+              }
 
               break
 
@@ -891,12 +892,12 @@ function onLoad () {
               position = step[0]
 
               if (position === false) {
-                  position = 1
-                }
+                position = 1
+              }
 
               if (position !== null) {
-                  setSliderHandle(handle, value - position)
-                }
+                setSliderHandle(handle, value - position)
+              }
               break
           }
         })
@@ -949,7 +950,7 @@ function onLoad () {
         window.location.reload()   // a temporary fix to go back to full dataset
       })
     }
-  })
+  //}) //end of getArray
 
     //* ***********************************************//
     // control the infile input and related functions //
@@ -975,5 +976,5 @@ function onLoad () {
       $('#menu-toggle').css({'color': '#999999'})
       first_click_menu = true
     }
-  })
-}
+  }) 
+} 
