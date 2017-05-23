@@ -1,7 +1,7 @@
 from models import Plasmid, Card, Positive, Database
 from db_app import db
 from flask_restful import Resource, reqparse, fields, marshal_with
-import json
+from flask import jsonify
 
 ## Defines response fields
 '''

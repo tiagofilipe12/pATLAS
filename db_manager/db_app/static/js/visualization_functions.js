@@ -28,8 +28,10 @@ function onLoad () {
         may overload the server. try to make the request on mouseover? make the first one and put on memory the result. 
       */
       $.get('api/getspecies/', {'accession': sequence}, function (data, status) {
+        var jsonString = JSON.parse(data.json_entry)
         console.log(data, status)
         console.log(data.json_entry)
+        console.log(jsonString)
         //var species2 = data.json_entry.split(':').slice(-1).toString.replace('[ }]/g','')
         //console.log(species2)
       })
