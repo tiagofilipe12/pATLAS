@@ -19,7 +19,7 @@ function onLoad () {
   g = Viva.Graph.graph()
 
   //may be wrap this in a callback function and work with precomput function in order to be triggered after this
-  getArray().done(function (json) {
+  p = getArray().done(function (json) {
     $.each(json, function (sequence_info, dict_dist) {
         // next we need to retrieve each information type independently
       var sequence = sequence_info.split('_').slice(0, 3).join('_')
@@ -81,7 +81,7 @@ function onLoad () {
         g.addLink(sequence, reference, distance)
       }
     })
-  }) //new getArray end
+  //}) //new getArray end
   var layout = Viva.Graph.Layout.forceDirected(g, {
       springLength: 30,
       springCoeff: 0.0001,
@@ -950,7 +950,7 @@ function onLoad () {
         window.location.reload()   // a temporary fix to go back to full dataset
       })
     }
-  //}) //end of getArray
+  }) //end of getArray
 
     //* ***********************************************//
     // control the infile input and related functions //
