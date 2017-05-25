@@ -17,71 +17,6 @@ function onLoad () {
   var list_genera = [] // list all genera
   var list_gi = []
   g = Viva.Graph.graph()
-
-  //may be wrap this in a callback function and work with precomput function in order to be triggered after this
-  p = getArray().done(function (json) {
-    $.each(json, function (sequence_info, dict_dist) {
-        // next we need to retrieve each information type independently
-      var sequence = sequence_info.split('_').slice(0, 3).join('_')
-
-      /* trial request
-        parameter name has to be the same as the one reqparse on the server, thus "accession"
-        may overload the server. try to make the request on mouseover? make the first one and put on memory the result. 
-      */
-      
-      $.get('api/getspecies/', {'accession': sequence}, function (data, status) {
-        var jsonString = JSON.parse(data.json_entry)
-        // if for some reason pattern does not match anything in db pass to next loop. This way it will not break the creation of nodes.
-        // added to check for errors in database regarding species characterization
-
-        //use this for debugging jsonString coming from db
-        //console.log(data)
-        //if (data == null) {
-        //  console.log(sequence)
-        //}
-
-        if (jsonString.name.split('_')[0] === '') { 
-          var speciesIn = jsonString.name.split('_')[1] + ' sp'
-        } else {
-          var speciesIn = jsonString.name.replace('_',' ')
-        }
-        // this function must be run inside ajax call in order not to break the script
-        nodeAdding(speciesIn)
-      })
-      // function to be parsed to ajax call in order to use the variables get by the call
-      function nodeAdding (species) {
-        //console.log(species)
-      
-        // and continues
-        var genus = species.split(' ')[0]
-        var seq_length = sequence_info.split('_').slice(3)[0]
-        var log_length = Math.log(parseInt(seq_length)) // ln seq lengt and parses to integer
-        list_lengths.push(seq_length) // appends all lengths to this list
-        list_species.push(species) // appends all species to this list
-        list_genera.push(genus)
-        list_gi.push(sequence)
-        
-        // checks if sequence is not in list to prevent adding multiplnodes for each sequence
-        if (list.indexOf(sequence) < 0) {
-          // sequence has no version of accession
-          g.addNode(sequence, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split('_').slice(0, 2).join('_') + "' target='_blank'>" + sequence + '</a>',
-            species: "<font color='#468499'>Species: </font>" + species,
-            seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
-            log_length: log_length
-          })
-          list.push(sequence)
-        }
-      }
-
-      // loops between all arrays of array pairing sequence and distances
-      for (var i = 0; i < dict_dist.length; i++) {
-        var pairs = dict_dist[i]
-        var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
-        var distance = pairs[1]   // stores distances in a unique variable
-        g.addLink(sequence, reference, distance)
-      }
-    })
-  //}) //new getArray end
   var layout = Viva.Graph.Layout.forceDirected(g, {
       springLength: 30,
       springCoeff: 0.0001,
@@ -89,23 +24,99 @@ function onLoad () {
       gravity: -1.2,
       theta: 1
   })
-      // precompute before redering
-  precompute(1000, renderGraph)
+
+  //may be wrap this in a callback function and work with precomput function in order to be triggered after this
+  function nodeGenerator(callback) {
+    getArray().done(function (json) {
+      var jsonLenght = Object.keys(json).length // count the total number of json entries
+      //var counter = 0
+      $.each(json, function (sequence_info, dict_dist) { 
+        // next we need to retrieve each information type independently
+        var sequence = sequence_info.split('_').slice(0, 3).join('_')
+
+        /* trial request
+          parameter name has to be the same as the one reqparse on the server, thus "accession"
+          may overload the server. try to make the request on mouseover? make the first one and put on memory the result. 
+        */
+        
+        $.get('api/getspecies/', {'accession': sequence}, function (data, status) {
+          var jsonString = JSON.parse(data.json_entry)
+          // if for some reason pattern does not match anything in db pass to next loop. This way it will not break the creation of nodes.
+          // added to check for errors in database regarding species characterization
+
+          //use this for debugging jsonString coming from db
+          //console.log(data)
+          //if (data == null) {
+          //  console.log(sequence)
+          //}
+
+          if (jsonString.name.split('_')[0] === '') { 
+            var speciesIn = jsonString.name.split('_')[1] + ' sp'
+          } else {
+            var speciesIn = jsonString.name.replace('_',' ')
+          }
+          // this function must be run inside ajax call in order not to break the script
+          nodeAdding(speciesIn)
+        })
+        // function to be parsed to ajax call in order to use the variables get by the call
+        function nodeAdding (species) {
+          //console.log(species)
+        
+          // and continues
+          var genus = species.split(' ')[0]
+          var seq_length = sequence_info.split('_').slice(3)[0]
+          var log_length = Math.log(parseInt(seq_length)) // ln seq lengt and parses to integer
+          list_lengths.push(seq_length) // appends all lengths to this list
+          list_species.push(species) // appends all species to this list
+          list_genera.push(genus)
+          list_gi.push(sequence)
+          
+          // checks if sequence is not in list to prevent adding multiplnodes for each sequence
+          if (list.indexOf(sequence) < 0) {
+            // sequence has no version of accession
+            g.addNode(sequence, {sequence: "<font color='#468499'>seq_id: </font><a href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split('_').slice(0, 2).join('_') + "' target='_blank'>" + sequence + '</a>',
+              species: "<font color='#468499'>Species: </font>" + species,
+              seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
+              log_length: log_length
+            })
+            list.push(sequence)
+
+          }
+        }
+
+        // loops between all arrays of array pairing sequence and distances
+        for (var i = 0; i < dict_dist.length; i++) {
+          var pairs = dict_dist[i]
+          var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
+          var distance = pairs[1]   // stores distances in a unique variable
+          g.addLink(sequence, reference, distance)
+        }
+      }) 
+      // after adding final node render the callback (precompute)
+      if (list.length === jsonLenght) {
+        if (callback) callback() 
+      }
+    }) //new getArray end
+  }
+
+  // precompute before redering
+  nodeGenerator(precompute(1000, renderGraph))
+  //precompute(1000, renderGraph)
   function precompute (iterations, callback) {
-          // let's run 10 iterations per event loop cycle:
+      // let's run 10 iterations per event loop cycle:
       var i = 0
       while (iterations > 0 && i < 10) {
         layout.step()
         iterations--
         i++
       }
-        // processingElement.innerHTML = 'Layout precompute: ' + iterations;
+      // processingElement.innerHTML = 'Layout precompute: ' + iterations;
       if (iterations > 0) {
         setTimeout(function () {
           precompute(iterations, callback)
         }, 0) // keep going in next even cycle
       } else {
-          // we are done!
+        // we are done!
         callback()
       }
     }
@@ -950,7 +961,7 @@ function onLoad () {
         window.location.reload()   // a temporary fix to go back to full dataset
       })
     }
-  }) //end of getArray
+  //}) //end of getArray
 
     //* ***********************************************//
     // control the infile input and related functions //
