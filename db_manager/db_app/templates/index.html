@@ -2,13 +2,13 @@
     <head>
       <meta charset="UTF-8"/> 
       <title>Plasmid Atlas</title>
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/jquery/jquery-3.1.1.js') }}"></script>
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/jquery/jquery-ui.js') }}"></script>
-      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/jquery/jquery-ui.css') }}">
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script> 
-      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">
-      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/nouislider/nouislider.css') }}">
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/vivagraph/dist/vivagraph.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-3.1.1.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-ui.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/jquery/jquery-ui.css') }}">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script> 
+      <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/nouislider/nouislider.css') }}">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/vivagraph/dist/vivagraph.js') }}"></script>
       <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/wNumb.js') }}"></script>
       
@@ -19,8 +19,8 @@
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/toggle_nodes.js') }}"></script> 
 
       <!--bootstrap select-->
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>
-      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/bootstrap-select-1.12.2/bootstrap-select.min.css') }}">
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.css') }}">
 
       <!-- main js script -->
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/visualization_functions.js') }}"></script>
@@ -28,15 +28,15 @@
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/resetDisplayTaxaBox.js') }}"></script>
       
       <!--test toggle button-->
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
-      <link rel="stylesheet" href="{{ url_for('static', filename='depencencies/bootstrap-toggle/bootstrap-toggle.min.css') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
+      <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-toggle/bootstrap-toggle.min.css') }}"></script>
       
       <!--load mousetrap for keyboard shortcuts-->
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/mousetrap.min.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/mousetrap.min.js') }}"></script>
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/keyboard_shortcuts.js') }}"></script>
 
       <!--chroma to generate colors for reads-->
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/chroma/chroma.min.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/chroma/chroma.min.js') }}"></script>
       <!--load reads-->
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
       <!--input files handler script-->
@@ -46,7 +46,7 @@
     </head>
     
     <body onload="onLoad()">
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='depencencies/nouislider/nouislider.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/nouislider/nouislider.js') }}"></script>
 
       <div id="loading">
         <img id="loading-image" src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..." ondblclick="alternative_loading()"/>
