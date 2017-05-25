@@ -45,6 +45,7 @@ function onLoad () {
           // added to check for errors in database regarding species characterization
 
           //use this for debugging jsonString coming from db
+          //console.log(status)
           //console.log(data)
           //if (data == null) {
           //  console.log(sequence)
