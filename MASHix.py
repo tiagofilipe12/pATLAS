@@ -95,6 +95,8 @@ def master_fasta(fastas, output_tag, mother_directory):
 					species = "unknown"
 				elif "origin" in species.lower():
 					species = "unknown"
+				elif "candidatus" in species.split("_")[0]:
+					species = "_".join(linesplit[6:8])
 				##
 				accession = "_".join(linesplit[1:4])
 				## searches plasmid_name in line given that it may be variable
