@@ -1,5 +1,5 @@
 from flask_restful import Api
-from db_app import app
+from . import app
 from resources import testresources, GetSpecies
 
 ## start api

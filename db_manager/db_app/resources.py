@@ -1,5 +1,5 @@
 from models import Plasmid, Card, Positive, Database
-from db_app import db
+from . import db
 from flask_restful import Resource, reqparse, fields, marshal_with
 from flask import jsonify
 
@@ -17,7 +17,7 @@ entry_field = {
     'json_entry': fields.String
 }
 
-## defining reqparse arguments
+## define reqparse arguments
 
 req_parser = reqparse.RequestParser()
 req_parser.add_argument('accession', dest='accession', type=str, help='Accession number to be queried')
