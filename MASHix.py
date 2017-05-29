@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-## Last update: 8/5/2017
+## Last update: 29/5/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix
 # for each pairwise comparison between libraries
@@ -14,7 +14,6 @@ import shutil
 from multiprocessing import Pool
 from functools import partial
 import tqdm
-#import operator
 from utils.hist_util import plot_histogram
 #import utils.taxa_fetch
 #from operator import itemgetter
@@ -64,10 +63,16 @@ def master_fasta(fastas, output_tag, mother_directory):
 	master_fasta = open(out_file, "w")
 	sequence_info = {}
 	## creates a list file, listing all genera in input sequences
-	genus_out = os.path.join(mother_directory, "genera_list_{}.lst".format(
+	#genus_out = os.path.join(mother_directory, "genera_list_{}.lst".format(
+	#	output_tag))
+	#genus_output = open(genus_out, "w")
+	#genera =[]
+
+	## creates a list file, listing all species in input sequences
+	all_species= []
+	species_out = os.path.join(mother_directory, "species_list_{}.lst".format(
 		output_tag))
-	genus_output = open(genus_out, "w")
-	genera =[]
+	species_output = open(species_out, "w")
 	for filename in fastas:
 		fasta = open(filename,"r")
 		for x,line in enumerate(fasta):
@@ -96,8 +101,9 @@ def master_fasta(fastas, output_tag, mother_directory):
 				# its position
 				plasmid_name = search_substing(line)
 			    ## genus related functions
-				genus = linesplit[5]
-				genera.append(genus)
+				#genus = linesplit[5]
+				#genera.append(genus)
+				all_species.append(" ".join(species.split("_")))
 			else:
 				## had to add a method to remove \n characteres from the
 				# counter for sequence length
@@ -111,8 +117,11 @@ def master_fasta(fastas, output_tag, mother_directory):
 		# to dict last entry of each input file
 	master_fasta.close()
 	## writes genera list to output file
-	genus_output.write('\n'.join(str(i) for i in list(set(genera))))
-	genus_output.close()
+	#genus_output.write('\n'.join(str(i) for i in list(set(genera))))
+	#genus_output.close()
+	## writes a species list to output file
+	species_output.write('\n'.join(str(i) for i in list(set(all_species))))
+	species_output.close()
 	return out_file, sequence_info
 
 # Creates temporary fasta files in a tmp directory in order to give to mash
