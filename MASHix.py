@@ -96,8 +96,10 @@ def master_fasta(fastas, output_tag, mother_directory):
 				elif "origin" in species.lower():
 					species = "unknown"
 				elif "candidatus" in species.split("_")[0].lower():
-					species = "_".join(linesplit[6:8])
-				##
+					# species name becomes Candidatus Genera species
+					# this needs to be parsed to the database
+					species = "_".join(linesplit[5:8])
+				
 				accession = "_".join(linesplit[1:4])
 				## searches plasmid_name in line given that it may be variable
 				# its position
@@ -315,6 +317,7 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
 		## actual database filling
 		## string_sequence.split("_")[-1] is used to remove length from
 		# accession in database
+
 		row = models.Plasmid(
 			plasmid_id="_".join(string_sequence.split("_")[:-1]),
 			json_entry=json.dumps({"name": spp_name, "length": length,

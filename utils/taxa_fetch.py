@@ -17,6 +17,8 @@ def get_species(species_file):
 	for line in species_file:
 		genus = line.strip("\n").split(" ")[0]
 		species = line.strip("\n")
+		if "Candidatus" in species:
+			species = " ".join(species.split(" ")[1:])
 		list_of_genera.append(genus)
 		list_of_species.append(species)
 	species_file.close()
