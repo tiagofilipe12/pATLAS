@@ -696,7 +696,7 @@ function onLoad () {
         if (noLegend == false) {
           showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
           showLegend.style.display = 'block'
-          document.getElementById('taxa_label').style.display = 'block' // show label
+          document.getElementById('taxa_label').style.display = Q'block' // show label
           $('#colorLegendBox').empty()
           $('#colorLegendBox').append(store_lis +
               '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
@@ -989,4 +989,4 @@ function onLoad () {
       first_click_menu = true
     }
   }) 
-} 
+}
