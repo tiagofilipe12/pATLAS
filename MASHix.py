@@ -94,16 +94,18 @@ def master_fasta(fastas, output_tag, mother_directory):
                 linesplit = line.strip().split("_")  ## splits fasta headers by
                 # _ character
                 ## gi = "_".join(linesplit[1:2])
-                species = "_".join(linesplit[5:7])
                 ## if statements to handle some exceptions already found
                 if "plasmid" in species.lower():
                     species = "unknown"
                 elif "origin" in species.lower():
                     species = "unknown"
-                elif "candidatus" in species.split("_")[0].lower():
+                elif "candidatus" in linesplit[5].lower():
                     # species name becomes Candidatus Genera species
                     # this needs to be parsed to the database
                     species = "_".join(linesplit[5:8])
+                else:
+                    # outputs all other species
+                    species = "_".join(linesplit[5:7])
 
                 accession = "_".join(linesplit[1:4])
                 ## searches plasmid_name in line given that it may be variable
