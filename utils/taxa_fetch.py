@@ -64,7 +64,6 @@ def fetch_taxid(taxa_list, names_file):
             taxid_dic[field_delimiter[1].strip()] = taxid  # genus:taxid
 
     print "taxid_list: " + str(len(taxid_dic))
-    print
     name.close()
     return taxid_dic
 
@@ -86,7 +85,6 @@ def family_taxid(taxid_dic, nodes_file):
 
     nodes.close()
     print "parent_taxid_list: " + str(len(parent_taxid_dic))
-    print
     return parent_taxid_dic
 
 
@@ -104,7 +102,6 @@ def fetch_taxid_by_id(parent_taxid_dic, names_file):
             taxa_name_dic[field_delimiter[0].strip()] = taxa_name
 
     print "taxid_list: " + str(len(taxa_name_dic))
-    print
     name.close()
     return taxa_name_dic
 
@@ -113,25 +110,28 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
                     order_taxid_dic, species_list):
     super_dic = {}
     # then cycle each species in list
-    for species in species_list:
+    for x, species in enumerate(species_list):
+        #print(x) # used to count the number of species already parsed
         k = species.split(" ")[0]  # cycle genera
         # for k in taxid_dic:
         ## get family!!
-        if parent_taxid_dic[taxid_dic[k]]:
-            family = family_taxid_dic[parent_taxid_dic[taxid_dic[k]]]
-            ## get order!!
-            if order_dic[parent_taxid_dic[taxid_dic[k]]]:
-                order = order_taxid_dic[order_dic[parent_taxid_dic[
-                    taxid_dic[k]]]]
-                super_dict_values = [k, family, order]
+        if k in taxid_dic.keys():
+            if parent_taxid_dic[taxid_dic[k]]:
+                family = family_taxid_dic[parent_taxid_dic[taxid_dic[k]]]
+                ## get order!!
+                if order_dic[parent_taxid_dic[taxid_dic[k]]]:
+                    order = order_taxid_dic[order_dic[parent_taxid_dic[
+                        taxid_dic[k]]]]
+                    super_dict_values = [k, family, order]
+                else:
+                    super_dict_values = [k, family, "unknown"]
             else:
-                super_dict_values = [k, family, ""]
+                super_dict_values = [k, "unknown", "unknown"]
         else:
-            super_dict_values = [k, "", ""]
+            super_dict_values = [k, "unknown", "unknown"]
+            # check if the genera match the genera being parsed.
+        super_dic[species] = super_dict_values
 
-        # check if the genera match the genera being parsed.
-        if species.split(" ")[0] == super_dict_values[0]:
-            super_dic[species] = super_dict_values
     return super_dic
 
 
@@ -142,8 +142,7 @@ def main():
         genera_file = sys.argv[3]
     except:
         print("Usage: taxa_fetch.py <names.dmp> <nodes.dmp> <genera.lst>")
-        print("Outputs bacteria taxa tree for all genera in input")
-        print
+        print("Outputs bacteria taxa tree for all genera in input\n")
         raise SystemExit
 
     ## obtains a list of all species in input file and genera!!
@@ -179,6 +178,9 @@ def main():
     ## Species is missing from this final output!
     super_dic = build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic,
                                 order_dic, order_taxid_dic, species_list)
+
+    # write to file
+    print("creating file and writing to it...")
     output_file = open("taxa_tree.json", "w")
     output_file.write(json.dumps(super_dic))
 
