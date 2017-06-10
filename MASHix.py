@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-## Last update: 29/5/2017
+## Last update: 10/6/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix
 # for each pairwise comparison between libraries
