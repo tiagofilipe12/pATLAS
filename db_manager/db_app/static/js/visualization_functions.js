@@ -45,7 +45,7 @@ function onLoad () {
       //checks if sequence is not in list to prevent adding multiple nodes for each sequence
       if (list.indexOf(sequence) < 0) {
         g.addNode(sequence,{sequence:"<font color='#468499'>seq_id: </font><a" +
-        " href='https://www.ncbi.nlm.nih.gov/nuccore/"+sequence.split("_")[1]+"' target='_blank'>"+ sequence + "</a>",
+        " href='https://www.ncbi.nlm.nih.gov/nuccore/"+sequence.split("_").slice(0,2).join("_")+"' target='_blank'>"+ sequence + "</a>",
                             //species:"<font color='#468499'>Species:
             // </font>" + species,
                             seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
@@ -273,8 +273,8 @@ function onLoad () {
                                             '<br />' +
                                             node.data.seq_length +
                                             '<br />' +
-                                            node.data.percentage +
-                                            '</div>')
+                                            //node.data.percentage + This should be passed on request
+                                            //'</div>')
         $('#popup_description').css({'padding': '10px 10px 10px 10px',
           'border': '1px solid grey',
           'border-radius': '10px',
@@ -369,6 +369,8 @@ function onLoad () {
         //* ******************//
         //* ***Taxa Filter****//
         //* ******************//
+
+        // this is now deprecated and needs reworking - list_species doesn't exist
 
         // list with unique species in dataset
       var uniqueArray_species = list_species.filter(function (item, pos) {
