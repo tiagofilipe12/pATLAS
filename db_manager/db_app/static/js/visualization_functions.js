@@ -13,10 +13,13 @@ function getArray_taxa () {
 function onLoad () {
   var list = []   // list to store references already ploted as nodes
   var list_lengths = [] // list to store the lengths of all nodes
-  var list_species = [] // lists all species
-  var list_genera = [] // list all genera
+  //var list_species = [] // lists all species
+  //var list_genera = [] // list all genera
   var list_gi = []
+
+    // initiate vivagraph instance
   g = Viva.Graph.graph()
+    // define layout
   var layout = Viva.Graph.Layout.forceDirected(g, {
       springLength: 30,
       springCoeff: 0.0001,
@@ -26,11 +29,33 @@ function onLoad () {
   })
 
   //may be wrap this in a callback function and work with precomput function in order to be triggered after this
-  function nodeGenerator(callback) {
-    getArray().done(function (json) {
-      var jsonLenght = Object.keys(json).length // count the total number of json entries
+  //function nodeGenerator(callback) {
+  getArray().done(function (json) {
+    var jsonLenght = Object.keys(json).length // count the total number of json entries
+    $.each(json, function(sequence_info,dict_dist){
+            // next we need to retrieve each information type independently
+      var sequence = sequence_info.split("_").slice(0,3).join("_");
+      //var species = sequence_info.split("_").slice(2,4).join(" ");
+
+      // and continues
+      var seq_length = sequence_info.split("_").slice(-1).join("");
+      var log_length = Math.log(parseInt(seq_length)); //ln seq length
+      list_lengths.push(seq_length); // appends all lengths to this list
+      list_gi.push(sequence)
+      //checks if sequence is not in list to prevent adding multiple nodes for each sequence
+      if (list.indexOf(sequence) < 0) {
+        g.addNode(sequence,{sequence:"<font color='#468499'>seq_id: </font><a" +
+        " href='https://www.ncbi.nlm.nih.gov/nuccore/"+sequence.split("_")[1]+"' target='_blank'>"+ sequence + "</a>",
+                            //species:"<font color='#468499'>Species:
+            // </font>" + species,
+                            seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
+                            log_length: log_length
+        });
+        list.push(sequence);
+      }
+
       //var counter = 0
-      $.each(json, function (sequence_info, dict_dist) { 
+      /* $.each(json, function (sequence_info, dict_dist) {
         // next we need to retrieve each information type independently
         var sequence = sequence_info.split('_').slice(0, 3).join('_')
 
@@ -39,7 +64,8 @@ function onLoad () {
           may overload the server. try to make the request on mouseover? make the first one and put on memory the result. 
         */
         
-        $.get('api/getspecies/', {'accession': sequence}, function (data, status) {
+      /*  $.get('api/getspecies/', {'accession': sequence}, function (data,
+       status) {
           var jsonString = JSON.parse(data.json_entry)
           // if for some reason pattern does not match anything in db pass to next loop. This way it will not break the creation of nodes.
           // added to check for errors in database regarding species characterization
@@ -51,7 +77,7 @@ function onLoad () {
           //  console.log(sequence)
           //}
 
-          if (jsonString.name.split('_')[0] === '') { 
+          if (jsonString.name.split('_')[0] === '') {
             var speciesIn = jsonString.name.split('_')[1] + ' sp'
           } else {
             var speciesIn = jsonString.name.replace('_',' ')
@@ -83,44 +109,44 @@ function onLoad () {
             list.push(sequence)
 
           }
-        }
+        }*/
 
         // loops between all arrays of array pairing sequence and distances
-        for (var i = 0; i < dict_dist.length; i++) {
-          var pairs = dict_dist[i]
-          var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
-          var distance = pairs[1]   // stores distances in a unique variable
-          g.addLink(sequence, reference, distance)
-        }
-      }) 
-      // after adding final node render the callback (precompute)
-      if (list.length === jsonLenght) {
-        if (callback) callback() 
+      for (var i = 0; i < dict_dist.length; i++) {
+        var pairs = dict_dist[i]
+        var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
+        var distance = pairs[1]   // stores distances in a unique variable
+        g.addLink(sequence, reference, distance)
       }
-    }) //new getArray end
-  }
+    })
+      // after adding final node render the callback (precompute)
+      //if (list.length === jsonLenght) {
+      //  if (callback) callback()
+      //}
+  }) //new getArray end
+  //}
 
   // precompute before redering
-  nodeGenerator(precompute(1000, renderGraph))
+  precompute(1000, renderGraph)
   //precompute(1000, renderGraph)
   function precompute (iterations, callback) {
-      // let's run 10 iterations per event loop cycle:
-      var i = 0
-      while (iterations > 0 && i < 10) {
-        layout.step()
-        iterations--
-        i++
-      }
-      // processingElement.innerHTML = 'Layout precompute: ' + iterations;
-      if (iterations > 0) {
-        setTimeout(function () {
-          precompute(iterations, callback)
-        }, 0) // keep going in next even cycle
-      } else {
-        // we are done!
-        callback()
-      }
+    // let's run 10 iterations per event loop cycle:
+    var i = 0
+    while (iterations > 0 && i < 10) {
+      layout.step()
+      iterations--
+      i++
     }
+    // processingElement.innerHTML = 'Layout precompute: ' + iterations;
+    if (iterations > 0) {
+      setTimeout(function () {
+        precompute(iterations, callback)
+      }, 0) // keep going in next even cycle
+    } else {
+      // we are done!
+      callback()
+    }
+  }
       // Sets parameters to be passed to WebglCircle in order to change
       // node shape, setting color and size.
   var nodeColor = 0x666370 // hex rrggbb
@@ -129,26 +155,26 @@ function onLoad () {
 
       //* Starts graphics renderer *//
   function renderGraph () {
-      var graphics = Viva.Graph.View.webglGraphics()
-          //* * block #1 for node customization **//
-          // first, tell webgl graphics we want to use custom shader
-          // to render nodes:
-      var circleNode = buildCircleNodeShader()
-      graphics.setNodeProgram(circleNode)
-          // second, change the node ui model, which can be understood
-          // by the custom shader:
-      graphics.node(function (node) {
-        nodeSize = min_nodeSize * node.data.log_length
-        return new WebglCircle(nodeSize, nodeColor)
-      })
+    var graphics = Viva.Graph.View.webglGraphics()
+      //* * block #1 for node customization **//
+      // first, tell webgl graphics we want to use custom shader
+      // to render nodes:
+    var circleNode = buildCircleNodeShader()
+    graphics.setNodeProgram(circleNode)
+        // second, change the node ui model, which can be understood
+        // by the custom shader:
+    graphics.node(function (node) {
+      nodeSize = min_nodeSize * node.data.log_length
+      return new WebglCircle(nodeSize, nodeColor)
+    })
 
-          //* * END block #1 for node customization **//
-      var renderer = Viva.Graph.View.renderer(g, {
-        layout: layout,
-        graphics: graphics,
-        container: document.getElementById('couve-flor')
-      })
-      renderer.run()
+    //* * END block #1 for node customization **//
+    var renderer = Viva.Graph.View.renderer(g, {
+      layout: layout,
+      graphics: graphics,
+      container: document.getElementById('couve-flor')
+    })
+    renderer.run()
 
           //* ************//
           //* **ZOOMING***//
@@ -696,7 +722,7 @@ function onLoad () {
         if (noLegend == false) {
           showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
           showLegend.style.display = 'block'
-          document.getElementById('taxa_label').style.display = Q'block' // show label
+          document.getElementById('taxa_label').style.display = 'block' // show label
           $('#colorLegendBox').empty()
           $('#colorLegendBox').append(store_lis +
               '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
