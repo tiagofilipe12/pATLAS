@@ -92,7 +92,7 @@ function onLoad () {
           // and continues
           var genus = species.split(' ')[0]
           var seq_length = sequence_info.split('_').slice(3)[0]
-          var log_length = Math.log(parseInt(seq_length)) // ln seq lengt and parses to integer
+          var log_length = Math.log(parseInt(seq_length)) // ln seq length and parses to integer
           list_lengths.push(seq_length) // appends all lengths to this list
           list_species.push(species) // appends all species to this list
           list_genera.push(genus)
@@ -111,7 +111,7 @@ function onLoad () {
           }
         }*/
 
-        // loops between all arrays of array pairing sequence and distances
+      // loops between all arrays of array pairing sequence and distances
       for (var i = 0; i < dict_dist.length; i++) {
         var pairs = dict_dist[i]
         var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
@@ -266,6 +266,14 @@ function onLoad () {
         domPos.x = (domPos.x + nodeUI_1.size) + 'px'
         domPos.y = (domPos.y) + 'px'
         $('#popup_description').empty()
+
+        // call the requests
+
+        $.get('api/getspecies/', {'accession': sequence}, function (data, status) {
+         console.log(data, status) //needs testing
+         // check if data can be called as json object properly from db something like data.species or data.length
+        }
+
         $('#popup_description').append('<div>' +
                                             node.data.sequence +
                                             '<br />' +
