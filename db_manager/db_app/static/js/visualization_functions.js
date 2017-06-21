@@ -205,11 +205,12 @@ function onLoad () {
         graphics.transformGraphToClientCoordinates(domPos)
         domPos.x = (domPos.x + nodeUI_1.size) + 'px'
         domPos.y = (domPos.y) + 'px'
-        $('#popup_description').empty()
 
         // call the requests
         function requestPlasmidTable (node, setupPopupDisplay) {
           $.get('api/getspecies/', {'accession': node.id}, function (data, status) {
+            // this request uses nested json object to access json entries
+            // available in the database
             speciesName = data.json_entry.name.split("_").join(" ")
             plasmidName = data.json_entry.plasmid_name
             // check if data can be called as json object properly from db something like data.species or data.length
@@ -220,6 +221,9 @@ function onLoad () {
         }
 
         function setupPopupDisplay (node, speciesName, plasmidName) {
+          // first needs to empty the popup in order to avoid having
+          // multiple entries from previous interactions
+          $('#popup_description').empty()
           $('#popup_description').append('<div>' +
             node.data.sequence +
             '<br />' +
