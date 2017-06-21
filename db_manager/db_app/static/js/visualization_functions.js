@@ -320,33 +320,47 @@ function onLoad () {
         document.getElementById('formValueId').value = ''
       })
 
-        //* ******************//
-        //* ***Taxa Filter****//
-        //* ******************//
+      //* ***********************//
+      //* ***Fast Form filter****//
+      //* ***********************//
+
+      // Form search box utils
+
+      // then applying autocomplete function
+      $(function () {
+        $('#formValueId').autocomplete({
+          source: list_gi
+        })
+      })
+
+      //* ******************//
+      //* ***Taxa Filter****//
+      //* ******************//
 
         // this is now deprecated and needs reworking - list_species doesn't exist
 
         // list with unique species in dataset
-      var uniqueArray_species = list_species.filter(function (item, pos) {
-        return list_species.indexOf(item) == pos
-      })
+      //var uniqueArray_species = list_species.filter(function (item, pos) {
+      //  return list_species.indexOf(item) == pos
+      //})
         // then sort it
-      var sortedArray_species = uniqueArray_species.sort()
+      //var sortedArray_species = uniqueArray_species.sort()
         // search by specific genera //
 
         // first get a list with unique array entries for genera
-      var uniqueArray_genera = list_genera.filter(function (item, pos) {
-        return list_genera.indexOf(item) == pos
-      })
+      //var uniqueArray_genera = list_genera.filter(function (item, pos) {
+      //  return list_genera.indexOf(item) == pos
+      //})
         // then sort it
-      var sortedArray_genera = uniqueArray_genera.sort()
+      //var sortedArray_genera = uniqueArray_genera.sort()
 
         // load json taxa_tree.json if button is clicked by user//
       var list_orders = [],
         list_families = [],
         dict_genera = {}
       getArray_taxa().done(function (json) {
-        $.each(json, function (genus, other) {
+        $.each(json, function (species, other) {
+          console.log(species)
           family = other[0]
           order = other[1]
           dict_genera[genus] = [family, order] // append the list to this dict to be used later
@@ -763,20 +777,6 @@ function onLoad () {
           reset_link_color(g, graphics, renderer)
         }, 100)
         document.getElementById('reset-links').disabled = 'disabled'
-      })
-
-        //* ***********************//
-        //* ***Fast Form filter****//
-        //* ***********************//
-
-        // Form search box utils
-
-        // then applying autocomplete function
-      $(function () {
-
-        $('#formValueId').autocomplete({
-          source: list_gi
-        })
       })
 
         //* ********************//
