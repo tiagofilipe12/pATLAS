@@ -6,7 +6,8 @@ function getArray () {
 }
 // load JSON file with taxa dictionary
 function getArray_taxa () {
-  return $.getJSON('/taxa')   // change the input file name
+  taxa_tree = $.getJSON('/taxa')
+  return taxa_tree
 }
 
 // initiates vivagraph main functions
@@ -354,30 +355,40 @@ function onLoad () {
         // then sort it
       //var sortedArray_genera = uniqueArray_genera.sort()
 
-        // load json taxa_tree.json if button is clicked by user//
       var list_orders = [],
         list_families = [],
-        dict_genera = {}
+        list_genera = [],
+        dict_genera = {},
+        list_species = []
       getArray_taxa().done(function (json) {
         $.each(json, function (species, other) {
-          console.log(species)
-          family = other[0]
-          order = other[1]
-          dict_genera[genus] = [family, order] // append the list to this dict to be used later
-          if (sortedArray_genera.indexOf(genus) >= 0) {
-            if (list_families.indexOf(family) < 0) {
-              list_families.push(family)
-            }
-            if (list_orders.indexOf(order) < 0) {
-              list_orders.push(order)
-            }
+          genus = other[0]
+          family = other[1]
+          order = other[2]
+          dict_genera[genus] = [family, order] // append the list to
+          // this dict to be used later
+          if (list_genera.indexOf(genus) < 0) {
+            list_genera.push(genus)
+          }
+          if (list_families.indexOf(family) < 0) {
+            list_families.push(family)
+          }
+          if (list_orders.indexOf(order) < 0) {
+            list_orders.push(order)
+          }
+          if (list_species.indexOf(species) < 0) {
+            list_species.push(species)
           }
         })
 
           // sort families and orders alphabetically
 
         var sortedArray_order = list_orders.sort(),
-          sortedArray_family = list_families.sort()
+          sortedArray_family = list_families.sort(),
+          sortedArray_genus = list_genera.sort(),
+          sortedArray_species = list_species.sort()
+
+        console.log(sortedArray_species)
 
           // append all order present in dataset
 
