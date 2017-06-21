@@ -12,6 +12,7 @@ function getArray_taxa () {
 
 // initiates vivagraph main functions
 function onLoad () {
+
   var list = []   // list to store references already ploted as nodes
   var list_lengths = [] // list to store the lengths of all nodes
   //var list_species = [] // lists all species
@@ -42,11 +43,14 @@ function onLoad () {
       list_gi.push(sequence)
       //checks if sequence is not in list to prevent adding multiple nodes for each sequence
       if (list.indexOf(sequence) < 0) {
-        g.addNode(sequence,{sequence:"<font color='#468499'>seq_id: </font><a" +
+        g.addNode(sequence,{sequence:"<font color='#468499'>Accession:" +
+        " </font><a" +
         " href='https://www.ncbi.nlm.nih.gov/nuccore/"+sequence.split("_").slice(0,2).join("_")+"' target='_blank'>"+ sequence + "</a>",
                             //species:"<font color='#468499'>Species:
             // </font>" + species,
-                            seq_length: "<font color='#468499'>seq_length: </font>" + seq_length,
+                            seq_length: "<font" +
+                            " color='#468499'>Sequence length:" +
+                            " </font>" + seq_length,
                             log_length: log_length
         });
         list.push(sequence);
@@ -206,22 +210,24 @@ function onLoad () {
         // call the requests
         function requestPlasmidTable (node, setupPopupDisplay) {
           $.get('api/getspecies/', {'accession': node.id}, function (data, status) {
-            console.log(JSON.parse(data.json_entry))
-            speciesName = JSON.parse(data.json_entry).name.split("_").join(" ")
-
+            speciesName = data.json_entry.name.split("_").join(" ")
+            plasmidName = data.json_entry.plasmid_name
             // check if data can be called as json object properly from db something like data.species or data.length
-            setupPopupDisplay (node, speciesName) //callback function for
+            setupPopupDisplay (node, speciesName, plasmidName) //callback
+            // function for
             // node displaying after fetching data from db
           })
         }
 
-        function setupPopupDisplay (node, speciesName) {
+        function setupPopupDisplay (node, speciesName, plasmidName) {
           $('#popup_description').append('<div>' +
             node.data.sequence +
             '<br />' +
-            speciesName +
+            "<font color='#468499'>Species: </font>" + speciesName +
             '<br />' +
             node.data.seq_length +
+            '<br />' +
+            "<font color='#468499'>Plasmid: </font>" + plasmidName +
             '<br />' +
             //node.data.percentage + This should be passed on request
             '</div>')
@@ -355,6 +361,17 @@ function onLoad () {
         // then sort it
       //var sortedArray_genera = uniqueArray_genera.sort()
 
+
+    /////////// IMPORTANT ///////////
+      // piece of code that should be used to match species name with
+      // dropdown selection
+      $.get('api/getaccession/', {'name': 'Bacillus_cereus'}, function (data, status) {
+        console.log(data)
+        for (object in data) {
+          console.log(data[object].plasmid_id)
+        }
+      })
+
       var list_orders = [],
         list_families = [],
         list_genera = [],
@@ -387,8 +404,6 @@ function onLoad () {
           sortedArray_family = list_families.sort(),
           sortedArray_genus = list_genera.sort(),
           sortedArray_species = list_species.sort()
-
-        console.log(sortedArray_species)
 
           // append all order present in dataset
 
