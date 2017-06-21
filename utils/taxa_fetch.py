@@ -17,36 +17,18 @@ def get_species(species_file):
     ##parse genera_list input file
     for line in species_file:
         genus = line.strip("\n").split(" ")[0]
-        species = line.strip("\n")
+        species = "_".join(line.strip("\n").split(" "))
         if "Candidatus" in species:
-            species = " ".join(species.split(" ")[1:])
+            print(species)
+            species = "_".join(species.split("_")[1:])
+            print(species)
+            genus = line.strip("\n").split(" ")[1]
         list_of_genera.append(genus)
         list_of_species.append(species)
     species_file.close()
     # list_of_genera.remove("")
-    print "genera query size: " + str(len(list_of_genera))
-    print
+    print("species query size: " + str(len(list_of_species)))
     return list_of_species, list_of_genera
-
-
-''' deprecated function
-
-## parses input genera list file
-def get_genera(genera_file):
-	genera = open(genera_file, "r")
-	list_of_genera = []
-	##parse genera_list input file
-	for line in genera:
-		genus = line.strip("\n")
-		list_of_genera.append(genus)
-	genera.close()
-	list_of_genera.remove("")
-	print "genera query size: "+ str(len(list_of_genera))
-	print
-	return list_of_genera
-
-'''
-
 
 ##1
 ## function to fetch taxids given a list of genera
@@ -63,7 +45,7 @@ def fetch_taxid(taxa_list, names_file):
             # taxid_list.append(taxid)
             taxid_dic[field_delimiter[1].strip()] = taxid  # genus:taxid
 
-    print "taxid_list: " + str(len(taxid_dic))
+    print("taxid_list: " + str(len(taxid_dic)))
     name.close()
     return taxid_dic
 
@@ -84,7 +66,7 @@ def family_taxid(taxid_dic, nodes_file):
                 parent_taxid_dic[field_delimiter[0].strip()] = parent_taxid
 
     nodes.close()
-    print "parent_taxid_list: " + str(len(parent_taxid_dic))
+    print("parent_taxid_list: " + str(len(parent_taxid_dic)))
     return parent_taxid_dic
 
 
@@ -101,7 +83,7 @@ def fetch_taxid_by_id(parent_taxid_dic, names_file):
             taxa_name = field_delimiter[1].strip()
             taxa_name_dic[field_delimiter[0].strip()] = taxa_name
 
-    print "taxid_list: " + str(len(taxa_name_dic))
+    print("taxid_list: " + str(len(taxa_name_dic)))
     name.close()
     return taxa_name_dic
 
@@ -111,8 +93,9 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
     super_dic = {}
     # then cycle each species in list
     for x, species in enumerate(species_list):
+        print(species)
         #print(x) # used to count the number of species already parsed
-        k = species.split(" ")[0]  # cycle genera
+        k = species.split("_")[0]  # cycle genera
         # for k in taxid_dic:
         ## get family!!
         if k in taxid_dic.keys():
@@ -148,11 +131,6 @@ def main():
     ## obtains a list of all species in input file and genera!!
     print("Gathering species information...")
     species_list, genera_list = get_species(genera_file)
-
-    ''' Deprecated feature
-	obtains a list of all genera in input file
-	genera_list = get_genera(genera_file)
-	'''
 
     ## executes first function for genera
     print("Gathering genera information...")
