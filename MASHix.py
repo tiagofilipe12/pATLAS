@@ -331,10 +331,13 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         ## string_sequence.split("_")[-1] is used to remove length from
         # accession in database
 
+        ## cannot use json.dumps because it puts double quotes
+        doc = {"name": spp_name, "length": length, "plasmid_name": plasmid_name}
+
         row = models.Plasmid(
-            plasmid_id="_".join(string_sequence.split("_")[:-1]),
-            json_entry=json.dumps({"name": spp_name, "length": length,
-                                   "plasmid_name": plasmid_name}))
+            plasmid_id = "_".join(string_sequence.split("_")[:-1]),
+            json_entry = doc
+        )
         db.session.add(row)
         db.session.commit()
     ## used for graphics visualization
