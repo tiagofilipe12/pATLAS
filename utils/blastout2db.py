@@ -87,7 +87,7 @@ def main():
                                         "must be in format 6 and have two "
                                         "additional parameters at the end of "
                                         "default parameters - sacc and qlen."
-                                        "For further information see HELPME.md")
+                                        "For further information see README.md")
     mutual_parser = parser.add_mutually_exclusive_group()
     parser.add_argument('-i', '--input', dest='input', required=True,
                         nargs='+', help='Provide the input blast output '
