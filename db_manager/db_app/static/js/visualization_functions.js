@@ -369,12 +369,13 @@ function onLoad () {
     /////////// IMPORTANT ///////////
       // piece of code that should be used to match species name with
       // dropdown selection
-      $.get('api/getaccession/', {'name': 'Bacillus_cereus'}, function (data, status) {
-        console.log(data)
-        for (object in data) {
-          console.log(data[object].plasmid_id)
-        }
-      })
+      //$.get('api/getaccession/', {'name': 'Bacillus_cereus'}, function
+    // (data, status) {
+      //  console.log(data)
+      //  for (object in data) {
+          //console.log(data[object].plasmid_id)
+      //  }
+      //})
 
       var list_orders = [],
         list_families = [],
@@ -406,7 +407,7 @@ function onLoad () {
 
         var sortedArray_order = list_orders.sort(),
           sortedArray_family = list_families.sort(),
-          sortedArray_genus = list_genera.sort(),
+          sortedArray_genera = list_genera.sort(),
           sortedArray_species = list_species.sort()
 
           // append all order present in dataset
