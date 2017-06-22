@@ -384,9 +384,10 @@ function onLoad () {
         list_species = []
       getArray_taxa().done(function (json) {
         $.each(json, function (species, other) {
-          genus = other[0]
-          family = other[1]
-          order = other[2]
+          var species = species.split("_").join(" ")
+          var genus = other[0]
+          var family = other[1]
+          var order = other[2]
           dict_genera[genus] = [family, order] // append the list to
           // this dict to be used later
           if (list_genera.indexOf(genus) < 0) {
@@ -448,16 +449,16 @@ function onLoad () {
                                     '</option>')
         }
 
-          // updates options provided to bootstrap-select
+        // updates options provided to bootstrap-select
         $('#orderList').selectpicker('refresh')
         $('#familyList').selectpicker('refresh')
         $('#genusList').selectpicker('refresh')
         $('#speciesList').selectpicker('refresh')
         
-          // clickable <li> and control of displayer of current filters
+        // clickable <li> and control of displayer of current filters
         firstInstance = true // global variable
         existingTaxon = [],   // global variable
-              taxaInList = []   // global variable
+          taxaInList = []   // global variable
         var classArray = ['.OrderClass', '.FamilyClass', '.GenusClass', '.SpeciesClass']
         idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species'] // global variable
         for (var i = 0; i < classArray.length; i++) {

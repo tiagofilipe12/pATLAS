@@ -170,32 +170,32 @@
 }
 
 /* taxa filter dropdowns editing */
-#orderList.dropdown-menu{
+/*#orderList.dropdown-menu{
   overflow-y: scroll;
   overflow-x: hidden;
-}
+}*/
 #order_dropdown{
   text-align: center;
 }
-#familyList.dropdown-menu{
+/*#familyList.dropdown-menu{
   overflow-y: scroll;
   overflow-x: hidden;
-}
+}*/
 #family_dropdown{
   text-align: center;
 }
-#genusList.dropdown-menu{
+/*#genusList.dropdown-menu{
   overflow-y: scroll;
   overflow-x: hidden;
-}
+}*/
 #genus_dropdown{
   text-align: center;
 }
-#speciesList.dropdown-menu{
+/*#speciesList.dropdown-menu{
   overflow: visible;
   overflow-y: scroll;
   overflow-x: hidden;
-}
+}*/
 #speciesList.dropdown-menu open{
   right:0;
 }
