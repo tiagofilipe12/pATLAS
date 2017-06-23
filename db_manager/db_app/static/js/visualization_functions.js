@@ -365,18 +365,6 @@ function onLoad () {
         // then sort it
       //var sortedArray_genera = uniqueArray_genera.sort()
 
-
-    /////////// IMPORTANT ///////////
-      // piece of code that should be used to match species name with
-      // dropdown selection
-      //$.get('api/getaccession/', {'name': 'Bacillus_cereus'}, function
-    // (data, status) {
-      //  console.log(data)
-      //  for (object in data) {
-          //console.log(data[object].plasmid_id)
-      //  }
-      //})
-
       var list_orders = [],
         list_families = [],
         list_genera = [],
@@ -688,29 +676,15 @@ function onLoad () {
 
                   // genus and species //
                   else if (alertArrays['genus'] != '' || alertArrays['species'] != '') {
-                    currentColor = color[i].replace('#', '0x')
+                    var currentColor = color[i].replace('#', '0x')
                     style_color = 'background-color:' + color[i]
                     store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
-                    // cycles nodes
-                    g.forEachNode(function (node) {
-                      var nodeUI = graphics.getNodeUI(node.id)
-                      var species = node.data.species.split('>').slice(-1).toString()
-                      var genus = species.split(' ')[0]
-                      // checks if genus is in selection
-                      if (currentSelection[i] == genus) {
-                        nodeUI.color = currentColor
-                        nodeUI.backupColor = nodeUI.color
-                        changed_nodes.push(node.id)
-                      }
-                      // checks if species is in selection
-                      else if (currentSelection[i] == species) {
-                        nodeUI.color = currentColor
-                        nodeUI.backupColor = nodeUI.color
-                        changed_nodes.push(node.id)
-                      }
-                    })
+
+                    // requests taxa associated accession from db and colors
+                    // respective nodes
+                    console.log(currentColor)
+                    taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)
                   }
-                  renderer.rerender()
                 }
               firstIteration = false // stops getting lower levels
             }
