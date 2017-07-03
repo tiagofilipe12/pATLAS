@@ -1,6 +1,6 @@
 // single read displayer
 function read_coloring (list_gi, g, graphics, renderer) {
-  var readColorArray = []
+  //var readColorArray = []
   var readMode = true
   var readString = read_json.replace(/[{}"]/g, '').split(',')
   for (string in readString) {
@@ -51,11 +51,12 @@ function node_iter (read_color, gi, g, graphics, perc) {
   g.forEachNode(function (node) {
     // if statement added for parsing singletons into the graph visualization
     if (node.id.indexOf('singleton') > -1) {
-      nodeGI = node.id.split('_').slice(1, 3).join('_')
+      nodeGI = node.id.split('_').slice(1, 4).join('_')
     } else {
-      nodeGI = node.id.split('_').slice(0, 2).join('_')
+      nodeGI = node.id.split('_').slice(0, 3).join('_')
     }
     var nodeUI = graphics.getNodeUI(node.id)
+
     if (gi == nodeGI) {
       nodeUI.color = read_color
       nodeUI.backupColor = nodeUI.color
