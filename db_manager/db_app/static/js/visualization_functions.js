@@ -25,50 +25,54 @@ function onLoad () {
   var layout = Viva.Graph.Layout.forceDirected(g, {
       springLength: 30,
       springCoeff: 0.0001,
-      dragCoeff: 0.01, // sets how fast nodes will separate from origin, the higher the value the slower
+      dragCoeff: 0.0001, // sets how fast nodes will separate from origin,
+    // the higher the value the slower
       gravity: -1.2,
       theta: 1
   })
+  function something() {
+    getArray().done(function (json) {
+      $.each(json, function (sequence_info, dict_dist) {
+        // next we need to retrieve each information type independently
+        var sequence = sequence_info.split("_").slice(0, 3).join("_");
+        //var species = sequence_info.split("_").slice(2,4).join(" ");
 
-  getArray().done(function (json) {
-    $.each(json, function(sequence_info,dict_dist){
-            // next we need to retrieve each information type independently
-      var sequence = sequence_info.split("_").slice(0,3).join("_");
-      //var species = sequence_info.split("_").slice(2,4).join(" ");
-
-      // and continues
-      var seq_length = sequence_info.split("_").slice(-1).join("");
-      var log_length = Math.log(parseInt(seq_length)); //ln seq length
-      list_lengths.push(seq_length); // appends all lengths to this list
-      list_gi.push(sequence)
-      //checks if sequence is not in list to prevent adding multiple nodes for each sequence
-      if (list.indexOf(sequence) < 0) {
-        g.addNode(sequence,{sequence:"<font color='#468499'>Accession:" +
-        " </font><a" +
-        " href='https://www.ncbi.nlm.nih.gov/nuccore/"+sequence.split("_").slice(0,2).join("_")+"' target='_blank'>"+ sequence + "</a>",
-                            //species:"<font color='#468499'>Species:
+        // and continues
+        var seq_length = sequence_info.split("_").slice(-1).join("");
+        var log_length = Math.log(parseInt(seq_length)); //ln seq length
+        list_lengths.push(seq_length); // appends all lengths to this list
+        list_gi.push(sequence)
+        //checks if sequence is not in list to prevent adding multiple nodes for each sequence
+        if (list.indexOf(sequence) < 0) {
+          g.addNode(sequence, {
+            sequence: "<font color='#468499'>Accession:" +
+            " </font><a" +
+            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+            //species:"<font color='#468499'>Species:
             // </font>" + species,
-                            seq_length: "<font" +
-                            " color='#468499'>Sequence length:" +
-                            " </font>" + seq_length,
-                            log_length: log_length
-        });
-        list.push(sequence);
-      }
+            seq_length: "<font" +
+            " color='#468499'>Sequence length:" +
+            " </font>" + seq_length,
+            log_length: log_length
+          });
+          list.push(sequence);
+        }
 
-      // loops between all arrays of array pairing sequence and distances
-      for (var i = 0; i < dict_dist.length; i++) {
-        var pairs = dict_dist[i]
-        var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
-        var distance = pairs[1]   // stores distances in a unique variable
-        g.addLink(sequence, reference, distance)
-      }
-    })
-  }) //new getArray end
+        // loops between all arrays of array pairing sequence and distances
+        for (var i = 0; i < dict_dist.length; i++) {
+          var pairs = dict_dist[i]
+          var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
+          var distance = pairs[1]   // stores distances in a unique variable
+          g.addLink(sequence, reference, distance)
+        }
+      })
+    }) //new getArray end
+    // precompute before redering
+    setTimeout(precompute(1000, renderGraph), 5000) // callback
+  }
 
-  // precompute before redering
-  precompute(1000, renderGraph)
-  //precompute(1000, renderGraph)
+  something() //forces main json to load before rendering the graph
+
   function precompute (iterations, callback) {
     // let's run 10 iterations per event loop cycle:
     var i = 0
