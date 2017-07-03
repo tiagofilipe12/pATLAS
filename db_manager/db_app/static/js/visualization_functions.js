@@ -30,6 +30,7 @@ function onLoad () {
       gravity: -1.2,
       theta: 1
   })
+
   function something() {
     getArray().done(function (json) {
       $.each(json, function (sequence_info, dict_dist) {
@@ -66,9 +67,10 @@ function onLoad () {
           g.addLink(sequence, reference, distance)
         }
       })
+      // precompute before redering
+      precompute(1000, renderGraph) // callback I think there is no need to
+      // setTimeout()
     }) //new getArray end
-    // precompute before redering
-    setTimeout(precompute(1000, renderGraph), 5000) // callback
   }
 
   something() //forces main json to load before rendering the graph
