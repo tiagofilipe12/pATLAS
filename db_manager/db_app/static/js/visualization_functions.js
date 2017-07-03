@@ -248,7 +248,7 @@ function onLoad () {
             '<br />' +
             "<font color='#468499'>Plasmid: </font>" + plasmidName +
             '<br />' +
-            //node.data.percentage + This should be passed on request
+            "<font color='#468499'>percentage: </font>" + node.data.percentage + //This should be passed on request
             '</div>')
           $('#popup_description').css({
             'padding': '10px 10px 10px 10px',

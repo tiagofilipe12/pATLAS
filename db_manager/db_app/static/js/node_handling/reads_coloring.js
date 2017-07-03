@@ -60,8 +60,7 @@ function node_iter (read_color, gi, g, graphics, perc) {
     if (gi == nodeGI) {
       nodeUI.color = read_color
       nodeUI.backupColor = nodeUI.color
-      node.data['percentage'] = "<font color='#468499'>percentage: </font>" +
-      perc.toFixed(2).toString()
+      node.data['percentage'] =  perc.toFixed(2).toString()
     }
   })
 }
