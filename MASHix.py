@@ -244,8 +244,8 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
     pool = Pool(int(threads))  # Create a multiprocessing Pool
     mp2 = pool.map(
         partial(multiprocess_mash_file, sequence_info, pvalue, mashdist,
-                in_folder, x),
-        list_mash_files)  # process list_mash_files iterable with pool
+                in_folder, x), list_mash_files)  # process list_mash_files
+    # iterable with pool
     ## loop to print a nice progress bar
     try:
         for _ in tqdm.tqdm(mp2, total=len(list_mash_files)):
