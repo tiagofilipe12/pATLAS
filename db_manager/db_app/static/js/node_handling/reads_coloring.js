@@ -8,7 +8,7 @@ function read_coloring (list_gi, g, graphics, renderer) {
     perc = parseFloat(readString[string].split(':')[1].replace(' ', ''))
     if (list_gi.indexOf(gi) <= -1) {
       g.addNode('singleton_' + gi, {sequence: "<font color='#468499'>seq_id: </font><a " +
-      "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split('_')[1] + "' target='_blank'>" + gi + '</a>',
+      "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split('_').slice(0,2).join('_') + "' target='_blank'>" + gi + '</a>',
         log_length: 10
         // percentage: "<font color='#468499'>percentage: </font>" + perc
       })
