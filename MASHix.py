@@ -333,8 +333,8 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
 
         ## prune temporarylist to have just the accessions
         acc_list = []
-        for acc in temporary_list
-            pruned_entry = acc[0].split("_")[:-1]
+        for acc in temporary_list:
+            pruned_entry = "_".join(acc[0].split("_")[:-1])
             acc_list.append(pruned_entry)
 
         ## cannot use json.dumps because it puts double quotes
