@@ -1,4 +1,6 @@
 // function to search all nodes that have no default color and are linked to nodes with no default color
+
+// TODO THIS FUNCTION SHOULD BE AVOIDED... TOO SLOW
 function node_removal_taxa (g, graphics, nodeColor, renderer, layout) {
   console.log('executing re run...')
 
@@ -38,14 +40,48 @@ function node_removal_taxa (g, graphics, nodeColor, renderer, layout) {
   return myArray
 }
 
+// function to call requests on db
+
+function requesterDB (listGiFilter) {
+  var jsonQueries = []
+  for (accession in listGiFilter) {
+    $.get('api/getspecies/', {'accession': listGiFilter[accession]}, function (data, status) {
+      console.log(data)
+      // this request uses nested json object to access json entries
+      // available in the database
+      // if request return no speciesName or plasmidName
+      // sometimes plasmids have no descriptor for one of these or both
+      if (data.json_entry.name === null) {
+        speciesName = "N/A"
+      } else {
+        speciesName = data.json_entry.name.split("_").join(" ")
+      }
+      if (data.json_entry.plasmid_name === null) {
+        plasmidName = "N/A"
+      } else {
+        plasmidName = data.json_entry.plasmid_name
+      }
+      jsonQueries.push( {
+        plasmidAccession: data.plasmid_id,
+        plasmidLenght: data.json_entry.length,
+        speciesName: speciesName,
+        plasmidName: plasmidName
+      } )
+    })
+  }
+}
+
 // function that actually removes the nodes
-function actual_removal (g, graphics, nodeColor, renderer, layout) {
+function actual_removal (g, graphics, nodeColor, renderer, layout, listGiFilter) {
+  json_queries = requesterDB(listGiFilter)
+  console.log(json_queries)
+  // TODO after this it should render a new page with the new json object
   setTimeout(function () {
-    listNodesRm = node_removal_taxa(g, graphics, nodeColor, renderer, layout)
-    for (id in listNodesRm) {
-      nodeId = listNodesRm[id]
-      g.removeNode(nodeId)
-    }
+    // listNodesRm = node_removal_taxa(g, graphics, nodeColor, renderer, layout)
+    // for (id in listNodesRm) {
+    //   nodeId = listNodesRm[id]
+    //   g.removeNode(nodeId)
+    // }
     // change play button in order to be properly set to pause
     $('#playpauseButton').empty()
     $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
@@ -54,7 +90,7 @@ function actual_removal (g, graphics, nodeColor, renderer, layout) {
     $('#loading').hide()
     // slow down the spreading of nodes
     // the more removed nodes --> less selected nodes --> slower spread
-    layout.simulator.dragCoeff(0.1 + (listNodesRm.length * 0.000001))
+    //layout.simulator.dragCoeff(0.1 + (listNodesRm.length * 0.000001))
     renderer.moveTo(0, 0)
     renderer.resume()
   }, 1000)

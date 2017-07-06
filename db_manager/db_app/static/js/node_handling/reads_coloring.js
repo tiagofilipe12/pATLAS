@@ -3,8 +3,10 @@ function read_coloring (list_gi, g, graphics, renderer) {
   //var readColorArray = []
   var readMode = true
   var readString = read_json.replace(/[{}"]/g, '').split(',')
+  var listGiFilter = []
   for (string in readString) {
     gi = readString[string].split(':')[0].replace(' ', '')
+    listGiFilter.push(gi)
     perc = parseFloat(readString[string].split(':')[1].replace(' ', ''))
     if (list_gi.indexOf(gi) <= -1) {
       g.addNode('singleton_' + gi, {sequence: "<font color='#468499'>seq_id: </font><a " +
@@ -43,7 +45,7 @@ function read_coloring (list_gi, g, graphics, renderer) {
   showDownload.style.display = 'block'
   renderer.rerender()
   $('#loading').hide()
-  return list_gi
+  return list_gi, listGiFilter
 }
 
 // function to iterate through nodes

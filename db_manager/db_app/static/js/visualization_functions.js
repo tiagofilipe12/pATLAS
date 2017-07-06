@@ -220,14 +220,25 @@ function onLoad () {
             $.get('api/getspecies/', {'accession': node.id}, function (data, status) {
               // this request uses nested json object to access json entries
               // available in the database
-              speciesName = data.json_entry.name.split("_").join(" ")
-              plasmidName = data.json_entry.plasmid_name
+              // if request return no speciesName or plasmidName
+              // sometimes plasmids have no descriptor for one of these or both
+              if (data.json_entry.name === null) {
+                speciesName = "N/A"
+              } else {
+                speciesName = data.json_entry.name.split("_").join(" ")
+              }
+              if (data.json_entry.plasmid_name === null) {
+                plasmidName = "N/A"
+              } else {
+                plasmidName = data.json_entry.plasmid_name
+              }
               // check if data can be called as json object properly from db something like data.species or data.length
               setupPopupDisplay(node, speciesName, plasmidName) //callback
               // function for
               // node displaying after fetching data from db
             })
           }
+          // exception when node has no length (used on new nodes?)
           else {
             speciesName = 'N/A'
             plasmidName = 'N/A'
@@ -734,7 +745,7 @@ function onLoad () {
         event.preventDefault()
         $('#loading').show()
         setTimeout(function () {
-          list_gi = read_coloring(list_gi, g, graphics, renderer)
+          list_gi, listGiFilter = read_coloring(list_gi, g, graphics, renderer)
         }, 100)
 
           // }
@@ -954,7 +965,7 @@ function onLoad () {
           //* * Loading Screen goes on **//
         show_div(
             // removes nodes
-            actual_removal(g, graphics, nodeColor, renderer, layout)
+            actual_removal(g, graphics, nodeColor, renderer, layout, listGiFilter)
           )
           // removes disabled from go_back button
         document.getElementById('go_back').className = document.getElementById('go_back').className.replace(/(?:^|\s)disabled(?!\S)/g, '')
