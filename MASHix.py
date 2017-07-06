@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-## Last update: 10/6/2017
+## Last update: 6/7/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix
 # for each pairwise comparison between libraries
@@ -331,11 +331,17 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         ## string_sequence.split("_")[-1] is used to remove length from
         # accession in database
 
+        ## prune temporarylist to have just the accessions
+        acc_list = []
+        for acc in temporary_list
+            pruned_entry = acc[0].split("_")[:-1]
+            acc_list.append(pruned_entry)
+
         ## cannot use json.dumps because it puts double quotes
         doc = {"name": spp_name,
                "length": length,
                "plasmid_name": plasmid_name,
-               "significantLinks": temporary_list}
+               "significantLinks": acc_list}
 
         row = models.Plasmid(
             plasmid_id = "_".join(string_sequence.split("_")[:-1]),
