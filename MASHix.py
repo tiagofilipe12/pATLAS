@@ -332,7 +332,10 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         # accession in database
 
         ## cannot use json.dumps because it puts double quotes
-        doc = {"name": spp_name, "length": length, "plasmid_name": plasmid_name}
+        doc = {"name": spp_name,
+               "length": length,
+               "plasmid_name": plasmid_name,
+               "significantLinks": temporary_list}
 
         row = models.Plasmid(
             plasmid_id = "_".join(string_sequence.split("_")[:-1]),
