@@ -10,7 +10,8 @@ from flask import jsonify
 nested_entry_fields = {
     "length": fields.String,
     "plasmid_name": fields.String,
-    "name": fields.String
+    "name": fields.String,
+    "significantLinks": fields.String
 }
 
 

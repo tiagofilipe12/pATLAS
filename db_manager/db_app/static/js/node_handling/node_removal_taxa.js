@@ -43,10 +43,10 @@ function node_removal_taxa (g, graphics, nodeColor, renderer, layout) {
 // function to call requests on db
 
 function requesterDB (listGiFilter) {
-  var jsonQueries = []
+  var jsonQueries = [] // this isn't passing to inside the query on db
   for (accession in listGiFilter) {
     $.get('api/getspecies/', {'accession': listGiFilter[accession]}, function (data, status) {
-      console.log(data)
+      //console.log(data)
       // this request uses nested json object to access json entries
       // available in the database
       // if request return no speciesName or plasmidName
@@ -61,20 +61,26 @@ function requesterDB (listGiFilter) {
       } else {
         plasmidName = data.json_entry.plasmid_name
       }
-      jsonQueries.push( {
-        plasmidAccession: data.plasmid_id,
-        plasmidLenght: data.json_entry.length,
-        speciesName: speciesName,
-        plasmidName: plasmidName
+      /*console.log(data.json_entry.significantLinks)  TODO this retrieves
+       a string and not an array :( */
+      // may be it would be better to output this with something like oboe.js?
+      jsonQueries.push( { //this isn't working
+        'plasmidAccession': data.plasmid_id,
+        'plasmidLenght': data.json_entry.length,
+        'speciesName': speciesName,
+        'plasmidName': plasmidName,
+        'significantLinks': data.json_entry.significantLinks //this is a
+        // string ... not ideal
       } )
     })
   }
+  console.log(jsonQueries)
 }
 
 // function that actually removes the nodes
 function actual_removal (g, graphics, nodeColor, renderer, layout, listGiFilter) {
   json_queries = requesterDB(listGiFilter)
-  console.log(json_queries)
+  //console.log(json_queries.json_entry.significantLinks)
   // TODO after this it should render a new page with the new json object
   setTimeout(function () {
     // listNodesRm = node_removal_taxa(g, graphics, nodeColor, renderer, layout)
@@ -99,7 +105,7 @@ function actual_removal (g, graphics, nodeColor, renderer, layout, listGiFilter)
 // a function to display the loader mask
 function show_div (callback) {
   $('#loading').show()
-  console.log('showing loader')
+  //console.log('showing loader')
   // if callback exist execute it
   callback && callback()
 }
