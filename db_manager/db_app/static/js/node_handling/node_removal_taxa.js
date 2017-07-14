@@ -43,6 +43,8 @@ function node_removal_taxa (g, graphics, nodeColor, renderer, layout) {
 // function to call requests on db
 
 function requesterDB (listGiFilter) {
+  /* TODO this function should clear all nodes before fetching the nodes to be
+   displayed in next instance. */
   var jsonQueries = [] // this isn't passing to inside the query on db
   for (accession in listGiFilter) {
     $.get('api/getspecies/', {'accession': listGiFilter[accession]}, function (data, status) {
@@ -64,17 +66,21 @@ function requesterDB (listGiFilter) {
       /*console.log(data.json_entry.significantLinks)  TODO this retrieves
        a string and not an array :( */
       // may be it would be better to output this with something like oboe.js?
-      jsonQueries.push( { //this isn't working
+      jsonObj = { //this isn't working
         'plasmidAccession': data.plasmid_id,
         'plasmidLenght': data.json_entry.length,
         'speciesName': speciesName,
         'plasmidName': plasmidName,
         'significantLinks': data.json_entry.significantLinks //this is a
         // string ... not ideal
-      } )
+      }
+      console.log(jsonObj)
+      jsonQueries.push(jsonObj)
+      //console.log(jsonQueries)
+      // TODO here we could dispatch an order that adds each node and links
+      // as in main json load
     })
   }
-  console.log(jsonQueries)
 }
 
 // function that actually removes the nodes
