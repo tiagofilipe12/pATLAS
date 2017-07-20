@@ -46,11 +46,12 @@ function requesterDB (listGiFilter) {
   /* TODO this function should clear all nodes before fetching the nodes to be
    displayed in next instance. */
   var jsonQueries = [] // this isn't passing to inside the query on db
-  for (accession in listGiFilter) {
-    $.get('api/getspecies/', {'accession': listGiFilter[accession]}, function (data, status) {
-      //console.log(data)
+  for (var i = 0; i < listGiFilter.length; i++) {
+    $.get('api/getspecies/', {'accession': listGiFilter[i]}, function (data, status) {
       // this request uses nested json object to access json entries
       // available in the database
+      // TODO here we could dispatch an order that adds each node and links
+
       // if request return no speciesName or plasmidName
       // sometimes plasmids have no descriptor for one of these or both
       if (data.json_entry.name === null) {
@@ -66,19 +67,31 @@ function requesterDB (listGiFilter) {
       /*console.log(data.json_entry.significantLinks)  TODO this retrieves
        a string and not an array :( */
       // may be it would be better to output this with something like oboe.js?
-      jsonObj = { //this isn't working
-        'plasmidAccession': data.plasmid_id,
-        'plasmidLenght': data.json_entry.length,
-        'speciesName': speciesName,
-        'plasmidName': plasmidName,
-        'significantLinks': data.json_entry.significantLinks //this is a
-        // string ... not ideal
+
+      // if request finds no matching plasmid it has no connections to other db
+      if (data.plasmid_id !== null) {
+        jsonObj = {
+          'plasmidAccession': data.plasmid_id,
+          'plasmidLenght': data.json_entry.length,
+          'speciesName': speciesName,
+          'plasmidName': plasmidName,
+          'significantLinks': data.json_entry.significantLinks //this is a
+          // string ... not ideal
+        }
+      } else {
+        jsonObj = {
+          'plasmidAccession': 'non_linked_accession', //this should pass
+          // the listGiFilter[accession] but it can't be obtained here.
+          'plasmidLenght': 'N/A',
+          'speciesName': 'N/A',
+          'plasmidName': 'N/A',
+          'significantLinks': 'N/A' //this is a
+          // string ... not ideal
+        }
       }
-      console.log(jsonObj)
       jsonQueries.push(jsonObj)
-      //console.log(jsonQueries)
-      // TODO here we could dispatch an order that adds each node and links
-      // as in main json load
+      console.log(jsonQueries)
+      return jsonQueries //this in fact doesn't return anything
     })
   }
 }
@@ -86,7 +99,8 @@ function requesterDB (listGiFilter) {
 // function that actually removes the nodes
 function actual_removal (g, graphics, nodeColor, renderer, layout, listGiFilter) {
   json_queries = requesterDB(listGiFilter)
-  //console.log(json_queries.json_entry.significantLinks)
+  console.log("test")
+  console.log(json_queries)
   // TODO after this it should render a new page with the new json object
   setTimeout(function () {
     // listNodesRm = node_removal_taxa(g, graphics, nodeColor, renderer, layout)
