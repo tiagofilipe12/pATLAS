@@ -6,7 +6,7 @@ function taxaRequest(g, graphics, renderer, taxa, currentColor) {
   console.log(taxaDb)
   $.get('api/getaccession/', {'name': taxaDb}, function (data, status) {
     var listData = []
-    //console.log(data)
+    console.log(data)   // TODO test this for families
     for (object in data) {
       //console.log(data[object].plasmid_id)
       listData.push(data[object].plasmid_id)

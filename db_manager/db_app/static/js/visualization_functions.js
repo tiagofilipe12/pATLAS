@@ -610,11 +610,12 @@ function onLoad () {
 
         assocFamilyGenus = {}
         assocOrderGenus = {}
+        assocGenus = {}
 
           // appends genus to selectedGenus according with the family and order for single-color selection
           // also appends to associative arrays for family and order for multi-color selection
         $.each(dict_genera, function (species, pair) {
-          //var genus = pair[0]
+          var genus = pair[0]
           var family = pair[1]
           var order = pair[2]
           if (selectedFamily.indexOf(family) >= 0) {
@@ -633,6 +634,13 @@ function onLoad () {
               } else {
                 assocOrderGenus[order].push(species)
               }
+          } else if (selectedGenus.indexOf(genus) >= 0) {
+            if (!(genus in assocGenus)) {
+              assocGenus[genus] = []
+              assocGenus[genus].push(species)
+            } else {
+              assocGenus[genus].push(species)
+            }
           }
         })
 
@@ -688,34 +696,57 @@ function onLoad () {
               var currentSelection = alertArrays[array]
                 // performs the actual interaction for color picking and assigning
               for (i in currentSelection) {
+
                   // orders //
                   if (alertArrays['order'] != '') {
-                    var tempArray = assocOrderGenus[currentSelection[i]]
-                    // executres node function for family and orders
-                    store_lis = node_coloring_taxa(tempArray, g, graphics, store_lis, currentSelection)
-                  }
-                  // families //
-                  else if (alertArrays['family'] != '') {
                     var currentColor = color[i].replace('#', '0x')
-                    var tempArray = assocFamilyGenus[currentSelection[i]]
-                    console.log(tempArray)
+                    var tempArray = assocOrderGenus[currentSelection[i]]
+                    style_color = 'background-color:' + color[i]
+                    store_lis = store_lis + '<li' +
+                      ' class="centeredList"><button class="jscolor btn' +
+                      ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                     // executres node function for family and orders
                     for (i in tempArray) {
                       taxaRequest(g, graphics, renderer, tempArray[i], currentColor)
                     }
-                    //store_lis = node_coloring_taxa(tempArray, g, graphics,
-                    // store_lis, currentSelection)
                   }
 
-                  // genus and species //
-                  else if (alertArrays['genus'] != '' || alertArrays['species'] != '') {
+                  // families //
+                  else if (alertArrays['family'] != '') {
+                    var currentColor = color[i].replace('#', '0x')
+                    var tempArray = assocFamilyGenus[currentSelection[i]]
+                    style_color = 'background-color:' + color[i]
+                    store_lis = store_lis + '<li' +
+                      ' class="centeredList"><button class="jscolor btn' +
+                      ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                    // executres node function for family
+                    for (i in tempArray) {
+                      taxaRequest(g, graphics, renderer, tempArray[i], currentColor)
+                    }
+                  }
+
+                  // genus //
+                  else if (alertArrays['genus'] != '') {
+                    var currentColor = color[i].replace('#', '0x')
+                    var tempArray = assocGenus[currentSelection[i]]
+                    style_color = 'background-color:' + color[i]
+                    store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+
+                    // requests taxa associated accession from db and colors
+                    // respective nodes
+                    for (i in tempArray) {
+                      taxaRequest(g, graphics, renderer, tempArray[i], currentColor)
+                    }
+                  }
+
+                  // species //
+                  else if (alertArrays['species'] != '') {
                     var currentColor = color[i].replace('#', '0x')
                     style_color = 'background-color:' + color[i]
                     store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
 
                     // requests taxa associated accession from db and colors
                     // respective nodes
-                    console.log(currentColor)
                     taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)
                   }
                 }
