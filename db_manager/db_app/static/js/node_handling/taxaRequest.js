@@ -3,6 +3,7 @@
 // dropdown selection
 function taxaRequest(g, graphics, renderer, taxa, currentColor) {
   taxaDb = taxa.split(" ").join("_")
+  console.log(taxaDb)
   $.get('api/getaccession/', {'name': taxaDb}, function (data, status) {
     var listData = []
     //console.log(data)

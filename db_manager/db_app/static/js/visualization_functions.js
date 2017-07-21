@@ -402,7 +402,7 @@ function onLoad () {
           var genus = other[0]
           var family = other[1]
           var order = other[2]
-          dict_genera[genus] = [family, order] // append the list to
+          dict_genera[species] = [genus, family, order] // append the list to
           // this dict to be used later
           if (list_genera.indexOf(genus) < 0) {
             list_genera.push(genus)
@@ -613,31 +613,32 @@ function onLoad () {
 
           // appends genus to selectedGenus according with the family and order for single-color selection
           // also appends to associative arrays for family and order for multi-color selection
-        $.each(dict_genera, function (genus, pair) {
-          var family = pair[0]
-          var order = pair[1]
+        $.each(dict_genera, function (species, pair) {
+          //var genus = pair[0]
+          var family = pair[1]
+          var order = pair[2]
           if (selectedFamily.indexOf(family) >= 0) {
-            selectedGenus.push(genus)
+            selectedGenus.push(species)
             if (!(family in assocFamilyGenus)) {
               assocFamilyGenus[family] = []
-              assocFamilyGenus[family].push(genus)
+              assocFamilyGenus[family].push(species)
             } else {
-              assocFamilyGenus[family].push(genus)
+              assocFamilyGenus[family].push(species)
             }
           } else if (selectedOrder.indexOf(order) >= 0) {
-            selectedGenus.push(genus)
+            selectedGenus.push(species)
             if (!(order in assocOrderGenus)) {
                 assocOrderGenus[order] = []
-                assocOrderGenus[order].push(genus)
+                assocOrderGenus[order].push(species)
               } else {
-                assocOrderGenus[order].push(genus)
+                assocOrderGenus[order].push(species)
               }
           }
         })
 
           // renders the graph for the desired taxon if more than one taxon type is selected
         var store_lis = '' // a variable to store all <li> generated for legend
-        var firstIteration = true // bolean to control the upper taxa level (order or family)
+        var firstIteration = true // boolean to control the upper taxa level (order or family)
 
           // first restores all nodes to default color
         node_color_reset(graphics, g, nodeColor, renderer)
@@ -695,9 +696,15 @@ function onLoad () {
                   }
                   // families //
                   else if (alertArrays['family'] != '') {
+                    var currentColor = color[i].replace('#', '0x')
                     var tempArray = assocFamilyGenus[currentSelection[i]]
+                    console.log(tempArray)
                     // executres node function for family and orders
-                    store_lis = node_coloring_taxa(tempArray, g, graphics, store_lis, currentSelection)
+                    for (i in tempArray) {
+                      taxaRequest(g, graphics, renderer, tempArray[i], currentColor)
+                    }
+                    //store_lis = node_coloring_taxa(tempArray, g, graphics,
+                    // store_lis, currentSelection)
                   }
 
                   // genus and species //
