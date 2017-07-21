@@ -2,7 +2,8 @@
 function read_coloring (list_gi, g, graphics, renderer) {
   //var readColorArray = []
   var readMode = true
-  var readString = read_json.replace(/[{}"]/g, '').split(',')
+  var readString = read_json.replace(/[{}" ]/g, '').split(',')
+  console.log(readString)
   var listGiFilter = []
   for (string in readString) {
     gi = readString[string].split(':')[0].replace(' ', '')
