@@ -334,7 +334,7 @@ function onLoad () {
       })
 
         // Form and button for search box
-      changed_nodes = []
+      var changed_nodes = []
       $('#submitButton').click(function (event) {
         var query = $('#formValueId').val()
         console.log('search query: ' + query)
@@ -707,7 +707,7 @@ function onLoad () {
                       ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                     // executres node function for family and orders
                     for (i in tempArray) {
-                      taxaRequest(g, graphics, renderer, tempArray[i], currentColor)
+                      taxaRequest(graphics, renderer, tempArray[i], currentColor, changed_nodes)
                     }
                   }
 
@@ -721,7 +721,7 @@ function onLoad () {
                       ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                     // executres node function for family
                     for (i in tempArray) {
-                      taxaRequest(g, graphics, renderer, tempArray[i], currentColor)
+                      taxaRequest(graphics, renderer, tempArray[i], currentColor, changed_nodes)
                     }
                   }
 
@@ -735,7 +735,7 @@ function onLoad () {
                     // requests taxa associated accession from db and colors
                     // respective nodes
                     for (i in tempArray) {
-                      taxaRequest(g, graphics, renderer, tempArray[i], currentColor)
+                      taxaRequest(graphics, renderer, tempArray[i], currentColor, changed_nodes)
                     }
                   }
 
@@ -747,7 +747,7 @@ function onLoad () {
 
                     // requests taxa associated accession from db and colors
                     // respective nodes
-                    taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)
+                    taxaRequest(graphics, renderer, currentSelection[i], currentColor, changed_nodes)
                   }
                 }
               firstIteration = false // stops getting lower levels
@@ -773,6 +773,9 @@ function onLoad () {
           showGoback.style.display = 'block'
           showDownload.style.display = 'block'
         }
+
+        //matches to filter "Re_run"
+        listGiFilter = changed_nodes
       })
 
         //* ************//
