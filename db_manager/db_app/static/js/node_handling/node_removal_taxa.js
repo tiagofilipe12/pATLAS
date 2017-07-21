@@ -1,56 +1,12 @@
-// function to search all nodes that have no default color and are linked to nodes with no default color
-
-// TODO THIS FUNCTION SHOULD BE AVOIDED... TOO SLOW
-function node_removal_taxa (g, graphics, nodeColor, renderer, layout) {
-  console.log('executing re run...')
-
-  listNodesRm = []
-  listNodesnoRm = []
-
-  g.forEachNode(function (node) {
-    var nodeUI = graphics.getNodeUI(node.id)
-
-    // first check if nodeUI has default color
-    if (nodeUI.color == nodeColor) {   // checks if color is equal do default
-      g.forEachLinkedNode(node.id, function (linkedNode, link) {
-        var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-
-        // if equal to default and linked nodes are equal to default
-        if (linked_nodeUI.color == nodeColor && listNodesRm.indexOf(node.id) < 0) {
-          listNodesRm.push(node.id)
-        }
-        // if different from default color but node has default color, then don't rm
-        else if (linked_nodeUI.color != nodeColor && listNodesnoRm.indexOf(node.id) < 0) {
-          listNodesnoRm.push(node.id)
-          // returns all nodes that are linked to nodes with changed color to center
-          layout.setNodePosition(node.id, 0, 0)
-        }
-      })
-    }
-    // returns nodes with changed color to central position
-    else {
-      layout.setNodePosition(node.id, 0, 0)
-    }
-  })
-
-  // filter nodes that should not be removed from removal list
-  myArray = listNodesRm.filter(function (el) {
-    return !listNodesnoRm.includes(el)
-  })
-  return myArray
-}
-
 // function to call requests on db
 
-function requesterDB (listGiFilter) {
-  /* TODO this function should clear all nodes before fetching the nodes to be
-   displayed in next instance. */
-  var jsonQueries = [] // this isn't passing to inside the query on db
+function requesterDB (listGiFilter, callback) {
+  var newList = []
+  //var jsonQueries = [] // this isn't passing to inside the query on db
   for (var i = 0; i < listGiFilter.length; i++) {
     $.get('api/getspecies/', {'accession': listGiFilter[i]}, function (data, status) {
       // this request uses nested json object to access json entries
       // available in the database
-      // TODO here we could dispatch an order that adds each node and links
 
       // if request return no speciesName or plasmidName
       // sometimes plasmids have no descriptor for one of these or both
@@ -64,43 +20,97 @@ function requesterDB (listGiFilter) {
       } else {
         plasmidName = data.json_entry.plasmid_name
       }
-      /*console.log(data.json_entry.significantLinks)  TODO this retrieves
-       a string and not an array :( */
       // may be it would be better to output this with something like oboe.js?
+
+      //console.log(data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(','))
 
       // if request finds no matching plasmid it has no connections to other db
       if (data.plasmid_id !== null) {
-        jsonObj = {
+        var jsonObj = {
           'plasmidAccession': data.plasmid_id,
           'plasmidLenght': data.json_entry.length,
           'speciesName': speciesName,
           'plasmidName': plasmidName,
-          'significantLinks': data.json_entry.significantLinks //this is a
+          'significantLinks': data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(',') //this is a
           // string ... not ideal
+          // TODO this is very sketchy and should be fixed with JSON parsing
+          // from db
         }
-      } else {
-        jsonObj = {
+      } else {  //this statement should not happen in future implementation,
+        // singletions must be passed to the database
+        var jsonObj = {
           'plasmidAccession': 'non_linked_accession', //this should pass
           // the listGiFilter[accession] but it can't be obtained here.
           'plasmidLenght': 'N/A',
           'speciesName': 'N/A',
           'plasmidName': 'N/A',
-          'significantLinks': 'N/A' //this is a
-          // string ... not ideal
+          'significantLinks': 'N/A'
         }
       }
-      jsonQueries.push(jsonObj)
-      console.log(jsonQueries)
-      return jsonQueries //this in fact doesn't return anything
+      //add node
+      reAddNode(jsonObj, newList) //callback function
     })
   }
+  callback
+}
+
+// re adds nodes after cleaning the entire graph
+function reAddNode (jsonObj, newList) {
+  var sequence = jsonObj.plasmidAccession
+  var length = jsonObj.plasmidLenght
+  var linksArray = jsonObj.significantLinks
+
+  if (length === 'N/A') {
+    length = 1
+  }
+  if (newList.indexOf(sequence) < 0) {
+    g.addNode(sequence, {
+      sequence: "<font color='#468499'>Accession:" +
+      " </font><a" +
+      " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+      //species:"<font color='#468499'>Species:
+      // </font>" + species,
+      seq_length: "<font" +
+      " color='#468499'>Sequence length:" +
+      " </font>" + length,
+      log_length: Math.log(parseInt(length))
+    })
+    newList.push(sequence)
+  }
+
+  // loops between all arrays of array pairing sequence and distances
+  if (linksArray !== 'N/A') {
+    for (var i = 0; i < linksArray.length; i++) {
+      // TODO make requests to get metadata to render the node
+      if (newList.indexOf(linksArray[i]) < 0) {
+        g.addNode(linksArray[i], {
+          sequence: "<font color='#468499'>Accession:" +
+          " </font><a" +
+          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
+          //species:"<font color='#468499'>Species:
+          // </font>" + species,
+          seq_length: "<font" +
+          " color='#468499'>Sequence length:" +
+          " </font>" + 1,
+          log_length: 10    //for now a fixed length will work
+        })
+        newList.push(linksArray[i])
+      }
+
+      g.addLink(sequence, linksArray[i])
+      // TODO significant links must have a distance... but still not in database!
+    }
+  }
+  return newList
 }
 
 // function that actually removes the nodes
-function actual_removal (g, graphics, nodeColor, renderer, layout, listGiFilter) {
-  json_queries = requesterDB(listGiFilter)
-  console.log("test")
-  console.log(json_queries)
+function actual_removal (g, graphics, nodeColor, renderer, layout, listGiFilter, list_gi) {
+  // removes all nodes from g using the same layout
+  g.clear()
+  //g.addNode(1, {'foo': 'bar'}) //this is a test input for node
+  requesterDB(listGiFilter, read_coloring(list_gi, g, graphics, renderer))
+
   // TODO after this it should render a new page with the new json object
   setTimeout(function () {
     // listNodesRm = node_removal_taxa(g, graphics, nodeColor, renderer, layout)
@@ -118,7 +128,7 @@ function actual_removal (g, graphics, nodeColor, renderer, layout, listGiFilter)
     // the more removed nodes --> less selected nodes --> slower spread
     //layout.simulator.dragCoeff(0.1 + (listNodesRm.length * 0.000001))
     renderer.moveTo(0, 0)
-    renderer.resume()
+    renderer.run()
   }, 1000)
 }
 

@@ -31,7 +31,7 @@ function onLoad () {
       theta: 1
   })
 
-  function something() {
+  function init() {
     getArray().done(function (json) {
       $.each(json, function (sequence_info, dict_dist) {
         // next we need to retrieve each information type independently
@@ -73,7 +73,7 @@ function onLoad () {
     }) //new getArray end
   }
 
-  something() //forces main json to load before rendering the graph
+  init() //forces main json to load before rendering the graph
 
   function precompute (iterations, callback) {
     // let's run 10 iterations per event loop cycle:
@@ -965,7 +965,7 @@ function onLoad () {
           //* * Loading Screen goes on **//
         show_div(
             // removes nodes
-            actual_removal(g, graphics, nodeColor, renderer, layout, listGiFilter)
+            actual_removal(g, graphics, nodeColor, renderer, layout, listGiFilter, list_gi)
           )
           // removes disabled from go_back button
         document.getElementById('go_back').className = document.getElementById('go_back').className.replace(/(?:^|\s)disabled(?!\S)/g, '')

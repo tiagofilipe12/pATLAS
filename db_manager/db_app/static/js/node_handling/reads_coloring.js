@@ -3,14 +3,13 @@ function read_coloring (list_gi, g, graphics, renderer) {
   //var readColorArray = []
   var readMode = true
   var readString = read_json.replace(/[{}" ]/g, '').split(',')
-  console.log(readString)
   var listGiFilter = []
   for (string in readString) {
     gi = readString[string].split(':')[0].replace(' ', '')
     listGiFilter.push(gi)
     perc = parseFloat(readString[string].split(':')[1].replace(' ', ''))
     if (list_gi.indexOf(gi) <= -1) {
-      g.addNode('singleton_' + gi, {sequence: "<font color='#468499'>seq_id: </font><a " +
+      g.addNode(gi, {sequence: "<font color='#468499'>seq_id: </font><a " +
       "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split('_').slice(0,2).join('_') + "' target='_blank'>" + gi + '</a>',
         log_length: 10
         // percentage: "<font color='#468499'>percentage: </font>" + perc
@@ -46,12 +45,14 @@ function read_coloring (list_gi, g, graphics, renderer) {
   showDownload.style.display = 'block'
   renderer.rerender()
   $('#loading').hide()
+  console.log("end")
   return list_gi, listGiFilter
 }
 
 // function to iterate through nodes
 function node_iter (read_color, gi, g, graphics, perc) {
-  g.forEachNode(function (node) {
+  g.forEachNode(function(node) {
+    console.log("teste")    //code isn't entering here
     // if statement added for parsing singletons into the graph visualization
     if (node.id.indexOf('singleton') > -1) {
       nodeGI = node.id.split('_').slice(1, 4).join('_')
@@ -59,6 +60,7 @@ function node_iter (read_color, gi, g, graphics, perc) {
       nodeGI = node.id.split('_').slice(0, 3).join('_')
     }
     var nodeUI = graphics.getNodeUI(node.id)
+    //console.log(nodeGI)
 
     if (gi == nodeGI) {
       nodeUI.color = read_color
@@ -68,9 +70,9 @@ function node_iter (read_color, gi, g, graphics, perc) {
   })
 }
 
-/// ////////////////
+///////////////////
 // link coloring //
-/// ////////////////
+///////////////////
 
 function link_coloring (g, graphics, renderer) {
   g.forEachLink(function (link) {
