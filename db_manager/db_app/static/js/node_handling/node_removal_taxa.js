@@ -1,6 +1,6 @@
 // function to call requests on db
 
-function requesterDB (listGiFilter, callback) {
+function requesterDB (listGiFilter) {
   var newList = []
   //var jsonQueries = [] // this isn't passing to inside the query on db
   for (var i = 0; i < listGiFilter.length; i++) {
@@ -51,7 +51,6 @@ function requesterDB (listGiFilter, callback) {
       reAddNode(jsonObj, newList) //callback function
     })
   }
-  callback
 }
 
 // re adds nodes after cleaning the entire graph
@@ -105,19 +104,14 @@ function reAddNode (jsonObj, newList) {
 }
 
 // function that actually removes the nodes
-function actual_removal (g, graphics, nodeColor, renderer, layout, listGiFilter, list_gi) {
+function actual_removal (renderer, listGiFilter) {
   // removes all nodes from g using the same layout
   g.clear()
   //g.addNode(1, {'foo': 'bar'}) //this is a test input for node
-  requesterDB(listGiFilter, read_coloring(list_gi, g, graphics, renderer))
+  requesterDB(listGiFilter)
 
   // TODO after this it should render a new page with the new json object
   setTimeout(function () {
-    // listNodesRm = node_removal_taxa(g, graphics, nodeColor, renderer, layout)
-    // for (id in listNodesRm) {
-    //   nodeId = listNodesRm[id]
-    //   g.removeNode(nodeId)
-    // }
     // change play button in order to be properly set to pause
     $('#playpauseButton').empty()
     $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
@@ -127,8 +121,10 @@ function actual_removal (g, graphics, nodeColor, renderer, layout, listGiFilter,
     // slow down the spreading of nodes
     // the more removed nodes --> less selected nodes --> slower spread
     //layout.simulator.dragCoeff(0.1 + (listNodesRm.length * 0.000001))
-    renderer.moveTo(0, 0)
-    renderer.run()
+    // there is no need to move to origin since nodes start at origin in new
+    // instance
+    //renderer.moveTo(0, 0)
+    renderer.resume()
   }, 1000)
 }
 

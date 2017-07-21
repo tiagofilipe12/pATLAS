@@ -100,7 +100,7 @@ function onLoad () {
       // displayed without incresing the size of big nodes too much
 
       //* Starts graphics renderer *//
-  function renderGraph () {
+  function renderGraph() {
     var graphics = Viva.Graph.View.webglGraphics()
       //* * block #1 for node customization **//
       // first, tell webgl graphics we want to use custom shader
@@ -745,7 +745,7 @@ function onLoad () {
         event.preventDefault()
         $('#loading').show()
         setTimeout(function () {
-          list_gi, listGiFilter = read_coloring(list_gi, g, graphics, renderer)
+          list_gi, listGiFilter = read_coloring(list_gi, graphics, renderer)
         }, 100)
 
           // }
@@ -965,7 +965,7 @@ function onLoad () {
           //* * Loading Screen goes on **//
         show_div(
             // removes nodes
-            actual_removal(g, graphics, nodeColor, renderer, layout, listGiFilter, list_gi)
+            actual_removal(renderer, listGiFilter)
           )
           // removes disabled from go_back button
         document.getElementById('go_back').className = document.getElementById('go_back').className.replace(/(?:^|\s)disabled(?!\S)/g, '')

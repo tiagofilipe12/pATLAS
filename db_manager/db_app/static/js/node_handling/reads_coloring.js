@@ -1,5 +1,5 @@
 // single read displayer
-function read_coloring (list_gi, g, graphics, renderer) {
+function read_coloring (list_gi, graphics, renderer) {
   //var readColorArray = []
   var readMode = true
   var readString = read_json.replace(/[{}" ]/g, '').split(',')
@@ -34,7 +34,7 @@ function read_coloring (list_gi, g, graphics, renderer) {
       scale = chroma.scale(['lightsalmon', 'maroon'])
       palette(scale, 20, readMode)
     }
-    node_iter(read_color, gi, g, graphics, perc)
+    node_iter(read_color, gi, graphics, perc)
   }
   // control all related divs
   showRerun = document.getElementById('Re_run')
@@ -45,14 +45,14 @@ function read_coloring (list_gi, g, graphics, renderer) {
   showDownload.style.display = 'block'
   renderer.rerender()
   $('#loading').hide()
-  console.log("end")
   return list_gi, listGiFilter
 }
 
 // function to iterate through nodes
-function node_iter (read_color, gi, g, graphics, perc) {
+function node_iter (read_color, gi, graphics, perc) {
   g.forEachNode(function(node) {
-    console.log("teste")    //code isn't entering here
+    // when filter removes all nodes and then adds them again. Looks like g
+    // was somehow affected.
     // if statement added for parsing singletons into the graph visualization
     if (node.id.indexOf('singleton') > -1) {
       nodeGI = node.id.split('_').slice(1, 4).join('_')
@@ -62,7 +62,7 @@ function node_iter (read_color, gi, g, graphics, perc) {
     var nodeUI = graphics.getNodeUI(node.id)
     //console.log(nodeGI)
 
-    if (gi == nodeGI) {
+    if (gi === nodeGI) {
       nodeUI.color = read_color
       nodeUI.backupColor = nodeUI.color
       node.data['percentage'] =  perc.toFixed(2).toString()
