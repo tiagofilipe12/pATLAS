@@ -337,7 +337,7 @@ function onLoad () {
       var changed_nodes = []
       $('#submitButton').click(function (event) {
         var query = $('#formValueId').val()
-        console.log('search query: ' + query)
+        //console.log('search query: ' + query)
         event.preventDefault()
         g.forEachNode(function (node) {
           var nodeUI = graphics.getNodeUI(node.id)
@@ -1014,7 +1014,7 @@ function onLoad () {
 
         // returns to the initial tree by reloading the page
       $('#go_back').click(function (event) {
-        console.log('returning to main')
+        //console.log('returning to main')
         window.location.reload()   // a temporary fix to go back to full dataset
       })
     }

@@ -3,10 +3,8 @@
 // dropdown selection
 function taxaRequest(graphics, renderer, taxa, currentColor, changed_nodes) {
   taxaDb = taxa.split(" ").join("_")
-  console.log(taxaDb)
   $.get('api/getaccession/', {'name': taxaDb}, function (data, status) {
     var listData = []
-    console.log(data)   // TODO test this for families
     for (object in data) {
       //console.log(data[object].plasmid_id)
       listData.push(data[object].plasmid_id)
