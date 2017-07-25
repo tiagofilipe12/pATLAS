@@ -285,7 +285,6 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
 def multiprocess_mash_file(sequence_info, pvalue, mashdist,
                            in_folder, x, infile):
-    print(infile)
     input_f = open(os.path.join(in_folder, infile), 'r')
     temporary_list = []
     temp_dict = {}
