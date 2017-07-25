@@ -237,7 +237,6 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
     #  each sequence/genome
     list_mash_files = [f for f in os.listdir(in_folder) if f.endswith(
         "distances.txt")]
-    print(list_mash_files)
     # lists_traces=[]		## list that lists all trace_lists generated
     x = 0
 
@@ -286,6 +285,7 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
 def multiprocess_mash_file(sequence_info, pvalue, mashdist,
                            in_folder, x, infile):
+    print(infile)
     input_f = open(os.path.join(in_folder, infile), 'r')
     temporary_list = []
     temp_dict = {}
