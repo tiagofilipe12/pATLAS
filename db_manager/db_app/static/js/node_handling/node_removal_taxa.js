@@ -106,7 +106,7 @@ function reAddNode (jsonObj, newList) {
 // function that actually removes the nodes
 function actual_removal (renderer, listGiFilter) {
   // removes all nodes from g using the same layout
-  g.clear()
+  //g.clear()   // this in fact just do forEachNode --> so too slow
   //g.addNode(1, {'foo': 'bar'}) //this is a test input for node
   requesterDB(listGiFilter)
 
