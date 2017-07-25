@@ -285,7 +285,6 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
 def multiprocess_mash_file(sequence_info, pvalue, mashdist,
                            in_folder, x, infile):
-    print(infile)
     input_f = open(os.path.join(in_folder, infile), 'r')
     temporary_list = []
     temp_dict = {}
@@ -299,6 +298,8 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         p_value = tab_split[3].strip()
         ## Added new reference string in order to parse easier within
         #  visualization_functions.js
+        print(ref_accession)
+        print(sequence_info[ref_accession])
         string_reference = "{}_{}".format(ref_accession,
                                           sequence_info[ref_accession][
                                               1])  ##stores acession and lenght
