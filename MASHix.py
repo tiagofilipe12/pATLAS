@@ -146,7 +146,7 @@ def genomes_parser(main_fasta, output_tag, mother_directory):
         # a counter for every loop
         linesplit = line.strip().split("_")
         if line.startswith(">"):
-            accession = "_".join(linesplit[1:4])
+            accession = "_".join(linesplit[0:3])
             if out_handle:
                 out_handle.close()
             out_handle = open(os.path.join("{}_{}.fas".format(out_file,
