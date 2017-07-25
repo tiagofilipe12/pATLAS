@@ -293,8 +293,8 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
     for line in input_f:
         tab_split = line.split("\t")
         # gi = "_".join(tab_split[0].strip().split("_")[0:2])
-        ref_accession = "_".join(tab_split[0].strip().split("_")[1:4])
-        seq_accession = "_".join(tab_split[1].strip().split("_")[1:4])
+        ref_accession = "_".join(tab_split[0].strip().split("_")[0:3])
+        seq_accession = "_".join(tab_split[1].strip().split("_")[0:3])
         mash_dist = tab_split[2].strip()
         p_value = tab_split[3].strip()
         ## Added new reference string in order to parse easier within
