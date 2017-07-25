@@ -94,7 +94,7 @@ def master_fasta(fastas, output_tag, mother_directory):
                 linesplit = line.strip().split("_")  ## splits fasta headers by
                 # _ character
                 ## gi = "_".join(linesplit[1:2])
-                species = "_".join(linesplit[4:6])
+                species = "_".join(linesplit[3:5])
                 ## if statements to handle some exceptions already found
                 if "plasmid" in species.lower():
                     species = "unknown"
@@ -103,9 +103,9 @@ def master_fasta(fastas, output_tag, mother_directory):
                 elif "candidatus" in species.split("_")[0].lower():
                     # species name becomes Candidatus Genera species
                     # this needs to be parsed to the database
-                    species = "_".join(linesplit[4:7])
+                    species = "_".join(linesplit[3:6])
 
-                accession = "_".join(linesplit[0:3])
+                accession = "_".join(linesplit[0:3]).replace(">","")
                 ## searches plasmid_name in line given that it may be variable
                 # its position
                 plasmid_name = search_substing(line)
@@ -298,8 +298,6 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         p_value = tab_split[3].strip()
         ## Added new reference string in order to parse easier within
         #  visualization_functions.js
-        print(ref_accession)
-        print(sequence_info[ref_accession])
         string_reference = "{}_{}".format(ref_accession,
                                           sequence_info[ref_accession][
                                               1])  ##stores acession and lenght
