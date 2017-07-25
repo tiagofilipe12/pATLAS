@@ -237,6 +237,7 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
     #  each sequence/genome
     list_mash_files = [f for f in os.listdir(in_folder) if f.endswith(
         "distances.txt")]
+    print(list_mash_files)
     # lists_traces=[]		## list that lists all trace_lists generated
     x = 0
 
