@@ -146,7 +146,7 @@ def genomes_parser(main_fasta, output_tag, mother_directory):
         # a counter for every loop
         linesplit = line.strip().split("_")
         if line.startswith(">"):
-            accession = "_".join(linesplit[0:3])
+            accession = "_".join(linesplit[0:3]).replace(">","")
             if out_handle:
                 out_handle.close()
             out_handle = open(os.path.join("{}_{}.fas".format(out_file,
@@ -188,6 +188,7 @@ def sketch_references(inputfile, output_tag, threads, kmer_size,
 def sketch_genomes(genome, mother_directory, output_tag, kmer_size):
     out_folder = os.path.join(mother_directory, "genome_sketchs")
     out_file = os.path.join(out_folder, os.path.basename(genome))
+    print(out_file)
     sketcher_command = ["mash",
                         "sketch",
                         "-o",
