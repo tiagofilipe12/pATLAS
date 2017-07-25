@@ -188,7 +188,6 @@ def sketch_references(inputfile, output_tag, threads, kmer_size,
 def sketch_genomes(genome, mother_directory, output_tag, kmer_size):
     out_folder = os.path.join(mother_directory, "genome_sketchs")
     out_file = os.path.join(out_folder, os.path.basename(genome))
-    print(out_file)
     sketcher_command = ["mash",
                         "sketch",
                         "-o",
