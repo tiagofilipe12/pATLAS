@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-## Last update: 6/7/2017
+## Last update: 31/7/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a parwise diagonal matrix
 # for each pairwise comparison between libraries
@@ -15,8 +15,6 @@ from multiprocessing import Pool
 from functools import partial
 import tqdm
 from utils.hist_util import plot_histogram
-# import utils.taxa_fetch
-# from operator import itemgetter
 import json
 from db_manager.db_app import db, models
 
@@ -67,11 +65,6 @@ def master_fasta(fastas, output_tag, mother_directory):
         output_tag))
     master_fasta = open(out_file, "w")
     sequence_info = {}
-    ## creates a list file, listing all genera in input sequences
-    # genus_out = os.path.join(mother_directory, "genera_list_{}.lst".format(
-    #	output_tag))
-    # genus_output = open(genus_out, "w")
-    # genera =[]
 
     ## creates a list file, listing all species in input sequences
     all_species = []
@@ -82,13 +75,22 @@ def master_fasta(fastas, output_tag, mother_directory):
         fasta = open(filename, "r")
         for x, line in enumerate(fasta):
             if line.startswith(">"):
+                ## added this if statement to check whether CDS is present in
+                #  fasta header, since database contain them with CDS in string
+                if "cds" in line.lower():
+                    #print (line)
+                    truePlasmid = False #variable to control when plasmids
+                    # and when genes
+                    continue
+                else:
+                    truePlasmid = True
                 if x != 0:
                     if accession in sequence_info.keys():
                         print(accession + " - duplicated entry")
                     else:
                         sequence_info[accession] = (species, length,
                                                     plasmid_name)  # outputs
-                    # dict at the begining of each new entry
+                    # dict at the beginning of each new entry
                 length = 0  # resets sequence length for every > found
                 line = header_fix(line)
                 linesplit = line.strip().split("_")  ## splits fasta headers by
@@ -109,25 +111,23 @@ def master_fasta(fastas, output_tag, mother_directory):
                 ## searches plasmid_name in line given that it may be variable
                 # its position
                 plasmid_name = search_substing(line)
-                ## genus related functions
-                # genus = linesplit[5]
-                # genera.append(genus)
+                ## species related functions
                 all_species.append(" ".join(species.split("_")))
             else:
-                ## had to add a method to remove \n characteres from the
+                ## had to add a method to remove \n characters from the
                 # counter for sequence length
-                length += len(line.replace("\n", ""))  ## necessary since
+                if truePlasmid == True:
+                    length += len(line.replace("\n", ""))  ## necessary since
             # fasta sequences may be spread in multiple lines
-            master_fasta.write(line)
+            if truePlasmid == True:
+                master_fasta.write(line)
         if accession in sequence_info.keys():
             print(accession + " - duplicated entry")
         else:
-            sequence_info[accession] = (species, length, plasmid_name)  ## adds
+            if truePlasmid == True:
+                sequence_info[accession] = (species, length, plasmid_name) ## adds
         # to dict last entry of each input file
     master_fasta.close()
-    ## writes genera list to output file
-    # genus_output.write('\n'.join(str(i) for i in list(set(genera))))
-    # genus_output.close()
     ## writes a species list to output file
     species_output.write('\n'.join(str(i) for i in list(set(all_species))))
     species_output.close()
