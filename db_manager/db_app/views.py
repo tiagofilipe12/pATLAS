@@ -1,6 +1,8 @@
 from . import app
 from flask import json, render_template
 
+## routes
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -16,11 +18,6 @@ def main_summary():
     )
     return response
 
-def make_summary(path):
-    with open(path) as data_file:    
-        data = json.load(data_file)
-    return data
-
 @app.route('/taxa')
 def taxa_summary():
     data = make_summary('db_app/static/json/taxa_tree.json')
@@ -30,3 +27,10 @@ def taxa_summary():
         mimetype='application/json'
     )
     return response
+
+## functions
+
+def make_summary(path):
+    with open(path) as data_file:
+        data = json.load(data_file)
+    return data
