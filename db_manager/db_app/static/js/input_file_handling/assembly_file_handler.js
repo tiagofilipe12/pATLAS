@@ -1,25 +1,25 @@
-function assembly (list_gi, assembly_json, g, graphics, renderer) {
-  console.log(assembly_json)
-    // removes everything within []
-  var assemblyString = assembly_json.replace(/[{}"[ ]/g, '').split('],')
-    // this gets the contig name
+const assembly = (list_gi, assembly_json, g, graphics, renderer) => {
+  //console.log(assembly_json)
+  // removes everything within []
+  const assemblyString = assembly_json.replace(/[{}"[ ]/g, '').split('],')
+  // this gets the contig name
   contig_name = assemblyString[0].split(':')[0]
   g.addNode(contig_name, {sequence: "<font color='#468499'>seq_id: </font>" + contig_name, log_length: 10}
-                      )
+  )
   // change the color of the input node
-  var nodeUI = graphics.getNodeUI(contig_name)
+  const nodeUI = graphics.getNodeUI(contig_name)
   nodeUI.color = 0xff2100
   console.log(contig_name)
   console.log(assemblyString)
-  for (string in assemblyString) {
-    if (string == 0) {
+  for (let string in assemblyString) {
+    if (string === 0) {
       node_entry = assemblyString[string].split(':')[1]
     } else {
       node_entry = assemblyString[string]
     }
-    var accession = node_entry.split('_').slice(0, 2).join('_')
-    var dist = node_entry.split(',')[1]
-    if (accession in list_gi){
+    let accession = node_entry.split('_').slice(0, 2).join('_')
+    const dist = node_entry.split(',')[1]
+    if (accession in list_gi) {
       g.addLink(contig_name, accession, dist)
     } else {
       // links wont work because ncbi uses gis and not accessions
