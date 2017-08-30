@@ -1,6 +1,6 @@
 // function to call requests on db
 
-const requesterDB = (listGiFilter, cb) => {
+const requesterDB = (g, listGiFilter, cb) => {
   let newList = []
   //var jsonQueries = [] // this isn't passing to inside the query on db
   for (let i = 0; i < listGiFilter.length; i++) {
@@ -37,7 +37,7 @@ const requesterDB = (listGiFilter, cb) => {
           // from db
         }
         //add node
-        reAddNode(jsonObj, newList) //callback function
+        reAddNode(g, jsonObj, newList) //callback function
       } else {  //this statement should not happen in future implementation,
         // singletions must be passed to the database
         const jsonObj = {
@@ -49,7 +49,7 @@ const requesterDB = (listGiFilter, cb) => {
           'significantLinks': 'N/A'
         }
         //add node
-        reAddNode(jsonObj, newList) //callback function
+        reAddNode(g, jsonObj, newList) //callback function
       }
       //add node
       //reAddNode(jsonObj, newList) //callback function
@@ -59,7 +59,7 @@ const requesterDB = (listGiFilter, cb) => {
 }
 
 // re adds nodes after cleaning the entire graph
-const reAddNode = (jsonObj, newList) => {
+const reAddNode = (g, jsonObj, newList) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks

@@ -1,5 +1,5 @@
 // single read displayer
-function read_coloring (list_gi, graphics, renderer) {
+function read_coloring (g, list_gi, graphics, renderer) {
   //var readColorArray = []
   var readMode = true
   var readString = read_json.replace(/[{}" ]/g, '').split(',')

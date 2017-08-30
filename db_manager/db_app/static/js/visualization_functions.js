@@ -15,16 +15,16 @@ const getArray_taxa = () => {
 // initiates vivagraph main functions
 const onLoad = () => {
 
-  var list = []   // list to store references already ploted as nodes
-  var list_lengths = [] // list to store the lengths of all nodes
+  let list = []   // list to store references already ploted as nodes
+  let list_lengths = [] // list to store the lengths of all nodes
   //var list_species = [] // lists all species
   //var list_genera = [] // list all genera
-  var list_gi = []
+  let list_gi = []
 
   // initiate vivagraph instance
-  g = Viva.Graph.graph()
+  const g = Viva.Graph.graph()
   // define layout
-  var layout = Viva.Graph.Layout.forceDirected(g, {
+  const layout = Viva.Graph.Layout.forceDirected(g, {
     springLength: 30,
     springCoeff: 0.0001,
     dragCoeff: 0.0001, // sets how fast nodes will separate from origin,
@@ -77,7 +77,7 @@ const onLoad = () => {
     } else {
       console.log('entered filters')
       console.log(listGiFilter)
-      requesterDB(listGiFilter, precompute(1000, renderGraph))
+      list_lengths = requesterDB(g, listGiFilter, precompute(1000, renderGraph))
     }
   }
 
@@ -718,7 +718,7 @@ const onLoad = () => {
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family and orders
                 for (i in tempArray) {
-                  taxaRequest(graphics, renderer, tempArray[i], currentColor, changed_nodes)
+                  taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
                 }
               }
 
@@ -732,7 +732,7 @@ const onLoad = () => {
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family
                 for (i in tempArray) {
-                  taxaRequest(graphics, renderer, tempArray[i], currentColor, changed_nodes)
+                  taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
                 }
               }
 
@@ -746,7 +746,7 @@ const onLoad = () => {
                 // requests taxa associated accession from db and colors
                 // respective nodes
                 for (i in tempArray) {
-                  taxaRequest(graphics, renderer, tempArray[i], currentColor, changed_nodes)
+                  taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
                 }
               }
 
@@ -758,7 +758,7 @@ const onLoad = () => {
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                taxaRequest(graphics, renderer, currentSelection[i], currentColor, changed_nodes)
+                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
               }
             }
             firstIteration = false // stops getting lower levels
@@ -797,7 +797,7 @@ const onLoad = () => {
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
-        list_gi, listGiFilter = read_coloring(list_gi, graphics, renderer)
+        list_gi, listGiFilter = read_coloring(g, list_gi, graphics, renderer)
       }, 100)
 
       // }
@@ -870,7 +870,6 @@ const onLoad = () => {
     //* * slider button and other options **//
 
     // sets the limits of buttons and slider
-
     var min = Math.min.apply(null, list_lengths),
       max = Math.max.apply(null, list_lengths)
 

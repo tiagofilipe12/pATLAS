@@ -1,7 +1,7 @@
 /////////// IMPORTANT ///////////
 // piece of code that should be used to match species name with
 // dropdown selection
-function taxaRequest(graphics, renderer, taxa, currentColor, changed_nodes) {
+function taxaRequest(g, graphics, renderer, taxa, currentColor, changed_nodes) {
   taxaDb = taxa.split(" ").join("_")
   $.get('api/getaccession/', {'name': taxaDb}, function (data, status) {
     var listData = []
@@ -10,13 +10,13 @@ function taxaRequest(graphics, renderer, taxa, currentColor, changed_nodes) {
       listData.push(data[object].plasmid_id)
     }
     //console.log(listData)
-    colorNodes(graphics, listData, currentColor, changed_nodes)
+    colorNodes(g, graphics, listData, currentColor, changed_nodes)
     renderer.rerender()
   })
 }
 
 // cycles nodes
-function colorNodes(graphics, accessionRequested, currentColor, changed_nodes) {
+function colorNodes(g, graphics, accessionRequested, currentColor, changed_nodes) {
   g.forEachNode(function (node) {
     var nodeUI = graphics.getNodeUI(node.id)
 
