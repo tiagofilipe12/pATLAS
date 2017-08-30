@@ -119,7 +119,7 @@ const onLoad = () => {
     graphics.setNodeProgram(circleNode)
     // second, change the node ui model, which can be understood
     // by the custom shader:
-    graphics.node(function (node) {
+    graphics.node( (node) => {
       nodeSize = min_nodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
@@ -141,12 +141,12 @@ const onLoad = () => {
 
     // opens events in webgl such as mouse hoverings or clicks
 
-    $('#zoom_in').click(function (e) {
-      e.preventDefault()
+    $('#zoom_in').click( (event) => {
+      event.preventDefault()
       renderer.zoomIn()
     })
-    $('#zoom_out').click(function (e) {
-      e.preventDefault()
+    $('#zoom_out').click( (event) => {
+      event.preventDefault()
       renderer.zoomOut()
     })
 
@@ -158,7 +158,7 @@ const onLoad = () => {
 
     toggle_status = false // default state
     $('#toggle-event').bootstrapToggle('off') // set to default off
-    $('#toggle-event').change(function () {
+    $('#toggle-event').change(function () {   // jquery seems not to support es6
       toggle_status = $(this).prop('checked')
       toggle_manager(toggle_status)
     })
@@ -167,32 +167,33 @@ const onLoad = () => {
     //* ** EVENTS ***//
     //* *************//
 
-    var events = Viva.Graph.webglInputEvents(graphics, g)
+    const events = Viva.Graph.webglInputEvents(graphics, g)
     store_nodes = []  // list used to store nodes
     // changes the color of node and links (and respective linked nodes) of this node when clicked
     click_check = false    // controls the handling of hoverings
-    events.click(function (node) {
+    events.click( (node) => {
       store_nodes.push(node.id)
       // allows the control of the hovering appearing and locking
-      if (click_check == false) {
+      if (click_check === false) {
         click_check = true
       } else {
         click_check = false
         $('#popup_description').css({'display': 'none'})
       }
       //console.log('Single click on node: ' + node.id)
-      var nodeUI = graphics.getNodeUI(node.id)
-      if (toggle_status == true) {   // if statement to check if toggle button is enabled
+      const nodeUI = graphics.getNodeUI(node.id)
+      if (toggle_status === true) {   // if statement to check if toggle
+        // button is enabled
         // statement when node and linked nodes are still in default color
-        if (nodeUI.color == nodeColor) {
+        if (nodeUI.color === nodeColor) {
           color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
         }
         // statement when linked node is selected
-        else if (nodeUI.color == 0x7c3912) {
+        else if (nodeUI.color === 0x7c3912) {
           color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
         }
         // statement when node is shaded
-        else if (nodeUI.color == 0xcdc8b1) {
+        else if (nodeUI.color === 0xcdc8b1) {
           color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
         }
         // statement do deselect node and linked nodes
@@ -201,11 +202,11 @@ const onLoad = () => {
           color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
         }
         nodeUI.color = color_to_use[0]
-        g.forEachLinkedNode(node.id, function (linkedNode, link) {
-          var linkUI = graphics.getLinkUI(link.id)
+        g.forEachLinkedNode(node.id, (linkedNode, link) => {
+          const linkUI = graphics.getLinkUI(link.id)
           linkUI.color = color_to_use[1]
-          var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-          if (linked_nodeUI.color != 0xc89933) {
+          const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
+          if (linked_nodeUI.color !== 0xc89933) {
             linked_nodeUI.color = color_to_use[2]
           }
         })
@@ -214,9 +215,9 @@ const onLoad = () => {
     })
 
     //* * mouse hovering on nodes **//
-    events.mouseEnter(function (node, e) {
+    events.mouseEnter( (node, e) => {
       nodeUI_1 = graphics.getNodeUI(node.id)
-      var domPos = {
+      const domPos = {
         x: nodeUI_1.position.x,
         y: nodeUI_1.position.y
       }
@@ -226,11 +227,11 @@ const onLoad = () => {
       domPos.y = (domPos.y) + 'px'
 
       // call the requests
-      function requestPlasmidTable (node, setupPopupDisplay) {
+      const requestPlasmidTable = (node, setupPopupDisplay) => {
         // if statement to check if node is in database or is a new import
         // from mapping
         if (node.data.seq_length) {
-          $.get('api/getspecies/', {'accession': node.id}, function (data, status) {
+          $.get('api/getspecies/', {'accession': node.id}, (data, status) => {
             // this request uses nested json object to access json entries
             // available in the database
             // if request return no speciesName or plasmidName
@@ -259,7 +260,7 @@ const onLoad = () => {
         }
       }
 
-      function setupPopupDisplay (node, speciesName, plasmidName) {
+      const setupPopupDisplay = (node, speciesName, plasmidName) => {
         // first needs to empty the popup in order to avoid having
         // multiple entries from previous interactions
         $('#popup_description').empty()
@@ -289,9 +290,9 @@ const onLoad = () => {
 
       requestPlasmidTable(node, setupPopupDisplay)
 
-    }).mouseLeave(function (node) {
+    }).mouseLeave( (node) => {
       // if node is not clicked then mouse hover can disappear
-      if (click_check == true) {
+      if (click_check === true) {
         $('#popup_description').css({'display': 'block'})
       } else {
         $('#popup_description').css({'display': 'none'})
@@ -315,12 +316,12 @@ const onLoad = () => {
     $('#refreshButton').on('click', function (e) {
       color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
       for (id in store_nodes) {
-        var nodeUI = graphics.getNodeUI(store_nodes[id])
+        const nodeUI = graphics.getNodeUI(store_nodes[id])
         nodeUI.color = color_to_use[0]
         g.forEachLinkedNode(store_nodes[id], function (linkedNode, link) {
-          var linkUI = graphics.getLinkUI(link.id)
+          const linkUI = graphics.getLinkUI(link.id)
           linkUI.color = color_to_use[1]
-          var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
+          const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
           linked_nodeUI.color = color_to_use[2]
         })
       }
@@ -331,7 +332,7 @@ const onLoad = () => {
     paused = true
     $('#playpauseButton').on('click', function (e) {
       $('#playpauseButton').empty()
-      if (paused == true) {
+      if (paused === true) {
         renderer.resume()
         $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
         paused = false
@@ -343,19 +344,19 @@ const onLoad = () => {
     })
 
     // Form and button for search box
-    var changed_nodes = []
+    let changed_nodes = []
     $('#submitButton').click(function (event) {
-      var query = $('#formValueId').val()
+      const query = $('#formValueId').val()
       //console.log('search query: ' + query)
       event.preventDefault()
-      g.forEachNode(function (node) {
-        var nodeUI = graphics.getNodeUI(node.id)
-        var sequence = node.data.sequence.split('>')[3].split('<')[0]
+      g.forEachNode( (node) => {
+        const nodeUI = graphics.getNodeUI(node.id)
+        const sequence = node.data.sequence.split('>')[3].split('<')[0]
         // console.log(sequence)
-        nodeUI = graphics.getNodeUI(node.id)
-        var x = nodeUI.position.x,
+        //nodeUI = graphics.getNodeUI(node.id)
+        const x = nodeUI.position.x,
           y = nodeUI.position.y
-        if (sequence == query) {
+        if (sequence === query) {
           // centers graph visualization in a given node, searching for gi
           renderer.moveTo(x, y)
         }
@@ -373,7 +374,7 @@ const onLoad = () => {
     // Form search box utils
 
     // then applying autocomplete function
-    $(function () {
+    $( () => {
       $('#formValueId').autocomplete({
         source: list_gi
       })
@@ -383,34 +384,17 @@ const onLoad = () => {
     //* ***Taxa Filter****//
     //* ******************//
 
-    // this is now deprecated and needs reworking - list_species doesn't exist
-
-    // list with unique species in dataset
-    //var uniqueArray_species = list_species.filter(function (item, pos) {
-    //  return list_species.indexOf(item) == pos
-    //})
-    // then sort it
-    //var sortedArray_species = uniqueArray_species.sort()
-    // search by specific genera //
-
-    // first get a list with unique array entries for genera
-    //var uniqueArray_genera = list_genera.filter(function (item, pos) {
-    //  return list_genera.indexOf(item) == pos
-    //})
-    // then sort it
-    //var sortedArray_genera = uniqueArray_genera.sort()
-
-    var list_orders = [],
+    const list_orders = [],
       list_families = [],
       list_genera = [],
       dict_genera = {},
       list_species = []
-    getArray_taxa().done(function (json) {
-      $.each(json, function (species, other) {
-        var species = species.split("_").join(" ")
-        var genus = other[0]
-        var family = other[1]
-        var order = other[2]
+    getArray_taxa().done( (json) => {
+      $.each(json, (sps, other) => {    // sps aka species
+        const species = sps.split("_").join(" ")
+        const genus = other[0]
+        const family = other[1]
+        const order = other[2]
         dict_genera[species] = [genus, family, order] // append the list to
         // this dict to be used later
         if (list_genera.indexOf(genus) < 0) {
@@ -429,14 +413,14 @@ const onLoad = () => {
 
       // sort families and orders alphabetically
 
-      var sortedArray_order = list_orders.sort(),
+      const sortedArray_order = list_orders.sort(),
         sortedArray_family = list_families.sort(),
         sortedArray_genera = list_genera.sort(),
         sortedArray_species = list_species.sort()
 
       // append all order present in dataset
 
-      for (var i = 0; i < sortedArray_order.length; i++) {
+      for (let i = 0; i < sortedArray_order.length; i++) {
         var order_tag = 'order' + sortedArray_order[i]
         var orderId = "id='" + order_tag + "'"
         $('#orderList').append("<option class='OrderClass'>" +

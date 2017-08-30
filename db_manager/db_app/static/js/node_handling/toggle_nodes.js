@@ -1,5 +1,4 @@
 const toggle_manager = (toggle_status) => {
-  console.log(toggle_status)
   // if node mode on disable dropdown and retrieve an alert whenever the dropdown is clicked in this instance
   if (toggle_status === true) {
     document.getElementById('toggle-event').className += ' disabled';
