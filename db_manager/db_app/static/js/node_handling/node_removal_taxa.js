@@ -1,6 +1,6 @@
 // function to call requests on db
 
-function requesterDB (listGiFilter) {
+function requesterDB (listGiFilter, cb) {
   var newList = []
   //var jsonQueries = [] // this isn't passing to inside the query on db
   for (var i = 0; i < listGiFilter.length; i++) {
@@ -51,6 +51,7 @@ function requesterDB (listGiFilter) {
       reAddNode(jsonObj, newList) //callback function
     })
   }
+  cb
 }
 
 // re adds nodes after cleaning the entire graph
@@ -104,28 +105,83 @@ function reAddNode (jsonObj, newList) {
 }
 
 // function that actually removes the nodes
-function actual_removal (renderer, listGiFilter) {
+function actual_removal (renderer, listGiFilter, onload) {
   // removes all nodes from g using the same layout
-  g.clear()   // this in fact just do forEachNode --> so too slow
-  //g.addNode(1, {'foo': 'bar'}) //this is a test input for node
-  requesterDB(listGiFilter)
+  console.log(listGiFilter)
+  firstInstace = false
 
   // TODO after this it should render a new page with the new json object
-  setTimeout(function () {
-    // change play button in order to be properly set to pause
-    $('#playpauseButton').empty()
-    $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
-    paused = false
-    // resumes actual selection and hides loading screen
-    $('#loading').hide()
-    // slow down the spreading of nodes
-    // the more removed nodes --> less selected nodes --> slower spread
-    //layout.simulator.dragCoeff(0.1 + (listNodesRm.length * 0.000001))
-    // there is no need to move to origin since nodes start at origin in new
-    // instance
-    //renderer.moveTo(0, 0)
-    renderer.resume()
+  // change play button in order to be properly set to pause
+  $('#couve-flor').empty()
+  // TODO check if this can be cleaner... removing vivagraph canvas?
+  $('#couve-flor').append('        <!--hidden div for color legend-->\n' +
+    '        <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">\n' +
+    '          <div class="panel panel-default" >\n' +
+    '            <div class="panel-heading">Color legend</div>\n' +
+    '            <div class="panel-body">\n' +
+    '              <!--Populated by visualization_functions.js-->\n' +
+    '              <label id="taxa_label" style="display: none">Taxa filters</label>\n' +
+    '              <ul class="legend" id="colorLegendBox"></ul>\n' +
+    '              <!--Populated by visualization_functions.js-->\n' +
+    '              <label id="distance_label" style="display: none">Distance filters</label>\n' +
+    '              <div class="gradient" id="scaleLegend"></div>\n' +
+    '              <!--Populated by visualization_functions.js-->\n' +
+    '              <label id="read_label" style="display: none">Read filters</label>\n' +
+    '              <div class="gradient" id="readLegend"></div>\n' +
+    '            </div>\n' +
+    '          </div>\n' +
+    '        </div>\n' +
+    '\n' +
+    '        <div id="buttonStuff">\n' +
+    '          <div class="btn-group">\n' +
+    '\n' +
+    '            <!-- Buttons that overlay the graph and interact with it -->\n' +
+    '            <button id="playpauseButton" data-toggle="tooltip" \n' +
+    '                    title="Play/Pause" type="button" \n' +
+    '                    class="btn btn-success">\n' +
+    '              <span class="glyphicon glyphicon-play"></span>\n' +
+    '            </button>\n' +
+    '\n' +
+    '            <button id="refreshButton" data-toggle="tooltip" \n' +
+    '                    title="Reset clicked nodes color (legacy)" type="button" \n' +
+    '                    class="btn btn-primary">\n' +
+    '              <span class="glyphicon glyphicon-refresh"></span>\n' +
+    '            </button>\n' +
+    '          </div>\n' +
+    '          <!--zoom buttons-->\n' +
+    '          <div class="btn-group">\n' +
+    '            <button id="zoom_in" class="zoom in btn btn-default"\n' +
+    '                    data-toggle="tooltip" title="Zoom in" \n' +
+    '                    type="button">\n' +
+    '              <span class="glyphicon glyphicon-zoom-in"></span>\n' +
+    '            </button>\n' +
+    '            <button id="zoom_out" class="zoom out btn btn-default"\n' +
+    '                    data-toggle="tooltip" title="Zoom out" \n' +
+    '                    type="button">\n' +
+    '              <span class="glyphicon glyphicon-zoom-out"></span>\n' +
+    '            </button>\n' +
+    '          </div> \n' +
+    '      \n' +
+    '          <!-- End buttons -->\n' +
+    '        </div>\n' +
+    '        <div id="popup_description" style="display: none"></div>')
+
+  onload()
+  //paused = false
+  // TODO is this called? I think this is never executed
+  setTimeout( () => {
+    console.log('timeout')
+  // resumes actual selection and hides loading screen
+  $('#loading').hide()
+  // slow down the spreading of nodes
+  // the more removed nodes --> less selected nodes --> slower spread
+  //layout.simulator.dragCoeff(0.1 + (listNodesRm.length * 0.000001))
+  // there is no need to move to origin since nodes start at origin in new
+  // instance
+  //renderer.moveTo(0, 0)
+  //renderer.resume()
   }, 1000)
+
 }
 
 // a function to display the loader mask
