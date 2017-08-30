@@ -13,7 +13,14 @@ const getArray_taxa = () => {
 }
 
 // initiates vivagraph main functions
+// onLoad consists of mainly three functions: init, precompute and renderGraph
 const onLoad = () => {
+
+  // Sets parameters to be passed to WebglCircle in order to change
+  // node shape, setting color and size.
+  const nodeColor = 0x666370 // hex rrggbb
+  const min_nodeSize = 2 // a value that assures that the node is
+  // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
   let list_lengths = [] // list to store the lengths of all nodes
@@ -33,17 +40,17 @@ const onLoad = () => {
     theta: 1
   })
 
-  function init() {
+  const init = () => {
     if (firstInstace === true) {
       getArray().done(function (json) {
         $.each(json, function (sequence_info, dict_dist) {
           // next we need to retrieve each information type independently
-          var sequence = sequence_info.split("_").slice(0, 3).join("_");
+          const sequence = sequence_info.split("_").slice(0, 3).join("_");
           //var species = sequence_info.split("_").slice(2,4).join(" ");
 
           // and continues
-          var seq_length = sequence_info.split("_").slice(-1).join("");
-          var log_length = Math.log(parseInt(seq_length)); //ln seq length
+          const seq_length = sequence_info.split("_").slice(-1).join("");
+          const log_length = Math.log(parseInt(seq_length)); //ln seq length
           list_lengths.push(seq_length); // appends all lengths to this list
           list_gi.push(sequence)
           //checks if sequence is not in list to prevent adding multiple nodes for each sequence
@@ -63,10 +70,10 @@ const onLoad = () => {
           }
 
           // loops between all arrays of array pairing sequence and distances
-          for (var i = 0; i < dict_dist.length; i++) {
-            var pairs = dict_dist[i]
-            var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
-            var distance = pairs[1]   // stores distances in a unique variable
+          for (let i = 0; i < dict_dist.length; i++) {
+            const pairs = dict_dist[i]
+            const reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
+            const distance = pairs[1]   // stores distances in a unique variable
             g.addLink(sequence, reference, distance)
           }
         })
@@ -81,11 +88,11 @@ const onLoad = () => {
     }
   }
 
-  init() //forces main json to load before rendering the graph
-
-  function precompute (iterations, callback) {
+  // function that precomputes notes. Iterations specify the number of times
+  // a precompute must run
+  const precompute = (iterations, callback) => {
     // let's run 10 iterations per event loop cycle:
-    var i = 0
+    let i = 0
     while (iterations > 0 && i < 10) {
       layout.step()
       iterations--
@@ -93,7 +100,7 @@ const onLoad = () => {
     }
     // processingElement.innerHTML = 'Layout precompute: ' + iterations;
     if (iterations > 0) {
-      setTimeout(function () {
+      setTimeout( () => {
         precompute(iterations, callback)
       }, 0) // keep going in next even cycle
     } else {
@@ -101,19 +108,14 @@ const onLoad = () => {
       callback()
     }
   }
-  // Sets parameters to be passed to WebglCircle in order to change
-  // node shape, setting color and size.
-  var nodeColor = 0x666370 // hex rrggbb
-  var min_nodeSize = 2 // a value that assures that the node is
-  // displayed without incresing the size of big nodes too much
 
   //* Starts graphics renderer *//
-  function renderGraph() {
-    var graphics = Viva.Graph.View.webglGraphics()
+  const renderGraph = () => {
+    const graphics = Viva.Graph.View.webglGraphics()
     //* * block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
     // to render nodes:
-    var circleNode = buildCircleNodeShader()
+    const circleNode = buildCircleNodeShader()
     graphics.setNodeProgram(circleNode)
     // second, change the node ui model, which can be understood
     // by the custom shader:
@@ -123,7 +125,7 @@ const onLoad = () => {
     })
 
     //* * END block #1 for node customization **//
-    var renderer = Viva.Graph.View.renderer(g, {
+    const renderer = Viva.Graph.View.renderer(g, {
       layout: layout,
       graphics: graphics,
       container: document.getElementById('couve-flor')
@@ -298,10 +300,6 @@ const onLoad = () => {
 
     //* * mouse hovering block end **//
     renderer.rerender()
-
-    // by default the animation on forces is paused since
-    // it may be computational intensive for old computers
-    renderer.pause()
 
     //* * Loading Screen goes off **//
     // $("#loading").hide();
@@ -1027,7 +1025,7 @@ const onLoad = () => {
       //console.log('returning to main')
       window.location.reload()   // a temporary fix to go back to full dataset
     })
-  }
+  } // closes renderGraph
   //}) //end of getArray
 
   //* ***********************************************//
@@ -1055,4 +1053,8 @@ const onLoad = () => {
       first_click_menu = true
     }
   })
-}
+
+  // this forces the entire script to run
+  init() //forces main json or the filtered objects to run before
+  // rendering the graph
+} // closes onload
