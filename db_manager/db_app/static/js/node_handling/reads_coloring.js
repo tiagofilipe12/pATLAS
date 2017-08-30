@@ -1,9 +1,9 @@
 // single read displayer
-function read_coloring (g, list_gi, graphics, renderer) {
+const read_coloring = (g, list_gi, graphics, renderer) => {
   //var readColorArray = []
-  var readMode = true
-  var readString = read_json.replace(/[{}" ]/g, '').split(',')
-  var listGiFilter = []
+  const readMode = true
+  const readString = read_json.replace(/[{}" ]/g, '').split(',')
+  let listGiFilter = []
   for (string in readString) {
     gi = readString[string].split(':')[0].replace(' ', '')
     listGiFilter.push(gi)
@@ -34,7 +34,7 @@ function read_coloring (g, list_gi, graphics, renderer) {
       scale = chroma.scale(['lightsalmon', 'maroon'])
       palette(scale, 20, readMode)
     }
-    node_iter(read_color, gi, graphics, perc)
+    node_iter(g, read_color, gi, graphics, perc)
   }
   // control all related divs
   showRerun = document.getElementById('Re_run')
@@ -49,8 +49,8 @@ function read_coloring (g, list_gi, graphics, renderer) {
 }
 
 // function to iterate through nodes
-function node_iter (read_color, gi, graphics, perc) {
-  g.forEachNode(function(node) {
+const node_iter = (g, read_color, gi, graphics, perc) => {
+  g.forEachNode( (node) => {
     // when filter removes all nodes and then adds them again. Looks like g
     // was somehow affected.
     // if statement added for parsing singletons into the graph visualization
@@ -59,7 +59,7 @@ function node_iter (read_color, gi, graphics, perc) {
     } else {
       nodeGI = node.id.split('_').slice(0, 3).join('_')
     }
-    var nodeUI = graphics.getNodeUI(node.id)
+    const nodeUI = graphics.getNodeUI(node.id)
     //console.log(nodeGI)
 
     if (gi === nodeGI) {
@@ -74,15 +74,17 @@ function node_iter (read_color, gi, graphics, perc) {
 // link coloring //
 ///////////////////
 
-function link_coloring (g, graphics, renderer) {
-  g.forEachLink(function (link) {
-    var dist = link.data * 10
-    var linkUI = graphics.getLinkUI(link.id)
-    if (document.getElementById('colorForm').value == 'Green color scheme' || document.getElementById('colorForm').value == '') {
+const link_coloring = (g, graphics, renderer) => {
+  g.forEachLink( (link) => {
+    const dist = link.data * 10
+    const linkUI = graphics.getLinkUI(link.id)
+    if (document.getElementById('colorForm').value === 'Green color scheme' || document.getElementById('colorForm').value === '') {
       link_color = chroma.mix('#65B661', '#CAE368', dist).hex().replace('#', '0x') + 'FF'
-    } else if (document.getElementById('colorForm').value == 'Blue color scheme') {
+    } else if (document.getElementById('colorForm').value === 'Blue color' +
+      ' scheme') {
       link_color = chroma.mix('#025D8C', '#73C2FF', dist).hex().replace('#', '0x') + 'FF'
-    } else if (document.getElementById('colorForm').value == 'Red color scheme') {
+    } else if (document.getElementById('colorForm').value === 'Red color' +
+      ' scheme') {
       link_color = chroma.mix('#4D0E1C', '#E87833', dist).hex().replace('#', '0x') + 'FF'
     }
 
@@ -95,9 +97,9 @@ function link_coloring (g, graphics, renderer) {
 }
 
 // option to return links to their default color
-function reset_link_color (g, graphics, renderer) {
+const reset_link_color = (g, graphics, renderer) => {
   g.forEachLink(function (link) {
-    var linkUI = graphics.getLinkUI(link.id)
+    const linkUI = graphics.getLinkUI(link.id)
     linkUI.color = 0xb3b3b3ff
   })
   renderer.rerender()
@@ -106,27 +108,31 @@ function reset_link_color (g, graphics, renderer) {
 
 // *** color scale legend *** //
 // for distances
-function color_legend (readMode) {
-  if (document.getElementById('colorForm').value == 'Green color scheme' || document.getElementById('colorForm').value == '') {
+const color_legend = (readMode) => {
+  if (document.getElementById('colorForm').value === 'Green color scheme' || document.getElementById('colorForm').value === '') {
     scale = chroma.scale(['#65B661', '#CAE368'])
-  } else if (document.getElementById('colorForm').value == 'Blue color scheme') {
+  } else if (document.getElementById('colorForm').value === 'Blue color' +
+    ' scheme') {
     scale = chroma.scale(['#025D8C', '#73C2FF'])
-  } else if (document.getElementById('colorForm').value == 'Red color scheme') {
+  } else if (document.getElementById('colorForm').value === 'Red color' +
+    ' scheme') {
     scale = chroma.scale(['#4D0E1C', '#E87833'])
   }
   palette(scale, 20, readMode)
 }
 
 // get pallete
-function palette (scale, x, readMode) { // x is the number of colors to the gradient
+const palette = (scale, x, readMode) => { // x is the number of colors to the
+// gradient
   showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
   showLegend.style.display = 'block'
-  var tmpArray = new Array(x)// create an empty array with length x
+  const tmpArray = new Array(x)// create an empty array with length x
   style_width = 100 / x
-  if (readMode === 'undefined' || readMode != true) {
+  // enters this statement for coloring the links and not the nodes
+  if (readMode === 'undefined' || readMode !== true) {
     $('#scaleLegend').empty()
     // this loop should be reversed since the higher values will have a lighter color
-    for (var i = tmpArray.length - 1; i >= 0; i--) {
+    for (let i = tmpArray.length - 1; i >= 0; i--) {
       color_element = scale(i / x).hex()
       $('#scaleLegend').append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
@@ -134,10 +140,10 @@ function palette (scale, x, readMode) { // x is the number of colors to the grad
     $('#scaleLegend').append('<div class="header_taxa" id="med">0.05</div>')
     $('#scaleLegend').append('<div class="header_taxa" id="max">0.1</div>')
     document.getElementById('distance_label').style.display = 'block' // show label
-  } else {
-    readMode == false
+  } else { // here enters for coloring the reads
+    //readMode = false //TODO I think this is not necessary
     $('#readLegend').empty()
-    for (var i = 0; i < tmpArray.length; i++) {
+    for (let i = 0; i < tmpArray.length; i++) {
       color_element = scale(i / x).hex()
       $('#readLegend').append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
