@@ -12,10 +12,15 @@ const getArray_taxa = () => {
   return taxa_tree
 }
 
+// store the node with more links
+let storeMasterNode = []
+
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
 const onLoad = () => {
 
+
+  let counter = -1 //sets a counter for the loop between the inputs nodes
   // Sets parameters to be passed to WebglCircle in order to change
   // node shape, setting color and size.
   const nodeColor = 0x666370 // hex rrggbb
@@ -44,6 +49,7 @@ const onLoad = () => {
     if (firstInstace === true) {
       getArray().done(function (json) {
         $.each(json, function (sequence_info, dict_dist) {
+          counter++
           // next we need to retrieve each information type independently
           const sequence = sequence_info.split("_").slice(0, 3).join("_");
           //var species = sequence_info.split("_").slice(2,4).join(" ");
@@ -76,15 +82,17 @@ const onLoad = () => {
             const distance = pairs[1]   // stores distances in a unique variable
             g.addLink(sequence, reference, distance)
           }
+          // checks if the node is the one with most links and stores it in
+          // storedNode --> returns an array with storedNode and previousDictDist
+          storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
         })
         // precompute before redering
-        precompute(1000, renderGraph) // callback I think there is no need to
-        // setTimeout()
+        precompute(1000, renderGraph) // callback
       }) //new getArray end
     } else {
       console.log('entered filters')
       console.log(listGiFilter)
-      list_lengths = requesterDB(g, listGiFilter, precompute(1000, renderGraph))
+      requesterDB(g, listGiFilter, counter, precompute(1000, renderGraph))
     }
   }
 
@@ -134,6 +142,11 @@ const onLoad = () => {
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
+
+    // used to center on the node with more links
+    if (storeMasterNode.length > 0) {
+      recenterDOM(renderer, layout, storeMasterNode)
+    }
 
     //* ************//
     //* **ZOOMING***//
@@ -421,8 +434,8 @@ const onLoad = () => {
       // append all order present in dataset
 
       for (let i = 0; i < sortedArray_order.length; i++) {
-        var order_tag = 'order' + sortedArray_order[i]
-        var orderId = "id='" + order_tag + "'"
+        //var order_tag = 'order' + sortedArray_order[i]
+        //var orderId = "id='" + order_tag + "'"
         $('#orderList').append("<option class='OrderClass'>" +
           sortedArray_order[i] +
           '</option>')
@@ -430,9 +443,9 @@ const onLoad = () => {
       $('#orderList').append("<option class='OrderClass'> \
                                     <em>Other</em></option>")
       // append all families present in dataset
-      for (var i = 0; i < sortedArray_family.length; i++) {
-        var family_tag = 'family' + sortedArray_family[i]
-        var familyId = "id='" + family_tag + "'"
+      for (let i = 0; i < sortedArray_family.length; i++) {
+        //var family_tag = 'family' + sortedArray_family[i]
+        //var familyId = "id='" + family_tag + "'"
         $('#familyList').append("<option class='FamilyClass'>" +
           sortedArray_family[i] +
           '</option>')
@@ -440,17 +453,17 @@ const onLoad = () => {
       $('#familyList').append("<option class='FamilyClass'> \
                                     <em>Other</em></li>")
       // append all genera present in dataset
-      for (var i = 0; i < sortedArray_genera.length; i++) {
-        var genus_tag = 'genus' + sortedArray_genera[i]
-        var genusId = "id='" + genus_tag + "'"
+      for (let i = 0; i < sortedArray_genera.length; i++) {
+        //var genus_tag = 'genus' + sortedArray_genera[i]
+        //var genusId = "id='" + genus_tag + "'"
         $('#genusList').append("<option class='GenusClass'>" +
           sortedArray_genera[i] +
           '</option>')
       }
       // append all species present in dataset
-      for (var i = 0; i < sortedArray_species.length; i++) {
-        var species_tag = 'genus' + sortedArray_species[i]
-        var speciesId = "id='" + species_tag + "'"
+      for (let i = 0; i < sortedArray_species.length; i++) {
+        //var species_tag = 'genus' + sortedArray_species[i]
+        //var speciesId = "id='" + species_tag + "'"
         $('#speciesList').append("<option class='SpeciesClass'>" +
           sortedArray_species[i] +
           '</option>')
@@ -466,20 +479,20 @@ const onLoad = () => {
       firstInstance = true // global variable
       existingTaxon = [],   // global variable
         taxaInList = []   // global variable
-      var classArray = ['.OrderClass', '.FamilyClass', '.GenusClass', '.SpeciesClass']
+      const classArray = ['.OrderClass', '.FamilyClass', '.GenusClass', '.SpeciesClass']
       idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species'] // global variable
-      for (var i = 0; i < classArray.length; i++) {
+      for (let i = 0; i < classArray.length; i++) {
         $(classArray[i]).on('click', function (e) {
           // empties the text in this div for the first intance
-          if (firstInstance == true) {
-            for (var x = 0; x < idsArrays.length; x++) {
+          if (firstInstance === true) {
+            for (let x = 0; x < idsArrays.length; x++) {
               $('#' + idsArrays[x]).empty()
             }
             firstInstance = false
           }
           // fill panel group displaying current selected taxa filters //
-          var stringClass = this.className.slice(0, -5)
-          var tempVar = this.firstChild.innerHTML
+          const stringClass = this.className.slice(0, -5)
+          const tempVar = this.firstChild.innerHTML
 
           // checks if a taxon is already in display
           var divstringClass = document.getElementById('p_' + stringClass)

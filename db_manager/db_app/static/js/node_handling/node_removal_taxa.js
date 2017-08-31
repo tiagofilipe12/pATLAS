@@ -1,6 +1,6 @@
 // function to call requests on db
 
-const requesterDB = (g, listGiFilter, cb) => {
+const requesterDB = (g, listGiFilter, counter, cb) => {
   let newList = []
   //var jsonQueries = [] // this isn't passing to inside the query on db
   for (let i = 0; i < listGiFilter.length; i++) {
@@ -37,7 +37,10 @@ const requesterDB = (g, listGiFilter, cb) => {
           // from db
         }
         //add node
-        reAddNode(g, jsonObj, newList) //callback function
+        counter++
+        storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
+        console.log("master", storeMasterNode)
+        // function
       } else {  //this statement should not happen in future implementation,
         // singletions must be passed to the database
         const jsonObj = {
@@ -49,17 +52,20 @@ const requesterDB = (g, listGiFilter, cb) => {
           'significantLinks': 'N/A'
         }
         //add node
-        reAddNode(g, jsonObj, newList) //callback function
+        counter++
+        storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
+        // function
+        console.log("master", storeMasterNode)
       }
       //add node
       //reAddNode(jsonObj, newList) //callback function
     })
   }
-  cb
+  cb    //TODO this callback must accept this storeMasterNode
 }
 
 // re adds nodes after cleaning the entire graph
-const reAddNode = (g, jsonObj, newList) => {
+const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
@@ -105,7 +111,8 @@ const reAddNode = (g, jsonObj, newList) => {
       // TODO significant links must have a distance... but still not in database!
     }
   }
-  return newList
+  storeMasterNode = storeRecenterDom(storeMasterNode, linksArray, sequence, counter)
+  return storeMasterNode
 }
 
 // function that actually removes the nodes
@@ -176,7 +183,7 @@ const actual_removal = (renderer, listGiFilter, onload) => {
   setTimeout( () => {
     console.log('timeout')
   // resumes actual selection and hides loading screen
-  $('#loading').hide()
+    $('#loading').hide()
   // slow down the spreading of nodes
   // the more removed nodes --> less selected nodes --> slower spread
   //layout.simulator.dragCoeff(0.1 + (listNodesRm.length * 0.000001))
