@@ -61,7 +61,7 @@ const requesterDB = (g, listGiFilter, counter, cb) => {
       //reAddNode(jsonObj, newList) //callback function
     })
   }
-  cb    //TODO this callback must accept this storeMasterNode
+  cb
 }
 
 // re adds nodes after cleaning the entire graph
