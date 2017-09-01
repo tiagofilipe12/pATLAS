@@ -157,10 +157,14 @@ const onLoad = () => {
     $('#zoom_in').click( (event) => {
       event.preventDefault()
       renderer.zoomIn()
+      renderer.rerender()   // rerender after zoom avoids glitch with
+      // duplicated nodes
     })
     $('#zoom_out').click( (event) => {
       event.preventDefault()
       renderer.zoomOut()
+      renderer.rerender()   // rerender after zoom avoids glitch with
+      // duplicated nodes
     })
 
     //* *************//
@@ -502,7 +506,7 @@ const onLoad = () => {
             removal = false
           }
           // checks if selection is in list and is the last element present... removing it
-          else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar && taxaInList.length == 1) {
+          else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] === tempVar && taxaInList.length === 1) {
             // resets displayCurrentBox
             resetDisplayTaxaBox(idsArrays)
             removal = true
@@ -524,7 +528,7 @@ const onLoad = () => {
               removal = true
             }
           }
-          if (taxaInList.indexOf(tempVar) < 0 && removal == false) {
+          if (taxaInList.indexOf(tempVar) < 0 && removal === false) {
             taxaInList.push(tempVar)  // user to store all clicked taxa
           }
           existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
@@ -587,11 +591,12 @@ const onLoad = () => {
       var alertArrays = {'order': selectedOrder, 'family': selectedFamily, 'genus': selectedGenus, 'species': selectedSpecies}
       var divAlert = document.getElementById('alertId')
       var Alert = false
-      for (i in alertArrays) {
-        if (alertArrays[i][0] == 'No filters applied') {
+      for (let i in alertArrays) {
+        if (alertArrays[i][0] === "No filters applied") {
           Alert = true
           counter = 4  // counter used to check if more than one dropdown has selected options
-        } else if (alertArrays[i] != '') {
+        } else if (alertArrays[i].length > 0) {
+          console.log(alertArrays[i])
           counter = counter + 1
         }
       }
@@ -657,38 +662,46 @@ const onLoad = () => {
       // first restores all nodes to default color
       node_color_reset(graphics, g, nodeColor, renderer)
 
+      // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
-        g.forEachNode(function (node) {
-          var nodeUI = graphics.getNodeUI(node.id)
-          var species = node.data.species.split('>').slice(-1).toString()
-          var genus = species.split(' ')[0]
-          // checks if genus is in selection
-          if (selectedGenus.indexOf(genus) >= 0) {
-            nodeUI.color = 0xf71735
-            nodeUI.backupColor = nodeUI.color
-            changed_nodes.push(node.id)
-          }
-          // checks if species is in selection
-          else if (selectedSpecies.indexOf(species) >= 0) {
-            nodeUI.color = 0xf71735
-            nodeUI.backupColor = nodeUI.color
-            changed_nodes.push(node.id)
-          }
-        })
-        renderer.rerender()
+        currentColor = 0xf71735   // sets color of all changes_nodes to be red
         store_lis = '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#f71735"></button>&nbsp;multi-level selected taxa</li>'
-        // displays alert
-        // first check if filters are applied in order to avoid displaying when there are no filters
-        for (i in alertArrays) {
-          if (alertArrays[i][0] != 'No filters applied') {
-            var divAlert = document.getElementById('alertId_multi')
-            divAlert.style.display = 'block'
-            // control the alertClose button
-            $('#alertClose_multi').click(function () {
-              $('#alertId_multi').hide()  // hide this div
-            })
-            // auto hide after 5 seconds without closing the div
-            window.setTimeout(function () { $('#alertId_multi').hide() }, 5000)
+        for (i in alertArrays.order) {
+          let currentSelection = alertArrays.order
+          for (i in currentSelection) {
+            const tempArray = assocOrderGenus[currentSelection[i]]
+            for (sp in tempArray) {
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+            }
+          }
+        }
+        for (i in alertArrays.family) {
+          let currentSelection = alertArrays.family
+          for (i in currentSelection) {
+            const tempArray = assocOrderGenus[currentSelection[i]]
+            for (sp in tempArray) {
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+            }
+          }
+        }
+        for (i in alertArrays.genus) {
+          let currentSelection = alertArrays.genus
+          for (i in currentSelection) {
+            const tempArray = assocOrderGenus[currentSelection[i]]
+            for (sp in tempArray) {
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+            }
+          }
+        }
+        for (i in alertArrays.species) {
+          let currentSelection = alertArrays.species
+          console.log("species", currentSelection)
+          for (i in currentSelection) {
+            //const tempArray = assocOrderGenus[currentSelection[i]]
+            //for (sp in tempArray) {
+            //  console.log(currentColor)
+              taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
+            //}
           }
         }
       }

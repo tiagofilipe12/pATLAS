@@ -1,7 +1,7 @@
 // this function repositions the graph to center on the desired node
 
 const recenterDOM = (renderer, layout, storeMasterNode) => {
-  console.log(storeMasterNode)
+  //console.log(storeMasterNode)
   const pos = layout.getNodePosition(storeMasterNode[0])
   renderer.moveTo(pos.x, pos.y)
 }
@@ -9,7 +9,7 @@ const recenterDOM = (renderer, layout, storeMasterNode) => {
 // this function stores the node with more links
 
 const storeRecenterDom = (storeMasterNode, dict_dist, sequence, counter) => {
-  console.log(counter)
+  //console.log(counter)
   //let previousDictDist = storeMasterNode[1]
   //let storedNode = storeMasterNode[0]
   // checks if the node is the one with most links and stores it in storedNode

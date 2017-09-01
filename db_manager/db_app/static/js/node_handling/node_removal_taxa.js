@@ -184,6 +184,7 @@ const actual_removal = (renderer, listGiFilter, onload) => {
     console.log('timeout')
   // resumes actual selection and hides loading screen
     $('#loading').hide()
+    renderer.rerender()
   // slow down the spreading of nodes
   // the more removed nodes --> less selected nodes --> slower spread
   //layout.simulator.dragCoeff(0.1 + (listNodesRm.length * 0.000001))
