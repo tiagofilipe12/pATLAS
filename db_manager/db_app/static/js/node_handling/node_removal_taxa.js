@@ -178,22 +178,7 @@ const actual_removal = (renderer, listGiFilter, onload) => {
     '        <div id="popup_description" style="display: none"></div>')
 
   onload()
-  //paused = false
-  // TODO is this called? I think this is never executed
-  setTimeout( () => {
-    console.log('timeout')
-  // resumes actual selection and hides loading screen
-    $('#loading').hide()
-    renderer.rerender()
-  // slow down the spreading of nodes
-  // the more removed nodes --> less selected nodes --> slower spread
-  //layout.simulator.dragCoeff(0.1 + (listNodesRm.length * 0.000001))
-  // there is no need to move to origin since nodes start at origin in new
-  // instance
-  //renderer.moveTo(0, 0)
-  //renderer.resume()
-  }, 1000)
-
+  // TODO maybe add some loading screen
 }
 
 // a function to display the loader mask

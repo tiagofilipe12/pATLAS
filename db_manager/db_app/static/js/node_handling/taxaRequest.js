@@ -8,6 +8,7 @@ const taxaRequest = (g, graphics, renderer, taxa, currentColor, changed_nodes) =
     for (object in data) {
       //console.log(data[object].plasmid_id)
       listData.push(data[object].plasmid_id)
+      console.log("listData", listData)
     }
     //console.log(listData)
     colorNodes(g, graphics, listData, currentColor, changed_nodes)

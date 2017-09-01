@@ -144,7 +144,9 @@ const onLoad = () => {
     renderer.pause()
 
     // used to center on the node with more links
+
     if (storeMasterNode.length > 0) {
+      console.log("rendergraph", storeMasterNode)
       recenterDOM(renderer, layout, storeMasterNode)
     }
 
@@ -792,9 +794,6 @@ const onLoad = () => {
         showGoback.style.display = 'block'
         showDownload.style.display = 'block'
       }
-
-      //matches to filter "Re_run"
-      listGiFilter = changed_nodes
     })
 
     //* ************//
@@ -805,6 +804,7 @@ const onLoad = () => {
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
+        console.log("listGiFilter", listGiFilter)
         list_gi, listGiFilter = read_coloring(g, list_gi, graphics, renderer)
       }, 100)
 
