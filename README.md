@@ -1,6 +1,6 @@
 # pATLAS
 
-![Local Image](./docs/gitbook/images/pATLAS.png)
+![Local Image](docs/gitbook/images/pATLAS.png)
 
 ## Description
 
