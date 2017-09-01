@@ -1,6 +1,12 @@
 # pATLAS
 
-![Local Image](docs/gitbook/images/pATLAS_background.png)
+<p align="center">
+  <a href="http://bionode.io">
+    <img height="200" width="400" title="pATLAS" alt="pATLAS logo" 
+    src="https://github.com/tiagofilipe12/pATLAS/blob/fixing_filters/docs/gitbook/images/pATLAS_background.png?raw=true"/>
+  </a>
+  <br/>
+</p>
 
 ## Description
 
