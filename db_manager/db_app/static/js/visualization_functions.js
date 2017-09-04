@@ -696,7 +696,12 @@ const onLoad = () => {
             const tempArray = assocGenus[currentSelection[i]]
             console.log(tempArray)
             for (sp in tempArray) {
-              listGiFilter.push(taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes))
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                .then(results => {
+                  results.map(request => {
+                    listGiFilter.push(request.plasmid_id)
+                  })
+                })
             }
           }
         }
