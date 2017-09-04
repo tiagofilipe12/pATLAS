@@ -3,17 +3,17 @@
 // dropdown selection
 const taxaRequest = (g, graphics, renderer, taxa, currentColor, changed_nodes) => {
   taxaDb = taxa.split(" ").join("_")
-  $.get('api/getaccession/', {'name': taxaDb}, (data, status) => {
+  // return a promise for each query
+  return $.get('api/getaccession/', {'name': taxaDb}, (data, status) => {
     let listData = []
     for (object in data) {
-      //console.log(data[object].plasmid_id)
       listData.push(data[object].plasmid_id)
-      console.log("listData", listData)
     }
-    //console.log(listData)
     colorNodes(g, graphics, listData, currentColor, changed_nodes)
+    //return listData
     renderer.rerender()
   })
+
 }
 
 // cycles nodes
@@ -28,3 +28,15 @@ const colorNodes = (g, graphics, accessionRequested, currentColor, changed_nodes
     }
   })
 }
+
+// // uses the above promise to push to listGiFilter
+// const getResultsRequest = (results) => {
+//   listGiFilterInside = []   //this array just exist within this function
+//   // then it exports the listGiFilter
+//   console.log("results", results)
+//   listGiFilterInside = results.map(request => {
+//     listGiFilterInside.push(request.plasmid_id)
+//
+//   })
+//   return listGiFilterInside
+// }

@@ -116,9 +116,9 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
 }
 
 // function that actually removes the nodes
-const actual_removal = (renderer, listGiFilter, onload) => {
+const actual_removal = (renderer, onload) => {
   // removes all nodes from g using the same layout
-  console.log(listGiFilter)
+  //console.log(listGiFilter)
   firstInstace = false
 
   // TODO after this it should render a new page with the new json object

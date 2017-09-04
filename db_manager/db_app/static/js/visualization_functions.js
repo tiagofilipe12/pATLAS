@@ -15,10 +15,12 @@ const getArray_taxa = () => {
 // store the node with more links
 let storeMasterNode = []
 
+//
+let listGiFilter = []
+
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
 const onLoad = () => {
-
 
   let counter = -1 //sets a counter for the loop between the inputs nodes
   // Sets parameters to be passed to WebglCircle in order to change
@@ -574,6 +576,7 @@ const onLoad = () => {
     // perform actions when submit button is clicked.
 
     $('#taxaModalSubmit').click(function (event) {
+      //let listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
       event.preventDefault()
       // now processes the current selection
@@ -673,25 +676,27 @@ const onLoad = () => {
           for (i in currentSelection) {
             const tempArray = assocOrderGenus[currentSelection[i]]
             for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+              listGiFilter.push(taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes))
             }
           }
         }
         for (i in alertArrays.family) {
           let currentSelection = alertArrays.family
           for (i in currentSelection) {
-            const tempArray = assocOrderGenus[currentSelection[i]]
+            const tempArray = assocFamilyGenusGenus[currentSelection[i]]
             for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+              listGiFilter.push(taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes))
             }
           }
         }
         for (i in alertArrays.genus) {
           let currentSelection = alertArrays.genus
+          console.log("genus", currentSelection)
           for (i in currentSelection) {
-            const tempArray = assocOrderGenus[currentSelection[i]]
+            const tempArray = assocGenus[currentSelection[i]]
+            console.log(tempArray)
             for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+              listGiFilter.push(taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes))
             }
           }
         }
@@ -702,8 +707,18 @@ const onLoad = () => {
             //const tempArray = assocOrderGenus[currentSelection[i]]
             //for (sp in tempArray) {
             //  console.log(currentColor)
-              taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
-            //}
+            taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
+              .then(results => {
+                results.map(request => {
+                  listGiFilter.push(request.plasmid_id)
+
+                })
+                console.log("somethin2g", listGiFilter) //ok
+                //getResultsRequest(results)
+              })
+            console.log("something", listGiFilter) // don't have previous
+            // taxarequest... but maybe it is ok because we just need it
+            // after rendering
           }
         }
       }
@@ -717,6 +732,7 @@ const onLoad = () => {
             var currentSelection = alertArrays[array]
             // performs the actual interaction for color picking and assigning
             for (i in currentSelection) {
+              console.log(currentSelection[i])
 
               // orders //
               if (alertArrays['order'] != '') {
@@ -728,7 +744,7 @@ const onLoad = () => {
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family and orders
                 for (i in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
+                  listGiFilter = taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
                 }
               }
 
@@ -742,7 +758,7 @@ const onLoad = () => {
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family
                 for (i in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
+                  listGiFilter = taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
                 }
               }
 
@@ -756,7 +772,7 @@ const onLoad = () => {
                 // requests taxa associated accession from db and colors
                 // respective nodes
                 for (i in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
+                  listGiFilter = taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
                 }
               }
 
@@ -768,7 +784,7 @@ const onLoad = () => {
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
+                listGiFilter = taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
               }
             }
             firstIteration = false // stops getting lower levels
@@ -804,7 +820,7 @@ const onLoad = () => {
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
-        console.log("listGiFilter", listGiFilter)
+        //console.log("listGiFilter", listGiFilter)
         list_gi, listGiFilter = read_coloring(g, list_gi, graphics, renderer)
       }, 100)
 
@@ -1022,9 +1038,10 @@ const onLoad = () => {
     // runs the re run operation for the selected species
     $('#Re_run').click(function (event) {
       //* * Loading Screen goes on **//
+      //console.log("click", listGiFilter)
       show_div(
         // removes nodes
-        actual_removal(renderer, listGiFilter, onload)
+        actual_removal(renderer, onload)
       )
       // removes disabled from go_back button
       document.getElementById('go_back').className = document.getElementById('go_back').className.replace(/(?:^|\s)disabled(?!\S)/g, '')
