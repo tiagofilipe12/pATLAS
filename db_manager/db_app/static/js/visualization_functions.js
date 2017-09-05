@@ -253,6 +253,7 @@ const onLoad = () => {
 
       // call the requests
       const requestPlasmidTable = (node, setupPopupDisplay) => {
+        console.log(node.id)
         // if statement to check if node is in database or is a new import
         // from mapping
         if (node.data.seq_length) {
@@ -1062,7 +1063,7 @@ const onLoad = () => {
       //console.log("click", listGiFilter)
       show_div(
         // removes nodes
-        actual_removal(renderer, onload)
+        actual_removal(onload)
       )
       // removes disabled from go_back button
       document.getElementById('go_back').className = document.getElementById('go_back').className.replace(/(?:^|\s)disabled(?!\S)/g, '')

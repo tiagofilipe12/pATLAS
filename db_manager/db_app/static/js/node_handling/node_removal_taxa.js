@@ -22,8 +22,6 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
         } else {
           plasmidName = data.json_entry.plasmid_name
         }
-        // TODO may be output this with something like oboe.js?
-
         //console.log(data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(','))
 
         // if request finds no matching plasmid it has no connections to other db
@@ -35,15 +33,12 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
             'plasmidName': plasmidName,
             'significantLinks': data.json_entry.significantLinks.replace(/['u\[\] ]/g, '').split(',') //this is a
             // string ... not ideal
-            // TODO this is very sketchy and should be fixed with JSON parsing
+            // TODO this is sketchy and should be fixed with JSON parsing
             // from db
           }
           //add node
           counter++
-          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
-          console.log("master", storeMasterNode)  // properly returning new
-          // storeMasterNode
-          // function
+          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback function
         } else {  //this statement should not happen in future implementation,
           // singletions must be passed to the database
           const jsonObj = {
@@ -66,7 +61,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      console.log("results", results, storeMasterNode)
+      //console.log("results", results, storeMasterNode)
       precompute(1000, renderGraph)
     })
     .catch((error) => {
@@ -83,7 +78,9 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
   if (length === 'N/A') {
     length = 1
   }
+  // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
+    //console.log("sequence", sequence)
     g.addNode(sequence, {
       sequence: "<font color='#468499'>Accession:" +
       " </font><a" +
@@ -100,13 +97,14 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
 
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== 'N/A') {
+    //console.log("linksArray", linksArray)
     for (let i = 0; i < linksArray.length; i++) {
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linksArray[i]) < 0) {
         g.addNode(linksArray[i], {
           sequence: "<font color='#468499'>Accession:" +
           " </font><a" +
-          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
+          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linksArray[i].split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
           //species:"<font color='#468499'>Species:
           // </font>" + species,
           seq_length: "<font" +
@@ -126,7 +124,7 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
 }
 
 // function that actually removes the nodes
-const actual_removal = (renderer, onload) => {
+const actual_removal = (onload) => {
   // removes all nodes from g using the same layout
   //console.log(listGiFilter)
   firstInstace = false
