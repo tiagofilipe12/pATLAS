@@ -12,8 +12,7 @@ const getArray_taxa = () => {
   return taxa_tree
 }
 
-// store the node with more links
-let storeMasterNode = []
+
 
 //
 let listGiFilter = []
@@ -21,6 +20,8 @@ let listGiFilter = []
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
 const onLoad = () => {
+  // store the node with more links
+  let storeMasterNode = []
 
   let counter = -1 //sets a counter for the loop between the inputs nodes
   // Sets parameters to be passed to WebglCircle in order to change
@@ -92,15 +93,17 @@ const onLoad = () => {
         precompute(1000, renderGraph) // callback
       }) //new getArray end
     } else {
+      // storeMasterNode is empty in here
       console.log('entered filters')
       console.log(listGiFilter)
-      requesterDB(g, listGiFilter, counter, precompute(1000, renderGraph))
+      requesterDB(g, listGiFilter, counter, storeMasterNode, precompute, renderGraph)
     }
   }
 
   // function that precomputes notes. Iterations specify the number of times
   // a precompute must run
   const precompute = (iterations, callback) => {
+    console.log("entering precompute")
     // let's run 10 iterations per event loop cycle:
     let i = 0
     while (iterations > 0 && i < 10) {
@@ -121,6 +124,7 @@ const onLoad = () => {
 
   //* Starts graphics renderer *//
   const renderGraph = () => {
+    console.log("entered renderGraph")
     const graphics = Viva.Graph.View.webglGraphics()
     //* * block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
@@ -150,6 +154,9 @@ const onLoad = () => {
     if (storeMasterNode.length > 0) {
       console.log("rendergraph", storeMasterNode)
       recenterDOM(renderer, layout, storeMasterNode)
+      storeMasterNode = []  //clears the array after recentering the graph
+    } else {
+      console.log("storednodeempty", storeMasterNode)
     }
 
     //* ************//
@@ -676,7 +683,12 @@ const onLoad = () => {
           for (i in currentSelection) {
             const tempArray = assocOrderGenus[currentSelection[i]]
             for (sp in tempArray) {
-              listGiFilter.push(taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes))
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                .then(results => {
+                  results.map(request => {
+                    listGiFilter.push(request.plasmid_id)
+                  })
+                })
             }
           }
         }
@@ -685,7 +697,12 @@ const onLoad = () => {
           for (i in currentSelection) {
             const tempArray = assocFamilyGenusGenus[currentSelection[i]]
             for (sp in tempArray) {
-              listGiFilter.push(taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes))
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                .then(results => {
+                  results.map(request => {
+                    listGiFilter.push(request.plasmid_id)
+                  })
+                })
             }
           }
         }
@@ -716,14 +733,8 @@ const onLoad = () => {
               .then(results => {
                 results.map(request => {
                   listGiFilter.push(request.plasmid_id)
-
                 })
-                console.log("somethin2g", listGiFilter) //ok
-                //getResultsRequest(results)
               })
-            console.log("something", listGiFilter) // don't have previous
-            // taxarequest... but maybe it is ok because we just need it
-            // after rendering
           }
         }
       }
@@ -737,7 +748,6 @@ const onLoad = () => {
             var currentSelection = alertArrays[array]
             // performs the actual interaction for color picking and assigning
             for (i in currentSelection) {
-              console.log(currentSelection[i])
 
               // orders //
               if (alertArrays['order'] != '') {
@@ -748,9 +758,13 @@ const onLoad = () => {
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family and orders
-                for (i in tempArray) {
-                  listGiFilter = taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
-                }
+                for (sp in tempArray) {
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                    .then(results => {
+                      results.map(request => {
+                        listGiFilter.push(request.plasmid_id)
+                      })
+                    })                }
               }
 
               // families //
@@ -762,9 +776,13 @@ const onLoad = () => {
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family
-                for (i in tempArray) {
-                  listGiFilter = taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
-                }
+                for (sp in tempArray) {
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                    .then(results => {
+                      results.map(request => {
+                        listGiFilter.push(request.plasmid_id)
+                      })
+                    })                }
               }
 
               // genus //
@@ -776,9 +794,13 @@ const onLoad = () => {
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                for (i in tempArray) {
-                  listGiFilter = taxaRequest(g, graphics, renderer, tempArray[i], currentColor, changed_nodes)
-                }
+                for (sp in tempArray) {
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                    .then(results => {
+                      results.map(request => {
+                        listGiFilter.push(request.plasmid_id)
+                      })
+                    })                }
               }
 
               // species //
@@ -789,8 +811,12 @@ const onLoad = () => {
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                listGiFilter = taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
-              }
+                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
+                  .then(results => {
+                    results.map(request => {
+                      listGiFilter.push(request.plasmid_id)
+                    })
+                  })              }
             }
             firstIteration = false // stops getting lower levels
           }

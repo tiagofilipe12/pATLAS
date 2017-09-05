@@ -1,71 +1,81 @@
 // function to call requests on db
 
-const requesterDB = (g, listGiFilter, counter, cb) => {
+const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, renderGraph) => {
   let newList = []
-  //var jsonQueries = [] // this isn't passing to inside the query on db
-  for (let i = 0; i < listGiFilter.length; i++) {
-    $.get('api/getspecies/', {'accession': listGiFilter[i]}, function (data, status) {
-      // this request uses nested json object to access json entries
-      // available in the database
+  let promises = []
+  // loops every Accession stored in listGiFilter on re_run button
+    for (let i = 0; i < listGiFilter.length; i++) {
+      promises.push(
+      $.get('api/getspecies/', {'accession': listGiFilter[i]}, function (data, status) {
+        // this request uses nested json object to access json entries
+        // available in the database
 
-      // if request return no speciesName or plasmidName
-      // sometimes plasmids have no descriptor for one of these or both
-      if (data.json_entry.name === null) {
-        speciesName = "N/A"
-      } else {
-        speciesName = data.json_entry.name.split("_").join(" ")
-      }
-      if (data.json_entry.plasmid_name === null) {
-        plasmidName = "N/A"
-      } else {
-        plasmidName = data.json_entry.plasmid_name
-      }
-      // TODO may be output this with something like oboe.js?
-
-      //console.log(data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(','))
-
-      // if request finds no matching plasmid it has no connections to other db
-      if (data.plasmid_id !== null) {
-        const jsonObj = {
-          'plasmidAccession': data.plasmid_id,
-          'plasmidLenght': data.json_entry.length,
-          'speciesName': speciesName,
-          'plasmidName': plasmidName,
-          'significantLinks': data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(',') //this is a
-          // string ... not ideal
-          // TODO this is very sketchy and should be fixed with JSON parsing
-          // from db
+        // if request return no speciesName or plasmidName
+        // sometimes plasmids have no descriptor for one of these or both
+        if (data.json_entry.name === null) {
+          speciesName = "N/A"
+        } else {
+          speciesName = data.json_entry.name.split("_").join(" ")
         }
-        //add node
-        counter++
-        storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
-        console.log("master", storeMasterNode)
-        // function
-      } else {  //this statement should not happen in future implementation,
-        // singletions must be passed to the database
-        const jsonObj = {
-          'plasmidAccession': 'non_linked_accession', //this should pass
-          // the listGiFilter[accession] but it can't be obtained here.
-          'plasmidLenght': 'N/A',
-          'speciesName': 'N/A',
-          'plasmidName': 'N/A',
-          'significantLinks': 'N/A'
+        if (data.json_entry.plasmid_name === null) {
+          plasmidName = "N/A"
+        } else {
+          plasmidName = data.json_entry.plasmid_name
         }
-        //add node
-        counter++
-        storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
-        // function
-        console.log("master", storeMasterNode)
-      }
-      //add node
-      //reAddNode(jsonObj, newList) //callback function
-    })
-  }
-  cb
+        // TODO may be output this with something like oboe.js?
+
+        //console.log(data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(','))
+
+        // if request finds no matching plasmid it has no connections to other db
+        if (data.plasmid_id !== null) {
+          const jsonObj = {
+            'plasmidAccession': data.plasmid_id,
+            'plasmidLenght': data.json_entry.length,
+            'speciesName': speciesName,
+            'plasmidName': plasmidName,
+            'significantLinks': data.json_entry.significantLinks.replace(/['u\[\] ]/g, '').split(',') //this is a
+            // string ... not ideal
+            // TODO this is very sketchy and should be fixed with JSON parsing
+            // from db
+          }
+          //add node
+          counter++
+          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
+          console.log("master", storeMasterNode)  // properly returning new
+          // storeMasterNode
+          // function
+        } else {  //this statement should not happen in future implementation,
+          // singletions must be passed to the database
+          const jsonObj = {
+            'plasmidAccession': 'non_linked_accession', //this should pass
+            // the listGiFilter[accession] but it can't be obtained here.
+            'plasmidLenght': 'N/A',
+            'speciesName': 'N/A',
+            'plasmidName': 'N/A',
+            'significantLinks': 'N/A'
+          }
+          //add node
+          counter++
+          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
+          // function
+          console.log("master", storeMasterNode)
+        }
+      })
+      )
+    }
+    Promise.all(promises)
+      .then((results) => {
+        console.log("results", results)
+        precompute(1000, renderGraph)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
 }
 
 // re adds nodes after cleaning the entire graph
 const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
+  console.log("entering readd")
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
@@ -106,12 +116,12 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
         })
         newList.push(linksArray[i])
       }
-
+      // adds links for each node
       g.addLink(sequence, linksArray[i])
-      // TODO significant links must have a distance... but still not in database!
     }
   }
-  storeMasterNode = storeRecenterDom(storeMasterNode, linksArray, sequence, counter)
+  storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
+   sequence, counter)
   return storeMasterNode
 }
 
@@ -121,7 +131,6 @@ const actual_removal = (renderer, onload) => {
   //console.log(listGiFilter)
   firstInstace = false
 
-  // TODO after this it should render a new page with the new json object
   // change play button in order to be properly set to pause
   $('#couve-flor').empty()
   // TODO check if this can be cleaner... removing vivagraph canvas?
@@ -178,7 +187,7 @@ const actual_removal = (renderer, onload) => {
     '        <div id="popup_description" style="display: none"></div>')
 
   onload()
-  // TODO maybe add some loading screen
+  // TODO maybe add some nicer loading screen
 }
 
 // a function to display the loader mask
@@ -190,6 +199,7 @@ const show_div = (callback) => {
 }
 
 
+/*
 // TODO remove this function?
 // helper function to color according with family and order
 function node_coloring_taxa (tempArray, g, graphics, store_lis, currentSelection) {
@@ -212,7 +222,7 @@ function node_coloring_taxa (tempArray, g, graphics, store_lis, currentSelection
     })
   }
   return store_lis
-}
+}*/
 
 // function to reset node colors
 const node_color_reset = (graphics, g, nodeColor, renderer) => {
@@ -227,3 +237,4 @@ const node_color_reset = (graphics, g, nodeColor, renderer) => {
   })
   renderer.rerender()
 }
+
