@@ -2,10 +2,10 @@
 
 const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, renderGraph) => {
   let newList = []
-  let promises = []
+  let promises = []   //an array to store all the requests as promises
   // loops every Accession stored in listGiFilter on re_run button
-    for (let i = 0; i < listGiFilter.length; i++) {
-      promises.push(
+  for (let i = 0; i < listGiFilter.length; i++) {
+    promises.push(
       $.get('api/getspecies/', {'accession': listGiFilter[i]}, function (data, status) {
         // this request uses nested json object to access json entries
         // available in the database
@@ -58,24 +58,24 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
           counter++
           storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
           // function
-          console.log("master", storeMasterNode)
         }
       })
-      )
-    }
-    Promise.all(promises)
-      .then((results) => {
-        console.log("results", results)
-        precompute(1000, renderGraph)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    )
+  }
+  // promise that waits for all the requests and nodes to be added to
+  // vivagraph.... and only then precompute the graph.
+  Promise.all(promises)
+    .then((results) => {
+      console.log("results", results, storeMasterNode)
+      precompute(1000, renderGraph)
+    })
+    .catch((error) => {
+      console.log("Error! No query was made. Error message: ", error)
+    })
 }
 
 // re adds nodes after cleaning the entire graph
 const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
-  console.log("entering readd")
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks

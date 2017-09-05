@@ -12,16 +12,14 @@ const getArray_taxa = () => {
   return taxa_tree
 }
 
-
-
-//
+// list used to store for re-run button (apply filters)
 let listGiFilter = []
 
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
 const onLoad = () => {
   // store the node with more links
-  let storeMasterNode = []
+  let storeMasterNode = []    //cleared every instance of onload
 
   let counter = -1 //sets a counter for the loop between the inputs nodes
   // Sets parameters to be passed to WebglCircle in order to change
@@ -94,16 +92,17 @@ const onLoad = () => {
       }) //new getArray end
     } else {
       // storeMasterNode is empty in here
-      console.log('entered filters')
-      console.log(listGiFilter)
+      //console.log('entered filters')
+      //console.log(listGiFilter)
       requesterDB(g, listGiFilter, counter, storeMasterNode, precompute, renderGraph)
+      // TODO masterNode needs to be used to re-center the graph
     }
   }
 
   // function that precomputes notes. Iterations specify the number of times
   // a precompute must run
   const precompute = (iterations, callback) => {
-    console.log("entering precompute")
+    //console.log("entering precompute")
     // let's run 10 iterations per event loop cycle:
     let i = 0
     while (iterations > 0 && i < 10) {
@@ -124,7 +123,7 @@ const onLoad = () => {
 
   //* Starts graphics renderer *//
   const renderGraph = () => {
-    console.log("entered renderGraph")
+    //console.log("entered renderGraph")
     const graphics = Viva.Graph.View.webglGraphics()
     //* * block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
@@ -150,13 +149,11 @@ const onLoad = () => {
     renderer.pause()
 
     // used to center on the node with more links
-
+    // this is used to skip if it is a re-run button execution
     if (storeMasterNode.length > 0) {
-      console.log("rendergraph", storeMasterNode)
       recenterDOM(renderer, layout, storeMasterNode)
-      storeMasterNode = []  //clears the array after recentering the graph
     } else {
-      console.log("storednodeempty", storeMasterNode)
+      console.log("stored node is empty", storeMasterNode)
     }
 
     //* ************//
@@ -608,7 +605,6 @@ const onLoad = () => {
           Alert = true
           counter = 4  // counter used to check if more than one dropdown has selected options
         } else if (alertArrays[i].length > 0) {
-          console.log(alertArrays[i])
           counter = counter + 1
         }
       }
@@ -708,10 +704,8 @@ const onLoad = () => {
         }
         for (i in alertArrays.genus) {
           let currentSelection = alertArrays.genus
-          console.log("genus", currentSelection)
           for (i in currentSelection) {
             const tempArray = assocGenus[currentSelection[i]]
-            console.log(tempArray)
             for (sp in tempArray) {
               taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
                 .then(results => {
@@ -724,11 +718,7 @@ const onLoad = () => {
         }
         for (i in alertArrays.species) {
           let currentSelection = alertArrays.species
-          console.log("species", currentSelection)
           for (i in currentSelection) {
-            //const tempArray = assocOrderGenus[currentSelection[i]]
-            //for (sp in tempArray) {
-            //  console.log(currentColor)
             taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
               .then(results => {
                 results.map(request => {

@@ -1,7 +1,6 @@
 // this function repositions the graph to center on the desired node
 
 const recenterDOM = (renderer, layout, storeMasterNode) => {
-  console.log("masterzao", storeMasterNode)
   const pos = layout.getNodePosition(storeMasterNode[0])
   renderer.moveTo(pos.x, pos.y)
 }
