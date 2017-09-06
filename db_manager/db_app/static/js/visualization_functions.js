@@ -755,7 +755,8 @@ const onLoad = () => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
                       })
-                    })                }
+                    })
+                }
               }
 
               // families //
@@ -773,7 +774,8 @@ const onLoad = () => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
                       })
-                    })                }
+                    })
+                }
               }
 
               // genus //
@@ -791,7 +793,8 @@ const onLoad = () => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
                       })
-                    })                }
+                    })
+                }
               }
 
               // species //
@@ -807,7 +810,8 @@ const onLoad = () => {
                     results.map(request => {
                       listGiFilter.push(request.plasmid_id)
                     })
-                  })              }
+                  })
+              }
             }
             firstIteration = false // stops getting lower levels
           }
@@ -842,7 +846,6 @@ const onLoad = () => {
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
-        //console.log("listGiFilter", listGiFilter)
         list_gi, listGiFilter = read_coloring(g, list_gi, graphics, renderer)
       }, 100)
 

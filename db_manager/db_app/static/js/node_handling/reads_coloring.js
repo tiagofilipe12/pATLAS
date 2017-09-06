@@ -1,6 +1,6 @@
 // single read displayer
+// This function colors each node present in input read json file
 const read_coloring = (g, list_gi, graphics, renderer) => {
-  //var readColorArray = []
   const readMode = true
   const readString = read_json.replace(/[{}" ]/g, '').split(',')
   let listGiFilter = []
@@ -60,7 +60,6 @@ const node_iter = (g, read_color, gi, graphics, perc) => {
       nodeGI = node.id.split('_').slice(0, 3).join('_')
     }
     const nodeUI = graphics.getNodeUI(node.id)
-    //console.log(nodeGI)
 
     if (gi === nodeGI) {
       nodeUI.color = read_color
@@ -141,7 +140,6 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
     $('#scaleLegend').append('<div class="header_taxa" id="max">0.1</div>')
     document.getElementById('distance_label').style.display = 'block' // show label
   } else { // here enters for coloring the reads
-    //readMode = false //TODO I think this is not necessary
     $('#readLegend').empty()
     for (let i = 0; i < tmpArray.length; i++) {
       color_element = scale(i / x).hex()
