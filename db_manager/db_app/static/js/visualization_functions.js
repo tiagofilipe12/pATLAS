@@ -91,20 +91,24 @@ const onLoad = () => {
           storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
         })
         // precompute before redering
-        precompute(1000, renderGraph) // callback
+        renderGraph()
+        //precompute(1000, renderGraph) // callback
       }) //new getArray end
     } else {
       // storeMasterNode is empty in here
       //console.log('entered filters')
       //console.log(listGiFilter)
-      requesterDB(g, listGiFilter, counter, storeMasterNode, precompute, renderGraph)
+      // requesterDB(g, listGiFilter, counter, storeMasterNode, precompute,
+      // renderGraph)
+      requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph)
       // TODO masterNode needs to be used to re-center the graph
     }
   }
 
-  // function that precomputes notes. Iterations specify the number of times
+/*  // function that precomputes notes. Iterations specify the number of times
   // a precompute must run
   const precompute = (iterations, callback) => {
+    console.log("precompute")
     //console.log("entering precompute")
     // let's run 10 iterations per event loop cycle:
     let i = 0
@@ -122,9 +126,10 @@ const onLoad = () => {
       // we are done!
       callback()
     }
-  }
+  }*/
 
   //* Starts graphics renderer *//
+  // TODO without precompute we can easily pass parameters to renderGraph like links distances
   const renderGraph = () => {
     //console.log("entered renderGraph")
     const graphics = Viva.Graph.View.webglGraphics()
@@ -144,7 +149,8 @@ const onLoad = () => {
     const renderer = Viva.Graph.View.renderer(g, {
       layout: layout,
       graphics: graphics,
-      container: document.getElementById('couve-flor')
+      container: document.getElementById('couve-flor'),
+      prerender: 1000
     })
     renderer.run()
     // by default the animation on forces is paused since it may be

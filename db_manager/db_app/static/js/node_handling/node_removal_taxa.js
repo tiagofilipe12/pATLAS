@@ -48,7 +48,7 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
 
 // function to call requests on db
 
-const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, renderGraph) => {
+const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => {
   let newList = []
   let promises = []   //an array to store all the requests as promises
   // loops every Accession stored in listGiFilter on re_run button
@@ -111,7 +111,8 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
   Promise.all(promises)
     .then((results) => {
       //console.log("results", results, storeMasterNode)
-      precompute(1000, renderGraph)
+      //precompute(1000, renderGraph)
+      renderGraph()
     })
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)
