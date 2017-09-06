@@ -1,83 +1,110 @@
 // helps set menu to close status
-var first_click_menu = true
+let first_click_menu = true
+// checks if vivagraph should load first initial dataset or the filters
+let firstInstace = true
 // load JSON file
-function getArray () {
+const getArray = () => {
   return $.getJSON('/test')   // change the input file name
 }
 // load JSON file with taxa dictionary
-function getArray_taxa () {
+const getArray_taxa = () => {
   taxa_tree = $.getJSON('/taxa')
   return taxa_tree
 }
 
-// initiates vivagraph main functions
-function onLoad () {
+// list used to store for re-run button (apply filters)
+let listGiFilter = []
 
-  var list = []   // list to store references already ploted as nodes
-  var list_lengths = [] // list to store the lengths of all nodes
+// initiates vivagraph main functions
+// onLoad consists of mainly three functions: init, precompute and renderGraph
+const onLoad = () => {
+  // store the node with more links
+  let storeMasterNode = []    //cleared every instance of onload
+
+  let counter = -1 //sets a counter for the loop between the inputs nodes
+  // Sets parameters to be passed to WebglCircle in order to change
+  // node shape, setting color and size.
+  const nodeColor = 0x666370 // hex rrggbb
+  const min_nodeSize = 2 // a value that assures that the node is
+  // displayed without increasing the size of big nodes too much
+
+  let list = []   // list to store references already ploted as nodes
+  let list_lengths = [] // list to store the lengths of all nodes
   //var list_species = [] // lists all species
   //var list_genera = [] // list all genera
-  var list_gi = []
+  let list_gi = []
 
-    // initiate vivagraph instance
-  g = Viva.Graph.graph()
-    // define layout
-  var layout = Viva.Graph.Layout.forceDirected(g, {
-      springLength: 30,
-      springCoeff: 0.0001,
-      dragCoeff: 0.0001, // sets how fast nodes will separate from origin,
+  // initiate vivagraph instance
+  const g = Viva.Graph.graph()
+  // define layout
+  const layout = Viva.Graph.Layout.forceDirected(g, {
+    springLength: 30,
+    springCoeff: 0.0001,
+    dragCoeff: 0.0001, // sets how fast nodes will separate from origin,
     // the higher the value the slower
-      gravity: -1.2,
-      theta: 1
+    gravity: -1.2,
+    theta: 1
   })
 
-  function init() {
-    getArray().done(function (json) {
-      $.each(json, function (sequence_info, dict_dist) {
-        // next we need to retrieve each information type independently
-        var sequence = sequence_info.split("_").slice(0, 3).join("_");
-        //var species = sequence_info.split("_").slice(2,4).join(" ");
+  const init = () => {
+    if (firstInstace === true) {
+      getArray().done(function (json) {
+        $.each(json, function (sequence_info, dict_dist) {
+          counter++
+          // next we need to retrieve each information type independently
+          const sequence = sequence_info.split("_").slice(0, 3).join("_");
+          //var species = sequence_info.split("_").slice(2,4).join(" ");
 
-        // and continues
-        var seq_length = sequence_info.split("_").slice(-1).join("");
-        var log_length = Math.log(parseInt(seq_length)); //ln seq length
-        list_lengths.push(seq_length); // appends all lengths to this list
-        list_gi.push(sequence)
-        //checks if sequence is not in list to prevent adding multiple nodes for each sequence
-        if (list.indexOf(sequence) < 0) {
-          g.addNode(sequence, {
-            sequence: "<font color='#468499'>Accession:" +
-            " </font><a" +
-            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-            //species:"<font color='#468499'>Species:
-            // </font>" + species,
-            seq_length: "<font" +
-            " color='#468499'>Sequence length:" +
-            " </font>" + seq_length,
-            log_length: log_length
-          });
-          list.push(sequence);
-        }
+          // and continues
+          const seq_length = sequence_info.split("_").slice(-1).join("");
+          const log_length = Math.log(parseInt(seq_length)); //ln seq length
+          list_lengths.push(seq_length); // appends all lengths to this list
+          list_gi.push(sequence)
+          //checks if sequence is not in list to prevent adding multiple nodes for each sequence
+          if (list.indexOf(sequence) < 0) {
+            g.addNode(sequence, {
+              sequence: "<font color='#468499'>Accession:" +
+              " </font><a" +
+              " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+              //species:"<font color='#468499'>Species:
+              // </font>" + species,
+              seq_length: "<font" +
+              " color='#468499'>Sequence length:" +
+              " </font>" + seq_length,
+              log_length: log_length
+            });
+            list.push(sequence);
+          }
 
-        // loops between all arrays of array pairing sequence and distances
-        for (var i = 0; i < dict_dist.length; i++) {
-          var pairs = dict_dist[i]
-          var reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
-          var distance = pairs[1]   // stores distances in a unique variable
-          g.addLink(sequence, reference, distance)
-        }
-      })
-      // precompute before redering
-      precompute(1000, renderGraph) // callback I think there is no need to
-      // setTimeout()
-    }) //new getArray end
+          // loops between all arrays of array pairing sequence and distances
+          for (let i = 0; i < dict_dist.length; i++) {
+            const pairs = dict_dist[i]
+            const reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
+            const distance = pairs[1]   // stores distances in a unique variable
+            g.addLink(sequence, reference, distance)
+          }
+          // checks if the node is the one with most links and stores it in
+          // storedNode --> returns an array with storedNode and previousDictDist
+          storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
+        })
+        // precompute before redering
+        precompute(1000, renderGraph) // callback
+      }) //new getArray end
+    } else {
+      // storeMasterNode is empty in here
+      //console.log('entered filters')
+      //console.log(listGiFilter)
+      requesterDB(g, listGiFilter, counter, storeMasterNode, precompute, renderGraph)
+      // TODO masterNode needs to be used to re-center the graph
+    }
   }
 
-  init() //forces main json to load before rendering the graph
-
-  function precompute (iterations, callback) {
+  // function that precomputes notes. Iterations specify the number of times
+  // a precompute must run
+  const precompute = (iterations, callback) => {
+    //console.log("entering precompute")
     // let's run 10 iterations per event loop cycle:
-    var i = 0
+    let i = 0
     while (iterations > 0 && i < 10) {
       layout.step()
       iterations--
@@ -85,7 +112,7 @@ function onLoad () {
     }
     // processingElement.innerHTML = 'Layout precompute: ' + iterations;
     if (iterations > 0) {
-      setTimeout(function () {
+      setTimeout( () => {
         precompute(iterations, callback)
       }, 0) // keep going in next even cycle
     } else {
@@ -93,886 +120,442 @@ function onLoad () {
       callback()
     }
   }
-      // Sets parameters to be passed to WebglCircle in order to change
-      // node shape, setting color and size.
-  var nodeColor = 0x666370 // hex rrggbb
-  var min_nodeSize = 2 // a value that assures that the node is
-      // displayed without incresing the size of big nodes too much
 
-      //* Starts graphics renderer *//
-  function renderGraph() {
-    var graphics = Viva.Graph.View.webglGraphics()
-      //* * block #1 for node customization **//
-      // first, tell webgl graphics we want to use custom shader
-      // to render nodes:
-    var circleNode = buildCircleNodeShader()
+  //* Starts graphics renderer *//
+  const renderGraph = () => {
+    //console.log("entered renderGraph")
+    const graphics = Viva.Graph.View.webglGraphics()
+    //* * block #1 for node customization **//
+    // first, tell webgl graphics we want to use custom shader
+    // to render nodes:
+    const circleNode = buildCircleNodeShader()
     graphics.setNodeProgram(circleNode)
-        // second, change the node ui model, which can be understood
-        // by the custom shader:
-    graphics.node(function (node) {
+    // second, change the node ui model, which can be understood
+    // by the custom shader:
+    graphics.node( (node) => {
       nodeSize = min_nodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
 
     //* * END block #1 for node customization **//
-    var renderer = Viva.Graph.View.renderer(g, {
+    const renderer = Viva.Graph.View.renderer(g, {
       layout: layout,
       graphics: graphics,
       container: document.getElementById('couve-flor')
     })
     renderer.run()
+    // by default the animation on forces is paused since it may be
+    // computational intensive for old computers
+    renderer.pause()
 
-          //* ************//
-          //* **ZOOMING***//
-          //* ************//
+    // used to center on the node with more links
+    // this is used to skip if it is a re-run button execution
+    if (storeMasterNode.length > 0) {
+      recenterDOM(renderer, layout, storeMasterNode)
+    } else {
+      console.log("stored node is empty", storeMasterNode)
+    }
 
-          // opens events in webgl such as mouse hoverings or clicks
+    //* ************//
+    //* **ZOOMING***//
+    //* ************//
 
-      $('#zoom_in').click(function (e) {
-        e.preventDefault()
-        renderer.zoomIn()
-      })
-      $('#zoom_out').click(function (e) {
-        e.preventDefault()
-        renderer.zoomOut()
-      })
+    // opens events in webgl such as mouse hoverings or clicks
 
-          //* *************//
-          //* ** TOGGLE ***//
-          //* *************//
-          //* * This section controls the connection between the toggle button on the leftside ***//
-          //* * and the dropdown on the right side **//
+    $('#zoom_in').click( (event) => {
+      event.preventDefault()
+      renderer.zoomIn()
+      renderer.rerender()   // rerender after zoom avoids glitch with
+      // duplicated nodes
+    })
+    $('#zoom_out').click( (event) => {
+      event.preventDefault()
+      renderer.zoomOut()
+      renderer.rerender()   // rerender after zoom avoids glitch with
+      // duplicated nodes
+    })
 
-      toggle_status = false // default state
-      $('#toggle-event').bootstrapToggle('off') // set to default off
-      $('#toggle-event').change(function () {
-        toggle_status = $(this).prop('checked')
-        toggle_manager(toggle_status)
-      })
+    //* *************//
+    //* ** TOGGLE ***//
+    //* *************//
+    //* * This section controls the connection between the toggle button on the leftside ***//
+    //* * and the dropdown on the right side **//
 
-          //* *************//
-          //* ** EVENTS ***//
-          //* *************//
+    toggle_status = false // default state
+    $('#toggle-event').bootstrapToggle('off') // set to default off
+    $('#toggle-event').change(function () {   // jquery seems not to support es6
+      toggle_status = $(this).prop('checked')
+      toggle_manager(toggle_status)
+    })
 
-      var events = Viva.Graph.webglInputEvents(graphics, g)
-      store_nodes = []  // list used to store nodes
-          // changes the color of node and links (and respective linked nodes) of this node when clicked
-      click_check = false    // controls the handling of hoverings
-      events.click(function (node) {
-        store_nodes.push(node.id)
-            // allows the control of the hovering appearing and locking
-        if (click_check == false) {
-          click_check = true
-        } else {
-          click_check = false
-          $('#popup_description').css({'display': 'none'})
+    //* *************//
+    //* ** EVENTS ***//
+    //* *************//
+
+    const events = Viva.Graph.webglInputEvents(graphics, g)
+    store_nodes = []  // list used to store nodes
+    // changes the color of node and links (and respective linked nodes) of this node when clicked
+    click_check = false    // controls the handling of hoverings
+    events.click( (node) => {
+      store_nodes.push(node.id)
+      // allows the control of the hovering appearing and locking
+      if (click_check === false) {
+        click_check = true
+      } else {
+        click_check = false
+        $('#popup_description').css({'display': 'none'})
+      }
+      //console.log('Single click on node: ' + node.id)
+      const nodeUI = graphics.getNodeUI(node.id)
+      if (toggle_status === true) {   // if statement to check if toggle
+        // button is enabled
+        // statement when node and linked nodes are still in default color
+        if (nodeUI.color === nodeColor) {
+          color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
         }
-        //console.log('Single click on node: ' + node.id)
-        var nodeUI = graphics.getNodeUI(node.id)
-        if (toggle_status == true) {   // if statement to check if toggle button is enabled
-              // statement when node and linked nodes are still in default color
-          if (nodeUI.color == nodeColor) {
-            color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
-          }
-              // statement when linked node is selected
-          else if (nodeUI.color == 0x7c3912) {
-            color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
-          }
-              // statement when node is shaded
-          else if (nodeUI.color == 0xcdc8b1) {
-            color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
-          }
-              // statement do deselect node and linked nodes
-          else {
-                // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
-            color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
-          }
-          nodeUI.color = color_to_use[0]
-          g.forEachLinkedNode(node.id, function (linkedNode, link) {
-            var linkUI = graphics.getLinkUI(link.id)
-            linkUI.color = color_to_use[1]
-            var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-            if (linked_nodeUI.color != 0xc89933) {
-              linked_nodeUI.color = color_to_use[2]
-            }
-          })
+        // statement when linked node is selected
+        else if (nodeUI.color === 0x7c3912) {
+          color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
         }
-        renderer.rerender()
-      })
-
-          //* * mouse hovering on nodes **//
-      events.mouseEnter(function (node, e) {
-        nodeUI_1 = graphics.getNodeUI(node.id)
-        var domPos = {
-          x: nodeUI_1.position.x,
-          y: nodeUI_1.position.y
+        // statement when node is shaded
+        else if (nodeUI.color === 0xcdc8b1) {
+          color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
         }
-            // And ask graphics to transform it to DOM coordinates:
-        graphics.transformGraphToClientCoordinates(domPos)
-        domPos.x = (domPos.x + nodeUI_1.size) + 'px'
-        domPos.y = (domPos.y) + 'px'
-
-        // call the requests
-        function requestPlasmidTable (node, setupPopupDisplay) {
-          // if statement to check if node is in database or is a new import
-          // from mapping
-          if (node.data.seq_length) {
-            $.get('api/getspecies/', {'accession': node.id}, function (data, status) {
-              // this request uses nested json object to access json entries
-              // available in the database
-              // if request return no speciesName or plasmidName
-              // sometimes plasmids have no descriptor for one of these or both
-              if (data.json_entry.name === null) {
-                speciesName = "N/A"
-              } else {
-                speciesName = data.json_entry.name.split("_").join(" ")
-              }
-              if (data.json_entry.plasmid_name === null) {
-                plasmidName = "N/A"
-              } else {
-                plasmidName = data.json_entry.plasmid_name
-              }
-              // check if data can be called as json object properly from db something like data.species or data.length
-              setupPopupDisplay(node, speciesName, plasmidName) //callback
-              // function for
-              // node displaying after fetching data from db
-            })
-          }
-          // exception when node has no length (used on new nodes?)
-          else {
-            speciesName = 'N/A'
-            plasmidName = 'N/A'
-            setupPopupDisplay(node, speciesName, plasmidName) //callback
-          }
-        }
-
-        function setupPopupDisplay (node, speciesName, plasmidName) {
-          // first needs to empty the popup in order to avoid having
-          // multiple entries from previous interactions
-          $('#popup_description').empty()
-          $('#popup_description').append('<div>' +
-            node.data.sequence +
-            '<br />' +
-            "<font color='#468499'>Species: </font>" + speciesName +
-            '<br />' +
-            node.data.seq_length +
-            '<br />' +
-            "<font color='#468499'>Plasmid: </font>" + plasmidName +
-            '<br />' +
-            "<font color='#468499'>percentage: </font>" + node.data.percentage + //This should be passed on request
-            '</div>')
-          $('#popup_description').css({
-            'padding': '10px 10px 10px 10px',
-            'border': '1px solid grey',
-            'border-radius': '10px',
-            'background-color': 'white',
-            'display': 'block',
-            'left': domPos.x,
-            'top': domPos.y,
-            'position': 'fixed',
-            'z-index': 2
-          })
-        }
-
-        requestPlasmidTable(node, setupPopupDisplay)
-
-      }).mouseLeave(function (node) {
-            // if node is not clicked then mouse hover can disappear
-        if (click_check == true) {
-          $('#popup_description').css({'display': 'block'})
-        } else {
-          $('#popup_description').css({'display': 'none'})
-        }
-      })
-
-          //* * mouse hovering block end **//
-      renderer.rerender()
-
-        // by default the animation on forces is paused since
-        // it may be computational intensive for old computers
-      renderer.pause()
-
-        //* * Loading Screen goes off **//
-        // $("#loading").hide();
-        // $("#couve-flor").show();
-      $('#loading').hide()
-      document.getElementById('couve-flor').style.visibility = 'visible'
-
-        //* **************//
-        //* ** BUTTONS ***//
-        //* **************//
-
-        // Button to reset selection of nodes
-      $('#refreshButton').on('click', function (e) {
-        color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
-        for (id in store_nodes) {
-          var nodeUI = graphics.getNodeUI(store_nodes[id])
-          nodeUI.color = color_to_use[0]
-          g.forEachLinkedNode(store_nodes[id], function (linkedNode, link) {
-            var linkUI = graphics.getLinkUI(link.id)
-            linkUI.color = color_to_use[1]
-            var linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-            linked_nodeUI.color = color_to_use[2]
-          })
-        }
-        renderer.rerender()
-      })
-
-        // Buttons to control force play/pause using bootstrap navigation bar
-      paused = true
-      $('#playpauseButton').on('click', function (e) {
-        $('#playpauseButton').empty()
-        if (paused == true) {
-          renderer.resume()
-          $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
-          paused = false
-        } else {
-          renderer.pause()
-          $('#playpauseButton').append('<span class="glyphicon glyphicon-play"></span>')
-          paused = true
-        }
-      })
-
-        // Form and button for search box
-      var changed_nodes = []
-      $('#submitButton').click(function (event) {
-        var query = $('#formValueId').val()
-        //console.log('search query: ' + query)
-        event.preventDefault()
-        g.forEachNode(function (node) {
-          var nodeUI = graphics.getNodeUI(node.id)
-          var sequence = node.data.sequence.split('>')[3].split('<')[0]
-            // console.log(sequence)
-          nodeUI = graphics.getNodeUI(node.id)
-          var x = nodeUI.position.x,
-            y = nodeUI.position.y
-          if (sequence == query) {
-              // centers graph visualization in a given node, searching for gi
-            renderer.moveTo(x, y)
-          }
-        })
-      })
-        // Button to clear the selected nodes by form
-      $('#clearButton').click(function (event) {
-        document.getElementById('formValueId').value = ''
-      })
-
-      //* ***********************//
-      //* ***Fast Form filter****//
-      //* ***********************//
-
-      // Form search box utils
-
-      // then applying autocomplete function
-      $(function () {
-        $('#formValueId').autocomplete({
-          source: list_gi
-        })
-      })
-
-      //* ******************//
-      //* ***Taxa Filter****//
-      //* ******************//
-
-        // this is now deprecated and needs reworking - list_species doesn't exist
-
-        // list with unique species in dataset
-      //var uniqueArray_species = list_species.filter(function (item, pos) {
-      //  return list_species.indexOf(item) == pos
-      //})
-        // then sort it
-      //var sortedArray_species = uniqueArray_species.sort()
-        // search by specific genera //
-
-        // first get a list with unique array entries for genera
-      //var uniqueArray_genera = list_genera.filter(function (item, pos) {
-      //  return list_genera.indexOf(item) == pos
-      //})
-        // then sort it
-      //var sortedArray_genera = uniqueArray_genera.sort()
-
-      var list_orders = [],
-        list_families = [],
-        list_genera = [],
-        dict_genera = {},
-        list_species = []
-      getArray_taxa().done(function (json) {
-        $.each(json, function (species, other) {
-          var species = species.split("_").join(" ")
-          var genus = other[0]
-          var family = other[1]
-          var order = other[2]
-          dict_genera[species] = [genus, family, order] // append the list to
-          // this dict to be used later
-          if (list_genera.indexOf(genus) < 0) {
-            list_genera.push(genus)
-          }
-          if (list_families.indexOf(family) < 0) {
-            list_families.push(family)
-          }
-          if (list_orders.indexOf(order) < 0) {
-            list_orders.push(order)
-          }
-          if (list_species.indexOf(species) < 0) {
-            list_species.push(species)
-          }
-        })
-
-          // sort families and orders alphabetically
-
-        var sortedArray_order = list_orders.sort(),
-          sortedArray_family = list_families.sort(),
-          sortedArray_genera = list_genera.sort(),
-          sortedArray_species = list_species.sort()
-
-          // append all order present in dataset
-
-        for (var i = 0; i < sortedArray_order.length; i++) {
-          var order_tag = 'order' + sortedArray_order[i]
-          var orderId = "id='" + order_tag + "'"
-          $('#orderList').append("<option class='OrderClass'>" +
-                                    sortedArray_order[i] +
-                                    '</option>')
-        }
-        $('#orderList').append("<option class='OrderClass'> \
-                                    <em>Other</em></option>")
-          // append all families present in dataset
-        for (var i = 0; i < sortedArray_family.length; i++) {
-          var family_tag = 'family' + sortedArray_family[i]
-          var familyId = "id='" + family_tag + "'"
-          $('#familyList').append("<option class='FamilyClass'>" +
-                                    sortedArray_family[i] +
-                                    '</option>')
-        }
-        $('#familyList').append("<option class='FamilyClass'> \
-                                    <em>Other</em></li>")
-          // append all genera present in dataset
-        for (var i = 0; i < sortedArray_genera.length; i++) {
-          var genus_tag = 'genus' + sortedArray_genera[i]
-          var genusId = "id='" + genus_tag + "'"
-          $('#genusList').append("<option class='GenusClass'>" +
-                                    sortedArray_genera[i] +
-                                    '</option>')
-        }
-          // append all species present in dataset
-        for (var i = 0; i < sortedArray_species.length; i++) {
-          var species_tag = 'genus' + sortedArray_species[i]
-          var speciesId = "id='" + species_tag + "'"
-          $('#speciesList').append("<option class='SpeciesClass'>" +
-                                    sortedArray_species[i] +
-                                    '</option>')
-        }
-
-        // updates options provided to bootstrap-select
-        $('#orderList').selectpicker('refresh')
-        $('#familyList').selectpicker('refresh')
-        $('#genusList').selectpicker('refresh')
-        $('#speciesList').selectpicker('refresh')
-        
-        // clickable <li> and control of displayer of current filters
-        firstInstance = true // global variable
-        existingTaxon = [],   // global variable
-          taxaInList = []   // global variable
-        var classArray = ['.OrderClass', '.FamilyClass', '.GenusClass', '.SpeciesClass']
-        idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species'] // global variable
-        for (var i = 0; i < classArray.length; i++) {
-          $(classArray[i]).on('click', function (e) {
-              // empties the text in this div for the first intance
-            if (firstInstance == true) {
-              for (var x = 0; x < idsArrays.length; x++) {
-                  $('#' + idsArrays[x]).empty()
-                }
-              firstInstance = false
-            }
-              // fill panel group displaying current selected taxa filters //
-            var stringClass = this.className.slice(0, -5)
-            var tempVar = this.firstChild.innerHTML
-
-              // checks if a taxon is already in display
-            var divstringClass = document.getElementById('p_' + stringClass)
-            removal = false
-            if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
-              divstringClass.innerHTML = stringClass + ': ' + tempVar
-              removal = false
-            }
-              // checks if selection is in list and is the last element present... removing it
-            else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] == tempVar && taxaInList.length == 1) {
-                // resets displayCurrentBox
-              resetDisplayTaxaBox(idsArrays)
-              removal = true
-            } else {
-                // if taxa is already not in list then append
-              if (taxaInList.indexOf(tempVar) < 0) {
-                  divstringClass.innerHTML = divstringClass.innerHTML + ',' + tempVar
-                  removal = false
-                }
-                // if it is already in list then remove it and remove from list taxaInList
-              else {
-                  if (taxaInList[0] == tempVar) {
-                    tempString = tempVar + ','
-                  } else {
-                    tempString = ',' + tempVar
-                  }
-                  divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, '')
-                  taxaInList = stringRmArray(tempVar, taxaInList)
-                  removal = true
-                }
-            }
-            if (taxaInList.indexOf(tempVar) < 0 && removal == false) {
-              taxaInList.push(tempVar)  // user to store all clicked taxa
-            }
-            existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
-          })
-        }
-
-          //* **** Clear selection button *****//
-          // clear = false; //added to control the colors being triggered after clearing
-        $('#taxaModalClear').click(function (event) {
-            // clear = true;
-          event.preventDefault()
-          resetDisplayTaxaBox(idsArrays)
-
-            // resets dropdown selections
-          $('#orderList').selectpicker('deselectAll')
-          $('#familyList').selectpicker('deselectAll')
-          $('#genusList').selectpicker('deselectAll')
-          $('#speciesList').selectpicker('deselectAll')
-
-          slider.noUiSlider.set([min, max])
-          node_color_reset(graphics, g, nodeColor, renderer)
-          if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
-            showLegend.style.display = 'none'
-            showRerun.style.display = 'none'
-            showGoback.style.display = 'none'
-            document.getElementById('go_back').className += ' disabled'
-            showDownload.style.display = 'none'
-          } else {
-            $('#colorLegendBox').empty()
-            document.getElementById('taxa_label').style.display = 'none' // hide label
-            showRerun.style.display = 'none'
-            showGoback.style.display = 'none'
-            document.getElementById('go_back').className += ' disabled'
-            showDownload.style.display = 'none'
-          }
-        })
-      })
-
-        //* **** Submit button for taxa filter *****//
-
-        // perform actions when submit button is clicked.
-
-      $('#taxaModalSubmit').click(function (event) {
-        noLegend = false // sets legend to hidden state by default
-        event.preventDefault()
-          // now processes the current selection
-        var species_query = document.getElementById('p_Species').innerHTML,
-          genus_query = document.getElementById('p_Genus').innerHTML,
-          family_query = document.getElementById('p_Family').innerHTML,
-          order_query = document.getElementById('p_Order').innerHTML
-        var selectedSpecies = species_query.replace('Species: ', '').split(',').filter(Boolean),
-          selectedGenus = genus_query.replace('Genus: ', '').split(',').filter(Boolean),
-          selectedFamily = family_query.replace('Family: ', '').split(',').filter(Boolean),
-          selectedOrder = order_query.replace('Order: ', '').split(',').filter(Boolean)
-
-          //* *** Alert for taxa filter ****//
-          // print alert if no filters are selected
-        counter = 0 // counts the number of taxa type that has not been selected
-
-        var alertArrays = {'order': selectedOrder, 'family': selectedFamily, 'genus': selectedGenus, 'species': selectedSpecies}
-        var divAlert = document.getElementById('alertId')
-        var Alert = false
-        for (i in alertArrays) {
-          if (alertArrays[i][0] == 'No filters applied') {
-            Alert = true
-            counter = 4  // counter used to check if more than one dropdown has selected options
-          } else if (alertArrays[i] != '') {
-            counter = counter + 1
-          }
-        }
-        if (Alert == true) {
-          divAlert.style.display = 'block'
-          showLegend.style.display = 'none' // removes legend when this warning is raised
-          Alert = false
-        }
-          // control the alertClose button
-
-        $('#alertClose').click(function () {
-          $('#alertId').hide()  // hide this div
-        })
-
-          // auto hide after 5 seconds without closing the div
-
-        window.setTimeout(function () { $('#alertId').hide() }, 5000)
-
-          //* *** End Alert for taxa filter ****//
-
-          // make tmpselectedGenus an associative array since it is the base of family and order arrays
-
-        assocFamilyGenus = {}
-        assocOrderGenus = {}
-        assocGenus = {}
-
-          // appends genus to selectedGenus according with the family and order for single-color selection
-          // also appends to associative arrays for family and order for multi-color selection
-        $.each(dict_genera, function (species, pair) {
-          var genus = pair[0]
-          var family = pair[1]
-          var order = pair[2]
-          if (selectedFamily.indexOf(family) >= 0) {
-            selectedGenus.push(species)
-            if (!(family in assocFamilyGenus)) {
-              assocFamilyGenus[family] = []
-              assocFamilyGenus[family].push(species)
-            } else {
-              assocFamilyGenus[family].push(species)
-            }
-          } else if (selectedOrder.indexOf(order) >= 0) {
-            selectedGenus.push(species)
-            if (!(order in assocOrderGenus)) {
-                assocOrderGenus[order] = []
-                assocOrderGenus[order].push(species)
-              } else {
-                assocOrderGenus[order].push(species)
-              }
-          } else if (selectedGenus.indexOf(genus) >= 0) {
-            if (!(genus in assocGenus)) {
-              assocGenus[genus] = []
-              assocGenus[genus].push(species)
-            } else {
-              assocGenus[genus].push(species)
-            }
-          }
-        })
-
-          // renders the graph for the desired taxon if more than one taxon type is selected
-        var store_lis = '' // a variable to store all <li> generated for legend
-        var firstIteration = true // boolean to control the upper taxa level (order or family)
-
-          // first restores all nodes to default color
-        node_color_reset(graphics, g, nodeColor, renderer)
-
-        if (counter > 1 && counter <= 4) {
-          g.forEachNode(function (node) {
-            var nodeUI = graphics.getNodeUI(node.id)
-            var species = node.data.species.split('>').slice(-1).toString()
-            var genus = species.split(' ')[0]
-              // checks if genus is in selection
-            if (selectedGenus.indexOf(genus) >= 0) {
-              nodeUI.color = 0xf71735
-              nodeUI.backupColor = nodeUI.color
-              changed_nodes.push(node.id)
-            }
-              // checks if species is in selection
-            else if (selectedSpecies.indexOf(species) >= 0) {
-              nodeUI.color = 0xf71735
-              nodeUI.backupColor = nodeUI.color
-              changed_nodes.push(node.id)
-            }
-          })
-          renderer.rerender()
-          store_lis = '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#f71735"></button>&nbsp;multi-level selected taxa</li>'
-            // displays alert
-            // first check if filters are applied in order to avoid displaying when there are no filters
-          for (i in alertArrays) {
-            if (alertArrays[i][0] != 'No filters applied') {
-              var divAlert = document.getElementById('alertId_multi')
-              divAlert.style.display = 'block'
-                // control the alertClose button
-              $('#alertClose_multi').click(function () {
-                  $('#alertId_multi').hide()  // hide this div
-                })
-                // auto hide after 5 seconds without closing the div
-              window.setTimeout(function () { $('#alertId_multi').hide() }, 5000)
-            }
-          }
-        }
-          // renders the graph for the desired taxon if one taxon type is selected
-          // allows for different colors between taxa of the same level
-        else if (counter == 1) {
-            // first cycle between all the arrays to find which one is not empty
-          for (array in alertArrays) {
-              // selects the not empty array
-            if (alertArrays[array] != '' && firstIteration == true) {
-              var currentSelection = alertArrays[array]
-                // performs the actual interaction for color picking and assigning
-              for (i in currentSelection) {
-
-                  // orders //
-                  if (alertArrays['order'] != '') {
-                    var currentColor = color[i].replace('#', '0x')
-                    var tempArray = assocOrderGenus[currentSelection[i]]
-                    style_color = 'background-color:' + color[i]
-                    store_lis = store_lis + '<li' +
-                      ' class="centeredList"><button class="jscolor btn' +
-                      ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
-                    // executres node function for family and orders
-                    for (i in tempArray) {
-                      taxaRequest(graphics, renderer, tempArray[i], currentColor, changed_nodes)
-                    }
-                  }
-
-                  // families //
-                  else if (alertArrays['family'] != '') {
-                    var currentColor = color[i].replace('#', '0x')
-                    var tempArray = assocFamilyGenus[currentSelection[i]]
-                    style_color = 'background-color:' + color[i]
-                    store_lis = store_lis + '<li' +
-                      ' class="centeredList"><button class="jscolor btn' +
-                      ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
-                    // executres node function for family
-                    for (i in tempArray) {
-                      taxaRequest(graphics, renderer, tempArray[i], currentColor, changed_nodes)
-                    }
-                  }
-
-                  // genus //
-                  else if (alertArrays['genus'] != '') {
-                    var currentColor = color[i].replace('#', '0x')
-                    var tempArray = assocGenus[currentSelection[i]]
-                    style_color = 'background-color:' + color[i]
-                    store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
-
-                    // requests taxa associated accession from db and colors
-                    // respective nodes
-                    for (i in tempArray) {
-                      taxaRequest(graphics, renderer, tempArray[i], currentColor, changed_nodes)
-                    }
-                  }
-
-                  // species //
-                  else if (alertArrays['species'] != '') {
-                    var currentColor = color[i].replace('#', '0x')
-                    style_color = 'background-color:' + color[i]
-                    store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
-
-                    // requests taxa associated accession from db and colors
-                    // respective nodes
-                    taxaRequest(graphics, renderer, currentSelection[i], currentColor, changed_nodes)
-                  }
-                }
-              firstIteration = false // stops getting lower levels
-            }
-          }
-        }
-          // used to control if no selection was made avoiding to display the legend
+        // statement do deselect node and linked nodes
         else {
-          noLegend = true
+          // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
+          color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
         }
-            // show legend //
-        if (noLegend == false) {
-          showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
-          showLegend.style.display = 'block'
-          document.getElementById('taxa_label').style.display = 'block' // show label
-          $('#colorLegendBox').empty()
-          $('#colorLegendBox').append(store_lis +
-              '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
-          showRerun = document.getElementById('Re_run')
-          showGoback = document.getElementById('go_back')
-          showDownload = document.getElementById('download_ds')
-          showRerun.style.display = 'block'
-          showGoback.style.display = 'block'
-          showDownload.style.display = 'block'
-        }
-
-        //matches to filter "Re_run"
-        listGiFilter = changed_nodes
-      })
-
-        //* ************//
-        //* ***READS****//
-        //* ************//
-
-      $('#fileSubmit').click(function (event) {
-        event.preventDefault()
-        $('#loading').show()
-        setTimeout(function () {
-          list_gi, listGiFilter = read_coloring(list_gi, graphics, renderer)
-        }, 100)
-
-          // }
-          // used to hide when function is not executed properly
-        setTimeout(function () {
-          $('#loading').hide()
-        }, 100)
-      })
-
-      $('#cancel_infile').click(function (event) {
-        abortRead(read_json)
-      })
-
-      //* ********* ***//
-      //* * Assembly **//
-      //* ********* ***//
-      $('#assemblySubmit').click(function (event) {
-        event.preventDefault()
-        $('#loading').show()
-        setTimeout(function () {
-          assembly(list_gi, assembly_json, g, graphics, renderer)
-        }, 100)
-
-          // }
-          // used to hide when function is not executed properly
-        setTimeout(function () {
-          $('#loading').hide()
-        }, 100)
-      })
-
-      $('#cancel_assembly').click(function (event) {
-        abortRead(assembly_json)
-      })
-
-      //* *********************//
-      //* * Distances filter **//
-      //* *********************//
-      $('#distancesSubmit').click(function (event) {
-        event.preventDefault()
-        $('#loading').show()
-        $('#scaleLegend').empty()
-        setTimeout(function () {
-          link_coloring(g, graphics, renderer)
-        }, 100)
-        var readMode = false
-        color_legend(readMode)
-        document.getElementById('reset-links').disabled = ''
-      })
-
-      $('#reset-links').click(function (event) {
-        event.preventDefault()
-        document.getElementById('distance_label').style.display = 'none' // hide label
-        if ($('#colorLegendBox').html() === '') {
-          $('#scaleLegend').empty()
-          showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
-          showLegend.style.display = 'none'
-        } else {
-          $('#scaleLegend').empty()
-        }
-        setTimeout(function () {
-          reset_link_color(g, graphics, renderer)
-        }, 100)
-        document.getElementById('reset-links').disabled = 'disabled'
-      })
-
-        //* ********************//
-        //* ***Length filter****//
-        //* ********************//
-
-        //* * slider button and other options **//
-
-        // sets the limits of buttons and slider
-
-      var min = Math.min.apply(null, list_lengths),
-        max = Math.max.apply(null, list_lengths)
-
-        // generates and costumizes slider itself
-      var slider = document.getElementById('slider')
-
-      noUiSlider.create(slider, {
-        start: [min, max],
-        behaviour: 'snap',   // snaps the closest slider
-        connect: true,
-        range: {
-          'min': min,
-          'max': max
-        },
-        format: wNumb({
-          decimals: 0
+        nodeUI.color = color_to_use[0]
+        g.forEachLinkedNode(node.id, (linkedNode, link) => {
+          const linkUI = graphics.getLinkUI(link.id)
+          linkUI.color = color_to_use[1]
+          const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
+          if (linked_nodeUI.color !== 0xc89933) {
+            linked_nodeUI.color = color_to_use[2]
+          }
         })
-      })
+      }
+      renderer.rerender()
+    })
 
-        // event handler for slider
-        // trigger only if clicked to avoid looping through the nodes again
-      $('#length_filter').click(function (event) {
-        slider.noUiSlider.on('set', function (event) {
-          var slider_max = slider.noUiSlider.get()[1],
-            slider_min = slider.noUiSlider.get()[0]
-          g.forEachNode(function (node) {
-            var node_length = node.data.seq_length.split('>').slice(-1).toString()
-            var nodeUI = graphics.getNodeUI(node.id)
-            if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
-              nodeUI.color = 0xcdc8b1 // shades nodes
-            } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
-                nodeUI.color = nodeUI.backupColor // return nodes to original color
-              }
+    //* * mouse hovering on nodes **//
+    events.mouseEnter( (node, e) => {
+      nodeUI_1 = graphics.getNodeUI(node.id)
+      const domPos = {
+        x: nodeUI_1.position.x,
+        y: nodeUI_1.position.y
+      }
+      // And ask graphics to transform it to DOM coordinates:
+      graphics.transformGraphToClientCoordinates(domPos)
+      domPos.x = (domPos.x + nodeUI_1.size) + 'px'
+      domPos.y = (domPos.y) + 'px'
+
+      // call the requests
+      const requestPlasmidTable = (node, setupPopupDisplay) => {
+        // if statement to check if node is in database or is a new import
+        // from mapping
+        if (node.data.seq_length) {
+          $.get('api/getspecies/', {'accession': node.id}, (data, status) => {
+            // this request uses nested json object to access json entries
+            // available in the database
+            // if request return no speciesName or plasmidName
+            // sometimes plasmids have no descriptor for one of these or both
+            if (data.json_entry.name === null) {
+              speciesName = "N/A"
+            } else {
+              speciesName = data.json_entry.name.split("_").join(" ")
+            }
+            if (data.json_entry.plasmid_name === null) {
+              plasmidName = "N/A"
+            } else {
+              plasmidName = data.json_entry.plasmid_name
+            }
+            // check if data can be called as json object properly from db something like data.species or data.length
+            setupPopupDisplay(node, speciesName, plasmidName) //callback
+            // function for
+            // node displaying after fetching data from db
           })
-          renderer.rerender()
-        })
-      })
-
-        // inputs mins and maxs for slider
-      var inputMin = document.getElementById('slider_input_min'),
-        inputMax = document.getElementById('slider_input_max'),
-        inputs = [inputMin, inputMax]
-      slider.noUiSlider.on('update', function (values, handle) {
-        inputs[handle].value = values[handle]
-      })
-
-      function setSliderHandle (i, value) {
-        var r = [null, null]
-        r[i] = value
-        slider.noUiSlider.set(r)
+        }
+        // exception when node has no length (used on new nodes?)
+        else {
+          speciesName = 'N/A'
+          plasmidName = 'N/A'
+          setupPopupDisplay(node, speciesName, plasmidName) //callback
+        }
       }
 
-        // Listen to keydown events on the input field.
-      inputs.forEach(function (input, handle) {
-        input.addEventListener('change', function () {
-          setSliderHandle(handle, this.value)
+      const setupPopupDisplay = (node, speciesName, plasmidName) => {
+        // first needs to empty the popup in order to avoid having
+        // multiple entries from previous interactions
+        $('#popup_description').empty()
+        $('#popup_description').append('<div>' +
+          node.data.sequence +
+          '<br />' +
+          "<font color='#468499'>Species: </font>" + speciesName +
+          '<br />' +
+          node.data.seq_length +
+          '<br />' +
+          "<font color='#468499'>Plasmid: </font>" + plasmidName +
+          '<br />' +
+          "<font color='#468499'>percentage: </font>" + node.data.percentage + //This should be passed on request
+          '</div>')
+        $('#popup_description').css({
+          'padding': '10px 10px 10px 10px',
+          'border': '1px solid grey',
+          'border-radius': '10px',
+          'background-color': 'white',
+          'display': 'block',
+          'left': domPos.x,
+          'top': domPos.y,
+          'position': 'fixed',
+          'z-index': 2
         })
+      }
 
-        input.addEventListener('keydown', function (e) {
-          var values = slider.noUiSlider.get()
-          var value = Number(values[handle])
+      requestPlasmidTable(node, setupPopupDisplay)
 
-            // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
-          var steps = slider.noUiSlider.steps()
+    }).mouseLeave( (node) => {
+      // if node is not clicked then mouse hover can disappear
+      if (click_check === true) {
+        $('#popup_description').css({'display': 'block'})
+      } else {
+        $('#popup_description').css({'display': 'none'})
+      }
+    })
 
-            // [down, up]
-          var step = steps[handle]
+    //* * mouse hovering block end **//
+    renderer.rerender()
 
-          var position
+    //* * Loading Screen goes off **//
+    // $("#loading").hide();
+    // $("#couve-flor").show();
+    $('#loading').hide()
+    document.getElementById('couve-flor').style.visibility = 'visible'
 
-            // 13 is enter,
-            // 38 is key up,
-            // 40 is key down.
-          switch (e.which) {
-            case 13:
-              setSliderHandle(handle, this.value)
-              break
+    //* **************//
+    //* ** BUTTONS ***//
+    //* **************//
 
-            case 38:
-
-                // Get step to go increase slider value (up)
-              position = step[1]
-
-                // false = no step is set
-              if (position === false) {
-                position = 1
-              }
-
-                // null = edge of slider
-              if (position !== null) {
-                setSliderHandle(handle, value + position)
-              }
-
-              break
-
-            case 40:
-
-              position = step[0]
-
-              if (position === false) {
-                position = 1
-              }
-
-              if (position !== null) {
-                setSliderHandle(handle, value - position)
-              }
-              break
-          }
+    // Button to reset selection of nodes
+    $('#refreshButton').on('click', function (e) {
+      color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
+      for (id in store_nodes) {
+        const nodeUI = graphics.getNodeUI(store_nodes[id])
+        nodeUI.color = color_to_use[0]
+        g.forEachLinkedNode(store_nodes[id], function (linkedNode, link) {
+          const linkUI = graphics.getLinkUI(link.id)
+          linkUI.color = color_to_use[1]
+          const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
+          linked_nodeUI.color = color_to_use[2]
         })
+      }
+      renderer.rerender()
+    })
+
+    // Buttons to control force play/pause using bootstrap navigation bar
+    paused = true
+    $('#playpauseButton').on('click', function (e) {
+      $('#playpauseButton').empty()
+      if (paused === true) {
+        renderer.resume()
+        $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
+        paused = false
+      } else {
+        renderer.pause()
+        $('#playpauseButton').append('<span class="glyphicon glyphicon-play"></span>')
+        paused = true
+      }
+    })
+
+    // Form and button for search box
+    let changed_nodes = []
+    $('#submitButton').click(function (event) {
+      const query = $('#formValueId').val()
+      //console.log('search query: ' + query)
+      event.preventDefault()
+      g.forEachNode( (node) => {
+        const nodeUI = graphics.getNodeUI(node.id)
+        const sequence = node.data.sequence.split('>')[3].split('<')[0]
+        // console.log(sequence)
+        //nodeUI = graphics.getNodeUI(node.id)
+        const x = nodeUI.position.x,
+          y = nodeUI.position.y
+        if (sequence === query) {
+          // centers graph visualization in a given node, searching for gi
+          renderer.moveTo(x, y)
+        }
+      })
+    })
+    // Button to clear the selected nodes by form
+    $('#clearButton').click(function (event) {
+      document.getElementById('formValueId').value = ''
+    })
+
+    //* ***********************//
+    //* ***Fast Form filter****//
+    //* ***********************//
+
+    // Form search box utils
+
+    // then applying autocomplete function
+    $( () => {
+      $('#formValueId').autocomplete({
+        source: list_gi
+      })
+    })
+
+    //* ******************//
+    //* ***Taxa Filter****//
+    //* ******************//
+
+    const list_orders = [],
+      list_families = [],
+      list_genera = [],
+      dict_genera = {},
+      list_species = []
+    getArray_taxa().done( (json) => {
+      $.each(json, (sps, other) => {    // sps aka species
+        const species = sps.split("_").join(" ")
+        const genus = other[0]
+        const family = other[1]
+        const order = other[2]
+        dict_genera[species] = [genus, family, order] // append the list to
+        // this dict to be used later
+        if (list_genera.indexOf(genus) < 0) {
+          list_genera.push(genus)
+        }
+        if (list_families.indexOf(family) < 0) {
+          list_families.push(family)
+        }
+        if (list_orders.indexOf(order) < 0) {
+          list_orders.push(order)
+        }
+        if (list_species.indexOf(species) < 0) {
+          list_species.push(species)
+        }
       })
 
-        // resets the slider
-      $('#reset-sliders').click(function (event) {
+      // sort families and orders alphabetically
+
+      const sortedArray_order = list_orders.sort(),
+        sortedArray_family = list_families.sort(),
+        sortedArray_genera = list_genera.sort(),
+        sortedArray_species = list_species.sort()
+
+      // append all order present in dataset
+
+      for (let i = 0; i < sortedArray_order.length; i++) {
+        //var order_tag = 'order' + sortedArray_order[i]
+        //var orderId = "id='" + order_tag + "'"
+        $('#orderList').append("<option class='OrderClass'>" +
+          sortedArray_order[i] +
+          '</option>')
+      }
+      $('#orderList').append("<option class='OrderClass'> \
+                                    <em>Other</em></option>")
+      // append all families present in dataset
+      for (let i = 0; i < sortedArray_family.length; i++) {
+        //var family_tag = 'family' + sortedArray_family[i]
+        //var familyId = "id='" + family_tag + "'"
+        $('#familyList').append("<option class='FamilyClass'>" +
+          sortedArray_family[i] +
+          '</option>')
+      }
+      $('#familyList').append("<option class='FamilyClass'> \
+                                    <em>Other</em></li>")
+      // append all genera present in dataset
+      for (let i = 0; i < sortedArray_genera.length; i++) {
+        //var genus_tag = 'genus' + sortedArray_genera[i]
+        //var genusId = "id='" + genus_tag + "'"
+        $('#genusList').append("<option class='GenusClass'>" +
+          sortedArray_genera[i] +
+          '</option>')
+      }
+      // append all species present in dataset
+      for (let i = 0; i < sortedArray_species.length; i++) {
+        //var species_tag = 'genus' + sortedArray_species[i]
+        //var speciesId = "id='" + species_tag + "'"
+        $('#speciesList').append("<option class='SpeciesClass'>" +
+          sortedArray_species[i] +
+          '</option>')
+      }
+
+      // updates options provided to bootstrap-select
+      $('#orderList').selectpicker('refresh')
+      $('#familyList').selectpicker('refresh')
+      $('#genusList').selectpicker('refresh')
+      $('#speciesList').selectpicker('refresh')
+
+      // clickable <li> and control of displayer of current filters
+      firstInstance = true // global variable
+      existingTaxon = [],   // global variable
+        taxaInList = []   // global variable
+      const classArray = ['.OrderClass', '.FamilyClass', '.GenusClass', '.SpeciesClass']
+      idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species'] // global variable
+      for (let i = 0; i < classArray.length; i++) {
+        $(classArray[i]).on('click', function (e) {
+          // empties the text in this div for the first intance
+          if (firstInstance === true) {
+            for (let x = 0; x < idsArrays.length; x++) {
+              $('#' + idsArrays[x]).empty()
+            }
+            firstInstance = false
+          }
+          // fill panel group displaying current selected taxa filters //
+          const stringClass = this.className.slice(0, -5)
+          const tempVar = this.firstChild.innerHTML
+
+          // checks if a taxon is already in display
+          var divstringClass = document.getElementById('p_' + stringClass)
+          removal = false
+          if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
+            divstringClass.innerHTML = stringClass + ': ' + tempVar
+            removal = false
+          }
+          // checks if selection is in list and is the last element present... removing it
+          else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] === tempVar && taxaInList.length === 1) {
+            // resets displayCurrentBox
+            resetDisplayTaxaBox(idsArrays)
+            removal = true
+          } else {
+            // if taxa is already not in list then append
+            if (taxaInList.indexOf(tempVar) < 0) {
+              divstringClass.innerHTML = divstringClass.innerHTML + ',' + tempVar
+              removal = false
+            }
+            // if it is already in list then remove it and remove from list taxaInList
+            else {
+              if (taxaInList[0] == tempVar) {
+                tempString = tempVar + ','
+              } else {
+                tempString = ',' + tempVar
+              }
+              divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, '')
+              taxaInList = stringRmArray(tempVar, taxaInList)
+              removal = true
+            }
+          }
+          if (taxaInList.indexOf(tempVar) < 0 && removal === false) {
+            taxaInList.push(tempVar)  // user to store all clicked taxa
+          }
+          existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
+        })
+      }
+
+      //* **** Clear selection button *****//
+      // clear = false; //added to control the colors being triggered after clearing
+      $('#taxaModalClear').click(function (event) {
+        // clear = true;
+        event.preventDefault()
+        resetDisplayTaxaBox(idsArrays)
+
+        // resets dropdown selections
+        $('#orderList').selectpicker('deselectAll')
+        $('#familyList').selectpicker('deselectAll')
+        $('#genusList').selectpicker('deselectAll')
+        $('#speciesList').selectpicker('deselectAll')
+
         slider.noUiSlider.set([min, max])
         node_color_reset(graphics, g, nodeColor, renderer)
         if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
@@ -981,8 +564,6 @@ function onLoad () {
           showGoback.style.display = 'none'
           document.getElementById('go_back').className += ' disabled'
           showDownload.style.display = 'none'
-          document.getElementById('read_label').style.display = 'none' // hide label
-          $('#readLegend').empty()
         } else {
           $('#colorLegendBox').empty()
           document.getElementById('taxa_label').style.display = 'none' // hide label
@@ -990,39 +571,517 @@ function onLoad () {
           showGoback.style.display = 'none'
           document.getElementById('go_back').className += ' disabled'
           showDownload.style.display = 'none'
-          document.getElementById('read_label').style.display = 'none' // hide label
-          $('#readLegend').empty()
         }
-        resetDisplayTaxaBox(idsArrays)
+      })
+    })
 
-          // resets dropdown selections
-        $('#orderList').selectpicker('deselectAll')
-        $('#familyList').selectpicker('deselectAll')
-        $('#genusList').selectpicker('deselectAll')
-        $('#speciesList').selectpicker('deselectAll')
-      })
-        // runs the re run operation for the selected species
-      $('#Re_run').click(function (event) {
-          //* * Loading Screen goes on **//
-        show_div(
-            // removes nodes
-            actual_removal(renderer, listGiFilter)
-          )
-          // removes disabled from go_back button
-        document.getElementById('go_back').className = document.getElementById('go_back').className.replace(/(?:^|\s)disabled(?!\S)/g, '')
+    //* **** Submit button for taxa filter *****//
+
+    // perform actions when submit button is clicked.
+
+    $('#taxaModalSubmit').click(function (event) {
+      //let listGiFilter = []   // makes listGiFilter an empty array
+      noLegend = false // sets legend to hidden state by default
+      event.preventDefault()
+      // now processes the current selection
+      var species_query = document.getElementById('p_Species').innerHTML,
+        genus_query = document.getElementById('p_Genus').innerHTML,
+        family_query = document.getElementById('p_Family').innerHTML,
+        order_query = document.getElementById('p_Order').innerHTML
+      var selectedSpecies = species_query.replace('Species: ', '').split(',').filter(Boolean),
+        selectedGenus = genus_query.replace('Genus: ', '').split(',').filter(Boolean),
+        selectedFamily = family_query.replace('Family: ', '').split(',').filter(Boolean),
+        selectedOrder = order_query.replace('Order: ', '').split(',').filter(Boolean)
+
+      //* *** Alert for taxa filter ****//
+      // print alert if no filters are selected
+      counter = 0 // counts the number of taxa type that has not been selected
+
+      var alertArrays = {'order': selectedOrder, 'family': selectedFamily, 'genus': selectedGenus, 'species': selectedSpecies}
+      var divAlert = document.getElementById('alertId')
+      var Alert = false
+      for (let i in alertArrays) {
+        if (alertArrays[i][0] === "No filters applied") {
+          Alert = true
+          counter = 4  // counter used to check if more than one dropdown has selected options
+        } else if (alertArrays[i].length > 0) {
+          counter = counter + 1
+        }
+      }
+      if (Alert == true) {
+        divAlert.style.display = 'block'
+        showLegend.style.display = 'none' // removes legend when this warning is raised
+        Alert = false
+      }
+      // control the alertClose button
+
+      $('#alertClose').click(function () {
+        $('#alertId').hide()  // hide this div
       })
 
-        // returns to the initial tree by reloading the page
-      $('#go_back').click(function (event) {
-        //console.log('returning to main')
-        window.location.reload()   // a temporary fix to go back to full dataset
+      // auto hide after 5 seconds without closing the div
+
+      window.setTimeout(function () { $('#alertId').hide() }, 5000)
+
+      //* *** End Alert for taxa filter ****//
+
+      // make tmpselectedGenus an associative array since it is the base of family and order arrays
+
+      assocFamilyGenus = {}
+      assocOrderGenus = {}
+      assocGenus = {}
+
+      // appends genus to selectedGenus according with the family and order for single-color selection
+      // also appends to associative arrays for family and order for multi-color selection
+      $.each(dict_genera, function (species, pair) {
+        var genus = pair[0]
+        var family = pair[1]
+        var order = pair[2]
+        if (selectedFamily.indexOf(family) >= 0) {
+          selectedGenus.push(species)
+          if (!(family in assocFamilyGenus)) {
+            assocFamilyGenus[family] = []
+            assocFamilyGenus[family].push(species)
+          } else {
+            assocFamilyGenus[family].push(species)
+          }
+        } else if (selectedOrder.indexOf(order) >= 0) {
+          selectedGenus.push(species)
+          if (!(order in assocOrderGenus)) {
+            assocOrderGenus[order] = []
+            assocOrderGenus[order].push(species)
+          } else {
+            assocOrderGenus[order].push(species)
+          }
+        } else if (selectedGenus.indexOf(genus) >= 0) {
+          if (!(genus in assocGenus)) {
+            assocGenus[genus] = []
+            assocGenus[genus].push(species)
+          } else {
+            assocGenus[genus].push(species)
+          }
+        }
       })
+
+      // renders the graph for the desired taxon if more than one taxon type is selected
+      var store_lis = '' // a variable to store all <li> generated for legend
+      var firstIteration = true // boolean to control the upper taxa level (order or family)
+
+      // first restores all nodes to default color
+      node_color_reset(graphics, g, nodeColor, renderer)
+
+      // if multiple selections are made in different taxa levels
+      if (counter > 1 && counter <= 4) {
+        currentColor = 0xf71735   // sets color of all changes_nodes to be red
+        store_lis = '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#f71735"></button>&nbsp;multi-level selected taxa</li>'
+        for (i in alertArrays.order) {
+          let currentSelection = alertArrays.order
+          for (i in currentSelection) {
+            const tempArray = assocOrderGenus[currentSelection[i]]
+            for (sp in tempArray) {
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                .then(results => {
+                  results.map(request => {
+                    listGiFilter.push(request.plasmid_id)
+                  })
+                })
+            }
+          }
+        }
+        for (i in alertArrays.family) {
+          let currentSelection = alertArrays.family
+          for (i in currentSelection) {
+            const tempArray = assocFamilyGenusGenus[currentSelection[i]]
+            for (sp in tempArray) {
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                .then(results => {
+                  results.map(request => {
+                    listGiFilter.push(request.plasmid_id)
+                  })
+                })
+            }
+          }
+        }
+        for (i in alertArrays.genus) {
+          let currentSelection = alertArrays.genus
+          for (i in currentSelection) {
+            const tempArray = assocGenus[currentSelection[i]]
+            for (sp in tempArray) {
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                .then(results => {
+                  results.map(request => {
+                    listGiFilter.push(request.plasmid_id)
+                  })
+                })
+            }
+          }
+        }
+        for (i in alertArrays.species) {
+          let currentSelection = alertArrays.species
+          for (i in currentSelection) {
+            taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
+              .then(results => {
+                results.map(request => {
+                  listGiFilter.push(request.plasmid_id)
+                })
+              })
+          }
+        }
+      }
+      // renders the graph for the desired taxon if one taxon type is selected
+      // allows for different colors between taxa of the same level
+      else if (counter == 1) {
+        // first cycle between all the arrays to find which one is not empty
+        for (array in alertArrays) {
+          // selects the not empty array
+          if (alertArrays[array] != '' && firstIteration == true) {
+            var currentSelection = alertArrays[array]
+            // performs the actual interaction for color picking and assigning
+            for (i in currentSelection) {
+
+              // orders //
+              if (alertArrays['order'] != '') {
+                var currentColor = color[i].replace('#', '0x')
+                var tempArray = assocOrderGenus[currentSelection[i]]
+                style_color = 'background-color:' + color[i]
+                store_lis = store_lis + '<li' +
+                  ' class="centeredList"><button class="jscolor btn' +
+                  ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                // executres node function for family and orders
+                for (sp in tempArray) {
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                    .then(results => {
+                      results.map(request => {
+                        listGiFilter.push(request.plasmid_id)
+                      })
+                    })
+                }
+              }
+
+              // families //
+              else if (alertArrays['family'] != '') {
+                var currentColor = color[i].replace('#', '0x')
+                var tempArray = assocFamilyGenus[currentSelection[i]]
+                style_color = 'background-color:' + color[i]
+                store_lis = store_lis + '<li' +
+                  ' class="centeredList"><button class="jscolor btn' +
+                  ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                // executres node function for family
+                for (sp in tempArray) {
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                    .then(results => {
+                      results.map(request => {
+                        listGiFilter.push(request.plasmid_id)
+                      })
+                    })
+                }
+              }
+
+              // genus //
+              else if (alertArrays['genus'] != '') {
+                var currentColor = color[i].replace('#', '0x')
+                var tempArray = assocGenus[currentSelection[i]]
+                style_color = 'background-color:' + color[i]
+                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+
+                // requests taxa associated accession from db and colors
+                // respective nodes
+                for (sp in tempArray) {
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                    .then(results => {
+                      results.map(request => {
+                        listGiFilter.push(request.plasmid_id)
+                      })
+                    })
+                }
+              }
+
+              // species //
+              else if (alertArrays['species'] != '') {
+                var currentColor = color[i].replace('#', '0x')
+                style_color = 'background-color:' + color[i]
+                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+
+                // requests taxa associated accession from db and colors
+                // respective nodes
+                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
+                  .then(results => {
+                    results.map(request => {
+                      listGiFilter.push(request.plasmid_id)
+                    })
+                  })
+              }
+            }
+            firstIteration = false // stops getting lower levels
+          }
+        }
+      }
+      // used to control if no selection was made avoiding to display the legend
+      else {
+        noLegend = true
+      }
+      // show legend //
+      if (noLegend == false) {
+        showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
+        showLegend.style.display = 'block'
+        document.getElementById('taxa_label').style.display = 'block' // show label
+        $('#colorLegendBox').empty()
+        $('#colorLegendBox').append(store_lis +
+          '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
+        showRerun = document.getElementById('Re_run')
+        showGoback = document.getElementById('go_back')
+        showDownload = document.getElementById('download_ds')
+        showRerun.style.display = 'block'
+        showGoback.style.display = 'block'
+        showDownload.style.display = 'block'
+      }
+    })
+
+    //* ************//
+    //* ***READS****//
+    //* ************//
+
+    $('#fileSubmit').click(function (event) {
+      event.preventDefault()
+      $('#loading').show()
+      setTimeout(function () {
+        list_gi, listGiFilter = read_coloring(g, list_gi, graphics, renderer)
+      }, 100)
+
+      // }
+      // used to hide when function is not executed properly
+      setTimeout(function () {
+        $('#loading').hide()
+      }, 100)
+    })
+
+    $('#cancel_infile').click(function (event) {
+      abortRead(read_json)
+    })
+
+    //* ********* ***//
+    //* * Assembly **//
+    //* ********* ***//
+    $('#assemblySubmit').click(function (event) {
+      event.preventDefault()
+      $('#loading').show()
+      setTimeout(function () {
+        assembly(list_gi, assembly_json, g, graphics, renderer)
+      }, 100)
+
+      // }
+      // used to hide when function is not executed properly
+      setTimeout(function () {
+        $('#loading').hide()
+      }, 100)
+    })
+
+    $('#cancel_assembly').click(function (event) {
+      abortRead(assembly_json)
+    })
+
+    //* *********************//
+    //* * Distances filter **//
+    //* *********************//
+    $('#distancesSubmit').click(function (event) {
+      event.preventDefault()
+      $('#loading').show()
+      $('#scaleLegend').empty()
+      setTimeout(function () {
+        link_coloring(g, graphics, renderer)
+      }, 100)
+      var readMode = false
+      color_legend(readMode)
+      document.getElementById('reset-links').disabled = ''
+    })
+
+    $('#reset-links').click(function (event) {
+      event.preventDefault()
+      document.getElementById('distance_label').style.display = 'none' // hide label
+      if ($('#colorLegendBox').html() === '') {
+        $('#scaleLegend').empty()
+        showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
+        showLegend.style.display = 'none'
+      } else {
+        $('#scaleLegend').empty()
+      }
+      setTimeout(function () {
+        reset_link_color(g, graphics, renderer)
+      }, 100)
+      document.getElementById('reset-links').disabled = 'disabled'
+    })
+
+    //* ********************//
+    //* ***Length filter****//
+    //* ********************//
+
+    //* * slider button and other options **//
+
+    // sets the limits of buttons and slider
+    var min = Math.min.apply(null, list_lengths),
+      max = Math.max.apply(null, list_lengths)
+
+    // generates and costumizes slider itself
+    var slider = document.getElementById('slider')
+
+    noUiSlider.create(slider, {
+      start: [min, max],
+      behaviour: 'snap',   // snaps the closest slider
+      connect: true,
+      range: {
+        'min': min,
+        'max': max
+      },
+      format: wNumb({
+        decimals: 0
+      })
+    })
+
+    // event handler for slider
+    // trigger only if clicked to avoid looping through the nodes again
+    $('#length_filter').click(function (event) {
+      slider.noUiSlider.on('set', function (event) {
+        var slider_max = slider.noUiSlider.get()[1],
+          slider_min = slider.noUiSlider.get()[0]
+        g.forEachNode(function (node) {
+          var node_length = node.data.seq_length.split('>').slice(-1).toString()
+          var nodeUI = graphics.getNodeUI(node.id)
+          if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
+            nodeUI.color = 0xcdc8b1 // shades nodes
+          } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
+            nodeUI.color = nodeUI.backupColor // return nodes to original color
+          }
+        })
+        renderer.rerender()
+      })
+    })
+
+    // inputs mins and maxs for slider
+    var inputMin = document.getElementById('slider_input_min'),
+      inputMax = document.getElementById('slider_input_max'),
+      inputs = [inputMin, inputMax]
+    slider.noUiSlider.on('update', function (values, handle) {
+      inputs[handle].value = values[handle]
+    })
+
+    function setSliderHandle (i, value) {
+      var r = [null, null]
+      r[i] = value
+      slider.noUiSlider.set(r)
     }
+
+    // Listen to keydown events on the input field.
+    inputs.forEach(function (input, handle) {
+      input.addEventListener('change', function () {
+        setSliderHandle(handle, this.value)
+      })
+
+      input.addEventListener('keydown', function (e) {
+        var values = slider.noUiSlider.get()
+        var value = Number(values[handle])
+
+        // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
+        var steps = slider.noUiSlider.steps()
+
+        // [down, up]
+        var step = steps[handle]
+
+        var position
+
+        // 13 is enter,
+        // 38 is key up,
+        // 40 is key down.
+        switch (e.which) {
+          case 13:
+            setSliderHandle(handle, this.value)
+            break
+
+          case 38:
+
+            // Get step to go increase slider value (up)
+            position = step[1]
+
+            // false = no step is set
+            if (position === false) {
+              position = 1
+            }
+
+            // null = edge of slider
+            if (position !== null) {
+              setSliderHandle(handle, value + position)
+            }
+
+            break
+
+          case 40:
+
+            position = step[0]
+
+            if (position === false) {
+              position = 1
+            }
+
+            if (position !== null) {
+              setSliderHandle(handle, value - position)
+            }
+            break
+        }
+      })
+    })
+
+    // resets the slider
+    $('#reset-sliders').click(function (event) {
+      slider.noUiSlider.set([min, max])
+      node_color_reset(graphics, g, nodeColor, renderer)
+      if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
+        showLegend.style.display = 'none'
+        showRerun.style.display = 'none'
+        showGoback.style.display = 'none'
+        document.getElementById('go_back').className += ' disabled'
+        showDownload.style.display = 'none'
+        document.getElementById('read_label').style.display = 'none' // hide label
+        $('#readLegend').empty()
+      } else {
+        $('#colorLegendBox').empty()
+        document.getElementById('taxa_label').style.display = 'none' // hide label
+        showRerun.style.display = 'none'
+        showGoback.style.display = 'none'
+        document.getElementById('go_back').className += ' disabled'
+        showDownload.style.display = 'none'
+        document.getElementById('read_label').style.display = 'none' // hide label
+        $('#readLegend').empty()
+      }
+      resetDisplayTaxaBox(idsArrays)
+
+      // resets dropdown selections
+      $('#orderList').selectpicker('deselectAll')
+      $('#familyList').selectpicker('deselectAll')
+      $('#genusList').selectpicker('deselectAll')
+      $('#speciesList').selectpicker('deselectAll')
+    })
+    // runs the re run operation for the selected species
+    $('#Re_run').click(function (event) {
+      //* * Loading Screen goes on **//
+      //console.log("click", listGiFilter)
+      show_div(
+        // removes nodes
+        actual_removal(onload)
+      )
+      // removes disabled from go_back button
+      document.getElementById('go_back').className = document.getElementById('go_back').className.replace(/(?:^|\s)disabled(?!\S)/g, '')
+    })
+
+    // returns to the initial tree by reloading the page
+    $('#go_back').click(function (event) {
+      //console.log('returning to main')
+      window.location.reload()   // a temporary fix to go back to full dataset
+    })
+  } // closes renderGraph
   //}) //end of getArray
 
-    //* ***********************************************//
-    // control the infile input and related functions //
-    //* ***********************************************//
+  //* ***********************************************//
+  // control the infile input and related functions //
+  //* ***********************************************//
 
   handleFileSelect('infile', '#file_text', function (new_read_json) {
     read_json = new_read_json
@@ -1044,5 +1103,9 @@ function onLoad () {
       $('#menu-toggle').css({'color': '#999999'})
       first_click_menu = true
     }
-  }) 
-}
+  })
+
+  // this forces the entire script to run
+  init() //forces main json or the filtered objects to run before
+  // rendering the graph
+} // closes onload
