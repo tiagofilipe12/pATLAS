@@ -13,7 +13,7 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
       " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
       //species:"<font color='#468499'>Species:
       // </font>" + species,
-      seq_length: "<font color='#468499'>Sequence length: </font>" + (length !== "N/A") ? length : "N/A",
+      seq_length: "<font color='#468499'>Sequence length: </font>" + ((length !== "N/A") ? length : "N/A"),
       log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
     newList.push(sequence)
@@ -116,6 +116,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)
     })
+
 }
 
 // function that actually removes the nodes
