@@ -1,3 +1,51 @@
+// re adds nodes after cleaning the entire graph
+const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
+  const sequence = jsonObj.plasmidAccession
+  let length = jsonObj.plasmidLenght
+  const linksArray = jsonObj.significantLinks
+
+  // checks if sequence is within the queried accessions (newList)
+  if (newList.indexOf(sequence) < 0) {
+    //console.log("sequence", sequence)
+    g.addNode(sequence, {
+      sequence: "<font color='#468499'>Accession:" +
+      " </font><a" +
+      " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+      //species:"<font color='#468499'>Species:
+      // </font>" + species,
+      seq_length: "<font color='#468499'>Sequence length: </font>" + (length !== "N/A") ? length : "N/A",
+      log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
+    })
+    newList.push(sequence)
+  }
+
+  // loops between all arrays of array pairing sequence and distances
+  if (linksArray !== "N/A") {
+    for (let i = 0; i < linksArray.length; i++) {
+      // TODO make requests to get metadata to render the node
+      if (newList.indexOf(linksArray[i]) < 0) {
+        g.addNode(linksArray[i], {
+          sequence: "<font color='#468499'>Accession:" +
+          " </font><a" +
+          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linksArray[i].split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
+          //species:"<font color='#468499'>Species:
+          // </font>" + species,
+          seq_length: "<font" +
+          " color='#468499'>Sequence length:" +
+          " </font>" + length,
+          log_length: Math.log(parseInt(length))    //for now a fixed length will work
+        })
+        newList.push(linksArray[i])
+      }
+      // adds links for each node
+      g.addLink(sequence, linksArray[i])
+    }
+  }
+  storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
+    sequence, counter)
+  return storeMasterNode
+}
+
 // function to call requests on db
 
 const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, renderGraph) => {
@@ -68,54 +116,6 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)
     })
-}
-
-// re adds nodes after cleaning the entire graph
-const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
-  const sequence = jsonObj.plasmidAccession
-  let length = jsonObj.plasmidLenght
-  const linksArray = jsonObj.significantLinks
-
-  // checks if sequence is within the queried accessions (newList)
-  if (newList.indexOf(sequence) < 0) {
-    //console.log("sequence", sequence)
-    g.addNode(sequence, {
-      sequence: "<font color='#468499'>Accession:" +
-      " </font><a" +
-      " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-      //species:"<font color='#468499'>Species:
-      // </font>" + species,
-      seq_length: "<font color='#468499'>Sequence length: </font>" + (length !== "N/A") ? length : "N/A",
-      log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
-    })
-    newList.push(sequence)
-  }
-
-  // loops between all arrays of array pairing sequence and distances
-  if (linksArray !== "N/A") {
-    for (let i = 0; i < linksArray.length; i++) {
-      // TODO make requests to get metadata to render the node
-      if (newList.indexOf(linksArray[i]) < 0) {
-        g.addNode(linksArray[i], {
-          sequence: "<font color='#468499'>Accession:" +
-          " </font><a" +
-          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linksArray[i].split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
-          //species:"<font color='#468499'>Species:
-          // </font>" + species,
-          seq_length: "<font" +
-          " color='#468499'>Sequence length:" +
-          " </font>" + length,
-          log_length: Math.log(parseInt(length))    //for now a fixed length will work
-        })
-        newList.push(linksArray[i])
-      }
-      // adds links for each node
-      g.addLink(sequence, linksArray[i])
-    }
-  }
-  storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
-   sequence, counter)
-  return storeMasterNode
 }
 
 // function that actually removes the nodes

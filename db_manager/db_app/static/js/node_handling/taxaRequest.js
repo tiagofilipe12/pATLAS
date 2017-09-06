@@ -1,3 +1,16 @@
+// cycles nodes
+const colorNodes = (g, graphics, accessionRequested, currentColor, changed_nodes) => {
+  g.forEachNode( (node) => {
+    const nodeUI = graphics.getNodeUI(node.id)
+
+    if (accessionRequested.indexOf(node.id) > -1) {
+      nodeUI.color = currentColor
+      nodeUI.backupColor = nodeUI.color
+      changed_nodes.push(node.id)
+    }
+  })
+}
+
 /////////// IMPORTANT ///////////
 // piece of code that should be used to match species name with
 // dropdown selection
@@ -16,15 +29,4 @@ const taxaRequest = (g, graphics, renderer, taxa, currentColor, changed_nodes) =
 
 }
 
-// cycles nodes
-const colorNodes = (g, graphics, accessionRequested, currentColor, changed_nodes) => {
-  g.forEachNode( (node) => {
-    const nodeUI = graphics.getNodeUI(node.id)
 
-    if (accessionRequested.indexOf(node.id) > -1) {
-      nodeUI.color = currentColor
-      nodeUI.backupColor = nodeUI.color
-      changed_nodes.push(node.id)
-    }
-  })
-}

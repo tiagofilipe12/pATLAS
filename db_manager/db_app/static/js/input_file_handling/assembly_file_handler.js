@@ -1,26 +1,28 @@
-const assembly = (list_gi, assembly_json, g, graphics, renderer) => {
+const assembly = (listGi, assemblyJson, g, graphics, renderer) => {
   //console.log(assembly_json)
   // removes everything within []
-  const assemblyString = assembly_json.replace(/[{}"[ ]/g, '').split('],')
+  const assemblyString = assemblyJson.replace(/[{}"[ ]/g, '').split('],')
   // this gets the contig name
-  contig_name = assemblyString[0].split(':')[0]
-  g.addNode(contig_name, {sequence: "<font color='#468499'>seq_id: </font>" + contig_name, log_length: 10}
-  )
+  contigName = assemblyString[0].split(":")[0]
+  g.addNode(contigName, {sequence: "<font color='#468499'>seq_id: </font>"
+    + contigName, log_length: 10} )
   // change the color of the input node
-  const nodeUI = graphics.getNodeUI(contig_name)
+  const nodeUI = graphics.getNodeUI(contigName)
   nodeUI.color = 0xff2100
-  console.log(contig_name)
-  console.log(assemblyString)
+  //console.log(contigName)
+  //console.log(assemblyString)
   for (let string in assemblyString) {
-    if (string === 0) {
-      node_entry = assemblyString[string].split(':')[1]
-    } else {
-      node_entry = assemblyString[string]
-    }
-    let accession = node_entry.split('_').slice(0, 2).join('_')
-    const dist = node_entry.split(',')[1]
-    if (accession in list_gi) {
-      g.addLink(contig_name, accession, dist)
+    //if (string === 0) {
+    //  const nodeEntry = assemblyString[string].split(':')[1]
+    //} else {
+    //  const nodeEntry = assemblyString[string]
+    //}
+    // redefinition of the above if statement
+    const nodeEntry = (string === 0) ?  assemblyString[string].split(':')[1] : assemblyString[string]
+    let accession = nodeEntry.split('_').slice(0, 2).join('_')
+    const dist = nodeEntry.split(',')[1]
+    if (accession in listGi) {
+      g.addLink(contigName, accession, dist)
     } else {
       // links wont work because ncbi uses gis and not accessions
       g.addNode(accession, {sequence: "<font color='#468499'>seq_id: </font><a " +
@@ -29,14 +31,14 @@ const assembly = (list_gi, assembly_json, g, graphics, renderer) => {
         log_length: 10
         // percentage: "<font color='#468499'>percentage: </font>" + perc
       })
-      g.addLink(contig_name, accession, dist)
-      list_gi.push(accession)
+      g.addLink(contigName, accession, dist)
+      listGi.push(accession)
     }
   }
   // control all related divs
-  showRerun = document.getElementById('Re_run')
-  showGoback = document.getElementById('go_back')
-  showDownload = document.getElementById('download_ds')
+  let showRerun = document.getElementById('Re_run')
+  let showGoback = document.getElementById('go_back')
+  let showDownload = document.getElementById('download_ds')
   showRerun.style.display = 'block'
   showGoback.style.display = 'block'
   showDownload.style.display = 'block'
