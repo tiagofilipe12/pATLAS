@@ -94,7 +94,7 @@ const onLoad = () => {
       // storeMasterNode is empty in here
       //console.log('entered filters')
       //console.log(listGiFilter)
-      requesterDB(g, listGiFilter, counter, storeMasterNode, precompute, renderGraph)
+      requesterDB(g, listGiFilter, counter, storeMasterNode, precompute, renderGraph)   //TODO everything is getting equal here in what regards both filters
       // TODO masterNode needs to be used to re-center the graph
     }
   }

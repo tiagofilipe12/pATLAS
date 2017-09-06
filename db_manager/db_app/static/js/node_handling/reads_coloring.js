@@ -9,7 +9,7 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
     listGiFilter.push(gi)
     perc = parseFloat(readString[string].split(':')[1].replace(' ', ''))
     if (list_gi.indexOf(gi) <= -1) {
-      g.addNode(gi, {sequence: "<font color='#468499'>seq_id: </font><a " +
+      g.addNode(gi, {sequence: "<font color='#468499'>Accession: </font><a " +
       "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split('_').slice(0,2).join('_') + "' target='_blank'>" + gi + '</a>',
         log_length: 10
         // percentage: "<font color='#468499'>percentage: </font>" + perc

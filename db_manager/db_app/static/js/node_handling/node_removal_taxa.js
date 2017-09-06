@@ -24,14 +24,29 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
         }
         //console.log(data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(','))
 
-        // if request finds no matching plasmid it has no connections to other db
-        if (data.plasmid_id !== null) {
+        // if accession is not present in the database because singletons
+        // are not stored in database
+        if (data.json_entry.significantLinks === null)
+        {
+          console.log("debug", listGiFilter[i])
           const jsonObj = {
-            'plasmidAccession': data.plasmid_id,
-            'plasmidLenght': data.json_entry.length,
-            'speciesName': speciesName,
-            'plasmidName': plasmidName,
-            'significantLinks': data.json_entry.significantLinks.replace(/['u\[\] ]/g, '').split(',') //this is a
+            "plasmidAccession": listGiFilter[i],
+            "plasmidLenght": "N/A",
+            "speciesName": "N/A",
+            "plasmidName": "N/A",
+            "significantLinks": "N/A"
+          }
+          //add node
+          counter++
+          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback function
+        } else {  // add node for every accession that has links and that is
+          // present in plasmid_db
+          const jsonObj = {
+            "plasmidAccession": data.plasmid_id,
+            "plasmidLenght": data.json_entry.length,
+            "speciesName": speciesName,
+            "plasmidName": plasmidName,
+            "significantLinks": data.json_entry.significantLinks.replace(/['u\[\] ]/g, '').split(',') //this is a
             // string ... not ideal
             // TODO this is sketchy and should be fixed with JSON parsing
             // from db
@@ -39,20 +54,22 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
           //add node
           counter++
           storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback function
-        } else {  //this statement should not happen in future implementation,
-          // singletions must be passed to the database
-          const jsonObj = {
-            'plasmidAccession': 'non_linked_accession', //this should pass
-            // the listGiFilter[accession] but it can't be obtained here.
-            'plasmidLenght': 'N/A',
-            'speciesName': 'N/A',
-            'plasmidName': 'N/A',
-            'significantLinks': 'N/A'
-          }
-          //add node
-          counter++
-          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
-          // function
+          //} else {  //this statement should not happen in future implementation,
+          // singletons must be passed to the database
+          //   console.log("nonliked", listGiFilter[i], data.plasmid_id)
+          //   const jsonObj = {
+          //     'plasmidAccession': 'non_linked_accession', //this should pass
+          //     // the listGiFilter[accession] but it can't be obtained here.
+          //     'plasmidLenght': 'N/A',
+          //     'speciesName': 'N/A',
+          //     'plasmidName': 'N/A',
+          //     'significantLinks': 'N/A'
+          //   }
+          //   //add node
+          //   counter++
+          //   storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
+          //   // function
+          // }
         }
       })
     )
@@ -74,12 +91,15 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
+  console.log("josn", jsonObj)
 
-  if (length === 'N/A') {
-    length = 1
-  }
+  // if (length === "N/A") {
+  //   console.log("redefined length", length)
+  //   length = "2"    // then converted into an integer
+  // }
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
+    console.log("addnode", sequence, length)
     //console.log("sequence", sequence)
     g.addNode(sequence, {
       sequence: "<font color='#468499'>Accession:" +
@@ -89,15 +109,15 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
       // </font>" + species,
       seq_length: "<font" +
       " color='#468499'>Sequence length:" +
-      " </font>" + length,
-      log_length: Math.log(parseInt(length))
+      " </font>" + (length !== "N/A") ? length : "N/A",
+      log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
     newList.push(sequence)
   }
 
   // loops between all arrays of array pairing sequence and distances
-  if (linksArray !== 'N/A') {
-    //console.log("linksArray", linksArray)
+  if (linksArray !== "N/A") {
+    console.log("linksArray", linksArray)
     for (let i = 0; i < linksArray.length; i++) {
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linksArray[i]) < 0) {
@@ -109,8 +129,8 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
           // </font>" + species,
           seq_length: "<font" +
           " color='#468499'>Sequence length:" +
-          " </font>" + 1,
-          log_length: 10    //for now a fixed length will work
+          " </font>" + length,
+          log_length: Math.log(parseInt(length))    //for now a fixed length will work
         })
         newList.push(linksArray[i])
       }
