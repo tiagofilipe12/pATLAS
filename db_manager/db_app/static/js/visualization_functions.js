@@ -950,12 +950,19 @@ const onLoad = () => {
         var slider_max = slider.noUiSlider.get()[1],
           slider_min = slider.noUiSlider.get()[0]
         g.forEachNode(function (node) {
-          var node_length = node.data.seq_length.split('>').slice(-1).toString()
-          var nodeUI = graphics.getNodeUI(node.id)
-          if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
-            nodeUI.color = 0xcdc8b1 // shades nodes
-          } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
-            nodeUI.color = nodeUI.backupColor // return nodes to original color
+          // check if node is not a singleton
+          // singletons for now do not have size set so they cannot be
+          // filtered with this method
+          // TODO it is hard to filter without knowing the size anyway
+          // only changes nodes for nodes with seq_length data
+          if (node.data.seq_length) {
+            var node_length = node.data.seq_length.split('>').slice(-1).toString()
+            var nodeUI = graphics.getNodeUI(node.id)
+            if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
+              nodeUI.color = 0xcdc8b1 // shades nodes
+            } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
+              nodeUI.color = nodeUI.backupColor // return nodes to original color
+            }
           }
         })
         renderer.rerender()
@@ -1037,7 +1044,7 @@ const onLoad = () => {
 
     // resets the slider
     $('#reset-sliders').click(function (event) {
-      slider.noUiSlider.set([min, max])
+      slider.noUiSlider.set(sliderMinMax)
       node_color_reset(graphics, g, nodeColor, renderer)
       if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
         showLegend.style.display = 'none'
