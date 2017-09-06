@@ -15,6 +15,9 @@ const getArray_taxa = () => {
 // list used to store for re-run button (apply filters)
 let listGiFilter = []
 
+let sliderMinMax = [] // initiates an array for min and max slider entries
+// and stores it for reloading instances of onload()
+
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
 const onLoad = () => {
@@ -918,24 +921,27 @@ const onLoad = () => {
     //* * slider button and other options **//
 
     // sets the limits of buttons and slider
-    var min = Math.min.apply(null, list_lengths),
-      max = Math.max.apply(null, list_lengths)
+    // this is only triggered on first instance because we only want to get
+    // the limits of all plasmids once
+    if (sliderMinMax.length === 0) {
+      sliderMinMax = [Math.min.apply(null, list_lengths),
+        Math.max.apply(null, list_lengths)]
+      // generates and costumizes slider itself
+      const slider = document.getElementById('slider')
 
-    // generates and costumizes slider itself
-    var slider = document.getElementById('slider')
-
-    noUiSlider.create(slider, {
-      start: [min, max],
-      behaviour: 'snap',   // snaps the closest slider
-      connect: true,
-      range: {
-        'min': min,
-        'max': max
-      },
-      format: wNumb({
-        decimals: 0
+      noUiSlider.create(slider, {
+        start: sliderMinMax,  //this is an array
+        behaviour: 'snap',   // snaps the closest slider
+        connect: true,
+        range: {
+          'min': sliderMinMax[0],
+          'max': sliderMinMax[1]
+        },
+        format: wNumb({
+          decimals: 0
+        })
       })
-    })
+    }
 
     // event handler for slider
     // trigger only if clicked to avoid looping through the nodes again

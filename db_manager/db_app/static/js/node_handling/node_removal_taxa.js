@@ -116,6 +116,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)
     })
+
 }
 
 // function that actually removes the nodes
