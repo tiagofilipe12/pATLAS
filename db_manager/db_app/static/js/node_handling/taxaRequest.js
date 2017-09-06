@@ -28,15 +28,3 @@ const colorNodes = (g, graphics, accessionRequested, currentColor, changed_nodes
     }
   })
 }
-
-// // uses the above promise to push to listGiFilter
-// const getResultsRequest = (results) => {
-//   listGiFilterInside = []   //this array just exist within this function
-//   // then it exports the listGiFilter
-//   console.log("results", results)
-//   listGiFilterInside = results.map(request => {
-//     listGiFilterInside.push(request.plasmid_id)
-//
-//   })
-//   return listGiFilterInside
-// }

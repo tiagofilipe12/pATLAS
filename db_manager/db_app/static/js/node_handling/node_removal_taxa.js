@@ -54,22 +54,6 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, precompute, rend
           //add node
           counter++
           storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback function
-          //} else {  //this statement should not happen in future implementation,
-          // singletons must be passed to the database
-          //   console.log("nonliked", listGiFilter[i], data.plasmid_id)
-          //   const jsonObj = {
-          //     'plasmidAccession': 'non_linked_accession', //this should pass
-          //     // the listGiFilter[accession] but it can't be obtained here.
-          //     'plasmidLenght': 'N/A',
-          //     'speciesName': 'N/A',
-          //     'plasmidName': 'N/A',
-          //     'significantLinks': 'N/A'
-          //   }
-          //   //add node
-          //   counter++
-          //   storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback
-          //   // function
-          // }
         }
       })
     )
@@ -91,15 +75,9 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
-  console.log("josn", jsonObj)
 
-  // if (length === "N/A") {
-  //   console.log("redefined length", length)
-  //   length = "2"    // then converted into an integer
-  // }
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
-    console.log("addnode", sequence, length)
     //console.log("sequence", sequence)
     g.addNode(sequence, {
       sequence: "<font color='#468499'>Accession:" +
@@ -107,9 +85,7 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
       " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
       //species:"<font color='#468499'>Species:
       // </font>" + species,
-      seq_length: "<font" +
-      " color='#468499'>Sequence length:" +
-      " </font>" + (length !== "N/A") ? length : "N/A",
+      seq_length: "<font color='#468499'>Sequence length: </font>" + (length !== "N/A") ? length : "N/A",
       log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
     newList.push(sequence)
@@ -117,7 +93,6 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
 
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
-    console.log("linksArray", linksArray)
     for (let i = 0; i < linksArray.length; i++) {
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linksArray[i]) < 0) {
@@ -215,32 +190,6 @@ const show_div = (callback) => {
   // if callback exist execute it
   callback && callback()
 }
-
-
-/*
-// TODO remove this function?
-// helper function to color according with family and order
-function node_coloring_taxa (tempArray, g, graphics, store_lis, currentSelection) {
-  currentColor = color[i].replace('#', '0x')
-  style_color = 'background-color:' + color[i]
-  store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
-  for (gen in tempArray) {
-    // cycles nodes
-    g.forEachNode( (node) => {
-      const nodeUI = graphics.getNodeUI(node.id)
-      const species = node.data.species.split('>').slice(-1).toString()
-      const genus = species.split(' ')[0]
-
-      // checks if genus is in selection
-      if (tempArray[gen] === genus) {
-        nodeUI.color = currentColor
-        nodeUI.backupColor = nodeUI.color
-        changed_nodes.push(node.id)
-      }
-    })
-  }
-  return store_lis
-}*/
 
 // function to reset node colors
 const node_color_reset = (graphics, g, nodeColor, renderer) => {

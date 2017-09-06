@@ -94,7 +94,7 @@ const onLoad = () => {
       // storeMasterNode is empty in here
       //console.log('entered filters')
       //console.log(listGiFilter)
-      requesterDB(g, listGiFilter, counter, storeMasterNode, precompute, renderGraph)   //TODO everything is getting equal here in what regards both filters
+      requesterDB(g, listGiFilter, counter, storeMasterNode, precompute, renderGraph)
       // TODO masterNode needs to be used to re-center the graph
     }
   }
@@ -253,7 +253,6 @@ const onLoad = () => {
 
       // call the requests
       const requestPlasmidTable = (node, setupPopupDisplay) => {
-        console.log(node.id)
         // if statement to check if node is in database or is a new import
         // from mapping
         if (node.data.seq_length) {
