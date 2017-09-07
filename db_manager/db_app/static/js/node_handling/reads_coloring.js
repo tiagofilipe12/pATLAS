@@ -135,9 +135,9 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
       color_element = scale(i / x).hex()
       $('#scaleLegend').append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
-    $('#scaleLegend').append('<div class="header_taxa" id="min">0</div>')
+    $('#scaleLegend').append('<div class="header_taxa" id="min">0.1</div>')
     $('#scaleLegend').append('<div class="header_taxa" id="med">0.05</div>')
-    $('#scaleLegend').append('<div class="header_taxa" id="max">0.1</div>')
+    $('#scaleLegend').append('<div class="header_taxa" id="max">0</div>')
     document.getElementById('distance_label').style.display = 'block' // show label
   } else { // here enters for coloring the reads
     $('#readLegend').empty()
