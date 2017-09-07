@@ -95,7 +95,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
             "significantLinks": "N/A"
           }
           //add node
-          counter++
+          //counter++
           reAddNode(g, jsonObj, newList) //callback
           // function
         } else {  // add node for every accession that has links and that is
@@ -111,7 +111,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
             // from db
           }
           //add node
-          counter++
+          //counter++
           reAddNode(g, jsonObj, newList) //callback function
         }
       })
@@ -121,9 +121,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      //console.log("results", results, storeMasterNode)
-      //precompute(1000, renderGraph)
-      setTimeout(function() { //TODO WHAT A HACK!!!!!! :(
+      setTimeout( () => {
         renderGraph() //TODO storeMasterNode maybe can be passed to this function
       },1000)
     })
