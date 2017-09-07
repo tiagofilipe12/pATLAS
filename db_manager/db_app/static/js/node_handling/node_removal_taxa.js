@@ -16,7 +16,7 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
       seq_length: "<font color='#468499'>Sequence length: </font>" + ((length !== "N/A") ? length : "N/A"),
       log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
-    newList.push(sequence)
+    newList.push(sequence)  //adds to list everytime a new node is added here
   }
 
   // loops between all arrays of array pairing sequence and distances
@@ -24,21 +24,27 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
     for (let i = 0; i < linksArray.length; i++) {
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linksArray[i]) < 0) {
-        g.addNode(linksArray[i], {
-          sequence: "<font color='#468499'>Accession:" +
-          " </font><a" +
-          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linksArray[i].split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
-          //species:"<font color='#468499'>Species:
-          // </font>" + species,
-          seq_length: "<font" +
-          " color='#468499'>Sequence length:" +
-          " </font>" + length,
-          log_length: Math.log(parseInt(length))    //for now a fixed length will work
+        $.get('api/getspecies/', {'accession': linksArray[i]}, function (data, status) {
+          const subLength = data.json_entry.length  //length of the linked node
+          // these nodes must have length in database otherwise they should
+          // not be linked
+          g.addNode(linksArray[i], {
+            sequence: "<font color='#468499'>Accession:" +
+            " </font><a" +
+            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linksArray[i].split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
+            //species:"<font color='#468499'>Species:
+            // </font>" + species,
+            seq_length: "<font" +
+            " color='#468499'>Sequence length:" +
+            " </font>" + subLength,
+            log_length: Math.log(parseInt(subLength))    //for now a fixed length will work
+          })
+          // adds links for each node
+          g.addLink(sequence, linksArray[i])
+          newList.push(linksArray[i]) //adds to list everytime a node is
+          // added here
         })
-        newList.push(linksArray[i])
       }
-      // adds links for each node
-      g.addLink(sequence, linksArray[i])
     }
   }
   storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
