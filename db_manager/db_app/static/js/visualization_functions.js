@@ -157,6 +157,8 @@ const onLoad = () => {
     // computational intensive for old computers
     renderer.pause()
 
+    defaultZooming(layout,renderer)
+
     // used to center on the node with more links
     // this is used to skip if it is a re-run button execution
     if (storeMasterNode.length > 0) {
