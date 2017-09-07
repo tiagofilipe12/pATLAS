@@ -11,8 +11,6 @@ const reAddNode = (g, jsonObj, newList) => {
       sequence: "<font color='#468499'>Accession:" +
       " </font><a" +
       " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-      //species:"<font color='#468499'>Species:
-      // </font>" + species,
       seq_length: "<font color='#468499'>Sequence length: </font>" + ((length !== "N/A") ? length : "N/A"),
       log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
@@ -21,35 +19,28 @@ const reAddNode = (g, jsonObj, newList) => {
 
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
-    let promisesLinks = []
     for (let i = 0; i < linksArray.length; i++) {
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linksArray[i]) < 0) {
-        promisesLinks.push(
-        $.get('api/getspecies/', {'accession': linksArray[i]}, function (data, status) {
-          const subLength = data.json_entry.length  //length of the linked node
           // these nodes must have length in database otherwise they should
           // not be linked
           g.addNode(linksArray[i], {
             sequence: "<font color='#468499'>Accession:" +
             " </font><a" +
             " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linksArray[i].split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
-            //species:"<font color='#468499'>Species:
-            // </font>" + species,
             seq_length: "<font" +
             " color='#468499'>Sequence length:" +
-            " </font>" + subLength,
-            log_length: Math.log(parseInt(subLength))    //for now a fixed length will work
+            " </font>" + 1000,
+            log_length: Math.log(parseInt(1000))    //for now a fixed
+            // length will work
           })
           // adds links for each node
           g.addLink(sequence, linksArray[i])    //TODO add distances from new db
           newList.push(linksArray[i]) //adds to list every time a node is
           // added here
-        })
-        )
+        //})
       }
     }
-    return promisesLinks
   }
   // only ends the function if the two arrays are the same size
   //storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
