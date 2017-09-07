@@ -1,0 +1,4 @@
+---
+exclude_paths:
+  - db_manager/db_app/static/dependencies/*
+  - '*.min.js'
