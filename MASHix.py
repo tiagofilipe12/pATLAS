@@ -1,8 +1,8 @@
 #!/usr/bin/env python2
 
-## Last update: 31/7/2017
+## Last update: 7/9/2017
 ## Author: T.F. Jesus
-## This script runs MASH in plasmid databases making a parwise diagonal matrix
+## This script runs MASH in plasmid databases making a pairwise diagonal matrix
 # for each pairwise comparison between libraries
 ## Note: each header in fasta is considered a reference
 
@@ -331,17 +331,11 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         ## string_sequence.split("_")[-1] is used to remove length from
         # accession in database
 
-        ## prune temporarylist to have just the accessions
-        acc_list = []
-        for acc in temporary_list:
-            pruned_entry = "_".join(acc[0].split("_")[:-1])
-            acc_list.append(pruned_entry)
-
         ## cannot use json.dumps because it puts double quotes
         doc = {"name": spp_name,
                "length": length,
                "plasmid_name": plasmid_name,
-               "significantLinks": acc_list}
+               "significantLinks": temporary_list}
 
         row = models.Plasmid(
             plasmid_id = "_".join(string_sequence.split("_")[:-1]),
