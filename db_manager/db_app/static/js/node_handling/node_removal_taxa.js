@@ -1,5 +1,5 @@
 // re adds nodes after cleaning the entire graph
-const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
+const reAddNode = (g, jsonObj, newList) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
@@ -21,9 +21,11 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
 
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
+    let promisesLinks = []
     for (let i = 0; i < linksArray.length; i++) {
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linksArray[i]) < 0) {
+        promisesLinks.push(
         $.get('api/getspecies/', {'accession': linksArray[i]}, function (data, status) {
           const subLength = data.json_entry.length  //length of the linked node
           // these nodes must have length in database otherwise they should
@@ -40,16 +42,18 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
             log_length: Math.log(parseInt(subLength))    //for now a fixed length will work
           })
           // adds links for each node
-          g.addLink(sequence, linksArray[i])
-          newList.push(linksArray[i]) //adds to list everytime a node is
+          g.addLink(sequence, linksArray[i])    //TODO add distances from new db
+          newList.push(linksArray[i]) //adds to list every time a node is
           // added here
         })
+        )
       }
     }
+    return promisesLinks
   }
-  storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
-    sequence, counter)
-  return storeMasterNode
+  // only ends the function if the two arrays are the same size
+  //storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
+  //  sequence, counter)
 }
 
 // function to call requests on db
@@ -92,7 +96,8 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
           }
           //add node
           counter++
-          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback function
+          reAddNode(g, jsonObj, newList) //callback
+          // function
         } else {  // add node for every accession that has links and that is
           // present in plasmid_db
           const jsonObj = {
@@ -107,7 +112,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
           }
           //add node
           counter++
-          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback function
+          reAddNode(g, jsonObj, newList) //callback function
         }
       })
     )
@@ -118,7 +123,9 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
     .then((results) => {
       //console.log("results", results, storeMasterNode)
       //precompute(1000, renderGraph)
-      renderGraph()
+      setTimeout(function() { //TODO WHAT A HACK!!!!!! :(
+        renderGraph() //TODO storeMasterNode maybe can be passed to this function
+      },1000)
     })
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)
