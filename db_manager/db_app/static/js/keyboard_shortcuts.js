@@ -22,10 +22,10 @@ Mousetrap.bind("shift+i", () => {
 
 // keyboard shortcut for play/pause rendering
 Mousetrap.bind("shift+p", () => {
-  $('#playpauseButton').click()
+  document.getElementById("playpauseButton").click()
 })
 
 // keyboard shortcut for reset all filters
 Mousetrap.bind("shift+r", () => {
-  $('#reset-sliders').click()
+  document.getElementById("reset-sliders").click()
 })
