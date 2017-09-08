@@ -11,10 +11,10 @@ const defaultZooming = (layout,renderer) => {
     // zoom API in vivagraph 0.5.x is silly. There is no way to pass transform
     // directly. Maybe it will be fixed in future, for now this is the best I could do:
     if (desiredScale < currentScale) {
-      currentScale = renderer.zoomOut();
-      setTimeout(function () {
-        zoomOut(desiredScale, currentScale);
-      }, 16);
+      currentScale = renderer.zoomOut()
+      setTimeout( () => {
+        zoomOut(desiredScale, currentScale)
+      }, 16)
     }
   }
 

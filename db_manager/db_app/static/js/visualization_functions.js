@@ -206,16 +206,8 @@ const onLoad = () => {
     const events = Viva.Graph.webglInputEvents(graphics, g)
     store_nodes = []  // list used to store nodes
     // changes the color of node and links (and respective linked nodes) of this node when clicked
-    click_check = false    // controls the handling of hoverings
-    events.click( (node) => {
+    events.dblClick( (node) => {
       store_nodes.push(node.id)
-      // allows the control of the hovering appearing and locking
-      if (click_check === false) {
-        click_check = true
-      } else {
-        click_check = false
-        $('#popup_description').css({'display': 'none'})
-      }
       //console.log('Single click on node: ' + node.id)
       const nodeUI = graphics.getNodeUI(node.id)
       if (toggle_status === true) {   // if statement to check if toggle
@@ -250,87 +242,88 @@ const onLoad = () => {
       renderer.rerender()
     })
 
-    //* * mouse hovering on nodes **//
-    events.mouseEnter( (node, e) => {
+    //* * mouse click on nodes **//
+    let click_check = false    // controls the handling of hoverings
+    events.click( (node, e) => {
       nodeUI_1 = graphics.getNodeUI(node.id)
       const domPos = {
         x: nodeUI_1.position.x,
         y: nodeUI_1.position.y
       }
-      // And ask graphics to transform it to DOM coordinates:
-      graphics.transformGraphToClientCoordinates(domPos)
-      domPos.x = (domPos.x + nodeUI_1.size) + 'px'
-      domPos.y = (domPos.y) + 'px'
 
-      // call the requests
-      const requestPlasmidTable = (node, setupPopupDisplay) => {
-        // if statement to check if node is in database or is a new import
-        // from mapping
-        if (node.data.seq_length) {
-          $.get('api/getspecies/', {'accession': node.id}, (data, status) => {
-            // this request uses nested json object to access json entries
-            // available in the database
-            // if request return no speciesName or plasmidName
-            // sometimes plasmids have no descriptor for one of these or both
-            if (data.json_entry.name === null) {
-              speciesName = "N/A"
-            } else {
-              speciesName = data.json_entry.name.split("_").join(" ")
-            }
-            if (data.json_entry.plasmid_name === null) {
-              plasmidName = "N/A"
-            } else {
-              plasmidName = data.json_entry.plasmid_name
-            }
-            // check if data can be called as json object properly from db something like data.species or data.length
+      // allows the control of the click appearing and locking
+      if (click_check === false) {
+        click_check = true
+
+        // And ask graphics to transform it to DOM coordinates:
+        graphics.transformGraphToClientCoordinates(domPos)
+        domPos.x = (domPos.x + nodeUI_1.size) + 'px'
+        domPos.y = (domPos.y) + 'px'
+
+        // call the requests
+        const requestPlasmidTable = (node, setupPopupDisplay) => {
+          // if statement to check if node is in database or is a new import
+          // from mapping
+          if (node.data.seq_length) {
+            $.get('api/getspecies/', {'accession': node.id}, (data, status) => {
+              // this request uses nested json object to access json entries
+              // available in the database
+              // if request return no speciesName or plasmidName
+              // sometimes plasmids have no descriptor for one of these or both
+              if (data.json_entry.name === null) {
+                speciesName = "N/A"
+              } else {
+                speciesName = data.json_entry.name.split("_").join(" ")
+              }
+              if (data.json_entry.plasmid_name === null) {
+                plasmidName = "N/A"
+              } else {
+                plasmidName = data.json_entry.plasmid_name
+              }
+              // check if data can be called as json object properly from db something like data.species or data.length
+              setupPopupDisplay(node, speciesName, plasmidName) //callback
+              // function for
+              // node displaying after fetching data from db
+            })
+          }
+          // exception when node has no length (used on new nodes?)
+          else {
+            speciesName = 'N/A'
+            plasmidName = 'N/A'
             setupPopupDisplay(node, speciesName, plasmidName) //callback
-            // function for
-            // node displaying after fetching data from db
+          }
+        }
+
+        const setupPopupDisplay = (node, speciesName, plasmidName) => {
+          // first needs to empty the popup in order to avoid having
+          // multiple entries from previous interactions
+          $('#popup_description').empty()
+          $('#popup_description').append('<div>' +
+            node.data.sequence +
+            '<br />' +
+            "<font color='#468499'>Species: </font>" + speciesName +
+            '<br />' +
+            node.data.seq_length +
+            '<br />' +
+            "<font color='#468499'>Plasmid: </font>" + plasmidName +
+            '<br />' +
+            "<font color='#468499'>percentage: </font>" + node.data.percentage + //This should be passed on request
+            '</div>')
+          $('#popup_description').css({
+            'padding': '10px 10px 10px 10px',
+            'border': '1px solid grey',
+            'border-radius': '10px',
+            'background-color': 'white',
+            'display': 'block',
+            'left': domPos.x,
+            'top': domPos.y,
+            'position': 'fixed',
+            'z-index': 2
           })
         }
-        // exception when node has no length (used on new nodes?)
-        else {
-          speciesName = 'N/A'
-          plasmidName = 'N/A'
-          setupPopupDisplay(node, speciesName, plasmidName) //callback
-        }
-      }
-
-      const setupPopupDisplay = (node, speciesName, plasmidName) => {
-        // first needs to empty the popup in order to avoid having
-        // multiple entries from previous interactions
-        $('#popup_description').empty()
-        $('#popup_description').append('<div>' +
-          node.data.sequence +
-          '<br />' +
-          "<font color='#468499'>Species: </font>" + speciesName +
-          '<br />' +
-          node.data.seq_length +
-          '<br />' +
-          "<font color='#468499'>Plasmid: </font>" + plasmidName +
-          '<br />' +
-          "<font color='#468499'>percentage: </font>" + node.data.percentage + //This should be passed on request
-          '</div>')
-        $('#popup_description').css({
-          'padding': '10px 10px 10px 10px',
-          'border': '1px solid grey',
-          'border-radius': '10px',
-          'background-color': 'white',
-          'display': 'block',
-          'left': domPos.x,
-          'top': domPos.y,
-          'position': 'fixed',
-          'z-index': 2
-        })
-      }
-
-      requestPlasmidTable(node, setupPopupDisplay)
-
-    }).mouseLeave( (node) => {
-      // if node is not clicked then mouse hover can disappear
-      if (click_check === true) {
-        $('#popup_description').css({'display': 'block'})
+        requestPlasmidTable(node, setupPopupDisplay)
       } else {
+        click_check = false
         $('#popup_description').css({'display': 'none'})
       }
     })
