@@ -20,9 +20,9 @@ const reAddNode = (g, jsonObj, newList) => {
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
     for (let i = 0; i < linksArray.length; i++) {
-      linkAccession = linksArray[i].replace(/['u\[\] ]/g,'').split("_").slice(0, 3).join("_")
-      linkLength = linksArray[i].replace(/['u\[\] ]/g,'').split("_")[3].split(",")[0]
-      linkDistance = linksArray[i].replace(/['u\[\] ]/g,'').split("_")[3].split(",")[1]
+      const linkAccession = linksArray[i].replace(/['u\[\] ]/g,"").split("_").slice(0, 3).join("_")
+      const linkLength = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[0]
+      const linkDistance = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[1]
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linkAccession) < 0) {
           g.addNode(linkAccession, {
