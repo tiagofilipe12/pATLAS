@@ -42,7 +42,6 @@ const reAddNode = (g, jsonObj, newList) => {
       }
     }
   }
-  // only ends the function if the two arrays are the same size
   //storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
   //  sequence, counter)
 }
