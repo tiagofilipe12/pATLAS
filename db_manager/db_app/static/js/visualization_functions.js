@@ -92,14 +92,9 @@ const onLoad = () => {
         })
         // precompute before rendering
         renderGraph()
-        //precompute(1000, renderGraph) // callback
       }) //new getArray end
     } else {
       // storeMasterNode is empty in here
-      //console.log('entered filters')
-      //console.log(listGiFilter)
-      // requesterDB(g, listGiFilter, counter, storeMasterNode, precompute,
-      // renderGraph)
       requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph)
       // TODO masterNode needs to be used to re-center the graph
     }
@@ -566,14 +561,14 @@ const onLoad = () => {
           showLegend.style.display = 'none'
           showRerun.style.display = 'none'
           showGoback.style.display = 'none'
-          document.getElementById('go_back').className += ' disabled'
+          //document.getElementById('go_back').className += ' disabled'
           showDownload.style.display = 'none'
         } else {
           $('#colorLegendBox').empty()
           document.getElementById('taxa_label').style.display = 'none' // hide label
           showRerun.style.display = 'none'
           showGoback.style.display = 'none'
-          document.getElementById('go_back').className += ' disabled'
+          //document.getElementById('go_back').className += ' disabled'
           showDownload.style.display = 'none'
         }
       })
@@ -584,6 +579,7 @@ const onLoad = () => {
     // perform actions when submit button is clicked.
 
     $('#taxaModalSubmit').click(function (event) {
+
       //let listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
       event.preventDefault()
@@ -832,9 +828,9 @@ const onLoad = () => {
         $('#colorLegendBox').empty()
         $('#colorLegendBox').append(store_lis +
           '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
-        showRerun = document.getElementById('Re_run')
-        showGoback = document.getElementById('go_back')
-        showDownload = document.getElementById('download_ds')
+        let showRerun = document.getElementById('Re_run')
+        let showGoback = document.getElementById('go_back')
+        let showDownload = document.getElementById('download_ds')
         showRerun.style.display = 'block'
         showGoback.style.display = 'block'
         showDownload.style.display = 'block'
@@ -1051,7 +1047,7 @@ const onLoad = () => {
         showLegend.style.display = 'none'
         showRerun.style.display = 'none'
         showGoback.style.display = 'none'
-        document.getElementById('go_back').className += ' disabled'
+        //document.getElementById('go_back').className += ' disabled'
         showDownload.style.display = 'none'
         document.getElementById('read_label').style.display = 'none' // hide label
         $('#readLegend').empty()
@@ -1060,7 +1056,7 @@ const onLoad = () => {
         document.getElementById('taxa_label').style.display = 'none' // hide label
         showRerun.style.display = 'none'
         showGoback.style.display = 'none'
-        document.getElementById('go_back').className += ' disabled'
+        //document.getElementById('go_back').className += ' disabled'
         showDownload.style.display = 'none'
         document.getElementById('read_label').style.display = 'none' // hide label
         $('#readLegend').empty()
@@ -1077,12 +1073,13 @@ const onLoad = () => {
     $('#Re_run').click(function (event) {
       //* * Loading Screen goes on **//
       //console.log("click", listGiFilter)
+      // removes disabled from class in go_back button
+      document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       show_div(
         // removes nodes
         actual_removal(onload)
       )
-      // removes disabled from go_back button
-      document.getElementById('go_back').className = document.getElementById('go_back').className.replace(/(?:^|\s)disabled(?!\S)/g, '')
     })
 
     // returns to the initial tree by reloading the page
@@ -1118,6 +1115,12 @@ const onLoad = () => {
       first_click_menu = true
     }
   })
+
+  $("#download_ds").on("click", function (e) {
+    // for now this is just taking what have been changed by taxa coloring
+    downloadSeq(listGiFilter)
+  })
+
 
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before

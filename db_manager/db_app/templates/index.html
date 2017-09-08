@@ -39,6 +39,10 @@
 
       <!--chroma to generate colors for reads-->
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/chroma/chroma.min.js') }}"></script>
+
+      <!--bionode-ncbi-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
+
       <!--load reads-->
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
       <!--input files handler script-->
@@ -424,7 +428,7 @@
                           <span class="glyphicon glyphicon-filter"></span></button>
                   <!--for now this button is disabled since it does not have funcitonality-->
                   <button class="btn btn-default disabled" id="download_ds"
-                          type="button" data-toogle="tooptip"
+                          type="button" data-toogle="tooptip" disabled="disabled"
                           title="Download current selection (Currently unavailable)" style="display: none">
                           <span class="glyphicon glyphicon-save"></span></button>
                 </div>

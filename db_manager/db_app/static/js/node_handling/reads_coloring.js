@@ -37,9 +37,9 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
     node_iter(g, read_color, gi, graphics, perc)
   }
   // control all related divs
-  showRerun = document.getElementById('Re_run')
-  showGoback = document.getElementById('go_back')
-  showDownload = document.getElementById('download_ds')
+  let showRerun = document.getElementById('Re_run')
+  let showGoback = document.getElementById('go_back')
+  let showDownload = document.getElementById('download_ds')
   showRerun.style.display = 'block'
   showGoback.style.display = 'block'
   showDownload.style.display = 'block'
