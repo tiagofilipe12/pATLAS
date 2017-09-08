@@ -1116,7 +1116,8 @@ const onLoad = () => {
     }
   })
 
-  $("#download_ds").on("click", function (e) {
+  $("#download_ds").click(function (e) {
+    e.preventDefault()
     // for now this is just taking what have been changed by taxa coloring
     downloadSeq(listGiFilter)
   })

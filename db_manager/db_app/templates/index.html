@@ -297,6 +297,15 @@
         </div>
       </div>
 
+      <!--Alert message when a file is too big to download-->
+      <div class="alert alert-danger alert-dismissable fade in" id="alertNCBI"
+           style="display: none">
+        <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
+        <strong>Warning!</strong> File is too big, download will be split
+        into batches 100 sequences. Note that this behavior will open several
+        windows
+      </div>
+
       <!--Alert message to check that some selection is made-->
       <div class="alert alert-danger alert-dismissable fade in" id="alertId" style="display: none">
         <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
@@ -428,8 +437,8 @@
                           <span class="glyphicon glyphicon-filter"></span></button>
                   <!--for now this button is disabled since it does not have funcitonality-->
                   <button class="btn btn-default disabled" id="download_ds"
-                          type="button" data-toogle="tooptip" disabled="disabled"
-                          title="Download current selection (Currently unavailable)" style="display: none">
+                          type="button" data-toogle="tooptip"
+                          title="Download current selection" style="display: none">
                           <span class="glyphicon glyphicon-save"></span></button>
                 </div>
 
