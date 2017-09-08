@@ -3,7 +3,6 @@ const reAddNode = (g, jsonObj, newList) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
-  console.log("links", linksArray, linksArray.length)
 
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
