@@ -1,5 +1,5 @@
 // re adds nodes after cleaning the entire graph
-const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
+const reAddNode = (g, jsonObj, newList) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
@@ -11,39 +11,40 @@ const reAddNode = (g, jsonObj, newList, storeMasterNode, counter) => {
       sequence: "<font color='#468499'>Accession:" +
       " </font><a" +
       " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-      //species:"<font color='#468499'>Species:
-      // </font>" + species,
       seq_length: "<font color='#468499'>Sequence length: </font>" + ((length !== "N/A") ? length : "N/A"),
       log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
-    newList.push(sequence)
+    newList.push(sequence)  //adds to list everytime a new node is added here
   }
 
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
     for (let i = 0; i < linksArray.length; i++) {
+      const linkAccession = linksArray[i].replace(/['u\[\] ]/g,"").split("_").slice(0, 3).join("_")
+      const linkLength = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[0]
+      const linkDistance = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[1]
       // TODO make requests to get metadata to render the node
-      if (newList.indexOf(linksArray[i]) < 0) {
-        g.addNode(linksArray[i], {
-          sequence: "<font color='#468499'>Accession:" +
-          " </font><a" +
-          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linksArray[i].split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
-          //species:"<font color='#468499'>Species:
-          // </font>" + species,
-          seq_length: "<font" +
-          " color='#468499'>Sequence length:" +
-          " </font>" + length,
-          log_length: Math.log(parseInt(length))    //for now a fixed length will work
-        })
-        newList.push(linksArray[i])
+      if (newList.indexOf(linkAccession) < 0) {
+          g.addNode(linkAccession, {
+            sequence: "<font color='#468499'>Accession:" +
+            " </font><a" +
+            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
+            seq_length: "<font" +
+            " color='#468499'>Sequence length:" +
+            " </font>" + linkLength,
+            log_length: Math.log(parseInt(linkLength))
+          })
+          // adds links for each node
+          g.addLink(sequence, linkAccession, linkDistance)
+          newList.push(linkAccession) //adds to list every time a node is
+          // added here
+        //})
       }
-      // adds links for each node
-      g.addLink(sequence, linksArray[i])
     }
   }
-  storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
-    sequence, counter)
-  return storeMasterNode
+  // only ends the function if the two arrays are the same size
+  //storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
+  //  sequence, counter)
 }
 
 // function to call requests on db
@@ -54,7 +55,8 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // loops every Accession stored in listGiFilter on re_run button
   for (let i = 0; i < listGiFilter.length; i++) {
     promises.push(
-      $.get('api/getspecies/', {'accession': listGiFilter[i]}, function (data, status) {
+      $.get("api/getspecies/", {"accession": listGiFilter[i]},
+          function(data, status) {
         // this request uses nested json object to access json entries
         // available in the database
 
@@ -85,23 +87,24 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
             "significantLinks": "N/A"
           }
           //add node
-          counter++
-          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback function
+          //counter++
+          reAddNode(g, jsonObj, newList) //callback
+          // function
         } else {  // add node for every accession that has links and that is
           // present in plasmid_db
+          //console.log("teste", data.json_entry.significantLinks.split(','))
           const jsonObj = {
             "plasmidAccession": data.plasmid_id,
             "plasmidLenght": data.json_entry.length,
             "speciesName": speciesName,
             "plasmidName": plasmidName,
-            "significantLinks": data.json_entry.significantLinks.replace(/['u\[\] ]/g, '').split(',') //this is a
-            // string ... not ideal
-            // TODO this is sketchy and should be fixed with JSON parsing
-            // from db
+            // this splits the string into an array with each entry
+            "significantLinks": data.json_entry.significantLinks.split("],")
+            // TODO this is sketchy and should be fixed with JSON parsing from db
           }
           //add node
-          counter++
-          storeMasterNode = reAddNode(g, jsonObj, newList, storeMasterNode, counter) //callback function
+          //counter++
+          reAddNode(g, jsonObj, newList) //callback function
         }
       })
     )
@@ -110,9 +113,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      //console.log("results", results, storeMasterNode)
-      //precompute(1000, renderGraph)
-      renderGraph()
+      renderGraph() //TODO storeMasterNode maybe can be passed to this function
     })
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)

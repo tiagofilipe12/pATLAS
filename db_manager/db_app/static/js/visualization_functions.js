@@ -90,7 +90,7 @@ const onLoad = () => {
           // storedNode --> returns an array with storedNode and previousDictDist
           storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
         })
-        // precompute before redering
+        // precompute before rendering
         renderGraph()
         //precompute(1000, renderGraph) // callback
       }) //new getArray end
