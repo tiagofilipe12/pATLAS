@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-## Last update: 7/9/2017
+## Last update: 8/9/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a pairwise diagonal matrix
 # for each pairwise comparison between libraries
@@ -299,8 +299,7 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         ## Added new reference string in order to parse easier within
         #  visualization_functions.js
         string_reference = "{}_{}".format(ref_accession,
-                                          sequence_info[ref_accession][
-                                              1])  ##stores acession and lenght
+                                          sequence_info[ref_accession][1])  ##stores acession and lenght
         #  to json
         ## there is no need to store all values since we are only interested in
         # representing the significant ones

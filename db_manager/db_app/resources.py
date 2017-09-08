@@ -7,6 +7,7 @@ from flask import jsonify
 
 # Nested fields avoid the necessity to call JSON.parse() in js which often
 # renders problems with double quoting from python
+
 nested_entry_fields = {
     "length": fields.String,
     "plasmid_name": fields.String,
@@ -16,9 +17,9 @@ nested_entry_fields = {
 
 
 entry_field = {
-    'plasmid_id': fields.String,
+    "plasmid_id": fields.String,
     # parse only the json required? Cannot use nested method because entry in database is a string with a json inside
-    'json_entry': fields.Nested(nested_entry_fields)
+    "json_entry": fields.Nested(nested_entry_fields)
 }
 
 
@@ -26,13 +27,9 @@ entry_field = {
 ## define reqparse arguments
 
 req_parser = reqparse.RequestParser()
-req_parser.add_argument('accession', dest='accession', type=str, help='Accession number to be queried')
+req_parser.add_argument("accession", dest="accession", type=str, help="Accession number to be queried")
 
 ## define all resources
-
-class testresources(Resource):
-    def get(self):
-        return{ "hello":"world" }
 
 class GetSpecies(Resource):
     
@@ -47,7 +44,8 @@ class GetSpecies(Resource):
         return single_query
 
 req_parser_2 =reqparse.RequestParser()
-req_parser_2.add_argument('name', dest='name', type=str, help='bla')
+req_parser_2.add_argument("name", dest="name", type=str, help="species name "
+                                                              "to be queried")
 
 class GetAccession(Resource):
 
@@ -59,7 +57,7 @@ class GetAccession(Resource):
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
         records = db.session.query(Plasmid).filter(
-            Plasmid.json_entry['name'].astext == args.name
+            Plasmid.json_entry["name"].astext == args.name
         ).all()
         return records
 

@@ -3,6 +3,7 @@ const reAddNode = (g, jsonObj, newList) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
+  console.log("links", linksArray, linksArray.length)
 
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
@@ -20,23 +21,23 @@ const reAddNode = (g, jsonObj, newList) => {
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
     for (let i = 0; i < linksArray.length; i++) {
+      linkAccession = linksArray[i].replace(/['u\[\] ]/g,'').split("_").slice(0, 3).join("_")
+      linkLength = linksArray[i].replace(/['u\[\] ]/g,'').split("_")[3].split(",")[0]
+      linkDistance = linksArray[i].replace(/['u\[\] ]/g,'').split("_")[3].split(",")[1]
       // TODO make requests to get metadata to render the node
-      if (newList.indexOf(linksArray[i]) < 0) {
-          // these nodes must have length in database otherwise they should
-          // not be linked
-          g.addNode(linksArray[i], {
+      if (newList.indexOf(linkAccession) < 0) {
+          g.addNode(linkAccession, {
             sequence: "<font color='#468499'>Accession:" +
             " </font><a" +
-            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linksArray[i].split("_").slice(0, 2).join("_") + "' target='_blank'>" + linksArray[i] + "</a>",
+            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
             seq_length: "<font" +
             " color='#468499'>Sequence length:" +
-            " </font>" + 1000,
-            log_length: Math.log(parseInt(1000))    //for now a fixed
-            // length will work
+            " </font>" + linkLength,
+            log_length: Math.log(parseInt(linkLength))
           })
           // adds links for each node
-          g.addLink(sequence, linksArray[i])    //TODO add distances from new db
-          newList.push(linksArray[i]) //adds to list every time a node is
+          g.addLink(sequence, linkAccession, linkDistance)
+          newList.push(linkAccession) //adds to list every time a node is
           // added here
         //})
       }
@@ -55,7 +56,8 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // loops every Accession stored in listGiFilter on re_run button
   for (let i = 0; i < listGiFilter.length; i++) {
     promises.push(
-      $.get('api/getspecies/', {'accession': listGiFilter[i]}, function (data, status) {
+      $.get("api/getspecies/", {"accession": listGiFilter[i]},
+          function(data, status) {
         // this request uses nested json object to access json entries
         // available in the database
 
@@ -91,15 +93,15 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
           // function
         } else {  // add node for every accession that has links and that is
           // present in plasmid_db
+          //console.log("teste", data.json_entry.significantLinks.split(','))
           const jsonObj = {
             "plasmidAccession": data.plasmid_id,
             "plasmidLenght": data.json_entry.length,
             "speciesName": speciesName,
             "plasmidName": plasmidName,
-            "significantLinks": data.json_entry.significantLinks.replace(/['u\[\] ]/g, '').split(',') //this is a
-            // string ... not ideal
-            // TODO this is sketchy and should be fixed with JSON parsing
-            // from db
+            // this splits the string into an array with each entry
+            "significantLinks": data.json_entry.significantLinks.split("],")
+            // TODO this is sketchy and should be fixed with JSON parsing from db
           }
           //add node
           //counter++
@@ -112,9 +114,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      setTimeout( () => {
-        renderGraph() //TODO storeMasterNode maybe can be passed to this function
-      },1000)
+      renderGraph() //TODO storeMasterNode maybe can be passed to this function
     })
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)
