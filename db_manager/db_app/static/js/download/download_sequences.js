@@ -5,7 +5,6 @@ const downloadSeq = (listAcc) => {
   // used map instead of list comprehensions because the latter is not
   // available in google chrome
   const acc = listAcc.map((uniqueAcc) => {return uniqueAcc.split("_").splice(0,2).join("_")})
-  console.log(acc)
   // if number of sequences is less than 100
   if (acc.length <= 100) {
     // in fact there is a two variables that are not required yet for this
@@ -29,7 +28,6 @@ const multiDownload = (acc, dbType, exportType, cb) => {
   urlArray = []
   while (acc.length > 0) {
     chunk = acc.splice(0, 100)
-    console.log(chunk)
     const url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db" +
       "=" + dbType + "&id=" + chunk.toString() + "&rettype=" + exportType + "&retmode=text"
     //console.log(url)

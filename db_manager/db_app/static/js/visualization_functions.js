@@ -1116,12 +1116,13 @@ const onLoad = () => {
     }
   })
 
-  $("#download_ds").click(function (e) {
-    e.preventDefault()
+  // download button //
+  $("#download_ds").unbind('click').bind("click", function (e) {
+    //e.preventDefault()
+    console.log("why") //TODO also being executed twice
     // for now this is just taking what have been changed by taxa coloring
     downloadSeq(listGiFilter)
   })
-
 
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
