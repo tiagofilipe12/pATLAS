@@ -41,8 +41,3 @@ const fireMultipleDownloads = (urlArray) => {
     window.open(urlArray[i])
   }
 }
-
-// control button to close div
-$('#alertCloseNCBI').click(function () {
-  $('#alertNCBI').hide()  // hide this div
-})

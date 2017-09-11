@@ -619,6 +619,11 @@ const onLoad = () => {
         $('#alertId').hide()  // hide this div
       })
 
+      // control button to close div
+      $("#alertCloseNCBI").click(function () {
+        $("#alertNCBI").hide()  // hide this div
+      })
+
       // auto hide after 5 seconds without closing the div
 
       window.setTimeout(function () { $('#alertId').hide() }, 5000)
