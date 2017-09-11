@@ -13,7 +13,7 @@ const multiDownload = (acc, dbType, exportType, cb) => {
 }
 
 const fireMultipleDownloads = (urlArray) => {
-  for (i in urlArray) {
+  for (let i in urlArray) {
     window.open(urlArray[i])
   }
 }
