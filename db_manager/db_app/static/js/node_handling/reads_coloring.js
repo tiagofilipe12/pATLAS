@@ -60,8 +60,10 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
       color_element = scale(i / x).hex()
       $('#readLegend').append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
-    $("#readLegend").append('<div class="header_taxa" id="min">0.6</div>')
-    $("#readLegend").append('<div class="header_taxa" id="med">0.8</div>')
+    $("#readLegend").append('<div class="header_taxa" id="min">' + $("#cutoffValue").val() + '</div>')
+    $("#readLegend").append('<div class="header_taxa" id="med">' +
+      (parseFloat($("#cutoffValue").val()) + parseFloat($("#cutoffValue").val()/2)).toString() +
+      '</div>')
     $("#readLegend").append('<div class="header_taxa" id="max">1</div>')
     document.getElementById('read_label').style.display = 'block' // show label
   }
