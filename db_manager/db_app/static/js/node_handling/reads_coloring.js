@@ -154,8 +154,6 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
 }
 
 // convertes a given range to valies between c and 1
-// TODO default behavior should be between 0.6 and 1 in accordance with
-// plasmidUNCover.py
 const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
   // initial range is between 0 and 1
   // newMax should be 1

@@ -1118,8 +1118,6 @@ const onLoad = () => {
 
   // download button //
   $("#download_ds").unbind('click').bind("click", function (e) {
-    //e.preventDefault()
-    console.log("why") //TODO also being executed twice
     // for now this is just taking what have been changed by taxa coloring
     downloadSeq(listGiFilter)
   })

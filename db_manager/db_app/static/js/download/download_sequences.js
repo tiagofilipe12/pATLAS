@@ -15,10 +15,10 @@ const downloadSeq = (listAcc) => {
     // opens a new window for the download
     window.open(url)
   } else { // when the number of sequences to download is more than 100
-    $('#alertId').show()  // hide this div
+    $("#alertNCBI").show()  // hide this div
     // function for multiple download
     multiDownload(acc, dbType, exportType, fireMultipleDownloads)
-    window.setTimeout( () => { $('#alertId').hide() }, 10000)
+    //window.setTimeout( () => { $("#alertId").hide() }, 10000)
   }
 }
 
@@ -41,3 +41,8 @@ const fireMultipleDownloads = (urlArray) => {
     window.open(urlArray[i])
   }
 }
+
+// control button to close div
+$('#alertCloseNCBI').click(function () {
+  $('#alertNCBI').hide()  // hide this div
+})
