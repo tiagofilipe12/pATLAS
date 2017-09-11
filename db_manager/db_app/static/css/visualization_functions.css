@@ -131,13 +131,23 @@
 /* customizes taxa filters buttons*/
 
 #modal-body-file{
-  height: 100px;
+  height: 150px;
   overflow: auto;
 }
 
 #uploadFile, #uploadFileCheck{
   margin-left: 1%;
   margin-right: 1%;
+}
+
+#cutoffFileCheck{
+    float: left;
+}
+
+/*resize search box for gi*/
+#cutoffValue{
+    width: 50px;
+    float: right;
 }
 
 #modal-body-scheme{

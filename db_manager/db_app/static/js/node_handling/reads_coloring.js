@@ -30,7 +30,8 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
       scale = chroma.scale(['blue', '#eacc00', 'maroon'])
       palette(scale, 20, readMode)
     } else {
-      read_color = chroma.mix('lightsalmon', 'maroon', perc).hex().replace('#', '0x')
+      newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
+      read_color = chroma.mix('lightsalmon', 'maroon', newPerc).hex().replace('#', '0x')
       scale = chroma.scale(['lightsalmon', 'maroon'])
       palette(scale, 20, readMode)
     }
@@ -145,9 +146,26 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
       color_element = scale(i / x).hex()
       $('#readLegend').append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
-    $('#readLegend').append('<div class="header_taxa" id="min">0</div>')
-    $('#readLegend').append('<div class="header_taxa" id="med">0.5</div>')
+    $('#readLegend').append('<div class="header_taxa" id="min">0.6</div>')
+    $('#readLegend').append('<div class="header_taxa" id="med">0.8</div>')
     $('#readLegend').append('<div class="header_taxa" id="max">1</div>')
     document.getElementById('read_label').style.display = 'block' // show label
   }
+}
+
+// convertes a given range to valies between c and 1
+// TODO default behavior should be between 0.6 and 1 in accordance with
+// plasmidUNCover.py
+const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
+  // initial range is between 0 and 1
+  // newMax should be 1
+  // newMin should be the one that may change on user input and default
+  // behavior should be 0.6--> this is done by cutoffParser()
+  const y = (x - oldMin) * (newMax - newMin) / (oldMax - oldMin) + newMin
+  return y
+}
+
+// function to get value from cutoffValue
+const cutoffParser = () => {
+  return ($("#cutoffValue").val() !== "") ? parseFloat($("#cutoffValue").val()) : 0.6
 }
