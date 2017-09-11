@@ -39,6 +39,10 @@
 
       <!--chroma to generate colors for reads-->
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/chroma/chroma.min.js') }}"></script>
+
+      <!--bionode-ncbi-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
+
       <!--load reads-->
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
       <!--input files handler script-->
@@ -84,8 +88,15 @@
                 <div class="checkbox col-md-12">Check for pairwise comparison mode
                   <label>
                     <!--autocomplete prevents checkbox from being checkd after refresh-->
-                    <input type="checkbox" id="check_file" autocomplete="off"> 
+                    <input type="checkbox" id="check_file" autocomplete="off">
                   </label>
+                </div>
+                <div>
+                  <div class="form-group" id="cutoffFileCheck">Provide a
+                    value between 0 and 1. Tip: default is 0.6.
+                    <input id="cutoffValue" type="text" class="form-control"
+                           placeholder="0.6"/>
+                  </div>
                 </div>
               </div>
             </div>
@@ -293,6 +304,16 @@
         </div>
       </div>
 
+      <!--Alert message when a file is too big to download-->
+      <div class="alert alert-danger alert-dismissable fade in" id="alertNCBI"
+           style="display: none">
+        <button type="button" class="close" id="alertCloseNCBI"
+                aria-hidden="true" data-hide="true">&times;</button>
+        <strong>Warning!</strong> File is too big, download will be split
+        into batches 100 sequences. Note that this behavior will open several
+        windows
+      </div>
+
       <!--Alert message to check that some selection is made-->
       <div class="alert alert-danger alert-dismissable fade in" id="alertId" style="display: none">
         <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
@@ -425,7 +446,7 @@
                   <!--for now this button is disabled since it does not have funcitonality-->
                   <button class="btn btn-default disabled" id="download_ds"
                           type="button" data-toogle="tooptip"
-                          title="Download current selection (Currently unavailable)" style="display: none">
+                          title="Download current selection" style="display: none">
                           <span class="glyphicon glyphicon-save"></span></button>
                 </div>
 
