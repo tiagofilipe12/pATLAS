@@ -1,3 +1,24 @@
+const multiDownload = (acc, dbType, exportType, cb) => {
+  const link = document.createElement("a")
+  link.style.display = "none"
+  let urlArray = []
+  while (acc.length > 0) {
+    const chunk = acc.splice(0, 100)
+    const url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db" +
+      "=" + dbType + "&id=" + chunk.toString() + "&rettype=" + exportType + "&retmode=text"
+    //console.log(url)
+    urlArray.push(url)
+  }
+  cb(urlArray)
+}
+
+const fireMultipleDownloads = (urlArray) => {
+  for (i in urlArray) {
+    window.open(urlArray[i])
+  }
+}
+
+
 const downloadSeq = (listAcc) => {
   // TODO this function is being executed twice! WHY?
   const dbType = "nuccore"
@@ -19,25 +40,5 @@ const downloadSeq = (listAcc) => {
     // function for multiple download
     multiDownload(acc, dbType, exportType, fireMultipleDownloads)
     //window.setTimeout( () => { $("#alertId").hide() }, 10000)
-  }
-}
-
-const multiDownload = (acc, dbType, exportType, cb) => {
-  const link = document.createElement("a")
-  link.style.display = "none"
-  urlArray = []
-  while (acc.length > 0) {
-    chunk = acc.splice(0, 100)
-    const url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db" +
-      "=" + dbType + "&id=" + chunk.toString() + "&rettype=" + exportType + "&retmode=text"
-    //console.log(url)
-    urlArray.push(url)
-  }
-  cb(urlArray)
-}
-
-const fireMultipleDownloads = (urlArray) => {
-  for (let i in urlArray) {
-    window.open(urlArray[i])
   }
 }

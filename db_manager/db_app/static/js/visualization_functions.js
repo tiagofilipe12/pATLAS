@@ -1100,11 +1100,12 @@ const onLoad = () => {
   //* ***********************************************//
 
   handleFileSelect('infile', '#file_text', function (new_read_json) {
-    read_json = new_read_json
+    read_json = new_read_json //careful when redifining this because
+    // read_json is a global variable
   })
 
   handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {
-    assembly_json = new_assembly_json
+    assembly_json = new_assembly_json   //global
   })
 
   //* ****************************** *//
