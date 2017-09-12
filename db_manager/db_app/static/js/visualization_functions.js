@@ -1,15 +1,23 @@
 // if this is a developer session please enable the below line of code
-const devel = true
+const devel = false
 
 // helps set menu to close status
 let first_click_menu = true
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
-// load JSON file
+// load test JSON file
 const getArray = () => {
   return $.getJSON('/test')   // change the input file name
   // TODO should load a different file when not in devel functions
 }
+
+// load full JSON file
+const getArrayFull = () => {
+  console.log($.getJSON('/fullDS'))
+  return $.getJSON('/fullDS')   // change the input file name
+  // TODO should load a different file when not in devel functions
+}
+
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
   taxa_tree = $.getJSON('/taxa')
@@ -57,54 +65,60 @@ const onLoad = () => {
 
   const init = () => {
     if (firstInstace === true) {
-      getArray().done(function (json) {
-        $.each(json, function (sequence_info, dict_dist) {
-          counter++
-          // next we need to retrieve each information type independently
-          const sequence = sequence_info.split("_").slice(0, 3).join("_");
-          //var species = sequence_info.split("_").slice(2,4).join(" ");
+      if (devel === true) {
+        getArray().done(function (json) {
+          $.each(json, function (sequence_info, dict_dist) {
+            counter++
+            // next we need to retrieve each information type independently
+            const sequence = sequence_info.split("_").slice(0, 3).join("_");
+            //var species = sequence_info.split("_").slice(2,4).join(" ");
 
-          // and continues
-          const seq_length = sequence_info.split("_").slice(-1).join("");
-          const log_length = Math.log(parseInt(seq_length)); //ln seq length
-          list_lengths.push(seq_length); // appends all lengths to this list
-          list_gi.push(sequence)
-          //checks if sequence is not in list to prevent adding multiple nodes for each sequence
-          if (list.indexOf(sequence) < 0) {
-            g.addNode(sequence, {
-              sequence: "<font color='#468499'>Accession:" +
-              " </font><a" +
-              " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-              //species:"<font color='#468499'>Species:
-              // </font>" + species,
-              seq_length: "<font" +
-              " color='#468499'>Sequence length:" +
-              " </font>" + seq_length,
-              log_length: log_length
-            });
-            list.push(sequence)
+            // and continues
+            const seq_length = sequence_info.split("_").slice(-1).join("");
+            const log_length = Math.log(parseInt(seq_length)); //ln seq length
+            list_lengths.push(seq_length); // appends all lengths to this list
+            list_gi.push(sequence)
+            //checks if sequence is not in list to prevent adding multiple nodes for each sequence
+            if (list.indexOf(sequence) < 0) {
+              g.addNode(sequence, {
+                sequence: "<font color='#468499'>Accession:" +
+                " </font><a" +
+                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                //species:"<font color='#468499'>Species:
+                // </font>" + species,
+                seq_length: "<font" +
+                " color='#468499'>Sequence length:" +
+                " </font>" + seq_length,
+                log_length: log_length
+              });
+              list.push(sequence)
 
-            // loops between all arrays of array pairing sequence and distances
-            for (let i = 0; i < dict_dist.length; i++) {
-              const pairs = dict_dist[i]
-              const reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
-              const distance = pairs[1]   // stores distances in a unique variable
-              // assures that link wasn't previously added
-              const currentHash = makeHash(sequence, reference)
-              if (listHashes.indexOf(currentHash) < 0) {
-                g.addLink(sequence, reference, distance)
-                listHashes.push(currentHash)
+              // loops between all arrays of array pairing sequence and distances
+              for (let i = 0; i < dict_dist.length; i++) {
+                const pairs = dict_dist[i]
+                const reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
+                const distance = pairs[1]   // stores distances in a unique variable
+                // assures that link wasn't previously added
+                const currentHash = makeHash(sequence, reference)
+                if (listHashes.indexOf(currentHash) < 0) {
+                  g.addLink(sequence, reference, distance)
+                  listHashes.push(currentHash)
+                }
+                // TODO this should also be implemented similarly in requesterDB
               }
-              // TODO this should also be implemented similarly in requesterDB
             }
-          }
-          // checks if the node is the one with most links and stores it in
-          // storedNode --> returns an array with storedNode and previousDictDist
-          storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
-        })
-        // precompute before rendering
-        renderGraph(initCallback(g, layout, devel))
-      }) //new getArray end
+            // checks if the node is the one with most links and stores it in
+            // storedNode --> returns an array with storedNode and previousDictDist
+            storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
+          })
+          // precompute before rendering
+          renderGraph(initCallback(g, layout, devel))
+        }) //new getArray end
+      } else {
+        // this executes the fullDS path
+        console.log("fullDS")
+        getArrayFull()
+      }
     } else {
       // storeMasterNode is empty in here
       requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph)
