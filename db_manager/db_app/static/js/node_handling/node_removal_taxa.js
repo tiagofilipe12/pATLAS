@@ -25,30 +25,29 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       const linkDistance = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[1]
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linkAccession) < 0) {
-          g.addNode(linkAccession, {
-            sequence: "<font color='#468499'>Accession:" +
-            " </font><a" +
-            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
-            seq_length: "<font" +
-            " color='#468499'>Sequence length:" +
-            " </font>" + linkLength,
-            log_length: Math.log(parseInt(linkLength))
-          })
-          // adds links for each node
-          const currentHash = makeHash(sequence, linkAccession)
-          if (newListHashes.indexOf(currentHash) < 0) {
-            g.addLink(sequence, linkAccession, linkDistance)
-            newList.push(linkAccession) //adds to list every time a node is
-            // added here
-            newListHashes.push(currentHash)
-          }
-        //})
+        g.addNode(linkAccession, {
+          sequence: "<font color='#468499'>Accession:" +
+          " </font><a" +
+          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
+          seq_length: "<font" +
+          " color='#468499'>Sequence length:" +
+          " </font>" + linkLength,
+          log_length: Math.log(parseInt(linkLength))
+        })
+        // adds links for each node
+        const currentHash = makeHash(sequence, linkAccession)
+        if (newListHashes.indexOf(currentHash) < 0) {
+          g.addLink(sequence, linkAccession, linkDistance)
+          newList.push(linkAccession) //adds to list every time a node is
+          // added here
+          newListHashes.push(currentHash)
+        }
       }
     }
-    return newList, newListHashes
   }
   //storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
   //  sequence, counter)
+  return newList, newListHashes
 }
 
 // function to call requests on db
@@ -93,6 +92,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
           }
           //add node
           //counter++
+          //console.log(newList, newListHashes)
           newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback
           // function
         } else {  // add node for every accession that has links and that is
@@ -108,7 +108,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
             // TODO this is sketchy and should be fixed with JSON parsing from db
           }
           //add node
-          //counter++
+          //counter+
           newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback function
         }
       })

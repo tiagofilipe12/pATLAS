@@ -6,9 +6,9 @@ const getPositions = (g, layout) => {
   g.forEachNode( (node) => {
     const position = layout.getNodePosition(node.id)
     // push an individual json object for each link
-    console.log(node.links)
+    //console.log(node.links)
     const links = node.links.map( (link) => {
-      console.log(node.id, link.fromId, link.toId)
+      //console.log(node.id, link.fromId, link.toId)
       const linkData = (link.fromId === node.id) ? link.toId : (link.toId === node.id) ? link.fromId: null
       return linkData
     })
@@ -16,7 +16,7 @@ const getPositions = (g, layout) => {
     //const linksNoDuplicates = links.filter( () => {
 
    // })
-    console.log(node.id, links)//, linksNoDuplicates)
+    //console.log(node.id, links)//, linksNoDuplicates)
     masterJSON.nodes.push({
       "id": node.id,
       "length": node.data.seq_length.split(">").slice(-1).toString(),
