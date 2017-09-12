@@ -112,7 +112,9 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      renderGraph() //TODO storeMasterNode maybe can be passed to this function
+      renderGraph(initCallback(g, false, false)) //TODO storeMasterNode maybe
+      // can be
+      // passed to this function
     })
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)

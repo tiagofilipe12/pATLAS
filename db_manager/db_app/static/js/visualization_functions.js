@@ -1,3 +1,6 @@
+// if this is a developer session please enable the below line of code
+const devel = true
+
 // helps set menu to close status
 let first_click_menu = true
 // checks if vivagraph should load first initial dataset or the filters
@@ -5,6 +8,7 @@ let firstInstace = true
 // load JSON file
 const getArray = () => {
   return $.getJSON('/test')   // change the input file name
+  // TODO should load a different file when not in devel functions
 }
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
@@ -32,6 +36,8 @@ const onLoad = () => {
   // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
+  let listHashes = [] // this list stores hashes that correspond to unique
+  // links between accession numbers
   let list_lengths = [] // list to store the lengths of all nodes
   //var list_species = [] // lists all species
   //var list_genera = [] // list all genera
@@ -76,22 +82,28 @@ const onLoad = () => {
               " </font>" + seq_length,
               log_length: log_length
             });
-            list.push(sequence);
-          }
+            list.push(sequence)
 
-          // loops between all arrays of array pairing sequence and distances
-          for (let i = 0; i < dict_dist.length; i++) {
-            const pairs = dict_dist[i]
-            const reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
-            const distance = pairs[1]   // stores distances in a unique variable
-            g.addLink(sequence, reference, distance)
+            // loops between all arrays of array pairing sequence and distances
+            for (let i = 0; i < dict_dist.length; i++) {
+              const pairs = dict_dist[i]
+              const reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
+              const distance = pairs[1]   // stores distances in a unique variable
+              // assures that link wasn't previously added
+              const currentHash = makeHash(sequence, reference)
+              if (listHashes.indexOf(currentHash) < 0) {
+                g.addLink(sequence, reference, distance)
+                listHashes.push(currentHash)
+              }
+              // TODO this should also be implemented similarly in requesterDB
+            }
           }
           // checks if the node is the one with most links and stores it in
           // storedNode --> returns an array with storedNode and previousDictDist
           storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
         })
         // precompute before rendering
-        renderGraph()
+        renderGraph(initCallback(g, layout, devel))
       }) //new getArray end
     } else {
       // storeMasterNode is empty in here
@@ -125,7 +137,7 @@ const onLoad = () => {
 
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
-  const renderGraph = () => {
+  const renderGraph = (cb) => {
     //console.log("entered renderGraph")
     const graphics = Viva.Graph.View.webglGraphics()
     //* * block #1 for node customization **//
@@ -145,7 +157,7 @@ const onLoad = () => {
       layout: layout,
       graphics: graphics,
       container: document.getElementById('couve-flor'),
-      prerender: 1000,
+      prerender: 1000,    // TODO when not in devel this should be just true
       preserveDrawingBuffer: true
     })
     renderer.run()
@@ -1104,6 +1116,7 @@ const onLoad = () => {
       //console.log('returning to main')
       window.location.reload()   // a temporary fix to go back to full dataset
     })
+    cb // callback for renderGraph
   } // closes renderGraph
   //}) //end of getArray
 
@@ -1143,4 +1156,5 @@ const onLoad = () => {
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph
+
 } // closes onload
