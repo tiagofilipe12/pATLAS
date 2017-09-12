@@ -48,8 +48,7 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
     // this loop should be reversed since the higher values will have a lighter color
     for (let i = tmpArray.length - 1; i >= 0; i--) {
       const color_element = scale(i / x).hex()
-      $('#scaleLegend').append('<span class="grad-step" style="background-color:' +
-        color_element + '; width:' + style_width + '%"></span>')
+      $('#scaleLegend').append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
     $("#scaleLegend").append('<div class="header_taxa" id="min">0.1</div>')
     $("#scaleLegend").append('<div class="header_taxa" id="med">0.05</div>')
@@ -59,8 +58,7 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
     $("#readLegend").empty()
     for (let i = 0; i < tmpArray.length; i++) {
       const color_element = scale(i / x).hex()
-      $("#readLegend").append('<span class="grad-step" style="background-color:' +
-        color_element + '; width:' + style_width + '%"></span>')
+      $("#readLegend").append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
     // min value is the one fetched from the input form or by default 0.6
     // values are fixed to two decimal
