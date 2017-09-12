@@ -47,7 +47,7 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
     $("#scaleLegend").empty()
     // this loop should be reversed since the higher values will have a lighter color
     for (let i = tmpArray.length - 1; i >= 0; i--) {
-      color_element = scale(i / x).hex()
+      const color_element = scale(i / x).hex()
       $('#scaleLegend').append('<span class="grad-step" style="background-color:' +
         color_element + '; width:' + style_width + '%"></span>')
     }
@@ -58,7 +58,7 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
   } else { // here enters for coloring the reads
     $("#readLegend").empty()
     for (let i = 0; i < tmpArray.length; i++) {
-      color_element = scale(i / x).hex()
+      const color_element = scale(i / x).hex()
       $("#readLegend").append('<span class="grad-step" style="background-color:' +
         color_element + '; width:' + style_width + '%"></span>')
     }
