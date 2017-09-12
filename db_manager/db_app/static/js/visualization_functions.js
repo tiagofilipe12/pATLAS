@@ -157,7 +157,7 @@ const onLoad = () => {
       layout: layout,
       graphics: graphics,
       container: document.getElementById('couve-flor'),
-      prerender: 1000,    // TODO when not in devel this should be just true
+      prerender: 500,    // TODO when not in devel this should be just true
       preserveDrawingBuffer: true
     })
     renderer.run()
