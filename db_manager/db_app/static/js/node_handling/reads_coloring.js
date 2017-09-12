@@ -47,25 +47,33 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
     $("#scaleLegend").empty()
     // this loop should be reversed since the higher values will have a lighter color
     for (let i = tmpArray.length - 1; i >= 0; i--) {
-      color_element = scale(i / x).hex()
+      const color_element = scale(i / x).hex()
       $('#scaleLegend').append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
     $("#scaleLegend").append('<div class="header_taxa" id="min">0.1</div>')
     $("#scaleLegend").append('<div class="header_taxa" id="med">0.05</div>')
     $("#scaleLegend").append('<div class="header_taxa" id="max">0</div>')
-    document.getElementById('distance_label').style.display = 'block' // show label
+    document.getElementById("distance_label").style.display = "block" // show label
   } else { // here enters for coloring the reads
-    $('#readLegend').empty()
+    $("#readLegend").empty()
     for (let i = 0; i < tmpArray.length; i++) {
-      color_element = scale(i / x).hex()
-      $('#readLegend').append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
+      const color_element = scale(i / x).hex()
+      $("#readLegend").append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
-    $("#readLegend").append('<div class="header_taxa" id="min">' + $("#cutoffValue").val() + '</div>')
+    // min value is the one fetched from the input form or by default 0.6
+    // values are fixed to two decimal
+    const minValue = parseFloat(
+      ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
+    ).toFixed(2)
+    // mean value is the sum of the min value plus the range between the min
+    // and max values divided by two
+    const meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
+    $("#readLegend").append('<div class="header_taxa" id="min">' +
+      minValue.toString() + '</div>')
     $("#readLegend").append('<div class="header_taxa" id="med">' +
-      (parseFloat($("#cutoffValue").val()) + parseFloat($("#cutoffValue").val()/2)).toString() +
-      '</div>')
+      meanValue.toFixed(2).toString() + '</div>')
     $("#readLegend").append('<div class="header_taxa" id="max">1</div>')
-    document.getElementById('read_label').style.display = 'block' // show label
+    document.getElementById("read_label").style.display = "block" // show label
   }
 }
 
