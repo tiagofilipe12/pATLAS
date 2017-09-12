@@ -145,7 +145,8 @@ const onLoad = () => {
       layout: layout,
       graphics: graphics,
       container: document.getElementById('couve-flor'),
-      prerender: 1000
+      prerender: 1000,
+      preserveDrawingBuffer: true
     })
     renderer.run()
     // by default the animation on forces is paused since it may be
@@ -161,6 +162,17 @@ const onLoad = () => {
     } else {
       console.log("stored node is empty", storeMasterNode)
     }
+
+    // trial code for downloading vivagraph instance
+    /*$("#download_img").on("click", function(e) {
+      var doc = new jsPDF({
+        orientation: 'landscape'
+      });
+
+      doc.addHTML($("#couve-flor"), function() {
+        doc.save('file.pdf');
+      })
+    })*/
 
     //* ************//
     //* **ZOOMING***//
