@@ -1,5 +1,5 @@
 // re adds nodes after cleaning the entire graph
-const reAddNode = (g, jsonObj, newList) => {
+const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
@@ -35,12 +35,17 @@ const reAddNode = (g, jsonObj, newList) => {
             log_length: Math.log(parseInt(linkLength))
           })
           // adds links for each node
-          g.addLink(sequence, linkAccession, linkDistance)
-          newList.push(linkAccession) //adds to list every time a node is
-          // added here
+          const currentHash = makeHash(sequence, linkAccession)
+          if (newListHashes.indexOf(currentHash) < 0) {
+            g.addLink(sequence, linkAccession, linkDistance)
+            newList.push(linkAccession) //adds to list every time a node is
+            // added here
+            newListHashes.push(currentHash)
+          }
         //})
       }
     }
+    return newList, newListHashes
   }
   //storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
   //  sequence, counter)
@@ -51,6 +56,7 @@ const reAddNode = (g, jsonObj, newList) => {
 const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => {
   let newList = []
   let promises = []   //an array to store all the requests as promises
+  let newListHashes = [] // similar to listHashes from first instance
   // loops every Accession stored in listGiFilter on re_run button
   for (let i = 0; i < listGiFilter.length; i++) {
     promises.push(
@@ -87,7 +93,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
           }
           //add node
           //counter++
-          reAddNode(g, jsonObj, newList) //callback
+          newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback
           // function
         } else {  // add node for every accession that has links and that is
           // present in plasmid_db
@@ -103,7 +109,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
           }
           //add node
           //counter++
-          reAddNode(g, jsonObj, newList) //callback function
+          newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback function
         }
       })
     )
