@@ -213,7 +213,6 @@ const onLoad = () => {
 
     //* * END block #1 for node customization **//
     const prerender = (devel === true) ? 500 : 0
-    console.log("prerender", prerender)
 
     const renderer = Viva.Graph.View.renderer(g, {
       layout: layout,
