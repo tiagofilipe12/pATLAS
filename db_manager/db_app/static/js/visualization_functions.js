@@ -111,7 +111,7 @@ const onLoad = () => {
             storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
           })
           // precompute before rendering
-          renderGraph(initCallback(g, layout, devel))
+          renderGraph()
         }) //new getArray end
       } else {
         // this executes the fullDS path
@@ -138,8 +138,9 @@ const onLoad = () => {
                 " </font>" + seq_length,
                 log_length: log_length
               })
-              layout.setNodePosition(sequence, json.nodes[index].nodePosition.x,
-                json.nodes[index].nodePosition.y)
+              //console.log(sequence, json.nodes[index].nodePosition.x,
+              // json.nodes[index].nodePosition.y)
+              layout.setNodePosition(sequence, json.nodes[index].nodePosition.x, json.nodes[index].nodePosition.y)
               list.push(sequence)
 
               // loops between all arrays of array pairing sequence and distances
@@ -160,7 +161,7 @@ const onLoad = () => {
             storeMasterNode = storeRecenterDom(storeMasterNode, json.nodes[index].links, sequence, counter)
           })
           // precompute before rendering
-          renderGraph(initCallback(g, layout, false))
+          renderGraph()
         })
       }
     } else {
@@ -195,7 +196,7 @@ const onLoad = () => {
 
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
-  const renderGraph = (cb) => {
+  const renderGraph = () => {
     //console.log("entered renderGraph")
     const graphics = Viva.Graph.View.webglGraphics()
     //* * block #1 for node customization **//
@@ -211,14 +212,14 @@ const onLoad = () => {
     })
 
     //* * END block #1 for node customization **//
-    const prerender = (devel === true) ? 500 : true
+    const prerender = (devel === true) ? 500 : 0
     console.log("prerender", prerender)
 
     const renderer = Viva.Graph.View.renderer(g, {
       layout: layout,
       graphics: graphics,
       container: document.getElementById('couve-flor'),
-      prerender: prerender,    // TODO when not in devel this should be just true
+      prerender: prerender,
       preserveDrawingBuffer: true
     })
     renderer.run()
@@ -1177,7 +1178,6 @@ const onLoad = () => {
       //console.log('returning to main')
       window.location.reload()   // a temporary fix to go back to full dataset
     })
-    cb // callback for renderGraph
   } // closes renderGraph
   //}) //end of getArray
 
@@ -1217,5 +1217,10 @@ const onLoad = () => {
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph
+
+  // keyboard shortcut to save file with node positions
+  Mousetrap.bind("shift+s+d", () => {
+    initCallback(g, layout, devel)
+  })
 
 } // closes onload

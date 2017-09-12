@@ -15,7 +15,7 @@ const getPositions = (g, layout) => {
         (link.toId === node.id) ? [link.fromId, link.data] : null
       return linkData
     })
-
+    console.log(position)
     //console.log(node.id, links)//, linksNoDuplicates)
     masterJSON.nodes.push({
       "id": node.id,
@@ -38,7 +38,7 @@ const getPositions = (g, layout) => {
 
 // devel session to get positions of each node
 const initCallback = (g, layout, devel) => {
-  if (devel === true || layout !== false) {
+  if (devel === true && layout !== false) {
     console.log("devel on")
     getPositions(g, layout)
   } else {
