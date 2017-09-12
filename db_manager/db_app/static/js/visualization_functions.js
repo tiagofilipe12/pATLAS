@@ -90,7 +90,7 @@ const onLoad = () => {
                 " color='#468499'>Sequence length:" +
                 " </font>" + seq_length,
                 log_length: log_length
-              });
+              })
               list.push(sequence)
 
               // loops between all arrays of array pairing sequence and distances
@@ -104,7 +104,6 @@ const onLoad = () => {
                   g.addLink(sequence, reference, distance)
                   listHashes.push(currentHash)
                 }
-                // TODO this should also be implemented similarly in requesterDB
               }
             }
             // checks if the node is the one with most links and stores it in
@@ -117,7 +116,52 @@ const onLoad = () => {
       } else {
         // this executes the fullDS path
         console.log("fullDS")
-        getArrayFull()
+        getArrayFull().done(function (json) {
+          $.each(json.nodes, function (index) {
+            counter++
+            //console.log(json.nodes[index])
+            const sequence = json.nodes[index].id
+            const seq_length = json.nodes[index].length
+            const log_length = Math.log(parseInt(seq_length))
+            list_lengths.push(seq_length)
+            list_gi.push(sequence)
+
+            if (list.indexOf(sequence) < 0) {
+              g.addNode(sequence, {
+                sequence: "<font color='#468499'>Accession:" +
+                " </font><a" +
+                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                //species:"<font color='#468499'>Species:
+                // </font>" + species,
+                seq_length: "<font" +
+                " color='#468499'>Sequence length:" +
+                " </font>" + seq_length,
+                log_length: log_length
+              })
+              layout.setNodePosition(sequence, json.nodes[index].nodePosition.x,
+                json.nodes[index].nodePosition.y)
+              list.push(sequence)
+
+              // loops between all arrays of array pairing sequence and distances
+              for (let i = 0; i < json.nodes[index].links.length; i++) {
+                const pairs = json.nodes[index].links[i]
+                const reference = pairs[0]  // stores references in a unique variable
+                const distance = pairs[1]   // stores distances in a unique variable
+                // assures that link wasn't previously added
+                const currentHash = makeHash(sequence, reference)
+                if (listHashes.indexOf(currentHash) < 0) {
+                  g.addLink(sequence, reference, distance)
+                  listHashes.push(currentHash)
+                }
+              }
+            }
+            // checks if the node is the one with most links and stores it in
+            // storedNode --> returns an array with storedNode and previousDictDist
+            storeMasterNode = storeRecenterDom(storeMasterNode, json.nodes[index].links, sequence, counter)
+          })
+          // precompute before rendering
+          renderGraph(initCallback(g, layout, false))
+        })
       }
     } else {
       // storeMasterNode is empty in here
@@ -167,11 +211,14 @@ const onLoad = () => {
     })
 
     //* * END block #1 for node customization **//
+    const prerender = (devel === true) ? 500 : true
+    console.log("prerender", prerender)
+
     const renderer = Viva.Graph.View.renderer(g, {
       layout: layout,
       graphics: graphics,
       container: document.getElementById('couve-flor'),
-      prerender: 500,    // TODO when not in devel this should be just true
+      prerender: prerender,    // TODO when not in devel this should be just true
       preserveDrawingBuffer: true
     })
     renderer.run()
