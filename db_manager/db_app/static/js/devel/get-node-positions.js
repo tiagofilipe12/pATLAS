@@ -21,12 +21,15 @@ const getPositions = (g, layout) => {
       "id": node.id,
       "length": node.data.seq_length.split(">").slice(-1).toString(),
       "nodePosition": position,
-      "links": {
-        links
-      }
+      "links": links
     })
   })
-  console.log(masterJSON)
+  //console.log(masterJSON)
+  //Get masterJSON to a new windows were it can be saved to filesystem by
+  // right clicking it
+  var url = 'data:text/json;charset=utf8,' + encodeURIComponent(JSON.stringify(masterJSON));
+  window.open(url, '_blank')
+  window.focus()
 }
 
 //*********************//
