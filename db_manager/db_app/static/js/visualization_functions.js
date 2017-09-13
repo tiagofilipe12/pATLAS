@@ -7,20 +7,19 @@ let first_click_menu = true
 let firstInstace = true
 // load test JSON file
 const getArray = () => {
-  return $.getJSON('/test')   // change the input file name
+  return $.getJSON("/test")   // change the input file name
   // TODO should load a different file when not in devel functions
 }
 
 // load full JSON file
 const getArrayFull = () => {
-  console.log($.getJSON('/fullDS'))
-  return $.getJSON('/fullDS')   // change the input file name
+  return $.getJSON("/fullDS")   // change the input file name
   // TODO should load a different file when not in devel functions
 }
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
-  taxa_tree = $.getJSON('/taxa')
+  taxa_tree = $.getJSON("/taxa")
   return taxa_tree
 }
 
@@ -138,9 +137,7 @@ const onLoad = () => {
                 " </font>" + seq_length,
                 log_length: log_length
               })
-              //console.log(sequence, json.nodes[index].nodePosition.x,
-              // json.nodes[index].nodePosition.y)
-              layout.setNodePosition(sequence, json.nodes[index].nodePosition.x, json.nodes[index].nodePosition.y)
+              layout.setNodePosition(sequence, json.nodes[index].position.x, json.nodes[index].position.y)
               list.push(sequence)
 
               // loops between all arrays of array pairing sequence and distances

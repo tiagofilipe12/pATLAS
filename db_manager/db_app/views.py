@@ -10,7 +10,7 @@ def index():
 
 @app.route('/test')
 def main_summary():
-    data = make_summary('db_app/static/json/test.json')
+    data = make_summary('db_app/static/json/import_to_vivagraph.json')
     response = app.response_class(
         response=json.dumps(data),
         status=200,

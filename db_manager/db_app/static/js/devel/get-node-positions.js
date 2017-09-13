@@ -1,6 +1,6 @@
 // function to get all node positions and write then to a file
 const getPositions = (g, layout) => {
-  masterJSON = {
+  let masterJSON = {
     "nodes": [],
   }
   g.forEachNode( (node) => {
@@ -15,20 +15,19 @@ const getPositions = (g, layout) => {
         (link.toId === node.id) ? [link.fromId, link.data] : null
       return linkData
     })
-    console.log(position)
-    //console.log(node.id, links)//, linksNoDuplicates)
     masterJSON.nodes.push({
       "id": node.id,
       "length": node.data.seq_length.split(">").slice(-1).toString(),
-      "nodePosition": position,
-      "links": links
+      position,
+      links
     })
   })
-  //console.log(masterJSON)
+  console.log(masterJSON)
   //Get masterJSON to a new windows were it can be saved to filesystem by
   // right clicking it
-  var url = 'data:text/json;charset=utf8,' + encodeURIComponent(JSON.stringify(masterJSON));
-  window.open(url, '_blank')
+  var url = "data:text/json;charset=utf8," +
+    encodeURIComponent(JSON.stringify(masterJSON))
+  window.open(url, "_blank")
   window.focus()
 }
 
