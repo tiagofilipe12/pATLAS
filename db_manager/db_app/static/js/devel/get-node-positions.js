@@ -22,7 +22,6 @@ const getPositions = (g, layout) => {
       links
     })
   })
-  console.log(masterJSON)
   //Get masterJSON to a new windows were it can be saved to filesystem by
   // right clicking it
   var url = "data:text/json;charset=utf8," +
@@ -38,9 +37,9 @@ const getPositions = (g, layout) => {
 // devel session to get positions of each node
 const initCallback = (g, layout, devel) => {
   if (devel === true && layout !== false) {
-    console.log("devel on")
+    //console.log("devel on")
     getPositions(g, layout)
-  } else {
-    console.log("devel off")
-  }
+  } //else {
+    //console.log("devel off")
+  //}
 }

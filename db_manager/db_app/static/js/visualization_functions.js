@@ -19,8 +19,7 @@ const getArrayFull = () => {
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
-  taxa_tree = $.getJSON("/taxa")
-  return taxa_tree
+  return $.getJSON("/taxa")
 }
 
 // list used to store for re-run button (apply filters)
@@ -73,9 +72,9 @@ const onLoad = () => {
             //var species = sequence_info.split("_").slice(2,4).join(" ");
 
             // and continues
-            const seq_length = sequence_info.split("_").slice(-1).join("");
-            const log_length = Math.log(parseInt(seq_length)); //ln seq length
-            list_lengths.push(seq_length); // appends all lengths to this list
+            const seqLength = sequence_info.split("_").slice(-1).join("");
+            const logLength = Math.log(parseInt(seqLength)); //ln seq length
+            list_lengths.push(seqLength); // appends all lengths to this list
             list_gi.push(sequence)
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
             if (list.indexOf(sequence) < 0) {
@@ -87,8 +86,8 @@ const onLoad = () => {
                 // </font>" + species,
                 seq_length: "<font" +
                 " color='#468499'>Sequence length:" +
-                " </font>" + seq_length,
-                log_length: log_length
+                " </font>" + seqLength,
+                log_length: logLength
               })
               list.push(sequence)
 
@@ -114,15 +113,14 @@ const onLoad = () => {
         }) //new getArray end
       } else {
         // this executes the fullDS path
-        console.log("fullDS")
         getArrayFull().done(function (json) {
           $.each(json.nodes, function (index) {
             counter++
             //console.log(json.nodes[index])
             const sequence = json.nodes[index].id
-            const seq_length = json.nodes[index].length
-            const log_length = Math.log(parseInt(seq_length))
-            list_lengths.push(seq_length)
+            const seqLength = json.nodes[index].length
+            const logLength = Math.log(parseInt(seqLength))
+            list_lengths.push(seqLength)
             list_gi.push(sequence)
 
             if (list.indexOf(sequence) < 0) {
@@ -134,8 +132,8 @@ const onLoad = () => {
                 // </font>" + species,
                 seq_length: "<font" +
                 " color='#468499'>Sequence length:" +
-                " </font>" + seq_length,
-                log_length: log_length
+                " </font>" + seqLength,
+                log_length: logLength
               })
               layout.setNodePosition(sequence, json.nodes[index].position.x, json.nodes[index].position.y)
               list.push(sequence)
@@ -1215,7 +1213,7 @@ const onLoad = () => {
   // rendering the graph
 
   // keyboard shortcut to save file with node positions
-  Mousetrap.bind("shift+s+d", () => {
+  Mousetrap.bind("shift+s+space", () => {
     initCallback(g, layout, devel)
   })
 
