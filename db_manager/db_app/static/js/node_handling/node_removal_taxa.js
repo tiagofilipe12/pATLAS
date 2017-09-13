@@ -1,5 +1,5 @@
 // re adds nodes after cleaning the entire graph
-const reAddNode = (g, jsonObj, newList) => {
+const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
@@ -25,25 +25,29 @@ const reAddNode = (g, jsonObj, newList) => {
       const linkDistance = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[1]
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linkAccession) < 0) {
-          g.addNode(linkAccession, {
-            sequence: "<font color='#468499'>Accession:" +
-            " </font><a" +
-            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
-            seq_length: "<font" +
-            " color='#468499'>Sequence length:" +
-            " </font>" + linkLength,
-            log_length: Math.log(parseInt(linkLength))
-          })
-          // adds links for each node
+        g.addNode(linkAccession, {
+          sequence: "<font color='#468499'>Accession:" +
+          " </font><a" +
+          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
+          seq_length: "<font" +
+          " color='#468499'>Sequence length:" +
+          " </font>" + linkLength,
+          log_length: Math.log(parseInt(linkLength))
+        })
+        // adds links for each node
+        const currentHash = makeHash(sequence, linkAccession)
+        if (newListHashes.indexOf(currentHash) < 0) {
           g.addLink(sequence, linkAccession, linkDistance)
           newList.push(linkAccession) //adds to list every time a node is
           // added here
-        //})
+          newListHashes.push(currentHash)
+        }
       }
     }
   }
   //storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
   //  sequence, counter)
+  return newList, newListHashes
 }
 
 // function to call requests on db
@@ -51,6 +55,7 @@ const reAddNode = (g, jsonObj, newList) => {
 const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => {
   let newList = []
   let promises = []   //an array to store all the requests as promises
+  let newListHashes = [] // similar to listHashes from first instance
   // loops every Accession stored in listGiFilter on re_run button
   for (let i = 0; i < listGiFilter.length; i++) {
     promises.push(
@@ -87,7 +92,8 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
           }
           //add node
           //counter++
-          reAddNode(g, jsonObj, newList) //callback
+          //console.log(newList, newListHashes)
+          newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback
           // function
         } else {  // add node for every accession that has links and that is
           // present in plasmid_db
@@ -102,8 +108,8 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
             // TODO this is sketchy and should be fixed with JSON parsing from db
           }
           //add node
-          //counter++
-          reAddNode(g, jsonObj, newList) //callback function
+          //counter+
+          newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback function
         }
       })
     )
@@ -112,7 +118,9 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      renderGraph() //TODO storeMasterNode maybe can be passed to this function
+      renderGraph(initCallback(g, false, false)) //TODO storeMasterNode maybe
+      // can be
+      // passed to this function
     })
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)

@@ -8,7 +8,7 @@ const recenterDOM = (renderer, layout, storeMasterNode) => {
 // this function stores the node with more links
 
 const storeRecenterDom = (storeMasterNode, dict_dist, sequence, counter) => {
-  //console.log(counter)
+  //console.log(dict_dist, sequence, counter)
   //let previousDictDist = storeMasterNode[1]
   //let storedNode = storeMasterNode[0]
   // checks if the node is the one with most links and stores it in storedNode

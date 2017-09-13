@@ -18,6 +18,16 @@ def main_summary():
     )
     return response
 
+@app.route('/fullDS')
+def full_ds():
+    data = make_summary('db_app/static/json/final_ds.json')
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
 @app.route('/taxa')
 def taxa_summary():
     data = make_summary('db_app/static/json/taxa_tree.json')

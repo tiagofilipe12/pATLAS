@@ -1,15 +1,27 @@
+// if this is a developer session please enable the below line of code
+const devel = false
+let rerun = false // boolean that controls the prerender function if rerun
+// is activated
+
 // helps set menu to close status
 let first_click_menu = true
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
-// load JSON file
+// load test JSON file
 const getArray = () => {
-  return $.getJSON('/test')   // change the input file name
+  return $.getJSON("/test")   // change the input file name
+  // TODO should load a different file when not in devel functions
 }
+
+// load full JSON file
+const getArrayFull = () => {
+  return $.getJSON("/fullDS")   // change the input file name
+  // TODO should load a different file when not in devel functions
+}
+
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
-  taxa_tree = $.getJSON('/taxa')
-  return taxa_tree
+  return $.getJSON("/taxa")
 }
 
 // list used to store for re-run button (apply filters)
@@ -32,6 +44,8 @@ const onLoad = () => {
   // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
+  let listHashes = [] // this list stores hashes that correspond to unique
+  // links between accession numbers
   let list_lengths = [] // list to store the lengths of all nodes
   //var list_species = [] // lists all species
   //var list_genera = [] // list all genera
@@ -51,50 +65,105 @@ const onLoad = () => {
 
   const init = () => {
     if (firstInstace === true) {
-      getArray().done(function (json) {
-        $.each(json, function (sequence_info, dict_dist) {
-          counter++
-          // next we need to retrieve each information type independently
-          const sequence = sequence_info.split("_").slice(0, 3).join("_");
-          //var species = sequence_info.split("_").slice(2,4).join(" ");
+      if (devel === true) {
+        getArray().done(function (json) {
+          $.each(json, function (sequence_info, dict_dist) {
+            counter++
+            // next we need to retrieve each information type independently
+            const sequence = sequence_info.split("_").slice(0, 3).join("_");
+            //var species = sequence_info.split("_").slice(2,4).join(" ");
 
-          // and continues
-          const seq_length = sequence_info.split("_").slice(-1).join("");
-          const log_length = Math.log(parseInt(seq_length)); //ln seq length
-          list_lengths.push(seq_length); // appends all lengths to this list
-          list_gi.push(sequence)
-          //checks if sequence is not in list to prevent adding multiple nodes for each sequence
-          if (list.indexOf(sequence) < 0) {
-            g.addNode(sequence, {
-              sequence: "<font color='#468499'>Accession:" +
-              " </font><a" +
-              " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-              //species:"<font color='#468499'>Species:
-              // </font>" + species,
-              seq_length: "<font" +
-              " color='#468499'>Sequence length:" +
-              " </font>" + seq_length,
-              log_length: log_length
-            });
-            list.push(sequence);
-          }
+            // and continues
+            const seqLength = sequence_info.split("_").slice(-1).join("");
+            const log_length = Math.log(parseInt(seqLength)); //ln seq length
+            list_lengths.push(seqLength); // appends all lengths to this list
+            list_gi.push(sequence)
+            //checks if sequence is not in list to prevent adding multiple nodes for each sequence
+            if (list.indexOf(sequence) < 0) {
+              g.addNode(sequence, {
+                sequence: "<font color='#468499'>Accession:" +
+                " </font><a" +
+                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                //species:"<font color='#468499'>Species:
+                // </font>" + species,
+                seq_length: "<font" +
+                " color='#468499'>Sequence length:" +
+                " </font>" + seqLength,
+                log_length: log_length
+              })
+              list.push(sequence)
 
-          // loops between all arrays of array pairing sequence and distances
-          for (let i = 0; i < dict_dist.length; i++) {
-            const pairs = dict_dist[i]
-            const reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
-            const distance = pairs[1]   // stores distances in a unique variable
-            g.addLink(sequence, reference, distance)
-          }
-          // checks if the node is the one with most links and stores it in
-          // storedNode --> returns an array with storedNode and previousDictDist
-          storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
+              // loops between all arrays of array pairing sequence and distances
+              for (let i = 0; i < dict_dist.length; i++) {
+                const pairs = dict_dist[i]
+                const reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
+                const distance = pairs[1]   // stores distances in a unique variable
+                // assures that link wasn't previously added
+                const currentHash = makeHash(sequence, reference)
+                if (listHashes.indexOf(currentHash) < 0) {
+                  g.addLink(sequence, reference, distance)
+                  listHashes.push(currentHash)
+                }
+              }
+            }
+            // checks if the node is the one with most links and stores it in
+            // storedNode --> returns an array with storedNode and previousDictDist
+            storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
+          })
+          // precompute before rendering
+          renderGraph()
+        }) //new getArray end
+      } else {
+        // this executes the fullDS path
+        getArrayFull().done(function (json) {
+          $.each(json.nodes, function (index) {
+            counter++
+            //console.log(json.nodes[index])
+            const sequence = json.nodes[index].id
+            const seqLength = json.nodes[index].length
+            const log_length = Math.log(parseInt(seqLength))
+            list_lengths.push(seqLength)
+            list_gi.push(sequence)
+
+            if (list.indexOf(sequence) < 0) {
+              g.addNode(sequence, {
+                sequence: "<font color='#468499'>Accession:" +
+                " </font><a" +
+                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                //species:"<font color='#468499'>Species:
+                // </font>" + species,
+                seq_length: "<font" +
+                " color='#468499'>Sequence length:" +
+                " </font>" + seqLength,
+                log_length: log_length
+              })
+              layout.setNodePosition(sequence, json.nodes[index].position.x, json.nodes[index].position.y)
+              list.push(sequence)
+
+              // loops between all arrays of array pairing sequence and distances
+              for (let i = 0; i < json.nodes[index].links.length; i++) {
+                const pairs = json.nodes[index].links[i]
+                const reference = pairs[0]  // stores references in a unique variable
+                const distance = pairs[1]   // stores distances in a unique variable
+                // assures that link wasn't previously added
+                const currentHash = makeHash(sequence, reference)
+                if (listHashes.indexOf(currentHash) < 0) {
+                  g.addLink(sequence, reference, distance)
+                  listHashes.push(currentHash)
+                }
+              }
+            }
+            // checks if the node is the one with most links and stores it in
+            // storedNode --> returns an array with storedNode and previousDictDist
+            storeMasterNode = storeRecenterDom(storeMasterNode, json.nodes[index].links, sequence, counter)
+          })
+          // precompute before rendering
+          renderGraph()
         })
-        // precompute before rendering
-        renderGraph()
-      }) //new getArray end
+      }
     } else {
       // storeMasterNode is empty in here
+      rerun = true
       requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph)
       // TODO masterNode needs to be used to re-center the graph
     }
@@ -141,11 +210,13 @@ const onLoad = () => {
     })
 
     //* * END block #1 for node customization **//
+    const prerender = (devel === true || rerun === true) ? 500 : 0
+
     const renderer = Viva.Graph.View.renderer(g, {
-      layout: layout,
-      graphics: graphics,
+      layout,
+      graphics,
       container: document.getElementById('couve-flor'),
-      prerender: 1000,
+      prerender,
       preserveDrawingBuffer: true
     })
     renderer.run()
@@ -153,7 +224,7 @@ const onLoad = () => {
     // computational intensive for old computers
     renderer.pause()
 
-    defaultZooming(layout,renderer)
+    defaultZooming(layout, renderer)
 
     // used to center on the node with more links
     // this is used to skip if it is a re-run button execution
@@ -1143,4 +1214,10 @@ const onLoad = () => {
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph
+
+  // keyboard shortcut to save file with node positions
+  Mousetrap.bind("shift+s+space", () => {
+    initCallback(g, layout, devel)
+  })
+
 } // closes onload
