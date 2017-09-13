@@ -1,5 +1,7 @@
 // if this is a developer session please enable the below line of code
 const devel = false
+let rerun = false // boolean that controls the prerender function if rerun
+// is activated
 
 // helps set menu to close status
 let first_click_menu = true
@@ -73,7 +75,7 @@ const onLoad = () => {
 
             // and continues
             const seqLength = sequence_info.split("_").slice(-1).join("");
-            const logLength = Math.log(parseInt(seqLength)); //ln seq length
+            const log_length = Math.log(parseInt(seqLength)); //ln seq length
             list_lengths.push(seqLength); // appends all lengths to this list
             list_gi.push(sequence)
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
@@ -87,7 +89,7 @@ const onLoad = () => {
                 seq_length: "<font" +
                 " color='#468499'>Sequence length:" +
                 " </font>" + seqLength,
-                log_length: logLength
+                log_length: log_length
               })
               list.push(sequence)
 
@@ -119,7 +121,7 @@ const onLoad = () => {
             //console.log(json.nodes[index])
             const sequence = json.nodes[index].id
             const seqLength = json.nodes[index].length
-            const logLength = Math.log(parseInt(seqLength))
+            const log_length = Math.log(parseInt(seqLength))
             list_lengths.push(seqLength)
             list_gi.push(sequence)
 
@@ -133,7 +135,7 @@ const onLoad = () => {
                 seq_length: "<font" +
                 " color='#468499'>Sequence length:" +
                 " </font>" + seqLength,
-                log_length: logLength
+                log_length: log_length
               })
               layout.setNodePosition(sequence, json.nodes[index].position.x, json.nodes[index].position.y)
               list.push(sequence)
@@ -161,6 +163,7 @@ const onLoad = () => {
       }
     } else {
       // storeMasterNode is empty in here
+      rerun = true
       requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph)
       // TODO masterNode needs to be used to re-center the graph
     }
@@ -207,13 +210,13 @@ const onLoad = () => {
     })
 
     //* * END block #1 for node customization **//
-    const prerender = (devel === true) ? 500 : 0
+    const prerender = (devel === true || rerun === true) ? 500 : 0
 
     const renderer = Viva.Graph.View.renderer(g, {
-      layout: layout,
-      graphics: graphics,
+      layout,
+      graphics,
       container: document.getElementById('couve-flor'),
-      prerender: prerender,
+      prerender,
       preserveDrawingBuffer: true
     })
     renderer.run()
@@ -221,7 +224,7 @@ const onLoad = () => {
     // computational intensive for old computers
     renderer.pause()
 
-    defaultZooming(layout,renderer)
+    defaultZooming(layout, renderer)
 
     // used to center on the node with more links
     // this is used to skip if it is a re-run button execution
