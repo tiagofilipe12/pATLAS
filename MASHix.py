@@ -44,6 +44,13 @@ class Record:
         return {self.accession: {"size": self.size,
                                  "distance": self.distance}}
 
+    def get_dict(self):
+
+        return {"accession": self.accession,
+                "size": self.size,
+                "distance": self.distance}
+
+
 ## function to create output directories tree
 def output_tree(infile, tag):
     mother_directory = os.path.join(os.path.dirname(os.path.abspath(infile)),
@@ -374,7 +381,8 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         doc = {"name": spp_name,
                "length": length,
                "plasmid_name": plasmid_name,
-               "significantLinks": [rec.__dict__ for rec in temporary_list]}
+               "significantLinks": [rec.get_dict() for rec in
+                                    temporary_list]}
 
         row = models.Plasmid(
             plasmid_id="_".join(string_sequence.split("_")[:-1]),
