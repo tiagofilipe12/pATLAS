@@ -1,4 +1,4 @@
-from models import Plasmid, Card, Positive, Database
+from .models import Plasmid, Card, Positive, Database
 from . import db
 from flask_restful import Resource, reqparse, fields, marshal_with
 from flask import jsonify
