@@ -374,7 +374,7 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         doc = {"name": spp_name,
                "length": length,
                "plasmid_name": plasmid_name,
-               "significantLinks": temporary_list}
+               "significantLinks": [rec.__dict__ for rec in temporary_list]}
 
         row = models.Plasmid(
             plasmid_id="_".join(string_sequence.split("_")[:-1]),
