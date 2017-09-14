@@ -1,5 +1,5 @@
 // if this is a developer session please enable the below line of code
-const devel = false
+const devel = true
 let rerun = false // boolean that controls the prerender function if rerun
 // is activated
 
@@ -1216,7 +1216,7 @@ const onLoad = () => {
   // rendering the graph
 
   // keyboard shortcut to save file with node positions
-  Mousetrap.bind("shift+s+space", () => {
+  Mousetrap.bind("shift+ctrl+space", () => {
     initCallback(g, layout, devel)
   })
 

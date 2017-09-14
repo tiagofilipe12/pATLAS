@@ -17,6 +17,6 @@ const hashCode = (string) => {
 // values may be negative... doesn't matter
 // example string1 == node and string2 == linkedNode
 const makeHash = (string1, string2) => {
-  const final = hashCode(string1) + hashCode(string2)
+  const final = hashCode(string1) * hashCode(string2)
   return final
 }
