@@ -10,4 +10,5 @@ db = SQLAlchemy(app)
 #ma = Marshmallow(app)
 
 #loads required files to be used
-import views, models, resources, api
+from . import views, models, resources, api
+# import views, models, resources, api
