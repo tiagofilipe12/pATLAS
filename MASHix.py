@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-## Last update: 8/9/2017
+## Last update: 17/9/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a pairwise diagonal matrix
 # for each pairwise comparison between libraries
@@ -41,7 +41,7 @@ class Record:
         :return: dict, JSON with accession metadata
         """
 
-        return {self.accession: {"size": self.size,
+        return {self.accession: {#"size": self.size,
                                  "distance": self.distance}}
 
     def get_dict(self):
@@ -499,22 +499,18 @@ def main():
     pool.close()
     pool.join()  ## needed in order for the process to end before the
     # remaining options are triggered
-    # print
-    # print "Finished MASH... uf uf uf!"
+    print("\nFinished MASH... uf uf uf!")
 
     ## Makes distances matrix csv file
-    # print
-    # print "***********************************"
-    # print "Creating distance matrix..."
-    # print
+    print("\n***********************************")
+    print("Creating distance matrix...\n")
     lists_traces = mash_distance_matrix(mother_directory, sequence_info,
                                         pvalue, mashdist, threads)
 
     ## remove master_fasta
     if args.remove:
-        # print "***********************************"
-        # print "Removing temporary files and folders..."
-        # print
+        print("***********************************")
+        print("Removing temporary files and folders...")
         os.remove(main_fasta)
         for d in os.listdir(mother_directory):
             if d != "results":
@@ -522,9 +518,8 @@ def main():
 
     ## Histograms
     if args.histograms:
-        # print "***********************************"
-        # print "Outputing histograms..."
-        # print
+        print("***********************************")
+        print("Outputing histograms...")
         plot_histogram(lists_traces, output_tag, mother_directory)
 
 

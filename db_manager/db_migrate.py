@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import imp
 from migrate.versioning import api
 from db_app import db

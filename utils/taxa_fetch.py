@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-## Last update: 10/6/2017
+## Last update: 17/9/2017
 ## Author: T.F. Jesus
 ## This script aids MASHix.py getting family names for each genera of bacteria
 
