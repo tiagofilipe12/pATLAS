@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 from migrate.versioning import api
 from config_default import SQLALCHEMY_DATABASE_URI
 from config_default import SQLALCHEMY_MIGRATE_REPO

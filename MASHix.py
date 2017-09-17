@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-## Last update: 8/9/2017
+## Last update: 17/9/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a pairwise diagonal matrix
 # for each pairwise comparison between libraries
@@ -41,7 +41,7 @@ class Record:
         :return: dict, JSON with accession metadata
         """
 
-        return {self.accession: {"size": self.size,
+        return {self.accession: {#"size": self.size,
                                  "distance": self.distance}}
 
     def get_dict(self):
