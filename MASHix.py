@@ -510,7 +510,7 @@ def main():
     ## remove master_fasta
     if args.remove:
         print("***********************************")
-        print("Removing temporary files and folders...)
+        print("Removing temporary files and folders...")
         os.remove(main_fasta)
         for d in os.listdir(mother_directory):
             if d != "results":
