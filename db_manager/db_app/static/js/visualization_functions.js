@@ -1,5 +1,5 @@
 // if this is a developer session please enable the below line of code
-const devel = false
+const devel = true
 let rerun = false // boolean that controls the prerender function if rerun
 // is activated
 
@@ -95,15 +95,12 @@ const onLoad = () => {
 
               // loops between all arrays of array pairing sequence and distances
               for (let i = 0; i < dict_dist.length; i++) {
-                const pairs = dict_dist[i]
-                const reference = pairs[0].split('_').slice(0, 3).join('_')  // stores references in a unique variable
-                const distance = pairs[1]   // stores distances in a unique variable
-                // assures that link wasn't previously added
-                const currentHash = makeHash(sequence, reference)
-                if (listHashes.indexOf(currentHash) < 0) {
-                  g.addLink(sequence, reference, distance)
-                  listHashes.push(currentHash)
-                }
+                //console.log(dict_dist[i], Object.keys(dict_dist[i])[0])
+                //const pairs = dict_dist[i]
+                const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
+                //console.log(Object.values(dict_dist[i])[0].distance)
+                const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
+                g.addLink(sequence, reference, distance)
               }
             }
             // checks if the node is the one with most links and stores it in
@@ -1216,7 +1213,7 @@ const onLoad = () => {
   // rendering the graph
 
   // keyboard shortcut to save file with node positions
-  Mousetrap.bind("shift+s+space", () => {
+  Mousetrap.bind("shift+ctrl+space", () => {
     initCallback(g, layout, devel)
   })
 
