@@ -1,7 +1,8 @@
-flask
-flask_sqlalchemy
-tqdm
-flask_restful
-psycopg2
-plotly
-numpy
+Flask>=0.12.2
+flask_restful>=0.3.6
+flask_sqlalchemy>=2.2
+sqlalchemy_migrate>=0.11.0
+numpy>=1.13.1
+plotly>=2.0.15
+SQLAlchemy>=1.2.0b2
+tqdm>=4.15.0
