@@ -1,5 +1,5 @@
 // if this is a developer session please enable the below line of code
-const devel = true
+const devel = false
 let rerun = false // boolean that controls the prerender function if rerun
 // is activated
 
@@ -113,11 +113,13 @@ const onLoad = () => {
       } else {
         // this executes the fullDS path
         getArrayFull().done(function (json) {
-          $.each(json.nodes, function (index) {
+          //$.each(json.nodes, function (index) {
+
+          const addNodeNLinks = (array) => {
             counter++
             //console.log(json.nodes[index])
-            const sequence = json.nodes[index].id
-            const seqLength = json.nodes[index].length
+            const sequence = array.id
+            const seqLength = array.length
             const log_length = Math.log(parseInt(seqLength))
             list_lengths.push(seqLength)
             list_gi.push(sequence)
@@ -134,28 +136,44 @@ const onLoad = () => {
                 " </font>" + seqLength,
                 log_length: log_length
               })
-              layout.setNodePosition(sequence, json.nodes[index].position.x, json.nodes[index].position.y)
+              layout.setNodePosition(sequence, array.position.x, array.position.y)
               list.push(sequence)
 
               // loops between all arrays of array pairing sequence and distances
-              for (let i = 0; i < json.nodes[index].links.length; i++) {
-                const pairs = json.nodes[index].links[i]
-                const reference = pairs[0]  // stores references in a unique variable
-                const distance = pairs[1]   // stores distances in a unique variable
-                // assures that link wasn't previously added
-                const currentHash = makeHash(sequence, reference)
-                if (listHashes.indexOf(currentHash) < 0) {
-                  g.addLink(sequence, reference, distance)
-                  listHashes.push(currentHash)
+              //console.log(array.links.length)
+              if (array.links.length > 0) {
+                for (let i = 0; i < array.links.length; i++) {
+                  const pairs = array.links[i]
+                  const reference = pairs[0]  // stores references in a unique variable
+                  const distance = pairs[1]   // stores distances in a unique variable
+                  // assures that link wasn't previously added
+                  const currentHash = makeHash(sequence, reference)
+                  if (listHashes.indexOf(currentHash) < 0) {
+                    g.addLink(sequence, reference, distance)
+                    listHashes.push(currentHash)
+                  }
+                  //console.log(i, array.links.length)
+                  if (array.links.length - 1 === i) {
+                    console.log("coco")
+                  }
                 }
               }
             }
             // checks if the node is the one with most links and stores it in
             // storedNode --> returns an array with storedNode and previousDictDist
-            storeMasterNode = storeRecenterDom(storeMasterNode, json.nodes[index].links, sequence, counter)
-          })
-          // precompute before rendering
-          renderGraph()
+            storeMasterNode = storeRecenterDom(storeMasterNode, array.links, sequence, counter)
+            //})
+          }
+          //console.log(arrayPromises)
+          Promise.map(json.nodes, (array) => {
+            //console.log(array)
+            return addNodeNLinks(array)
+          }, {concurrency: 1})
+            .then( () => {
+            console.log("node adding is done")
+              //precompute before rendering
+              renderGraph()
+            })
         })
       }
     } else {
@@ -1207,7 +1225,6 @@ const onLoad = () => {
     // for now this is just taking what have been changed by taxa coloring
     downloadSeq(listGiFilter)
   })
-
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph
