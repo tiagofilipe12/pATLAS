@@ -147,35 +147,39 @@ const onLoad = () => {
           }
 
           const addAllLinks = (array) => {
-            console.log(array)
-
-            // loops between all arrays of array pairing sequence and distances
-            //console.log(array.links.length)
-            if (array.links.length > 0) {
-              //array.links.forEach( (link) => {
-              for (let i = 0; i < array.links.length; i++) {
-                const pairs = array.links[i]
-                const reference = pairs[0]  // stores references in a unique variable
-                const distance = pairs[1]   // stores distances in a unique variable
+            //console.log(array)
+            return new Promise ((resolve, reject) => {
+              // loops between all arrays of array pairing sequence and distances
+              //console.log(array.links.length)
+              if (array.child !== "") {
+                //array.links.forEach( (link) => {
+                //const pairs = array.links[i]
+                const sequence = array.parentId
+                const reference = array.child  // stores references in a unique
+                // variable
+                const distance = array.distance   // stores distances in a
+                // unique variable
                 // assures that link wasn't previously added
                 const currentHash = makeHash(sequence, reference)
                 if (listHashes.indexOf(currentHash) < 0) {
                   g.addLink(sequence, reference, distance)
                   listHashes.push(currentHash)
-                  console.log("finish")
-                }
-                //console.log(i, array.links.length)
-                if (array.links.length - 1 === i) {
-
                   resolve(array)
                 }
+                //console.log(i, array.links.length)
+                //if (array.links.length - 1 === i) {
+
+                //  resolve(array)
+                //}
+                //}
+                //})
+              } else {
+                console.log("empty array: ", array.child , sequence)
+                resolve(array)
+                //resolve(array)
               }
-              //}
-              //})
-            } else {
-              console.log("empty array: ", array.links.lenght, sequence)
-              resolve(array)
-            }
+              console.log("link")
+            })
           }
 
           // entry of the array
