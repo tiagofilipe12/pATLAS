@@ -114,7 +114,7 @@ const onLoad = () => {
         // this executes the fullDS path
         getArrayFull().done(function (json) {
 
-          const addNodeNLinks = (array) => {
+          const addAllNodes = (array) => {
             //console.log(array)
             return new Promise ((resolve, reject) => {
             counter++
@@ -138,49 +138,66 @@ const onLoad = () => {
               })
               layout.setNodePosition(sequence, array.position.x, array.position.y)
               list.push(sequence)
-
-              // loops between all arrays of array pairing sequence and distances
-              //console.log(array.links.length)
-              if (array.links.length > 0) {
-                //array.links.forEach( (link) => {
-                for (let i = 0; i < array.links.length; i++) {
-                  const pairs = array.links[i]
-                  const reference = pairs[0]  // stores references in a unique variable
-                  const distance = pairs[1]   // stores distances in a unique variable
-                  // assures that link wasn't previously added
-                  const currentHash = makeHash(sequence, reference)
-                  if (listHashes.indexOf(currentHash) < 0) {
-                    g.addLink(sequence, reference, distance)
-                    listHashes.push(currentHash)
-                    console.log("finish")
-                  }
-                  //console.log(i, array.links.length)
-                  if (array.links.length - 1 === i) {
-
-                    resolve(array)
-                  }
-                }
-                //}
-                //})
-              } else {
-                console.log("empty array: ", array.links.lenght, sequence)
-                resolve(array)
-              }
+              resolve(array)
             }
             // checks if the node is the one with most links and stores it in
             // storedNode --> returns an array with storedNode and previousDictDist
             storeMasterNode = storeRecenterDom(storeMasterNode, array.links, sequence, counter)
             })
           }
+
+          const addAllLinks = (array) => {
+            console.log(array)
+
+            // loops between all arrays of array pairing sequence and distances
+            //console.log(array.links.length)
+            if (array.links.length > 0) {
+              //array.links.forEach( (link) => {
+              for (let i = 0; i < array.links.length; i++) {
+                const pairs = array.links[i]
+                const reference = pairs[0]  // stores references in a unique variable
+                const distance = pairs[1]   // stores distances in a unique variable
+                // assures that link wasn't previously added
+                const currentHash = makeHash(sequence, reference)
+                if (listHashes.indexOf(currentHash) < 0) {
+                  g.addLink(sequence, reference, distance)
+                  listHashes.push(currentHash)
+                  console.log("finish")
+                }
+                //console.log(i, array.links.length)
+                if (array.links.length - 1 === i) {
+
+                  resolve(array)
+                }
+              }
+              //}
+              //})
+            } else {
+              console.log("empty array: ", array.links.lenght, sequence)
+              resolve(array)
+            }
+          }
+
           // entry of the array
           // for now let's forget chunks and process one at a time
 
           Promise.map(json.nodes, (array) => {
             //console.log(array)
-            return addNodeNLinks(array)
+            return addAllNodes(array)
           }, {concurrency: 100})
             .then( () => {
               console.log("node adding is done")
+              //precompute before rendering
+              renderGraph()
+            })
+            .then( () => {
+              console.log("add links")
+              Promise.map(json.links, (array) => {
+                return addAllLinks(array)
+              }, {concurrency: 100})
+            })
+            .then( () => {
+              console.log("node adding is done 2")
               //precompute before rendering
               renderGraph()
             })
