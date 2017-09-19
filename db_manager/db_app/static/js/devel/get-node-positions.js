@@ -1,6 +1,6 @@
 const downloadJSON = (text, name, type) => {
   const a = document.createElement("a")
-  const file = new Blob([text], {type: type})
+  const file = new Blob([text], {type})
   a.href = URL.createObjectURL(file)
   a.download = name
   a.click()
