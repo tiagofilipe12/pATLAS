@@ -118,7 +118,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      renderGraph(initCallback(g, false, false)) //TODO storeMasterNode maybe
+      renderGraph() //TODO storeMasterNode maybe
       // can be
       // passed to this function
     })
