@@ -113,85 +113,77 @@ const onLoad = () => {
       } else {
         // this executes the fullDS path
         getArrayFull().done(function (json) {
-          //$.each(json.nodes, function (index) {
 
-          const addNodeNLinks = (array1) => {
-            array = array1.splice(0,1)[0]
-
-            //return new Promise((resolve, reject) => {
-              counter++
-              //console.log(json.nodes[index])
-              const sequence = array.id
-              const seqLength = array.length
-              const log_length = Math.log(parseInt(seqLength))
-              list_lengths.push(seqLength)
-              list_gi.push(sequence)
-
-              if (list.indexOf(sequence) < 0) {
-                g.addNode(sequence, {
-                  sequence: "<font color='#468499'>Accession:" +
-                  " </font><a" +
-                  " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                  //species:"<font color='#468499'>Species:
-                  // </font>" + species,
-                  seq_length: "<font" +
-                  " color='#468499'>Sequence length:" +
-                  " </font>" + seqLength,
-                  log_length: log_length
-                })
-                layout.setNodePosition(sequence, array.position.x, array.position.y)
-                list.push(sequence)
-
-                // loops between all arrays of array pairing sequence and distances
-                //console.log(array.links.length)
-                if (array.links.length > 0) {
-                  for (let i = 0; i < array.links.length; i++) {
-                    const pairs = array.links[i]
-                    const reference = pairs[0]  // stores references in a unique variable
-                    const distance = pairs[1]   // stores distances in a unique variable
-                    // assures that link wasn't previously added
-                    const currentHash = makeHash(sequence, reference)
-                    if (listHashes.indexOf(currentHash) < 0) {
-                      g.addLink(sequence, reference, distance)
-                      listHashes.push(currentHash)
-                    }
-                    //console.log(i, array.links.length)
-                    if (array.links.length - 1 === i) {
-                      console.log("coco")
-                      if (array1.length > 0) {
-                        addNodeNLinks(array1)
-                      } else {
-                        renderGraph()
-                      }
-                    }
-                  }
-                } else {
-                  console.log("empty array: ", array.links.lenght, sequence)
-                }
-              }
-              // checks if the node is the one with most links and stores it in
-              // storedNode --> returns an array with storedNode and previousDictDist
-              storeMasterNode = storeRecenterDom(storeMasterNode, array.links, sequence, counter)
-              //})
-            //})
-          }
-          //console.log(arrayPromises)
-         // Promise.map(json.nodes, (array) => {
+          const addNodeNLinks = (array) => {
             //console.log(array)
+            return new Promise ((resolve, reject) => {
+            counter++
+            const sequence = array.id
+            const seqLength = array.length
+            const log_length = Math.log(parseInt(seqLength))
+            list_lengths.push(seqLength)
+            list_gi.push(sequence)
 
-          addNodeNLinks(json.nodes)
+            if (list.indexOf(sequence) < 0) {
+              g.addNode(sequence, {
+                sequence: "<font color='#468499'>Accession:" +
+                " </font><a" +
+                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                //species:"<font color='#468499'>Species:
+                // </font>" + species,
+                seq_length: "<font" +
+                " color='#468499'>Sequence length:" +
+                " </font>" + seqLength,
+                log_length: log_length
+              })
+              layout.setNodePosition(sequence, array.position.x, array.position.y)
+              list.push(sequence)
 
-          let chunkJson = json.nodes.splice(0,1)
+              // loops between all arrays of array pairing sequence and distances
+              //console.log(array.links.length)
+              if (array.links.length > 0) {
+                //array.links.forEach( (link) => {
+                for (let i = 0; i < array.links.length; i++) {
+                  const pairs = array.links[i]
+                  const reference = pairs[0]  // stores references in a unique variable
+                  const distance = pairs[1]   // stores distances in a unique variable
+                  // assures that link wasn't previously added
+                  const currentHash = makeHash(sequence, reference)
+                  if (listHashes.indexOf(currentHash) < 0) {
+                    g.addLink(sequence, reference, distance)
+                    listHashes.push(currentHash)
+                    console.log("finish")
+                  }
+                  //console.log(i, array.links.length)
+                  if (array.links.length - 1 === i) {
 
-            addNodeNLinks(chunkJson, () => {
-
+                    resolve(array)
+                  }
+                }
+                //}
+                //})
+              } else {
+                console.log("empty array: ", array.links.lenght, sequence)
+                resolve(array)
+              }
+            }
+            // checks if the node is the one with most links and stores it in
+            // storedNode --> returns an array with storedNode and previousDictDist
+            storeMasterNode = storeRecenterDom(storeMasterNode, array.links, sequence, counter)
             })
-          // }, {concurrency: 100})
-          //   .then( () => {
-          //   console.log("node adding is done")
-          //     //precompute before rendering
-          //     renderGraph()
-          //   })
+          }
+          // entry of the array
+          // for now let's forget chunks and process one at a time
+
+          Promise.map(json.nodes, (array) => {
+            //console.log(array)
+            return addNodeNLinks(array)
+          }, {concurrency: 100})
+            .then( () => {
+              console.log("node adding is done")
+              //precompute before rendering
+              renderGraph()
+            })
         })
       }
     } else {
