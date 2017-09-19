@@ -20,7 +20,7 @@ def main_summary():
 
 @app.route('/fullDS')
 def full_ds():
-    data = make_summary('db_app/static/json/final_ds.json')
+    data = make_summary('db_app/static/json/arraysandlinks.json')
     response = app.response_class(
         response=json.dumps(data),
         status=200,
