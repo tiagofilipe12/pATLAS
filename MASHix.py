@@ -41,8 +41,7 @@ class Record:
         :return: dict, JSON with accession metadata
         """
 
-        return {self.accession: {#"size": self.size,
-                                 "distance": self.distance}}
+        return {self.accession: {"distance": self.distance}}
 
     def get_dict(self):
 
