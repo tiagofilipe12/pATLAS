@@ -21,7 +21,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
     const eachArray = linksArray.split("},")
     //console.log("testing", eachArray)
     for (let i = 0; i < eachArray.length; i++) {
-      const entry = eachArray[i].replace(/[{'u\[\] ]/g,"").split(",").slice(0)
+      const entry = eachArray[i].replace(/[{}'u\[\] ]/g,"").split(",").slice(0)
       const linkDistance = entry[0].split(":")[1]
       const linkLength = entry[1].split(":")[1]
       const linkAccession = entry[2].split(":")[1]
