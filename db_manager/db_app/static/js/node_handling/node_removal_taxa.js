@@ -3,7 +3,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
-
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
     //console.log("sequence", sequence)
@@ -19,10 +18,19 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
-    for (let i = 0; i < linksArray.length; i++) {
-      const linkAccession = linksArray[i].replace(/['u\[\] ]/g,"").split("_").slice(0, 3).join("_")
+    const eachArray = linksArray.split("},")
+    //console.log("testing", eachArray)
+    for (let i = 0; i < eachArray.length; i++) {
+      const entry = eachArray[i].replace(/[{'u\[\] ]/g,"").split(",").slice(0)
+      const linkDistance = entry[0].split(":")[1]
+      const linkLength = entry[1].split(":")[1]
+      const linkAccession = entry[2].split(":")[1]
+      //const linkLength = entry.
+      /*const linkAccession = linksArray[i].replace(/['u\[\]' +
+      ' ]/g,"").split("_").slice(0, 3).join("_")
       const linkLength = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[0]
-      const linkDistance = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[1]
+      const linkDistance = linksArray[i].replace(/['u\[\]
+       ]/g,"").split("_")[3].split(",")[1]*/
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linkAccession) < 0) {
         g.addNode(linkAccession, {
@@ -80,8 +88,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
 
         // if accession is not present in the database because singletons
         // are not stored in database
-        if (data.json_entry.significantLinks === null)
-        {
+        if (data.json_entry.significantLinks === null) {
           console.log("debug", listGiFilter[i])
           const jsonObj = {
             "plasmidAccession": listGiFilter[i],
@@ -91,8 +98,6 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
             "significantLinks": "N/A"
           }
           //add node
-          //counter++
-          //console.log(newList, newListHashes)
           newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback
           // function
         } else {  // add node for every accession that has links and that is
@@ -104,11 +109,10 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
             "speciesName": speciesName,
             "plasmidName": plasmidName,
             // this splits the string into an array with each entry
-            "significantLinks": data.json_entry.significantLinks.split("],")
+            "significantLinks": data.json_entry.significantLinks//.split("],")
             // TODO this is sketchy and should be fixed with JSON parsing from db
           }
           //add node
-          //counter+
           newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback function
         }
       })
