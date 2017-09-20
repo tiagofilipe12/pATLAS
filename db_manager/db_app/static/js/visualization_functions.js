@@ -125,6 +125,8 @@ const onLoad = () => {
             list_lengths.push(seqLength)
             list_gi.push(sequence)
 
+            //console.log(array, sequence, seqLength, log_length)
+
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
                 sequence: "<font color='#468499'>Accession:" +
@@ -150,7 +152,7 @@ const onLoad = () => {
           }
 
           const addAllLinks = (array, callback) => {
-            console.log(array)
+            //console.log(array)
             // loops between all arrays of array pairing sequence and distances
             //console.log(array.links.length)
             if (array.child !== "") {
@@ -166,31 +168,33 @@ const onLoad = () => {
               if (listHashes.indexOf(currentHash) < 0) {
                 g.addLink(sequence, reference, distance)
                 listHashes.push(currentHash)
+              } else {
+                console.log("link already exists: ", sequence, reference)
               }
             } else {
               console.log("empty array: ", array.child , sequence)
             }
-            console.log("link")
             callback()
           }
 
-          const queueNodes = (cb) => {
-            const queue = async.queue(addAllNodes, 20)
-            queue.drain(() => {
-              console.log("all nodes were added")
-            })
-            queue.push(json.nodes)
-            cb()
-          }
+          // setup concurrency
 
-          const queueLinks = (cb) => {
-            const queue2 = async.queue(addAllLinks, 20)
+          const queue = async.queue(addAllNodes, 10)
+
+          queue.drain = () => {
+            console.log("finished")
+            // after getting all nodes, setup another concurrency for all links
+            const queue2 = async.queue(addAllLinks, 10)
+
+            queue2.drain = () => {
+              console.log("finished 2")
+              renderGraph()
+            }
+            // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
             queue2.push(json.links)
-            cb()
           }
-
-          queueNodes(queueLinks(renderGraph))
-
+          // attempting to queue json.nodes which are basically the nodes I want to add first to the graph
+          queue.push(json.nodes)
         })
       }
     } else {
@@ -227,7 +231,7 @@ const onLoad = () => {
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
   const renderGraph = () => {
-    //console.log("entered renderGraph")
+    console.log("entered renderGraph")
     const graphics = Viva.Graph.View.webglGraphics()
     //* * block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
@@ -237,7 +241,7 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
-      console.log("node", node)
+      //console.log("node", node)
       nodeSize = min_nodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
