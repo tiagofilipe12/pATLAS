@@ -14,9 +14,6 @@ const getPositions = (g, layout) => {
     "links": []
   }
 
-  // stores hashes in this array
-  arrayOfHashes = []
-
   g.forEachNode( (node) => {
     const position = layout.getNodePosition(node.id)
     masterJSON.nodes.push({
