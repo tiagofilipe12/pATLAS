@@ -114,9 +114,10 @@ const onLoad = () => {
         // this executes the fullDS path
         getArrayFull().done(function (json) {
 
-          const addAllNodes = (array) => {
+          const addAllNodes = (array, callback) => {
+            //console.log("test")
             //console.log(array)
-            return new Promise ((resolve, reject) => {
+            //return new Promise ((resolve, reject) => {
             counter++
             const sequence = array.id
             const seqLength = array.length
@@ -138,73 +139,58 @@ const onLoad = () => {
               })
               layout.setNodePosition(sequence, array.position.x, array.position.y)
               list.push(sequence)
-              resolve(array)
+              //resolve(array)
             }
             // checks if the node is the one with most links and stores it in
             // storedNode --> returns an array with storedNode and previousDictDist
-            storeMasterNode = storeRecenterDom(storeMasterNode, array.links, sequence, counter)
-            })
+            //storeMasterNode = storeRecenterDom(storeMasterNode,
+            // array.links, sequence, counter)
+            //})
+            callback()
           }
 
-          const addAllLinks = (array) => {
-            //console.log(array)
-            return new Promise ((resolve, reject) => {
-              // loops between all arrays of array pairing sequence and distances
-              //console.log(array.links.length)
-              if (array.child !== "") {
-                //array.links.forEach( (link) => {
-                //const pairs = array.links[i]
-                const sequence = array.parentId
-                const reference = array.child  // stores references in a unique
-                // variable
-                const distance = array.distance   // stores distances in a
-                // unique variable
-                // assures that link wasn't previously added
-                const currentHash = makeHash(sequence, reference)
-                if (listHashes.indexOf(currentHash) < 0) {
-                  g.addLink(sequence, reference, distance)
-                  listHashes.push(currentHash)
-                  resolve(array)
-                }
-                //console.log(i, array.links.length)
-                //if (array.links.length - 1 === i) {
-
-                //  resolve(array)
-                //}
-                //}
-                //})
-              } else {
-                console.log("empty array: ", array.child , sequence)
-                resolve(array)
-                //resolve(array)
+          const addAllLinks = (array, callback) => {
+            console.log(array)
+            // loops between all arrays of array pairing sequence and distances
+            //console.log(array.links.length)
+            if (array.child !== "") {
+              //array.links.forEach( (link) => {
+              //const pairs = array.links[i]
+              const sequence = array.parentId
+              const reference = array.child  // stores references in a unique
+              // variable
+              const distance = array.distance   // stores distances in a
+              // unique variable
+              // assures that link wasn't previously added
+              const currentHash = makeHash(sequence, reference)
+              if (listHashes.indexOf(currentHash) < 0) {
+                g.addLink(sequence, reference, distance)
+                listHashes.push(currentHash)
               }
-              console.log("link")
-            })
+            } else {
+              console.log("empty array: ", array.child , sequence)
+            }
+            console.log("link")
+            callback()
           }
 
-          // entry of the array
-          // for now let's forget chunks and process one at a time
+          const queueNodes = (cb) => {
+            const queue = async.queue(addAllNodes, 20)
+            queue.drain(() => {
+              console.log("all nodes were added")
+            })
+            queue.push(json.nodes)
+            cb()
+          }
 
-          Promise.map(json.nodes, (array) => {
-            //console.log(array)
-            return addAllNodes(array)
-          }, {concurrency: 100})
-            .then( () => {
-              console.log("node adding is done")
-              //precompute before rendering
-              renderGraph()
-            })
-            .then( () => {
-              console.log("add links")
-              Promise.map(json.links, (array) => {
-                return addAllLinks(array)
-              }, {concurrency: 100})
-            })
-            .then( () => {
-              console.log("node adding is done 2")
-              //precompute before rendering
-              renderGraph()
-            })
+          const queueLinks = (cb) => {
+            const queue2 = async.queue(addAllLinks, 20)
+            queue2.push(json.links)
+            cb()
+          }
+
+          queueNodes(queueLinks(renderGraph))
+
         })
       }
     } else {
@@ -251,6 +237,7 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
+      console.log("node", node)
       nodeSize = min_nodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
