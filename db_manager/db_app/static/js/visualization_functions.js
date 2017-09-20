@@ -10,13 +10,11 @@ let firstInstace = true
 // load test JSON file
 const getArray = () => {
   return $.getJSON("/test")   // change the input file name
-  // TODO should load a different file when not in devel functions
 }
 
 // load full JSON file
 const getArrayFull = () => {
   return $.getJSON("/fullDS")   // change the input file name
-  // TODO should load a different file when not in devel functions
 }
 
 // load JSON file with taxa dictionary
@@ -65,6 +63,8 @@ const onLoad = () => {
 
   const init = () => {
     if (firstInstace === true) {
+      // the next if statement is only executed on development session, it
+      // is way less efficient than the non development session.
       if (devel === true) {
         getArray().done(function (json) {
           $.each(json, function (sequence_info, dict_dist) {
@@ -111,20 +111,18 @@ const onLoad = () => {
           renderGraph()
         }) //new getArray end
       } else {
-        // this executes the fullDS path
+        // this renders the graph when not in development session
+        // this is a more efficient implementation which takes a different
+        // file for loading the graph.
         getArrayFull().done(function (json) {
 
           const addAllNodes = (array, callback) => {
-            //console.log("test")
-            //console.log(array)
-            //return new Promise ((resolve, reject) => {
             counter++
             const sequence = array.id
             const seqLength = array.length
             const log_length = Math.log(parseInt(seqLength))
             list_lengths.push(seqLength)
             list_gi.push(sequence)
-
             //console.log(array, sequence, seqLength, log_length)
 
             if (list.indexOf(sequence) < 0) {
@@ -132,8 +130,6 @@ const onLoad = () => {
                 sequence: "<font color='#468499'>Accession:" +
                 " </font><a" +
                 " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                //species:"<font color='#468499'>Species:
-                // </font>" + species,
                 seq_length: "<font" +
                 " color='#468499'>Sequence length:" +
                 " </font>" + seqLength,
@@ -141,44 +137,31 @@ const onLoad = () => {
               })
               layout.setNodePosition(sequence, array.position.x, array.position.y)
               list.push(sequence)
-              //resolve(array)
             }
-            // checks if the node is the one with most links and stores it in
-            // storedNode --> returns an array with storedNode and previousDictDist
-            //storeMasterNode = storeRecenterDom(storeMasterNode,
-            // array.links, sequence, counter)
-            //})
             callback()
           }
 
           const addAllLinks = (array, callback) => {
-            //console.log(array)
-            // loops between all arrays of array pairing sequence and distances
-            //console.log(array.links.length)
-            if (array.child !== "") {
-              //array.links.forEach( (link) => {
-              //const pairs = array.links[i]
+            if (array.childId !== "") {
               const sequence = array.parentId
-              const reference = array.child  // stores references in a unique
+              const reference = array.childId  // stores references in a unique
               // variable
               const distance = array.distance   // stores distances in a
-              // unique variable
-              // assures that link wasn't previously added
-              const currentHash = makeHash(sequence, reference)
-              if (listHashes.indexOf(currentHash) < 0) {
-                g.addLink(sequence, reference, distance)
-                listHashes.push(currentHash)
-              } else {
-                console.log("link already exists: ", sequence, reference)
-              }
+              // here it adds only unique links because filtered.json file
+              // just stores unique links
+              g.addLink(sequence, reference, distance)
             } else {
-              console.log("empty array: ", array.child , sequence)
+              console.log("empty array: ", array.childId , sequence)
             }
             callback()
           }
 
           // setup concurrency
-
+          /* TODO I think this implementation is not limiting the number of
+           nodes and links being added simultaneously but it assures that
+            the code is run in a certain order.
+            I.e. first all nodes are added, then all links are added and
+             only then renderGraph is executed */
           const queue = async.queue(addAllNodes, 10)
 
           queue.drain = () => {

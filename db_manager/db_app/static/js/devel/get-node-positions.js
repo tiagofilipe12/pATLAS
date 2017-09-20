@@ -1,3 +1,4 @@
+// function used to download file from json object
 const downloadJSON = (text, name, type) => {
   const a = document.createElement("a")
   const file = new Blob([text], {type})
@@ -14,6 +15,8 @@ const getPositions = (g, layout) => {
     "links": []
   }
 
+  let hashStore = []
+
   g.forEachNode( (node) => {
     const position = layout.getNodePosition(node.id)
     masterJSON.nodes.push({
@@ -21,19 +24,24 @@ const getPositions = (g, layout) => {
       "length": node.data.seq_length.split(">").slice(-1).toString(),
       position,
     })
-    // this doesn't filter for duplicated links
-    node.links.forEach( (link) => {
-      //console.log(link)
+  })
+  // this doesn't filter for duplicated links
+  g.forEachLink( (link) => {
+    console.log(link)
+    const currentHash = makeHash(link.fromId, link.toId)
+    if (hashStore.indexOf(currentHash) < 0) {
       masterJSON.links.push({
-        "parentId": node.id,
-        "child": (node.id === link.fromId) ? link.toId : link.fromId,
+        "parentId": link.fromId,
+        "childId": link.toId,
         "distance": link.data
       })
-    })
+      hashStore.push(currentHash)
+    }
   })
-  // Get masterJSON to a new windows were it can be saved to filesystem by
-  // right clicking it
-  downloadJSON(JSON.stringify(masterJSON), "test.txt", "text/plain")
+
+  // somehow, and I don't know how, this is executed sync, i.e., after
+  // forEach loops
+  downloadJSON(JSON.stringify(masterJSON), "filtered.json", "text/plain")
 }
 
 //*********************//
