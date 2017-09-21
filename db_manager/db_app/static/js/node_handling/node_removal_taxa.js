@@ -1,3 +1,13 @@
+// function that adds links, avoiding duplication below on reAddNode function
+const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
+  const currentHash = makeHash(sequence, linkAccession)
+  if (newListHashes.indexOf(currentHash) < 0) {
+    g.addLink(sequence, linkAccession, linkDistance)
+    newListHashes.push(currentHash)
+  }
+  return newListHashes
+}
+
 // re adds nodes after cleaning the entire graph
 const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
@@ -34,8 +44,9 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       const linkDistance = linksArray[i].replace(/['u\[\]
        ]/g,"").split("_")[3].split(",")[1]*/
       // generate hash
-      const currentHash = makeHash(sequence, linkAccession)
+
       // TODO make requests to get metadata to render the node
+      // if node doesn't exist yet, add it and add the links
       if (newList.indexOf(linkAccession) < 0) {
         //console.log(linkAccession)
         g.addNode(linkAccession, {
@@ -47,22 +58,12 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
           " </font>" + linkLength,
           log_length: Math.log(parseInt(linkLength))
         })
-        // adds links for each node
-        //const currentHash = makeHash(sequence, linkAccession)
-        if (newListHashes.indexOf(currentHash) < 0) {
-          g.addLink(sequence, linkAccession, linkDistance)
-          newList.push(linkAccession) //adds to list every time a node is
-          // added here
-          newListHashes.push(currentHash)
-        }
+        newList.push(linkAccession) //adds to list every time a node is
+        // added here
+        newListHashes = addLinks(g, newListHashes, sequence, linkAccession, linkDistance)
       } else {
-
-        if (newListHashes.indexOf(currentHash) < 0) {
-          g.addLink(sequence, linkAccession, linkDistance)
-          newList.push(linkAccession) //adds to list every time a node is
-          // added here
-          newListHashes.push(currentHash)
-        }
+        // if node exist, links still need to be added
+        newListHashes = addLinks(g, newListHashes, sequence, linkAccession, linkDistance)
       }
     }
   }
@@ -135,9 +136,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      renderGraph() //TODO storeMasterNode maybe
-      // can be
-      // passed to this function
+      renderGraph() //TODO storeMasterNode maybe can be passed to this function
     })
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)
