@@ -68,78 +68,79 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 // function to call requests on db
 
 const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, graphics) => {
-  let newList = []
-  let promises = []   //an array to store all the requests as promises
-  let newListHashes = [] // similar to listHashes from first instance
-  // loops every Accession stored in listGiFilter on re_run button
-  for (let i = 0; i < listGiFilter.length; i++) {
-    promises.push(
-      $.get("api/getspecies/", {"accession": listGiFilter[i]},
-          function(data, status) {
-        // this request uses nested json object to access json entries
-        // available in the database
+    if (listGiFilter.length > 0) {
+    let newList = []
+    let promises = []   //an array to store all the requests as promises
+    let newListHashes = [] // similar to listHashes from first instance
+    // loops every Accession stored in listGiFilter on re_run button
+    for (let i = 0; i < listGiFilter.length; i++) {
+      promises.push(
+        $.get("api/getspecies/", {"accession": listGiFilter[i]},
+          function (data, status) {
+            // this request uses nested json object to access json entries
+            // available in the database
 
-        // if request return no speciesName or plasmidName
-        // sometimes plasmids have no descriptor for one of these or both
-        if (data.json_entry.name === null) {
-          speciesName = "N/A"
-        } else {
-          speciesName = data.json_entry.name.split("_").join(" ")
-        }
-        if (data.json_entry.plasmid_name === null) {
-          plasmidName = "N/A"
-        } else {
-          plasmidName = data.json_entry.plasmid_name
-        }
-        //console.log(data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(','))
+            // if request return no speciesName or plasmidName
+            // sometimes plasmids have no descriptor for one of these or both
+            if (data.json_entry.name === null) {
+              speciesName = "N/A"
+            } else {
+              speciesName = data.json_entry.name.split("_").join(" ")
+            }
+            if (data.json_entry.plasmid_name === null) {
+              plasmidName = "N/A"
+            } else {
+              plasmidName = data.json_entry.plasmid_name
+            }
+            //console.log(data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(','))
 
-        // if accession is not present in the database because singletons
-        // are not stored in database
-        if (data.json_entry.significantLinks === null) {
-          console.log("debug", listGiFilter[i])
-          const jsonObj = {
-            "plasmidAccession": listGiFilter[i],
-            "plasmidLenght": "N/A",
-            "speciesName": "N/A",
-            "plasmidName": "N/A",
-            "significantLinks": "N/A"
-          }
-          //add node
-          newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback
-          // function
-        } else {  // add node for every accession that has links and that is
-          // present in plasmid_db
-          //console.log("teste", data.json_entry.significantLinks.split(','))
-          const jsonObj = {
-            "plasmidAccession": data.plasmid_id,
-            "plasmidLenght": data.json_entry.length,
-            "speciesName": speciesName,
-            "plasmidName": plasmidName,
-            // this splits the string into an array with each entry
-            "significantLinks": data.json_entry.significantLinks//.split("],")
-            // TODO this is sketchy and should be fixed with JSON parsing from db
-          }
-          //add node
-          newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback function
-        }
+            // if accession is not present in the database because singletons
+            // are not stored in database
+            if (data.json_entry.significantLinks === null) {
+              console.log("debug", listGiFilter[i])
+              const jsonObj = {
+                "plasmidAccession": listGiFilter[i],
+                "plasmidLenght": "N/A",
+                "speciesName": "N/A",
+                "plasmidName": "N/A",
+                "significantLinks": "N/A"
+              }
+              //add node
+              newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback
+              // function
+            } else {  // add node for every accession that has links and that is
+              // present in plasmid_db
+              //console.log("teste", data.json_entry.significantLinks.split(','))
+              const jsonObj = {
+                "plasmidAccession": data.plasmid_id,
+                "plasmidLenght": data.json_entry.length,
+                "speciesName": speciesName,
+                "plasmidName": plasmidName,
+                // this splits the string into an array with each entry
+                "significantLinks": data.json_entry.significantLinks//.split("],")
+                // TODO this is sketchy and should be fixed with JSON parsing from db
+              }
+              //add node
+              newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback function
+            }
+          })
+      )
+    }
+    // promise that waits for all the requests and nodes to be added to
+    // vivagraph.... and only then precompute the graph.
+    Promise.all(promises)
+      .then((results) => {
+        renderGraph(graphics) //TODO storeMasterNode maybe can be passed to this
+        // function
       })
-    )
+      .catch((error) => {
+        console.log("Error! No query was made. Error message: ", error)
+      })
   }
-  // promise that waits for all the requests and nodes to be added to
-  // vivagraph.... and only then precompute the graph.
-  Promise.all(promises)
-    .then((results) => {
-      renderGraph(graphics) //TODO storeMasterNode maybe can be passed to this
-      // function
-    })
-    .catch((error) => {
-      console.log("Error! No query was made. Error message: ", error)
-    })
-
 }
 
 // function that actually removes the nodes
-const actual_removal = (onload) => {
+const actual_removal = (g, graphics, onload) => {
   // removes all nodes from g using the same layout
   //console.log(listGiFilter)
   firstInstace = false
@@ -198,6 +199,18 @@ const actual_removal = (onload) => {
     '          <!-- End buttons -->\n' +
     '        </div>\n' +
     '        <div id="popup_description" style="display: none"></div>')
+
+
+  // should be executed when listGiFilter is empty ... mainly for area selection
+  const reGetListGi = (g, graphics) => {
+    let tempListAccessions = []
+    g.forEachNode(function (node) {
+      const currentNodeUI = graphics.getNodeUI(node.id)
+      if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
+    })
+    return tempListAccessions
+  }
+  listGiFilter = (listGiFilter.length === 0) ? reGetListGi(g, graphics) : listGiFilter
 
   onload()
   // TODO maybe add some nicer loading screen
