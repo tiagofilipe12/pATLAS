@@ -61,6 +61,8 @@ const onLoad = () => {
     theta: 1
   })
 
+  const graphics = Viva.Graph.View.webglGraphics()
+
   const init = () => {
     if (firstInstace === true) {
       // the next if statement is only executed on development session, it
@@ -108,7 +110,7 @@ const onLoad = () => {
             storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
           })
           // precompute before rendering
-          renderGraph()
+          renderGraph(graphics)
         }) //new getArray end
       } else {
         // this renders the graph when not in development session
@@ -170,7 +172,7 @@ const onLoad = () => {
 
             queue2.drain = () => {
               //console.log("finished 2")
-              renderGraph()
+              renderGraph(graphics)
             }
             // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
             queue2.push(json.links)
@@ -182,7 +184,7 @@ const onLoad = () => {
     } else {
       // storeMasterNode is empty in here
       rerun = true
-      requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph)
+      requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics)
       // TODO masterNode needs to be used to re-center the graph
     }
   }
@@ -212,9 +214,9 @@ const onLoad = () => {
 
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
-  const renderGraph = () => {
+  const renderGraph = (graphics) => {
     //console.log("entered renderGraph")
-    const graphics = Viva.Graph.View.webglGraphics()
+    //const graphics = Viva.Graph.View.webglGraphics()
     //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
     // to render nodes:
@@ -257,7 +259,7 @@ const onLoad = () => {
 
     // event for shift key down
     // shows overlay div and exectures startMultiSelect
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener("keydown", (e) => {
       console.log("keydown")
       if (e.which === 16 && multiSelectOverlay === false) { // shift key
         $(".graph-overlay").show()
@@ -272,7 +274,7 @@ const onLoad = () => {
     })
     // event for shift key up
     // destroys overlay div and transformes multiSelectOverlay to false
-    document.addEventListener('keyup', (e) => {
+    document.addEventListener("keyup", (e) => {
       console.log("keyup")
       if (e.which === 16 && multiSelectOverlay) {
         $(".graph-overlay").hide()
@@ -1229,7 +1231,7 @@ const onLoad = () => {
   //* ***********************************************//
 
   handleFileSelect('infile', '#file_text', function (new_read_json) {
-    read_json = new_read_json //careful when redifining this because
+    read_json = new_read_json //careful when redefining this because
     // read_json is a global variable
   })
 
@@ -1254,7 +1256,15 @@ const onLoad = () => {
   // download button //
   $("#download_ds").unbind('click').bind("click", function (e) {
     // for now this is just taking what have been changed by taxa coloring
-    downloadSeq(listGiFilter)
+    // TODO there is a conflit when we want to have all selection before
+    // TODO re-run were we have a listGiFilter
+    // TODO in this instances listGiFilter should be replaced by colors on
+    // TODO the nodes
+    if (listGiFilter.length > 0) {
+      downloadSeq(listGiFilter)
+    } else {
+      downloadSeqByColor(g, graphics)
+    }
   })
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
