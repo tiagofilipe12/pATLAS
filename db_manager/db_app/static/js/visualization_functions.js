@@ -213,9 +213,9 @@ const onLoad = () => {
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
   const renderGraph = () => {
-    console.log("entered renderGraph")
+    //console.log("entered renderGraph")
     const graphics = Viva.Graph.View.webglGraphics()
-    //* * block #1 for node customization **//
+    //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
     // to render nodes:
     const circleNode = buildCircleNodeShader()
