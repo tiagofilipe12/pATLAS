@@ -67,7 +67,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 
 // function to call requests on db
 
-const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => {
+const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, graphics) => {
   let newList = []
   let promises = []   //an array to store all the requests as promises
   let newListHashes = [] // similar to listHashes from first instance
@@ -129,7 +129,8 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      renderGraph() //TODO storeMasterNode maybe can be passed to this function
+      renderGraph(graphics) //TODO storeMasterNode maybe can be passed to this
+      // function
     })
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)
@@ -144,9 +145,9 @@ const actual_removal = (onload) => {
   firstInstace = false
 
   // change play button in order to be properly set to pause
-  $('#couve-flor').empty()
+  $("#couve-flor").empty()
   // TODO check if this can be cleaner... removing vivagraph canvas?
-  $('#couve-flor').append('        <!--hidden div for color legend-->\n' +
+  $("#couve-flor").append('        <!--hidden div for color legend-->\n' +
     '        <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">\n' +
     '          <div class="panel panel-default" >\n' +
     '            <div class="panel-heading">Color legend</div>\n' +
@@ -204,7 +205,7 @@ const actual_removal = (onload) => {
 
 // a function to display the loader mask
 const show_div = (callback) => {
-  $('#loading').show()
+  $("#loading").show()
   //console.log('showing loader')
   // if callback exist execute it
   callback && callback()

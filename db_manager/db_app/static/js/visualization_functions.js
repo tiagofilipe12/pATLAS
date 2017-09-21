@@ -61,131 +61,7 @@ const onLoad = () => {
     theta: 1
   })
 
-  const init = () => {
-    if (firstInstace === true) {
-      // the next if statement is only executed on development session, it
-      // is way less efficient than the non development session.
-      if (devel === true) {
-        getArray().done(function (json) {
-          $.each(json, function (sequence_info, dict_dist) {
-            counter++
-            // next we need to retrieve each information type independently
-            const sequence = sequence_info.split("_").slice(0, 3).join("_");
-            //var species = sequence_info.split("_").slice(2,4).join(" ");
-
-            // and continues
-            const seqLength = sequence_info.split("_").slice(-1).join("");
-            const log_length = Math.log(parseInt(seqLength)); //ln seq length
-            list_lengths.push(seqLength); // appends all lengths to this list
-            list_gi.push(sequence)
-            //checks if sequence is not in list to prevent adding multiple nodes for each sequence
-            if (list.indexOf(sequence) < 0) {
-              g.addNode(sequence, {
-                sequence: "<font color='#468499'>Accession:" +
-                " </font><a" +
-                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                //species:"<font color='#468499'>Species:
-                // </font>" + species,
-                seq_length: "<font" +
-                " color='#468499'>Sequence length:" +
-                " </font>" + seqLength,
-                log_length: log_length
-              })
-              list.push(sequence)
-
-              // loops between all arrays of array pairing sequence and distances
-              for (let i = 0; i < dict_dist.length; i++) {
-                //console.log(dict_dist[i], Object.keys(dict_dist[i])[0])
-                //const pairs = dict_dist[i]
-                const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
-                //console.log(Object.values(dict_dist[i])[0].distance)
-                const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
-                g.addLink(sequence, reference, distance)
-              }
-            }
-            // checks if the node is the one with most links and stores it in
-            // storedNode --> returns an array with storedNode and previousDictDist
-            storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
-          })
-          // precompute before rendering
-          renderGraph()
-        }) //new getArray end
-      } else {
-        // this renders the graph when not in development session
-        // this is a more efficient implementation which takes a different
-        // file for loading the graph.
-        getArrayFull().done(function (json) {
-
-          const addAllNodes = (array, callback) => {
-            counter++
-            const sequence = array.id
-            const seqLength = array.length
-            const log_length = Math.log(parseInt(seqLength))
-            list_lengths.push(seqLength)
-            list_gi.push(sequence)
-            //console.log(array, sequence, seqLength, log_length)
-
-            if (list.indexOf(sequence) < 0) {
-              g.addNode(sequence, {
-                sequence: "<font color='#468499'>Accession:" +
-                " </font><a" +
-                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                seq_length: "<font" +
-                " color='#468499'>Sequence length:" +
-                " </font>" + seqLength,
-                log_length: log_length
-              })
-              layout.setNodePosition(sequence, array.position.x, array.position.y)
-              list.push(sequence)
-            }
-            callback()
-          }
-
-          const addAllLinks = (array, callback) => {
-            const sequence = array.parentId   // stores sequences
-            const reference = array.childId  // stores references
-            const distance = array.distance   // stores distances
-            if (array.childId !== "") {
-              // here it adds only unique links because filtered.json file
-              // just stores unique links
-              g.addLink(sequence, reference, distance)
-            } else {
-              console.log("empty array: ", array.childId , sequence)
-            }
-            callback()
-          }
-
-          // setup concurrency
-          /* TODO I think this implementation is not limiting the number of
-           nodes and links being added simultaneously but it assures that
-            the code is run in a certain order.
-            I.e. first all nodes are added, then all links are added and
-             only then renderGraph is executed */
-          const queue = async.queue(addAllNodes, 10)
-
-          queue.drain = () => {
-            //console.log("finished")
-            // after getting all nodes, setup another concurrency for all links
-            const queue2 = async.queue(addAllLinks, 10)
-
-            queue2.drain = () => {
-              //console.log("finished 2")
-              renderGraph()
-            }
-            // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
-            queue2.push(json.links)
-          }
-          // attempting to queue json.nodes which are basically the nodes I want to add first to the graph
-          queue.push(json.nodes)
-        })
-      }
-    } else {
-      // storeMasterNode is empty in here
-      rerun = true
-      requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph)
-      // TODO masterNode needs to be used to re-center the graph
-    }
-  }
+  const graphics = Viva.Graph.View.webglGraphics()
 
 /*  // function that precomputes notes. Iterations specify the number of times
   // a precompute must run
@@ -212,9 +88,9 @@ const onLoad = () => {
 
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
-  const renderGraph = () => {
+  const renderGraph = (graphics) => {
     //console.log("entered renderGraph")
-    const graphics = Viva.Graph.View.webglGraphics()
+    //const graphics = Viva.Graph.View.webglGraphics()
     //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
     // to render nodes:
@@ -238,10 +114,50 @@ const onLoad = () => {
       prerender,
       preserveDrawingBuffer: true
     })
+
     renderer.run()
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
+
+    let showRerun = document.getElementById("Re_run"),
+      showGoback = document.getElementById("go_back"),
+      showDownload = document.getElementById("download_ds")
+
+    /*******************/
+    /* MULTI-SELECTION */
+    /*******************/
+
+    // variable used to control if div is shown or not
+    let multiSelectOverlay = false
+
+    // event for shift key down
+    // shows overlay div and exectures startMultiSelect
+    document.addEventListener("keydown", (e) => {
+      //console.log("keydown")
+      if (e.which === 16 && multiSelectOverlay === false) { // shift key
+        $(".graph-overlay").show()
+        multiSelectOverlay = startMultiSelect(g, renderer, layout)
+        showRerun.style.display = "block"
+        showGoback.style.display = "block"
+        showDownload.style.display = "block"
+        showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        //multiSelectOverlay = true
+      }
+    })
+    // event for shift key up
+    // destroys overlay div and transformes multiSelectOverlay to false
+    document.addEventListener("keyup", (e) => {
+      //console.log("keyup")
+      if (e.which === 16 && multiSelectOverlay) {
+        $(".graph-overlay").hide()
+        multiSelectOverlay.destroy()
+        multiSelectOverlay = false
+      }
+    })
+
+    //startMultiSelect(g, renderer, layout)
 
     defaultZooming(layout, renderer)
 
@@ -253,30 +169,19 @@ const onLoad = () => {
       console.log("stored node is empty", storeMasterNode)
     }
 
-    // trial code for downloading vivagraph instance
-    /*$("#download_img").on("click", function(e) {
-      var doc = new jsPDF({
-        orientation: 'landscape'
-      });
-
-      doc.addHTML($("#couve-flor"), function() {
-        doc.save('file.pdf');
-      })
-    })*/
-
     //* ************//
     //* **ZOOMING***//
     //* ************//
 
     // opens events in webgl such as mouse hoverings or clicks
 
-    $('#zoom_in').click( (event) => {
+    $("#zoom_in").click( (event) => {
       event.preventDefault()
       renderer.zoomIn()
       renderer.rerender()   // rerender after zoom avoids glitch with
       // duplicated nodes
     })
-    $('#zoom_out').click( (event) => {
+    $("#zoom_out").click( (event) => {
       event.preventDefault()
       renderer.zoomOut()
       renderer.rerender()   // rerender after zoom avoids glitch with
@@ -290,9 +195,9 @@ const onLoad = () => {
     //* * and the dropdown on the right side **//
 
     toggle_status = false // default state
-    $('#toggle-event').bootstrapToggle('off') // set to default off
-    $('#toggle-event').change(function () {   // jquery seems not to support es6
-      toggle_status = $(this).prop('checked')
+    $("#toggle-event").bootstrapToggle("off") // set to default off
+    $("#toggle-event").change(function () {   // jquery seems not to support es6
+      toggle_status = $(this).prop("checked")
       toggle_manager(toggle_status)
     })
 
@@ -935,9 +840,6 @@ const onLoad = () => {
         $('#colorLegendBox').empty()
         $('#colorLegendBox').append(store_lis +
           '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
-        let showRerun = document.getElementById('Re_run')
-        let showGoback = document.getElementById('go_back')
-        let showDownload = document.getElementById('download_ds')
         showRerun.style.display = 'block'
         showGoback.style.display = 'block'
         showDownload.style.display = 'block'
@@ -1149,6 +1051,7 @@ const onLoad = () => {
     // resets the slider
     $('#reset-sliders').click(function (event) {
       slider.noUiSlider.set(sliderMinMax)
+      //console.log(showRerun)
       node_color_reset(graphics, g, nodeColor, renderer)
       if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
         showLegend.style.display = 'none'
@@ -1197,12 +1100,138 @@ const onLoad = () => {
   } // closes renderGraph
   //}) //end of getArray
 
+  const init = () => {
+    if (firstInstace === true) {
+      // the next if statement is only executed on development session, it
+      // is way less efficient than the non development session.
+      if (devel === true) {
+        getArray().done(function (json) {
+          $.each(json, function (sequence_info, dict_dist) {
+            counter++
+            // next we need to retrieve each information type independently
+            const sequence = sequence_info.split("_").slice(0, 3).join("_");
+            //var species = sequence_info.split("_").slice(2,4).join(" ");
+
+            // and continues
+            const seqLength = sequence_info.split("_").slice(-1).join("");
+            const log_length = Math.log(parseInt(seqLength)); //ln seq length
+            list_lengths.push(seqLength); // appends all lengths to this list
+            list_gi.push(sequence)
+            //checks if sequence is not in list to prevent adding multiple nodes for each sequence
+            if (list.indexOf(sequence) < 0) {
+              g.addNode(sequence, {
+                sequence: "<font color='#468499'>Accession:" +
+                " </font><a" +
+                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                //species:"<font color='#468499'>Species:
+                // </font>" + species,
+                seq_length: "<font" +
+                " color='#468499'>Sequence length:" +
+                " </font>" + seqLength,
+                log_length: log_length
+              })
+              list.push(sequence)
+
+              // loops between all arrays of array pairing sequence and distances
+              for (let i = 0; i < dict_dist.length; i++) {
+                //console.log(dict_dist[i], Object.keys(dict_dist[i])[0])
+                //const pairs = dict_dist[i]
+                const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
+                //console.log(Object.values(dict_dist[i])[0].distance)
+                const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
+                g.addLink(sequence, reference, distance)
+              }
+            }
+            // checks if the node is the one with most links and stores it in
+            // storedNode --> returns an array with storedNode and previousDictDist
+            storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
+          })
+          // precompute before rendering
+          renderGraph(graphics)
+        }) //new getArray end
+      } else {
+        // this renders the graph when not in development session
+        // this is a more efficient implementation which takes a different
+        // file for loading the graph.
+        getArrayFull().done(function (json) {
+
+          const addAllNodes = (array, callback) => {
+            counter++
+            const sequence = array.id
+            const seqLength = array.length
+            const log_length = Math.log(parseInt(seqLength))
+            list_lengths.push(seqLength)
+            list_gi.push(sequence)
+            //console.log(array, sequence, seqLength, log_length)
+
+            if (list.indexOf(sequence) < 0) {
+              g.addNode(sequence, {
+                sequence: "<font color='#468499'>Accession:" +
+                " </font><a" +
+                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                seq_length: "<font" +
+                " color='#468499'>Sequence length:" +
+                " </font>" + seqLength,
+                log_length: log_length
+              })
+              layout.setNodePosition(sequence, array.position.x, array.position.y)
+              list.push(sequence)
+            }
+            callback()
+          }
+
+          const addAllLinks = (array, callback) => {
+            const sequence = array.parentId   // stores sequences
+            const reference = array.childId  // stores references
+            const distance = array.distance   // stores distances
+            if (array.childId !== "") {
+              // here it adds only unique links because filtered.json file
+              // just stores unique links
+              g.addLink(sequence, reference, distance)
+            } else {
+              console.log("empty array: ", array.childId , sequence)
+            }
+            callback()
+          }
+
+          // setup concurrency
+          /* TODO I think this implementation is not limiting the number of
+           nodes and links being added simultaneously but it assures that
+            the code is run in a certain order.
+            I.e. first all nodes are added, then all links are added and
+             only then renderGraph is executed */
+          const queue = async.queue(addAllNodes, 10)
+
+          queue.drain = () => {
+            //console.log("finished")
+            // after getting all nodes, setup another concurrency for all links
+            const queue2 = async.queue(addAllLinks, 10)
+
+            queue2.drain = () => {
+              //console.log("finished 2")
+              renderGraph(graphics)
+            }
+            // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
+            queue2.push(json.links)
+          }
+          // attempting to queue json.nodes which are basically the nodes I want to add first to the graph
+          queue.push(json.nodes)
+        })
+      }
+    } else {
+      // storeMasterNode is empty in here
+      rerun = true
+      requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics)
+      // TODO masterNode needs to be used to re-center the graph
+    }
+  }
+
   //* ***********************************************//
   // control the infile input and related functions //
   //* ***********************************************//
 
   handleFileSelect('infile', '#file_text', function (new_read_json) {
-    read_json = new_read_json //careful when redifining this because
+    read_json = new_read_json //careful when redefining this because
     // read_json is a global variable
   })
 
@@ -1227,7 +1256,15 @@ const onLoad = () => {
   // download button //
   $("#download_ds").unbind('click').bind("click", function (e) {
     // for now this is just taking what have been changed by taxa coloring
-    downloadSeq(listGiFilter)
+    // TODO there is a conflit when we want to have all selection before
+    // TODO re-run were we have a listGiFilter
+    // TODO in this instances listGiFilter should be replaced by colors on
+    // TODO the nodes
+    if (listGiFilter.length > 0) {
+      downloadSeq(listGiFilter)
+    } else {
+      downloadSeqByColor(g, graphics)
+    }
   })
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
