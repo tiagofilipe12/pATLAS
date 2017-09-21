@@ -27,19 +27,6 @@
       <!--chroma to generate colors for reads-->
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/chroma/chroma.min.js') }}"></script>
 
-      <!--bionode-ncbi-->
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
-
-      <!--load reads-->
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
-      <!--input files handler script-->
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/zooming_control.js') }}"></script>
-
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/makeHash.js') }}"></script>
-      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/get-node-positions.js') }}"></script>
-
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/async.min.js') }}"></script>
 
       <!-- main js script -->
@@ -53,6 +40,17 @@
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node_removal_taxa.js') }}"></script>
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/toggle_nodes.js') }}"></script>
       <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node-positioning.js') }}"></script>
+      <!--load reads-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
+      <!--input files handler script-->
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/zooming_control.js') }}"></script>
+
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/makeHash.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/get-node-positions.js') }}"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/overlay-graph.js') }}"></script>
 
     </head>
     
@@ -420,7 +418,7 @@
               <ul class="nav navbar-nav">
                 <li>
                   <a href="#menu-toggle" id="menu-toggle" class="btn-lg">
-                    <span class="glyphicon glyphicon-menu-hamburger">
+                    <span class="glyphicon glyphicon-menu-hamburger"></span>
                   </a>
                 </li>
               </ul>
@@ -491,7 +489,7 @@
       });
       </script>
 
-      <div id="couve-flor" > 
+      <div id="couve-flor" >
         <!--hidden div for color legend-->
         <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">
           <div class="panel panel-default" >
@@ -544,6 +542,8 @@
         </div>
         <div id="popup_description" style="display: none"></div>
       </div>
+      <div class="graph-overlay"></div>
+      <span style="color: white; margin: 10px;">Use mouse to draw rectangle and select nodes</span>
 
     </body>
 

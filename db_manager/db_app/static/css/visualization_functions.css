@@ -54,10 +54,29 @@
 }
 
 #couve-flor{
-  height: 100%;
-  width: 100%;
-  visibility: hidden;
+    height: 100%;
+    width: 100%;
+    visibility: hidden;
+    position: absolute;
+    margin: 0px;
+    overflow: hidden;
 }
+
+.graph-overlay {
+    position: absolute;
+    display: none;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%
+}
+
+.graph-selection-indicator {
+    position: absolute;
+    background: transparent;
+    border: 1px solid red;
+}
+
 #loading {
   width: 100%;
   height: 100%;
@@ -236,7 +255,7 @@
   font-size: 70%;
   color: #959595;
   text-transform: uppercase;
-  letter-spacing: 1%;
+  letter-spacing: 1px;
 }
 
 /*end of taxa filter popup*/
@@ -264,8 +283,8 @@
 }
 /*moves the tooltips to bottom instead of top*/
 .noUi-tooltip{
-  padding:4px;
-  font-size:14;
+  padding: 4px;
+  font-size: 14px;
 }
 
 /*this takes the jquery-ui interface to edit it*/

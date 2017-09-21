@@ -238,10 +238,50 @@ const onLoad = () => {
       prerender,
       preserveDrawingBuffer: true
     })
+
     renderer.run()
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
+
+    let showRerun = document.getElementById('Re_run'),
+      showGoback = document.getElementById('go_back'),
+      showDownload = document.getElementById('download_ds')
+
+    /*******************/
+    /* MULTI-SELECTION */
+    /*******************/
+
+    // variable used to control if div is shown or not
+    let multiSelectOverlay = false
+
+    // event for shift key down
+    // shows overlay div and exectures startMultiSelect
+    document.addEventListener('keydown', (e) => {
+      console.log("keydown")
+      if (e.which === 16 && multiSelectOverlay === false) { // shift key
+        $(".graph-overlay").show()
+        multiSelectOverlay = startMultiSelect(g, renderer, layout)
+        showRerun.style.display = "block"
+        showGoback.style.display = "block"
+        showDownload.style.display = "block"
+        showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        //multiSelectOverlay = true
+      }
+    })
+    // event for shift key up
+    // destroys overlay div and transformes multiSelectOverlay to false
+    document.addEventListener('keyup', (e) => {
+      console.log("keyup")
+      if (e.which === 16 && multiSelectOverlay) {
+        $(".graph-overlay").hide()
+        multiSelectOverlay.destroy()
+        multiSelectOverlay = false
+      }
+    })
+
+    //startMultiSelect(g, renderer, layout)
 
     defaultZooming(layout, renderer)
 
@@ -252,17 +292,6 @@ const onLoad = () => {
     } else {
       console.log("stored node is empty", storeMasterNode)
     }
-
-    // trial code for downloading vivagraph instance
-    /*$("#download_img").on("click", function(e) {
-      var doc = new jsPDF({
-        orientation: 'landscape'
-      });
-
-      doc.addHTML($("#couve-flor"), function() {
-        doc.save('file.pdf');
-      })
-    })*/
 
     //* ************//
     //* **ZOOMING***//
@@ -935,9 +964,6 @@ const onLoad = () => {
         $('#colorLegendBox').empty()
         $('#colorLegendBox').append(store_lis +
           '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
-        let showRerun = document.getElementById('Re_run')
-        let showGoback = document.getElementById('go_back')
-        let showDownload = document.getElementById('download_ds')
         showRerun.style.display = 'block'
         showGoback.style.display = 'block'
         showDownload.style.display = 'block'
@@ -1149,6 +1175,7 @@ const onLoad = () => {
     // resets the slider
     $('#reset-sliders').click(function (event) {
       slider.noUiSlider.set(sliderMinMax)
+      //console.log(showRerun)
       node_color_reset(graphics, g, nodeColor, renderer)
       if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
         showLegend.style.display = 'none'
