@@ -142,11 +142,10 @@ const onLoad = () => {
           }
 
           const addAllLinks = (array, callback) => {
+            const sequence = array.parentId   // stores sequences
+            const reference = array.childId  // stores references
+            const distance = array.distance   // stores distances
             if (array.childId !== "") {
-              const sequence = array.parentId
-              const reference = array.childId  // stores references in a unique
-              // variable
-              const distance = array.distance   // stores distances in a
               // here it adds only unique links because filtered.json file
               // just stores unique links
               g.addLink(sequence, reference, distance)
@@ -165,12 +164,12 @@ const onLoad = () => {
           const queue = async.queue(addAllNodes, 10)
 
           queue.drain = () => {
-            console.log("finished")
+            //console.log("finished")
             // after getting all nodes, setup another concurrency for all links
             const queue2 = async.queue(addAllLinks, 10)
 
             queue2.drain = () => {
-              console.log("finished 2")
+              //console.log("finished 2")
               renderGraph()
             }
             // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph

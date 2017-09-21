@@ -27,7 +27,6 @@ const getPositions = (g, layout) => {
   })
   // this doesn't filter for duplicated links
   g.forEachLink( (link) => {
-    console.log(link)
     const currentHash = makeHash(link.fromId, link.toId)
     if (hashStore.indexOf(currentHash) < 0) {
       masterJSON.links.push({

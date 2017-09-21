@@ -37,13 +37,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       const linkDistance = entry[1].split(":")[1]
       const linkLength = entry[2].split(":")[1]
       const linkAccession = entry[0].split(":")[1]
-      //const linkLength = entry.
-      /*const linkAccession = linksArray[i].replace(/['u\[\]' +
-      ' ]/g,"").split("_").slice(0, 3).join("_")
-      const linkLength = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[0]
-      const linkDistance = linksArray[i].replace(/['u\[\]
-       ]/g,"").split("_")[3].split(",")[1]*/
-      // generate hash
 
       // TODO make requests to get metadata to render the node
       // if node doesn't exist yet, add it and add the links
