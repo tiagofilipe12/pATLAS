@@ -204,7 +204,7 @@ const actual_removal = (g, graphics, onload) => {
   // should be executed when listGiFilter is empty ... mainly for area selection
   const reGetListGi = (g, graphics) => {
     let tempListAccessions = []
-    g.forEachNode(function (node) {
+    g.forEachNode( (node) => {
       const currentNodeUI = graphics.getNodeUI(node.id)
       if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
     })
