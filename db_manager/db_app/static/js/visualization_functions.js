@@ -1,5 +1,5 @@
 // if this is a developer session please enable the below line of code
-const devel = true
+const devel = false
 let rerun = false // boolean that controls the prerender function if rerun
 // is activated
 
@@ -10,13 +10,11 @@ let firstInstace = true
 // load test JSON file
 const getArray = () => {
   return $.getJSON("/test")   // change the input file name
-  // TODO should load a different file when not in devel functions
 }
 
 // load full JSON file
 const getArrayFull = () => {
   return $.getJSON("/fullDS")   // change the input file name
-  // TODO should load a different file when not in devel functions
 }
 
 // load JSON file with taxa dictionary
@@ -65,6 +63,8 @@ const onLoad = () => {
 
   const init = () => {
     if (firstInstace === true) {
+      // the next if statement is only executed on development session, it
+      // is way less efficient than the non development session.
       if (devel === true) {
         getArray().done(function (json) {
           $.each(json, function (sequence_info, dict_dist) {
@@ -111,51 +111,72 @@ const onLoad = () => {
           renderGraph()
         }) //new getArray end
       } else {
-        // this executes the fullDS path
+        // this renders the graph when not in development session
+        // this is a more efficient implementation which takes a different
+        // file for loading the graph.
         getArrayFull().done(function (json) {
-          $.each(json.nodes, function (index) {
+
+          const addAllNodes = (array, callback) => {
             counter++
-            //console.log(json.nodes[index])
-            const sequence = json.nodes[index].id
-            const seqLength = json.nodes[index].length
+            const sequence = array.id
+            const seqLength = array.length
             const log_length = Math.log(parseInt(seqLength))
             list_lengths.push(seqLength)
             list_gi.push(sequence)
+            //console.log(array, sequence, seqLength, log_length)
 
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
                 sequence: "<font color='#468499'>Accession:" +
                 " </font><a" +
                 " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                //species:"<font color='#468499'>Species:
-                // </font>" + species,
                 seq_length: "<font" +
                 " color='#468499'>Sequence length:" +
                 " </font>" + seqLength,
                 log_length: log_length
               })
-              layout.setNodePosition(sequence, json.nodes[index].position.x, json.nodes[index].position.y)
+              layout.setNodePosition(sequence, array.position.x, array.position.y)
               list.push(sequence)
-
-              // loops between all arrays of array pairing sequence and distances
-              for (let i = 0; i < json.nodes[index].links.length; i++) {
-                const pairs = json.nodes[index].links[i]
-                const reference = pairs[0]  // stores references in a unique variable
-                const distance = pairs[1]   // stores distances in a unique variable
-                // assures that link wasn't previously added
-                const currentHash = makeHash(sequence, reference)
-                if (listHashes.indexOf(currentHash) < 0) {
-                  g.addLink(sequence, reference, distance)
-                  listHashes.push(currentHash)
-                }
-              }
             }
-            // checks if the node is the one with most links and stores it in
-            // storedNode --> returns an array with storedNode and previousDictDist
-            storeMasterNode = storeRecenterDom(storeMasterNode, json.nodes[index].links, sequence, counter)
-          })
-          // precompute before rendering
-          renderGraph()
+            callback()
+          }
+
+          const addAllLinks = (array, callback) => {
+            const sequence = array.parentId   // stores sequences
+            const reference = array.childId  // stores references
+            const distance = array.distance   // stores distances
+            if (array.childId !== "") {
+              // here it adds only unique links because filtered.json file
+              // just stores unique links
+              g.addLink(sequence, reference, distance)
+            } else {
+              console.log("empty array: ", array.childId , sequence)
+            }
+            callback()
+          }
+
+          // setup concurrency
+          /* TODO I think this implementation is not limiting the number of
+           nodes and links being added simultaneously but it assures that
+            the code is run in a certain order.
+            I.e. first all nodes are added, then all links are added and
+             only then renderGraph is executed */
+          const queue = async.queue(addAllNodes, 10)
+
+          queue.drain = () => {
+            //console.log("finished")
+            // after getting all nodes, setup another concurrency for all links
+            const queue2 = async.queue(addAllLinks, 10)
+
+            queue2.drain = () => {
+              //console.log("finished 2")
+              renderGraph()
+            }
+            // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
+            queue2.push(json.links)
+          }
+          // attempting to queue json.nodes which are basically the nodes I want to add first to the graph
+          queue.push(json.nodes)
         })
       }
     } else {
@@ -194,7 +215,7 @@ const onLoad = () => {
   const renderGraph = () => {
     //console.log("entered renderGraph")
     const graphics = Viva.Graph.View.webglGraphics()
-    //* * block #1 for node customization **//
+    //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
     // to render nodes:
     const circleNode = buildCircleNodeShader()
@@ -202,6 +223,7 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
+      //console.log("node", node)
       nodeSize = min_nodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
@@ -1207,7 +1229,6 @@ const onLoad = () => {
     // for now this is just taking what have been changed by taxa coloring
     downloadSeq(listGiFilter)
   })
-
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph

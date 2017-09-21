@@ -1,9 +1,18 @@
+// function that adds links, avoiding duplication below on reAddNode function
+const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
+  const currentHash = makeHash(sequence, linkAccession)
+  if (newListHashes.indexOf(currentHash) < 0) {
+    g.addLink(sequence, linkAccession, linkDistance)
+    newListHashes.push(currentHash)
+  }
+  return newListHashes
+}
+
 // re adds nodes after cleaning the entire graph
 const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
-
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
     //console.log("sequence", sequence)
@@ -19,12 +28,20 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
-    for (let i = 0; i < linksArray.length; i++) {
-      const linkAccession = linksArray[i].replace(/['u\[\] ]/g,"").split("_").slice(0, 3).join("_")
-      const linkLength = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[0]
-      const linkDistance = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[1]
+    const eachArray = linksArray.split("},")
+    //console.log("testing", eachArray)
+    for (let i = 0; i < eachArray.length; i++) {
+      // this constructs a sorted array
+      // TODO try to make this array ordered in the database using MASHix.py
+      const entry = eachArray[i].replace(/[{}'u\[\] ]/g,"").split(",").slice(0).sort()
+      const linkDistance = entry[1].split(":")[1]
+      const linkLength = entry[2].split(":")[1]
+      const linkAccession = entry[0].split(":")[1]
+
       // TODO make requests to get metadata to render the node
+      // if node doesn't exist yet, add it and add the links
       if (newList.indexOf(linkAccession) < 0) {
+        //console.log(linkAccession)
         g.addNode(linkAccession, {
           sequence: "<font color='#468499'>Accession:" +
           " </font><a" +
@@ -34,14 +51,12 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
           " </font>" + linkLength,
           log_length: Math.log(parseInt(linkLength))
         })
-        // adds links for each node
-        const currentHash = makeHash(sequence, linkAccession)
-        if (newListHashes.indexOf(currentHash) < 0) {
-          g.addLink(sequence, linkAccession, linkDistance)
-          newList.push(linkAccession) //adds to list every time a node is
-          // added here
-          newListHashes.push(currentHash)
-        }
+        newList.push(linkAccession) //adds to list every time a node is
+        // added here
+        newListHashes = addLinks(g, newListHashes, sequence, linkAccession, linkDistance)
+      } else {
+        // if node exist, links still need to be added
+        newListHashes = addLinks(g, newListHashes, sequence, linkAccession, linkDistance)
       }
     }
   }
@@ -80,8 +95,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
 
         // if accession is not present in the database because singletons
         // are not stored in database
-        if (data.json_entry.significantLinks === null)
-        {
+        if (data.json_entry.significantLinks === null) {
           console.log("debug", listGiFilter[i])
           const jsonObj = {
             "plasmidAccession": listGiFilter[i],
@@ -91,8 +105,6 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
             "significantLinks": "N/A"
           }
           //add node
-          //counter++
-          //console.log(newList, newListHashes)
           newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback
           // function
         } else {  // add node for every accession that has links and that is
@@ -104,11 +116,10 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
             "speciesName": speciesName,
             "plasmidName": plasmidName,
             // this splits the string into an array with each entry
-            "significantLinks": data.json_entry.significantLinks.split("],")
+            "significantLinks": data.json_entry.significantLinks//.split("],")
             // TODO this is sketchy and should be fixed with JSON parsing from db
           }
           //add node
-          //counter+
           newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback function
         }
       })
@@ -118,9 +129,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph) => 
   // vivagraph.... and only then precompute the graph.
   Promise.all(promises)
     .then((results) => {
-      renderGraph(initCallback(g, false, false)) //TODO storeMasterNode maybe
-      // can be
-      // passed to this function
+      renderGraph() //TODO storeMasterNode maybe can be passed to this function
     })
     .catch((error) => {
       console.log("Error! No query was made. Error message: ", error)
