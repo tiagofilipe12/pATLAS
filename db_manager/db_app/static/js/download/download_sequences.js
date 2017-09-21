@@ -18,25 +18,6 @@ const fireMultipleDownloads = (urlArray) => {
   }
 }
 
-// this just downloads the selected sequences
-const downloadSeq = (listAcc) => {
-  // used map instead of list comprehensions because the latter is not
-  // available in google chrome
-  const acc = listAcc.map((uniqueAcc) => {return uniqueAcc.split("_").splice(0,2).join("_")})
-  // function that handles if multiple outputs or a single output is generated
-  downloadTypeHandler(acc)
-}
-
-const downloadSeqByColor = (g, graphics) => {
-  let tempListAccessions = []
-  g.forEachNode(function (node) {
-    const currentNodeUI = graphics.getNodeUI(node.id)
-    if (currentNodeUI.color === 0xFFA500ff) tempListAccessions.push(node.id.split("_").splice(0,2).join("_"))
-  })
-  // function that handles if multiple outputs or a single output is generated
-  downloadTypeHandler(tempListAccessions)
-}
-
 // function that handles if multiple outputs or a single output is generated
 const downloadTypeHandler = (accList) => {
   const dbType = "nuccore"
@@ -55,4 +36,23 @@ const downloadTypeHandler = (accList) => {
     multiDownload(accList, dbType, exportType, fireMultipleDownloads)
     //window.setTimeout( () => { $("#alertId").hide() }, 10000)
   }
+}
+
+// this just downloads the selected sequences
+const downloadSeq = (listAcc) => {
+  // used map instead of list comprehensions because the latter is not
+  // available in google chrome
+  const acc = listAcc.map((uniqueAcc) => {return uniqueAcc.split("_").splice(0,2).join("_")})
+  // function that handles if multiple outputs or a single output is generated
+  downloadTypeHandler(acc)
+}
+
+const downloadSeqByColor = (g, graphics) => {
+  let tempListAccessions = []
+  g.forEachNode(function (node) {
+    const currentNodeUI = graphics.getNodeUI(node.id)
+    if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id.split("_").splice(0,2).join("_")) }
+  })
+  // function that handles if multiple outputs or a single output is generated
+  downloadTypeHandler(tempListAccessions)
 }
