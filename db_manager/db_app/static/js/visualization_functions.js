@@ -1088,7 +1088,7 @@ const onLoad = () => {
       document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       show_div(
         // removes nodes
-        actual_removal(onload)
+        actual_removal(g, graphics, onload)
       )
     })
 
