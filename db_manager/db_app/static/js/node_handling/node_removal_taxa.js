@@ -21,18 +21,23 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
     const eachArray = linksArray.split("},")
     //console.log("testing", eachArray)
     for (let i = 0; i < eachArray.length; i++) {
-      const entry = eachArray[i].replace(/[{}'u\[\] ]/g,"").split(",").slice(0)
-      const linkDistance = entry[0].split(":")[1]
-      const linkLength = entry[1].split(":")[1]
-      const linkAccession = entry[2].split(":")[1]
+      // this constructs a sorted array
+      // TODO try to make this array ordered in the database using MASHix.py
+      const entry = eachArray[i].replace(/[{}'u\[\] ]/g,"").split(",").slice(0).sort()
+      const linkDistance = entry[1].split(":")[1]
+      const linkLength = entry[2].split(":")[1]
+      const linkAccession = entry[0].split(":")[1]
       //const linkLength = entry.
       /*const linkAccession = linksArray[i].replace(/['u\[\]' +
       ' ]/g,"").split("_").slice(0, 3).join("_")
       const linkLength = linksArray[i].replace(/['u\[\] ]/g,"").split("_")[3].split(",")[0]
       const linkDistance = linksArray[i].replace(/['u\[\]
        ]/g,"").split("_")[3].split(",")[1]*/
+      // generate hash
+      const currentHash = makeHash(sequence, linkAccession)
       // TODO make requests to get metadata to render the node
       if (newList.indexOf(linkAccession) < 0) {
+        //console.log(linkAccession)
         g.addNode(linkAccession, {
           sequence: "<font color='#468499'>Accession:" +
           " </font><a" +
@@ -43,7 +48,15 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
           log_length: Math.log(parseInt(linkLength))
         })
         // adds links for each node
-        const currentHash = makeHash(sequence, linkAccession)
+        //const currentHash = makeHash(sequence, linkAccession)
+        if (newListHashes.indexOf(currentHash) < 0) {
+          g.addLink(sequence, linkAccession, linkDistance)
+          newList.push(linkAccession) //adds to list every time a node is
+          // added here
+          newListHashes.push(currentHash)
+        }
+      } else {
+
         if (newListHashes.indexOf(currentHash) < 0) {
           g.addLink(sequence, linkAccession, linkDistance)
           newList.push(linkAccession) //adds to list every time a node is
