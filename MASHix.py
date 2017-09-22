@@ -83,9 +83,11 @@ def header_fix(input_header):
 
 
 def search_substing(string):
-    plasmid_search = re.search('plasmid(.+?)__', string)
+    # regex to match something that is followed by plasmid and ends in __
+    plasmid_search = re.search("plasmid(.+?)__", string)
     if plasmid_search:
-        plasmid_name = plasmid_search.group(1).replace("_", "")
+        plasmid_name_list = plasmid_search.group(1).split("_")
+        plasmid_name = ".".join(plasmid_name_list[1:])
         return plasmid_name
 
 
@@ -113,6 +115,9 @@ def master_fasta(fastas, output_tag, mother_directory):
                     truePlasmid = False #variable to control when plasmids
                     # and when genes
                     continue
+                elif "origin" in line.lower():
+                    truePlasmid = False
+                    continue
                 else:
                     truePlasmid = True
                 if x != 0:
@@ -131,6 +136,7 @@ def master_fasta(fastas, output_tag, mother_directory):
                 ## if statements to handle some exceptions already found
                 if "plasmid" in species.lower():
                     species = "unknown"
+                # TODO check if this is executed
                 elif "origin" in species.lower():
                     species = "unknown"
                 elif "candidatus" in species.split("_")[0].lower():
