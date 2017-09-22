@@ -376,13 +376,13 @@ const onLoad = () => {
 
     // Form and button for search box
     let changed_nodes = []
-    $('#submitButton').click(function (event) {
-      const query = $('#formValueId').val()
+    $("#submitButton").click(function (event) {
+      const query = $("#formValueId").val().replace(".", "_")
       //console.log('search query: ' + query)
       event.preventDefault()
       g.forEachNode( (node) => {
         const nodeUI = graphics.getNodeUI(node.id)
-        const sequence = node.data.sequence.split('>')[3].split('<')[0]
+        const sequence = node.data.sequence.split(">")[3].split("<")[0]
         // console.log(sequence)
         //nodeUI = graphics.getNodeUI(node.id)
         const x = nodeUI.position.x,
@@ -394,8 +394,8 @@ const onLoad = () => {
       })
     })
     // Button to clear the selected nodes by form
-    $('#clearButton').click(function (event) {
-      document.getElementById('formValueId').value = ''
+    $("#clearButton").click(function (event) {
+      document.getElementById("formValueId").value = ""
     })
 
     //* ***********************//
@@ -405,11 +405,11 @@ const onLoad = () => {
     // Form search box utils
 
     // then applying autocomplete function
-    $( () => {
-      $('#formValueId').autocomplete({
-        source: list_gi
-      })
-    })
+    // $( () => {
+    //   $('#formValueId').autocomplete({
+    //     source: list_gi
+    //   })
+    // })
 
     //* ******************//
     //* ***Taxa Filter****//

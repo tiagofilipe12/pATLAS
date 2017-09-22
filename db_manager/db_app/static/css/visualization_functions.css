@@ -45,7 +45,7 @@
 }
 /*resize search box for gi*/
 #formValueId{
-  width: 150px;
+  width: 200px;
 }
 
 /*set glyphicon size*/
@@ -127,7 +127,7 @@
 
 #slider_input_min{
   width: 50%;
-  height: 10%;
+  height: 20px;
 }
 
 /*input max value*/
@@ -137,7 +137,7 @@
 
 #slider_input_max{
   width: 50%;
-  height: 12px;
+  height: 20px;
 }
 
 /*slider related costumization*/
