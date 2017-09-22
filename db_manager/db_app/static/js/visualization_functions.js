@@ -1243,18 +1243,18 @@ const onLoad = () => {
   //      Menu Button controls       //
   //* ****************************** *//
 
-  $('#menu-toggle').on('click', function (e) {
+  $("#menu-toggle").on("click", function (e) {
     if (first_click_menu == true) {
-      $('#menu-toggle').css({'color': '#fff'})
+      $("#menu-toggle").css({"color": "#fff"})
       first_click_menu = false
     } else {
-      $('#menu-toggle').css({'color': '#999999'})
+      $("#menu-toggle").css({"color": "#999999"})
       first_click_menu = true
     }
   })
 
   // download button //
-  $("#download_ds").unbind('click').bind("click", function (e) {
+  $("#download_ds").unbind("click").bind("click", function (e) {
     // for now this is just taking what have been changed by taxa coloring
     // TODO there is a conflit when we want to have all selection before
     // TODO re-run were we have a listGiFilter
