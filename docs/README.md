@@ -2,9 +2,8 @@
 
 * [Introduction](Introduction.md)
 * [Usage]()
-    * [Filters]()
+    * [Browse](Browse.md)
     * [AR/REPs]()
     * [Sequences]()
-        * [Mapping]()
-        * [Add sequence]()
 * [API]()
+    * [Relationships and distances estimations]()
