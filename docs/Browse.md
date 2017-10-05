@@ -55,6 +55,12 @@ In this option you may select a multitude of taxa filters ranging from order,
   
   ![](gitbook/images/taxa_sample.png)
   
-  *NOTE:* However, if you select one genus and a species, or a family and a 
+  *NOTE:* However, if you select a genus and a species, or a family and a 
   species 
   (and so on), this will color all the selected plasmids in red.
+  
+## Final note
+
+This covers for now everything that **pATLAS** has to explore. If you have 
+any suggestions that can improve browsing features or add some other browsing
+ features, feel free to open an issue in [pATLAS github]().
