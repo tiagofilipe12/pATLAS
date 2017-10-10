@@ -63,28 +63,29 @@ const onLoad = () => {
 
   const graphics = Viva.Graph.View.webglGraphics()
 
-/*  // function that precomputes notes. Iterations specify the number of times
-  // a precompute must run
-  const precompute = (iterations, callback) => {
-    console.log("precompute")
-    //console.log("entering precompute")
-    // let's run 10 iterations per event loop cycle:
-    let i = 0
-    while (iterations > 0 && i < 10) {
-      layout.step()
-      iterations--
-      i++
-    }
-    // processingElement.innerHTML = 'Layout precompute: ' + iterations;
-    if (iterations > 0) {
-      setTimeout( () => {
-        precompute(iterations, callback)
-      }, 0) // keep going in next even cycle
-    } else {
-      // we are done!
-      callback()
-    }
-  }*/
+
+  /*  // function that precomputes notes. Iterations specify the number of times
+    // a precompute must run
+    const precompute = (iterations, callback) => {
+      console.log("precompute")
+      //console.log("entering precompute")
+      // let's run 10 iterations per event loop cycle:
+      let i = 0
+      while (iterations > 0 && i < 10) {
+        layout.step()
+        iterations--
+        i++
+      }
+      // processingElement.innerHTML = 'Layout precompute: ' + iterations;
+      if (iterations > 0) {
+        setTimeout( () => {
+          precompute(iterations, callback)
+        }, 0) // keep going in next even cycle
+      } else {
+        // we are done!
+        callback()
+      }
+    }*/
 
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
@@ -122,7 +123,8 @@ const onLoad = () => {
 
     let showRerun = document.getElementById("Re_run"),
       showGoback = document.getElementById("go_back"),
-      showDownload = document.getElementById("download_ds")
+      showDownload = document.getElementById("download_ds"),
+      showLegend = document.getElementById("colorLegend")
 
     /*******************/
     /* MULTI-SELECTION */
@@ -834,7 +836,6 @@ const onLoad = () => {
       }
       // show legend //
       if (noLegend == false) {
-        showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
         showLegend.style.display = 'block'
         document.getElementById('taxa_label').style.display = 'block' // show label
         $('#colorLegendBox').empty()
@@ -851,6 +852,8 @@ const onLoad = () => {
     //* ************//
 
     $('#fileSubmit').click(function (event) {
+      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+        showGoback, showDownload)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
@@ -875,6 +878,8 @@ const onLoad = () => {
     $('#fileSubmit_mash').click(function (event) {
       read_json = mash_json // conerts mash_json into read_json to overwrite
       // it and use the same function (read_coloring)
+      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+        showGoback, showDownload)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
@@ -897,6 +902,8 @@ const onLoad = () => {
     //* ********* ***//
     $('#assemblySubmit').click(function (event) {
       event.preventDefault()
+      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+        showGoback, showDownload)
       $('#loading').show()
       setTimeout(function () {
         assembly(list_gi, assembly_json, g, graphics, renderer)
@@ -933,7 +940,8 @@ const onLoad = () => {
       document.getElementById('distance_label').style.display = 'none' // hide label
       if ($('#colorLegendBox').html() === '') {
         $('#scaleLegend').empty()
-        showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
+        //showLegend = document.getElementById('colorLegend') // global
+        // variable to be reset by the button reset-filters
         showLegend.style.display = 'none'
       } else {
         $('#scaleLegend').empty()

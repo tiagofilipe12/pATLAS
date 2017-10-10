@@ -216,8 +216,9 @@ const color_legend = (readMode) => {
 
 const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
                        showGoback, showDownload) => {
-
+  // first iters nodes to get nodeColor (default color)
   node_color_reset(graphics, g, nodeColor, renderer)
+  // then deals with legend, and buttons associated with filters
   if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
     showLegend.style.display = 'none'
     showRerun.style.display = 'none'
