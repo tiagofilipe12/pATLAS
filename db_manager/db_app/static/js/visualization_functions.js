@@ -868,6 +868,30 @@ const onLoad = () => {
       abortRead(read_json)
     })
 
+    //* ************//
+    //* ***MASH****//
+    //* ************//
+
+    $('#fileSubmit_mash').click(function (event) {
+      read_json = mash_json // conerts mash_json into read_json to overwrite
+      // it and use the same function (read_coloring)
+      event.preventDefault()
+      $('#loading').show()
+      setTimeout(function () {
+        list_gi, listGiFilter = read_coloring(g, list_gi, graphics, renderer)
+      }, 100)
+
+      // }
+      // used to hide when function is not executed properly
+      setTimeout(function () {
+        $('#loading').hide()
+      }, 100)
+    })
+
+    $('#cancel_infile_mash').click(function (event) {
+      abortRead(mash_json)
+    })
+
     //* ********* ***//
     //* * Assembly **//
     //* ********* ***//
@@ -1051,33 +1075,8 @@ const onLoad = () => {
     // resets the slider
     $('#reset-sliders').click(function (event) {
       slider.noUiSlider.set(sliderMinMax)
-      //console.log(showRerun)
-      node_color_reset(graphics, g, nodeColor, renderer)
-      if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
-        showLegend.style.display = 'none'
-        showRerun.style.display = 'none'
-        showGoback.style.display = 'none'
-        //document.getElementById('go_back').className += ' disabled'
-        showDownload.style.display = 'none'
-        document.getElementById('read_label').style.display = 'none' // hide label
-        $('#readLegend').empty()
-      } else {
-        $('#colorLegendBox').empty()
-        document.getElementById('taxa_label').style.display = 'none' // hide label
-        showRerun.style.display = 'none'
-        showGoback.style.display = 'none'
-        //document.getElementById('go_back').className += ' disabled'
-        showDownload.style.display = 'none'
-        document.getElementById('read_label').style.display = 'none' // hide label
-        $('#readLegend').empty()
-      }
-      resetDisplayTaxaBox(idsArrays)
-
-      // resets dropdown selections
-      $('#orderList').selectpicker('deselectAll')
-      $('#familyList').selectpicker('deselectAll')
-      $('#genusList').selectpicker('deselectAll')
-      $('#speciesList').selectpicker('deselectAll')
+      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+        showGoback, showDownload)
     })
     // runs the re run operation for the selected species
     $('#Re_run').click(function (event) {
@@ -1233,6 +1232,10 @@ const onLoad = () => {
   handleFileSelect('infile', '#file_text', function (new_read_json) {
     read_json = new_read_json //careful when redefining this because
     // read_json is a global variable
+  })
+
+  handleFileSelect('mashInfile', '#file_text_mash', function (new_mash_json) {
+    mash_json = new_mash_json //global
   })
 
   handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {

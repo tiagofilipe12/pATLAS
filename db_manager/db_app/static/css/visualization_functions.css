@@ -163,6 +163,14 @@
     float: left;
 }
 
+#copyNumberCheck{
+    float: left;
+}
+
+#cutoffValue{
+    display: inline-block;
+}
+
 /*resize search box for gi*/
 #cutoffValue{
     width: 50px;
