@@ -96,11 +96,10 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
   const readMode = true
   //const readString = read_json.replace(/[{}" ]/g, "").split(",")
   const readString = JSON.parse(read_json)
-  console.log(readString)
   let listGiFilter = []
   for (string in readString) {
     const gi = string
-    listGiFilter.push(gi)
+    //listGiFilter.push(gi)
     const perc = readString[string]//.split(":")[0].replace(" ", "")
 
     // adds node if it doesn't have links
@@ -125,10 +124,12 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
           const read_color = chroma.mix("#eacc00", "maroon", (identity - 0.5) * 2).hex()
             .replace("#", "0x")
           node_iter(g, read_color, gi, graphics, identity, copyNumber)
+          listGiFilter.push(gi)
         } else {
           const read_color = chroma.mix("blue", "#eacc00", identity * 2).hex()
             .replace("#", "0x")
           node_iter(g, read_color, gi, graphics, identity, copyNumber)
+          listGiFilter.push(gi)
         }
         const scale = chroma.scale(["blue", "#eacc00", "maroon"])
         palette(scale, 20, readMode)
@@ -139,6 +140,7 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 20, readMode)
           node_iter(g, read_color, gi, graphics, identity, copyNumber)
+          listGiFilter.push(gi)
         }
       }
       // otherwise just runs read mode
@@ -150,10 +152,12 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
           const read_color = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
             .replace("#", "0x")
           node_iter(g, read_color, gi, graphics, perc)
+          listGiFilter.push(gi)
         } else {
           const read_color = chroma.mix("blue", "#eacc00", perc * 2).hex()
             .replace("#", "0x")
           node_iter(g, read_color, gi, graphics, perc)
+          listGiFilter.push(gi)
         }
         const scale = chroma.scale(["blue", "#eacc00", "maroon"])
         palette(scale, 20, readMode)
@@ -164,6 +168,7 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 20, readMode)
           node_iter(g, read_color, gi, graphics, perc)
+          listGiFilter.push(gi)
         }
       }
     }
