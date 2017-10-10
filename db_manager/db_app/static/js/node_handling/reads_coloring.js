@@ -13,8 +13,17 @@ const cutoffParser = () => {
   return ($("#cutoffValue").val() !== "") ? parseFloat($("#cutoffValue").val()) : 0.6
 }
 
+// function to get value from cutoffValue
+const cutoffParserMash = () => {
+  return ($("#cutoffValueMash").val() !== "") ? parseFloat($("#cutoffValueMash").val()) : 0.9
+}
+
+const copyNumberCutoff = () => {
+  return ($("#copyNumberValue").val() !== "") ? parseFloat($("#copyNumberValue").val()) : 2
+}
+
 // function to iterate through nodes
-const node_iter = (g, read_color, gi, graphics, perc) => {
+const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
   g.forEachNode( (node) => {
     // when filter removes all nodes and then adds them again. Looks like g
     // was somehow affected.
@@ -27,9 +36,12 @@ const node_iter = (g, read_color, gi, graphics, perc) => {
     const nodeUI = graphics.getNodeUI(node.id)
 
     if (gi === nodeGI) {
-      nodeUI.color = read_color
+      nodeUI.color = readColor
       nodeUI.backupColor = nodeUI.color
       node.data["percentage"] =  perc.toFixed(2).toString()
+      if (copyNumber) {
+        node.data["copyNumber"] = copyNumber.toString()
+      }
     }
   })
 }
@@ -80,43 +92,85 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
 // single read displayer
 // This function colors each node present in input read json file
 
-const read_coloring = (g, list_gi, graphics, renderer) => {
+const readColoring = (g, list_gi, graphics, renderer) => {
   const readMode = true
-  const readString = read_json.replace(/[{}" ]/g, "").split(",")
+  //const readString = read_json.replace(/[{}" ]/g, "").split(",")
+  const readString = JSON.parse(read_json)
   let listGiFilter = []
-  for (string in readString) {
-    gi = readString[string].split(":")[0].replace(" ", "")
-    listGiFilter.push(gi)
-    perc = parseFloat(readString[string].split(":")[1].replace(" ", ""))
+  for (let string in readString) {
+    const gi = string
+    //listGiFilter.push(gi)
+    const perc = readString[string]
+
+    // adds node if it doesn't have links
     if (list_gi.indexOf(gi) <= -1) {
-      g.addNode(gi, {sequence: "<font color='#468499'>Accession: </font><a " +
-      "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split('_').slice(0,2).join('_') + "' target='_blank'>" + gi + '</a>',
+      g.addNode(gi, {
+        sequence: "<font color='#468499'>Accession: </font><a " +
+        "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split('_').slice(0, 2).join('_') + "' target='_blank'>" + gi + '</a>',
         log_length: 10
         // percentage: "<font color='#468499'>percentage: </font>" + perc
       })
       list_gi.push(gi)
     }
-    // perc = parseFloat(readString[string].split(":")[1].replace(" ",""));
-    if (document.getElementById("check_file").checked) {
-      if (perc >= 0.5) {
-        // perc values had to be normalized to the percentage value between 0
-        // and 1
-        const read_color = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
-        .replace("#", "0x")
-        node_iter(g, read_color, gi, graphics, perc)
+    // checks if it is an array --> enabling mash mode
+    if (perc.constructor === Array) {
+      const identity = parseFloat(perc[0])
+      const copyNumber = perc[1]
+      // TODO add functionality to the code below
+      if (document.getElementById("check_file_mash").checked) {
+        if (identity >= 0.5) {
+          // perc values had to be normalized to the percentage value between 0
+          // and 1
+          const readColor = chroma.mix("#eacc00", "maroon", (identity - 0.5) * 2).hex()
+            .replace("#", "0x")
+          node_iter(g, readColor, gi, graphics, identity, copyNumber)
+          listGiFilter.push(gi)
+        } else {
+          const readColor = chroma.mix("blue", "#eacc00", identity * 2).hex()
+            .replace("#", "0x")
+          node_iter(g, readColor, gi, graphics, identity, copyNumber)
+          listGiFilter.push(gi)
+        }
+        const scale = chroma.scale(["blue", "#eacc00", "maroon"])
+        palette(scale, 20, readMode)
       } else {
-        const read_color = chroma.mix("blue", "#eacc00", perc * 2).hex()
-        .replace("#", "0x")
-        node_iter(g, read_color, gi, graphics, perc)
+        if (identity >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
+          const newPerc = rangeConverter(identity, cutoffParserMash(), 1, 0, 1)
+          const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
+          const scale = chroma.scale(["lightsalmon", "maroon"])
+          palette(scale, 20, readMode)
+          node_iter(g, readColor, gi, graphics, identity, copyNumber)
+          listGiFilter.push(gi)
+        }
       }
-      const scale = chroma.scale(["blue", "#eacc00", "maroon"])
-      palette(scale, 20, readMode)
+      // otherwise just runs read mode
     } else {
-      const newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
-      const read_color = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
-      const scale = chroma.scale(["lightsalmon", "maroon"])
-      palette(scale, 20, readMode)
-      node_iter(g, read_color, gi, graphics, perc)
+      if (document.getElementById("check_file").checked) {
+        if (perc >= 0.5) {
+          // perc values had to be normalized to the percentage value between 0
+          // and 1
+          const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
+            .replace("#", "0x")
+          node_iter(g, readColor, gi, graphics, perc)
+          listGiFilter.push(gi)
+        } else {
+          const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
+            .replace("#", "0x")
+          node_iter(g, readColor, gi, graphics, perc)
+          listGiFilter.push(gi)
+        }
+        const scale = chroma.scale(["blue", "#eacc00", "maroon"])
+        palette(scale, 20, readMode)
+      } else {
+        if (perc >= cutoffParser()) {
+          const newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
+          const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
+          const scale = chroma.scale(["lightsalmon", "maroon"])
+          palette(scale, 20, readMode)
+          node_iter(g, readColor, gi, graphics, perc)
+          listGiFilter.push(gi)
+        }
+      }
     }
   }
   // control all related divs
@@ -183,4 +237,36 @@ const color_legend = (readMode) => {
   palette(scale, 20, readMode)
 }
 
+// Clear nodes function for reset-sliders button
 
+const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
+                       showGoback, showDownload) => {
+  // first iters nodes to get nodeColor (default color)
+  node_color_reset(graphics, g, nodeColor, renderer)
+  // then deals with legend, and buttons associated with filters
+  if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
+    showLegend.style.display = 'none'
+    showRerun.style.display = 'none'
+    showGoback.style.display = 'none'
+    //document.getElementById('go_back').className += ' disabled'
+    showDownload.style.display = 'none'
+    document.getElementById('read_label').style.display = 'none' // hide label
+    $('#readLegend').empty()
+  } else {
+    $('#colorLegendBox').empty()
+    document.getElementById('taxa_label').style.display = 'none' // hide label
+    showRerun.style.display = 'none'
+    showGoback.style.display = 'none'
+    //document.getElementById('go_back').className += ' disabled'
+    showDownload.style.display = 'none'
+    document.getElementById('read_label').style.display = 'none' // hide label
+    $('#readLegend').empty()
+  }
+  resetDisplayTaxaBox(idsArrays)
+
+  // resets dropdown selections
+  $('#orderList').selectpicker('deselectAll')
+  $('#familyList').selectpicker('deselectAll')
+  $('#genusList').selectpicker('deselectAll')
+  $('#speciesList').selectpicker('deselectAll')
+}

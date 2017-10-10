@@ -63,28 +63,29 @@ const onLoad = () => {
 
   const graphics = Viva.Graph.View.webglGraphics()
 
-/*  // function that precomputes notes. Iterations specify the number of times
-  // a precompute must run
-  const precompute = (iterations, callback) => {
-    console.log("precompute")
-    //console.log("entering precompute")
-    // let's run 10 iterations per event loop cycle:
-    let i = 0
-    while (iterations > 0 && i < 10) {
-      layout.step()
-      iterations--
-      i++
-    }
-    // processingElement.innerHTML = 'Layout precompute: ' + iterations;
-    if (iterations > 0) {
-      setTimeout( () => {
-        precompute(iterations, callback)
-      }, 0) // keep going in next even cycle
-    } else {
-      // we are done!
-      callback()
-    }
-  }*/
+
+  /*  // function that precomputes notes. Iterations specify the number of times
+    // a precompute must run
+    const precompute = (iterations, callback) => {
+      console.log("precompute")
+      //console.log("entering precompute")
+      // let's run 10 iterations per event loop cycle:
+      let i = 0
+      while (iterations > 0 && i < 10) {
+        layout.step()
+        iterations--
+        i++
+      }
+      // processingElement.innerHTML = 'Layout precompute: ' + iterations;
+      if (iterations > 0) {
+        setTimeout( () => {
+          precompute(iterations, callback)
+        }, 0) // keep going in next even cycle
+      } else {
+        // we are done!
+        callback()
+      }
+    }*/
 
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
@@ -122,7 +123,8 @@ const onLoad = () => {
 
     let showRerun = document.getElementById("Re_run"),
       showGoback = document.getElementById("go_back"),
-      showDownload = document.getElementById("download_ds")
+      showDownload = document.getElementById("download_ds"),
+      showLegend = document.getElementById("colorLegend")
 
     /*******************/
     /* MULTI-SELECTION */
@@ -245,7 +247,6 @@ const onLoad = () => {
     })
 
     //* * mouse click on nodes **//
-    let click_check = false    // controls the handling of hoverings
     events.click( (node, e) => {
       nodeUI_1 = graphics.getNodeUI(node.id)
       const domPos = {
@@ -254,80 +255,87 @@ const onLoad = () => {
       }
 
       // allows the control of the click appearing and locking
-      if (click_check === false) {
-        click_check = true
 
-        // And ask graphics to transform it to DOM coordinates:
-        graphics.transformGraphToClientCoordinates(domPos)
-        domPos.x = (domPos.x + nodeUI_1.size) + 'px'
-        domPos.y = (domPos.y) + 'px'
+      // And ask graphics to transform it to DOM coordinates:
+      graphics.transformGraphToClientCoordinates(domPos)
+      domPos.x = (domPos.x + nodeUI_1.size) + 'px'
+      domPos.y = (domPos.y) + 'px'
 
-        // call the requests
-        const requestPlasmidTable = (node, setupPopupDisplay) => {
-          // if statement to check if node is in database or is a new import
-          // from mapping
-          if (node.data.seq_length) {
-            $.get('api/getspecies/', {'accession': node.id}, (data, status) => {
-              // this request uses nested json object to access json entries
-              // available in the database
-              // if request return no speciesName or plasmidName
-              // sometimes plasmids have no descriptor for one of these or both
-              if (data.json_entry.name === null) {
-                speciesName = "N/A"
-              } else {
-                speciesName = data.json_entry.name.split("_").join(" ")
-              }
-              if (data.json_entry.plasmid_name === null) {
-                plasmidName = "N/A"
-              } else {
-                plasmidName = data.json_entry.plasmid_name
-              }
-              // check if data can be called as json object properly from db something like data.species or data.length
-              setupPopupDisplay(node, speciesName, plasmidName) //callback
-              // function for
-              // node displaying after fetching data from db
-            })
-          }
-          // exception when node has no length (used on new nodes?)
-          else {
-            speciesName = 'N/A'
-            plasmidName = 'N/A'
+      // call the requests
+      const requestPlasmidTable = (node, setupPopupDisplay) => {
+        // if statement to check if node is in database or is a new import
+        // from mapping
+        if (node.data.seq_length) {
+          $.get('api/getspecies/', {'accession': node.id}, (data, status) => {
+            // this request uses nested json object to access json entries
+            // available in the database
+            // if request return no speciesName or plasmidName
+            // sometimes plasmids have no descriptor for one of these or both
+            if (data.json_entry.name === null) {
+              speciesName = "N/A"
+            } else {
+              speciesName = data.json_entry.name.split("_").join(" ")
+            }
+            if (data.json_entry.plasmid_name === null) {
+              plasmidName = "N/A"
+            } else {
+              plasmidName = data.json_entry.plasmid_name
+            }
+            // check if data can be called as json object properly from db something like data.species or data.length
             setupPopupDisplay(node, speciesName, plasmidName) //callback
-          }
-        }
-
-        const setupPopupDisplay = (node, speciesName, plasmidName) => {
-          // first needs to empty the popup in order to avoid having
-          // multiple entries from previous interactions
-          $('#popup_description').empty()
-          $('#popup_description').append('<div>' +
-            node.data.sequence +
-            '<br />' +
-            "<font color='#468499'>Species: </font>" + speciesName +
-            '<br />' +
-            node.data.seq_length +
-            '<br />' +
-            "<font color='#468499'>Plasmid: </font>" + plasmidName +
-            '<br />' +
-            "<font color='#468499'>percentage: </font>" + node.data.percentage + //This should be passed on request
-            '</div>')
-          $('#popup_description').css({
-            'padding': '10px 10px 10px 10px',
-            'border': '1px solid grey',
-            'border-radius': '10px',
-            'background-color': 'white',
-            'display': 'block',
-            'left': domPos.x,
-            'top': domPos.y,
-            'position': 'fixed',
-            'z-index': 2
+            // function for
+            // node displaying after fetching data from db
           })
         }
-        requestPlasmidTable(node, setupPopupDisplay)
-      } else {
-        click_check = false
-        $('#popup_description').css({'display': 'none'})
+        // exception when node has no length (used on new nodes?)
+        else {
+          speciesName = 'N/A'
+          plasmidName = 'N/A'
+          setupPopupDisplay(node, speciesName, plasmidName) //callback
+        }
       }
+
+      const setupPopupDisplay = (node, speciesName, plasmidName) => {
+        // first needs to empty the popup in order to avoid having
+        // multiple entries from previous interactions
+        $('#popup_description').empty()
+        $('#popup_description').append('<div>' +
+          node.data.sequence +
+          '<br />' +
+          "<font color='#468499'>Species: </font>" + speciesName +
+          '<br />' +
+          node.data.seq_length +
+          '<br />' +
+          "<font color='#468499'>Plasmid: </font>" + plasmidName +
+          '<br />' +
+          "<font color='#468499'>Percentage: </font>" + node.data.percentage +
+          '<br />' +
+          "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +//This should be passed on request
+          '</div>' +
+          "<span id='close' type='button' onclick='$(this).parent().hide()'>&times;</span>"
+        )
+        $('#popup_description').css({
+          'padding': '10px 30px 10px 30px',
+          'border': '1px solid grey',
+          'border-radius': '10px',
+          'background-color': 'white',
+          'display': 'block',
+          'left': domPos.x,
+          'top': domPos.y,
+          'position': 'fixed',
+          'z-index': 2
+        })
+        $("#close").css({
+          "cursor": "default",
+          "position": "absolute",
+          "top": "2%",
+          "right": "2%",
+          "display": "inline-block",
+          "padding": "2px 5px 2px 5px",
+          "background": "#ccc",
+        })
+      }
+      requestPlasmidTable(node, setupPopupDisplay)
     })
 
     //* * mouse hovering block end **//
@@ -834,7 +842,6 @@ const onLoad = () => {
       }
       // show legend //
       if (noLegend == false) {
-        showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
         showLegend.style.display = 'block'
         document.getElementById('taxa_label').style.display = 'block' // show label
         $('#colorLegendBox').empty()
@@ -851,10 +858,12 @@ const onLoad = () => {
     //* ************//
 
     $('#fileSubmit').click(function (event) {
+      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+        showGoback, showDownload)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
-        list_gi, listGiFilter = read_coloring(g, list_gi, graphics, renderer)
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer)
       }, 100)
 
       // }
@@ -868,11 +877,39 @@ const onLoad = () => {
       abortRead(read_json)
     })
 
+    //* ************//
+    //* ***MASH****//
+    //* ************//
+
+    $('#fileSubmit_mash').click(function (event) {
+      read_json = mash_json // conerts mash_json into read_json to overwrite
+      // it and use the same function (readColoring)
+      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+        showGoback, showDownload)
+      event.preventDefault()
+      $('#loading').show()
+      setTimeout(function () {
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer)
+      }, 100)
+
+      // }
+      // used to hide when function is not executed properly
+      setTimeout(function () {
+        $('#loading').hide()
+      }, 100)
+    })
+
+    $('#cancel_infile_mash').click(function (event) {
+      abortRead(mash_json)
+    })
+
     //* ********* ***//
     //* * Assembly **//
     //* ********* ***//
     $('#assemblySubmit').click(function (event) {
       event.preventDefault()
+      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+        showGoback, showDownload)
       $('#loading').show()
       setTimeout(function () {
         assembly(list_gi, assembly_json, g, graphics, renderer)
@@ -909,7 +946,8 @@ const onLoad = () => {
       document.getElementById('distance_label').style.display = 'none' // hide label
       if ($('#colorLegendBox').html() === '') {
         $('#scaleLegend').empty()
-        showLegend = document.getElementById('colorLegend') // global variable to be reset by the button reset-filters
+        //showLegend = document.getElementById('colorLegend') // global
+        // variable to be reset by the button reset-filters
         showLegend.style.display = 'none'
       } else {
         $('#scaleLegend').empty()
@@ -1051,33 +1089,8 @@ const onLoad = () => {
     // resets the slider
     $('#reset-sliders').click(function (event) {
       slider.noUiSlider.set(sliderMinMax)
-      //console.log(showRerun)
-      node_color_reset(graphics, g, nodeColor, renderer)
-      if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
-        showLegend.style.display = 'none'
-        showRerun.style.display = 'none'
-        showGoback.style.display = 'none'
-        //document.getElementById('go_back').className += ' disabled'
-        showDownload.style.display = 'none'
-        document.getElementById('read_label').style.display = 'none' // hide label
-        $('#readLegend').empty()
-      } else {
-        $('#colorLegendBox').empty()
-        document.getElementById('taxa_label').style.display = 'none' // hide label
-        showRerun.style.display = 'none'
-        showGoback.style.display = 'none'
-        //document.getElementById('go_back').className += ' disabled'
-        showDownload.style.display = 'none'
-        document.getElementById('read_label').style.display = 'none' // hide label
-        $('#readLegend').empty()
-      }
-      resetDisplayTaxaBox(idsArrays)
-
-      // resets dropdown selections
-      $('#orderList').selectpicker('deselectAll')
-      $('#familyList').selectpicker('deselectAll')
-      $('#genusList').selectpicker('deselectAll')
-      $('#speciesList').selectpicker('deselectAll')
+      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+        showGoback, showDownload)
     })
     // runs the re run operation for the selected species
     $('#Re_run').click(function (event) {
@@ -1235,6 +1248,10 @@ const onLoad = () => {
     // read_json is a global variable
   })
 
+  handleFileSelect('mashInfile', '#file_text_mash', function (new_mash_json) {
+    mash_json = new_mash_json //global
+  })
+
   handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {
     assembly_json = new_assembly_json   //global
   })
@@ -1244,7 +1261,7 @@ const onLoad = () => {
   //* ****************************** *//
 
   $("#menu-toggle").on("click", function (e) {
-    if (first_click_menu == true) {
+    if (first_click_menu === true) {
       $("#menu-toggle").css({"color": "#fff"})
       first_click_menu = false
     } else {

@@ -150,8 +150,45 @@
 /* customizes taxa filters buttons*/
 
 #modal-body-file{
-  height: 150px;
+  height: 180px;
   overflow: auto;
+}
+
+#modal-body-mash{
+    height: 260px;
+    overflow: auto;
+}
+
+#label_mash {
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+    padding-top: 2%;
+    padding-bottom: 1%;
+}
+#check_file_mash {
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    margin:0;
+    vertical-align: middle;
+    *overflow: hidden;
+}
+
+#label_file {
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+    padding-top: 2%;
+    padding-bottom: 1%;
+}
+#check_file {
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    margin:0;
+    vertical-align: middle;
+    *overflow: hidden;
 }
 
 #uploadFile, #uploadFileCheck{
@@ -159,14 +196,9 @@
   margin-right: 1%;
 }
 
-#cutoffFileCheck{
-    float: left;
-}
-
 /*resize search box for gi*/
-#cutoffValue{
-    width: 50px;
-    float: right;
+#cutoffValue, #cutoffValueMash, #copyNumberValue{
+    width: 200px;
 }
 
 #modal-body-scheme{
