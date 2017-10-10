@@ -2,9 +2,8 @@
 
 * [Introduction](Introduction.md)
 * [Usage]()
-    * [Filters]()
-    * [AR/REPs]()
-    * [Sequences]()
-        * [Mapping]()
-        * [Add sequence]()
+    * [Browse](Browse.md)
+    * [Antibiotic resistance]()
+    * [Import]()
 * [API]()
+    * [Relationships and distances estimations]()
