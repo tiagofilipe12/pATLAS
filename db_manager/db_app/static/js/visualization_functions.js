@@ -859,7 +859,7 @@ const onLoad = () => {
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
-        list_gi, listGiFilter = read_coloring(g, list_gi, graphics, renderer)
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer)
       }, 100)
 
       // }
@@ -879,13 +879,13 @@ const onLoad = () => {
 
     $('#fileSubmit_mash').click(function (event) {
       read_json = mash_json // conerts mash_json into read_json to overwrite
-      // it and use the same function (read_coloring)
+      // it and use the same function (readColoring)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
-        list_gi, listGiFilter = read_coloring(g, list_gi, graphics, renderer)
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer)
       }, 100)
 
       // }
