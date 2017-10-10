@@ -312,7 +312,7 @@ const onLoad = () => {
           '<br />' +
           "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +//This should be passed on request
           '</div>' +
-          "<span id='close' onclick='$(this).parent().hide()'>x</span>"
+          "<span id='close' type='button' onclick='$(this).parent().hide()'>&times;</span>"
         )
         $('#popup_description').css({
           'padding': '10px 30px 10px 30px',
@@ -326,6 +326,7 @@ const onLoad = () => {
           'z-index': 2
         })
         $("#close").css({
+          "cursor": "default",
           "position": "absolute",
           "top": "2%",
           "right": "2%",
