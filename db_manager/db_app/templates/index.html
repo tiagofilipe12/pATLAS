@@ -87,12 +87,14 @@
         </div>
         <!--checkbox-->
         <div class="row" id="uploadFileCheck">
-          <div class="checkbox col-md-12">Check for pairwise comparison mode
-            <label>
-              <!--autocomplete prevents checkbox from being checkd after refresh-->
-              <input type="checkbox" id="check_file" autocomplete="off">
-            </label>
-          </div>
+          <form>
+            <div>
+              <label id="label_file">
+                <input type="checkbox" id="check_file"
+                       autocomplete="off"/> Check for pairwise comparison mode
+              </label>
+            </div>
+          </form>
           <div>
             <div class="form-group" id="cutoffFileCheck">Provide a
               value between 0 and 1. Tip: default is 0.6.
@@ -123,7 +125,7 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Select input file (mash results)</h4>
       </div>
-      <div class="modal-body" id="modal-body-file">
+      <div class="modal-body" id="modal-body-mash">
         <div class="row" id="uploadFile">
           <div class="input-group col-md-12">
             <label class="input-group-btn">
@@ -141,21 +143,23 @@
         </div>
         <!--checkbox-->
         <div class="row" id="uploadFileCheck">
-          <div class="checkbox col-md-12">Check for pairwise comparison mode
-            <label>
-              <!--autocomplete prevents checkbox from being checked after
-              refresh-->
-              <input type="checkbox" id="check_file" autocomplete="off">
-            </label>
-          </div>
+          <form>
+            <div>
+              <label id="label_mash">
+                <input type="checkbox" id="check_file_mash"
+                       autocomplete="off"/> Check for pairwise comparison mode
+              </label>
+            </div>
+          </form>
           <div>
             <div class="form-group" id="cutoffFileCheck">Provide a
-              value between 0 and 1. Tip: default is 0.9.
+              value for the minimum identity to display. Tip: must be between 0
+              and 1.
               <input id="cutoffValueMash" type="text" class="form-control"
                      placeholder="0.9"/>
             </div>
             <div class="form-group" id="copyNumberCheck">Provide an integer
-              number higher or equal to 2. Tip: default is 2.
+              value for minimum copy number to represent. Tip: must be >= 2.
               <input id="copyNumberValue" type="text" class="form-control"
                      placeholder="2"/>
             </div>

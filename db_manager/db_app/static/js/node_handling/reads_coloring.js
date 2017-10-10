@@ -117,7 +117,7 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
       const identity = parseFloat(perc[0])
       const copyNumber = perc[1]
       // TODO add functionality to the code below
-      if (document.getElementById("check_file").checked) {
+      if (document.getElementById("check_file_mash").checked) {
         if (identity >= 0.5) {
           // perc values had to be normalized to the percentage value between 0
           // and 1
