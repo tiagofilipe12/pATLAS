@@ -13,8 +13,17 @@ const cutoffParser = () => {
   return ($("#cutoffValue").val() !== "") ? parseFloat($("#cutoffValue").val()) : 0.6
 }
 
+// function to get value from cutoffValue
+const cutoffParserMash = () => {
+  return ($("#cutoffValueMash").val() !== "") ? parseFloat($("#cutoffValueMash").val()) : 0.9
+}
+
+const copyNumberCutoff = () => {
+  return ($("#copyNumberValue").val() !== "") ? parseFloat($("#copyNumberValue").val()) : 2
+}
+
 // function to iterate through nodes
-const node_iter = (g, read_color, gi, graphics, perc) => {
+const node_iter = (g, read_color, gi, graphics, perc, copyNumber) => {
   g.forEachNode( (node) => {
     // when filter removes all nodes and then adds them again. Looks like g
     // was somehow affected.
@@ -30,6 +39,9 @@ const node_iter = (g, read_color, gi, graphics, perc) => {
       nodeUI.color = read_color
       nodeUI.backupColor = nodeUI.color
       node.data["percentage"] =  perc.toFixed(2).toString()
+      if (copyNumber) {
+        node.data["copyNumber"] = copyNumber.toString()
+      }
     }
   })
 }
@@ -91,6 +103,7 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
     listGiFilter.push(gi)
     const perc = readString[string]//.split(":")[0].replace(" ", "")
 
+    // adds node if it doesn't have links
     if (list_gi.indexOf(gi) <= -1) {
       g.addNode(gi, {
         sequence: "<font color='#468499'>Accession: </font><a " +
@@ -100,30 +113,35 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
       })
       list_gi.push(gi)
     }
+    // checks if it is an array --> enabling mash mode
     if (perc.constructor === Array) {
       const identity = parseFloat(perc[0])
       const copyNumber = perc[1]
+      // TODO add functionality to the code below
       if (document.getElementById("check_file").checked) {
         if (identity >= 0.5) {
           // perc values had to be normalized to the percentage value between 0
           // and 1
           const read_color = chroma.mix("#eacc00", "maroon", (identity - 0.5) * 2).hex()
             .replace("#", "0x")
-          node_iter(g, read_color, gi, graphics, identity)
+          node_iter(g, read_color, gi, graphics, identity, copyNumber)
         } else {
           const read_color = chroma.mix("blue", "#eacc00", identity * 2).hex()
             .replace("#", "0x")
-          node_iter(g, read_color, gi, graphics, identity)
+          node_iter(g, read_color, gi, graphics, identity, copyNumber)
         }
         const scale = chroma.scale(["blue", "#eacc00", "maroon"])
         palette(scale, 20, readMode)
       } else {
-        const newPerc = rangeConverter(identity, cutoffParser(), 1, 0, 1)
-        const read_color = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
-        const scale = chroma.scale(["lightsalmon", "maroon"])
-        palette(scale, 20, readMode)
-        node_iter(g, read_color, gi, graphics, identity)
+        if (identity >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
+          const newPerc = rangeConverter(identity, cutoffParserMash(), 1, 0, 1)
+          const read_color = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
+          const scale = chroma.scale(["lightsalmon", "maroon"])
+          palette(scale, 20, readMode)
+          node_iter(g, read_color, gi, graphics, identity, copyNumber)
+        }
       }
+      // otherwise just runs read mode
     } else {
       if (document.getElementById("check_file").checked) {
         if (perc >= 0.5) {
@@ -140,11 +158,13 @@ const read_coloring = (g, list_gi, graphics, renderer) => {
         const scale = chroma.scale(["blue", "#eacc00", "maroon"])
         palette(scale, 20, readMode)
       } else {
-        const newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
-        const read_color = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
-        const scale = chroma.scale(["lightsalmon", "maroon"])
-        palette(scale, 20, readMode)
-        node_iter(g, read_color, gi, graphics, perc)
+        if (perc >= cutoffParser()) {
+          const newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
+          const read_color = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
+          const scale = chroma.scale(["lightsalmon", "maroon"])
+          palette(scale, 20, readMode)
+          node_iter(g, read_color, gi, graphics, perc)
+        }
       }
     }
   }

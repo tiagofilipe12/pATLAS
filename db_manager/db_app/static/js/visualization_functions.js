@@ -311,7 +311,9 @@ const onLoad = () => {
             '<br />' +
             "<font color='#468499'>Plasmid: </font>" + plasmidName +
             '<br />' +
-            "<font color='#468499'>percentage: </font>" + node.data.percentage + //This should be passed on request
+            "<font color='#468499'>Percentage: </font>" + node.data.percentage +
+            '<br />' +
+            "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +//This should be passed on request
             '</div>')
           $('#popup_description').css({
             'padding': '10px 10px 10px 10px',
@@ -1255,7 +1257,7 @@ const onLoad = () => {
   //* ****************************** *//
 
   $("#menu-toggle").on("click", function (e) {
-    if (first_click_menu == true) {
+    if (first_click_menu === true) {
       $("#menu-toggle").css({"color": "#fff"})
       first_click_menu = false
     } else {
