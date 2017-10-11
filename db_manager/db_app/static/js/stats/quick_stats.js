@@ -1,52 +1,37 @@
 // function sort object by values in javascript
 
-const sortByValues = (obj) => {
-  const sort = (obj) => {
-    return Object.keys(obj).sort( (a, b) => {
-      return obj[b] - obj[a]
-    })
-  }
-
-  const sorted = sort(obj)
-
-  sortedKeys = sorted.map( (key) => { return key })
-  sortedValues = sorted.map( (key) => { return obj[key] })
-
-  return [sortedKeys, sortedValues]
-}
+// const sortByValues = (obj) => {
+//   const sort = (obj) => {
+//     return Object.keys(obj).sort( (a, b) => {
+//       return obj[b] - obj[a]
+//     })
+//   }
+//
+//   const sorted = sort(obj)
+//
+//   sortedKeys = sorted.map( (key) => { return key })
+//   sortedValues = sorted.map( (key) => { return obj[key] })
+//
+//   return [sortedKeys, sortedValues]
+// }
 
 // function to parse stats
 
-const statsParser = (masterObj) => {
-
-  // Get an array of the keys and values within an array
-  const sortedSpecies = sortByValues(masterObj)
-
-  console.log(sortedSpecies)
+const statsParser = (masterObj, layout, autobinxVar) => {
 
   // by default species are executed when opening stats visualization
   const data = [{
-    x: sortedSpecies[0],
-    y: sortedSpecies[1],
-    type: 'bar'
+    x: masterObj,
+    type: "histogram",
+    autobinx: autobinxVar,
+    xbins: {
+      start: Math.min(...masterObj),
+      end: Math.max(...masterObj),
+      size: 10000
+    }
   }]
 
-  const layout = {
-    yaxis: {
-      title: "Number of selected plasmids"
-    },
-    xaxis: {
-      title: "Species",
-      tickangle: -45
-    },
-    title: "Species in selection",
-    margin: {
-      b: 200,
-      l: 100
-    }
-  }
-
-  Plotly.newPlot('chartContainer1', data, layout)
+  Plotly.newPlot("chartContainer1", data, layout)
 }
 
 // metadata handler function
@@ -56,7 +41,7 @@ const getMetadata = (tempList) => {
   const speciesObject = {}
   for (const item in tempList) {
     nodeId = tempList[item]
-    $.get('api/getspecies/', {'accession': nodeId}, (data, status) => {
+    $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
       // this request uses nested json object to access json entries
       // available in the database
       // if request return no speciesName or plasmidName
@@ -77,7 +62,21 @@ const getMetadata = (tempList) => {
       }
       // if speciesList reaches the size of accessions given to tempList
       // EXECUTE STATS
-      if (speciesList.length === tempList.length) { statsParser(speciesObject) }
+      const layout = {
+        yaxis: {
+          title: "Number of selected plasmids"
+        },
+        xaxis: {
+          title: "Species",
+          tickangle: -45
+        },
+        title: "Species in selection",
+        margin: {
+          b: 200,
+          l: 100
+        }
+      }
+      if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true) }
     })
   }
 }
@@ -87,7 +86,7 @@ const getMetadataLength = (tempList) => {
   const lengthObject = {}
   for (const item in tempList) {
     nodeId = tempList[item]
-    $.get('api/getspecies/', {'accession': nodeId}, (data, status) => {
+    $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
       // this request uses nested json object to access json entries
       // available in the database
 
@@ -109,8 +108,21 @@ const getMetadataLength = (tempList) => {
       }
       // if speciesList reaches the size of accessions given to tempList
       // EXECUTE STATS
-
-      if (lengthList.length === tempList.length) { statsParser(lengthObject) }
+      const layout = {
+        yaxis: {
+          title: "Number of selected plasmids"
+        },
+        xaxis: {
+          title: "Length",
+          tickangle: -45
+        },
+        title: "Lengths in selection",
+        margin: {
+          b: 200,
+          l: 100
+        }
+      }
+      if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false) }
     })
   }
 }
