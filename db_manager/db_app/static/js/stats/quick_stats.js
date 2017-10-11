@@ -1,14 +1,49 @@
+// function sort object by values in javascript
+
+const sortByValues = (obj) => {
+  const sort = (obj) => {
+    return Object.keys(obj).sort( (a, b) => {
+      return obj[b] - obj[a]
+    })
+  }
+
+  const sorted = sort(obj)
+
+  sortedKeys = sorted.map( (key) => { return key })
+  sortedValues = sorted.map( (key) => { return obj[key] })
+
+  return [sortedKeys, sortedValues]
+}
+
 // function to parse stats
 
 const statsParser = (masterObj) => {
-  console.log(masterObj)
+
+  // Get an array of the keys and values within an array
+  const sortedSpecies = sortByValues(masterObj.speciesObject)
+
   const data = [{
-    x: ['giraffes', 'orangutans', 'monkeys'],
-    y: [20, 14, 23],
+    x: sortedSpecies[0],
+    y: sortedSpecies[1],
     type: 'bar'
   }]
 
-  Plotly.newPlot('chartContainer1', data)
+  const layout = {
+    yaxis: {
+      title: "Number of selected plasmids"
+    },
+    xaxis: {
+      title: "Species",
+      tickangle: -45
+    },
+    title: "Species in selection",
+    margin: {
+      b: 200,
+      l: 100
+    }
+  }
+
+  Plotly.newPlot('chartContainer1', data, layout)
 }
 
 // metadata handler function
