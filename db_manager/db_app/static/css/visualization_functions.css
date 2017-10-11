@@ -554,3 +554,11 @@
   border-width: 1px 0px 1px 0px;
   outline: none;
 }
+
+/* plot stuff */
+
+#modal-body-plot {
+    width: 800px;
+    height: 500px;
+    margin: auto;
+}

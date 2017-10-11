@@ -140,6 +140,7 @@ const onLoad = () => {
       if (e.which === 16 && multiSelectOverlay === false) { // shift key
         $(".graph-overlay").show()
         multiSelectOverlay = startMultiSelect(g, renderer, layout)
+        console.log(multiSelectOverlay)
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
@@ -353,18 +354,12 @@ const onLoad = () => {
 
     // Button to reset selection of nodes
     $('#refreshButton').on('click', function (e) {
-      color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
-      for (id in store_nodes) {
-        const nodeUI = graphics.getNodeUI(store_nodes[id])
-        nodeUI.color = color_to_use[0]
-        g.forEachLinkedNode(store_nodes[id], function (linkedNode, link) {
-          const linkUI = graphics.getLinkUI(link.id)
-          linkUI.color = color_to_use[1]
-          const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-          linked_nodeUI.color = color_to_use[2]
-        })
+      //console.log(listGiFilter)
+      if (listGiFilter.length > 0) {
+        getMetadata(listGiFilter)
+      } else {
+        statsColor(g, graphics)
       }
-      renderer.rerender()
     })
 
     // Buttons to control force play/pause using bootstrap navigation bar
@@ -938,7 +933,7 @@ const onLoad = () => {
       }, 100)
       var readMode = false
       color_legend(readMode)
-      document.getElementById('reset-links').disabled = ''
+      //document.getElementById('reset-links').disabled = ''
     })
 
     $('#reset-links').click(function (event) {
@@ -955,7 +950,7 @@ const onLoad = () => {
       setTimeout(function () {
         reset_link_color(g, graphics, renderer)
       }, 100)
-      document.getElementById('reset-links').disabled = 'disabled'
+      //document.getElementById('reset-links').disabled = 'disabled'
     })
 
     //* ********************//
@@ -1278,7 +1273,7 @@ const onLoad = () => {
     // TODO in this instances listGiFilter should be replaced by colors on
     // TODO the nodes
     if (listGiFilter.length > 0) {
-      downloadSeq(listGiFilter)
+      downloadSeq(listGiFilter, g)
     } else {
       downloadSeqByColor(g, graphics)
     }
