@@ -358,8 +358,22 @@ const onLoad = () => {
       if (listGiFilter.length > 0) {
         getMetadata(listGiFilter)
       } else {
-        statsColor(g, graphics)
+        statsColor(g, graphics, "species")
       }
+    })
+
+    // if buttons inside modalPlot are pressed
+
+    $("#lengthPlot").on("click", function (e) {
+      console.log("clicked")
+      // TODO save previous plotly generated graphs before rendering the new ones
+      //console.log(listGiFilter)
+      if (listGiFilter.length > 0) {
+        getMetadataLength(listGiFilter)
+      } else {
+        statsColor(g, graphics, "length")
+      }
+
     })
 
     // Buttons to control force play/pause using bootstrap navigation bar
