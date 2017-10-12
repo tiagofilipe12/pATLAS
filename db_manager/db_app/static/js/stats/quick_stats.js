@@ -53,9 +53,9 @@ const getMetadata = (tempList) => {
         speciesList.push(speciesName)
         // constructs the speciesObject object that counts the number of
         // occurrences of a species
-        if (!({}.hasOwnProperty.call(speciesObject, speciesName))) {
+        if (!(speciesName in speciesObject)) {
           speciesObject[speciesName] = 1
-        } else if ({}.hasOwnProperty.call(speciesObject, speciesName)) {
+        } else {
           speciesObject[speciesName] = speciesObject[speciesName] + 1
         }
         // if speciesList reaches the size of accessions given to tempList
