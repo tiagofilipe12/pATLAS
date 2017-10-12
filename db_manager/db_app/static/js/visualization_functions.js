@@ -42,7 +42,7 @@ const onLoad = () => {
   // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
-  let listHashes = [] // this list stores hashes that correspond to unique
+  //let listHashes = [] // this list stores hashes that correspond to unique
   // links between accession numbers
   let list_lengths = [] // list to store the lengths of all nodes
   //var list_species = [] // lists all species
@@ -62,30 +62,6 @@ const onLoad = () => {
   })
 
   const graphics = Viva.Graph.View.webglGraphics()
-
-
-  /*  // function that precomputes notes. Iterations specify the number of times
-    // a precompute must run
-    const precompute = (iterations, callback) => {
-      console.log("precompute")
-      //console.log("entering precompute")
-      // let's run 10 iterations per event loop cycle:
-      let i = 0
-      while (iterations > 0 && i < 10) {
-        layout.step()
-        iterations--
-        i++
-      }
-      // processingElement.innerHTML = 'Layout precompute: ' + iterations;
-      if (iterations > 0) {
-        setTimeout( () => {
-          precompute(iterations, callback)
-        }, 0) // keep going in next even cycle
-      } else {
-        // we are done!
-        callback()
-      }
-    }*/
 
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
@@ -650,7 +626,12 @@ const onLoad = () => {
       // print alert if no filters are selected
       counter = 0 // counts the number of taxa type that has not been selected
 
-      var alertArrays = {'order': selectedOrder, 'family': selectedFamily, 'genus': selectedGenus, 'species': selectedSpecies}
+      var alertArrays = {
+        'order': selectedOrder,
+        'family': selectedFamily,
+        'genus': selectedGenus,
+        'species': selectedSpecies
+      }
       var divAlert = document.getElementById('alertId')
       var Alert = false
       for (let i in alertArrays) {
