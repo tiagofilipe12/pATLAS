@@ -457,6 +457,46 @@
                                 data-target="#assemblyModal" id="assembly_filter">Sequence
                         </button>
 
+
+                    </ul>
+                </div>
+            </li>
+            <li data-toggle="collapse" data-target="#collapse4"
+                class="collapse_groups">
+                <a href="#">Statistics</a>
+                <div id="collapse4" class="panel-collapse collapse">
+                    <ul class="list-group" id="headerTaxaGroup">Taxa
+                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                                data-target="#modalPlot"
+                                id="speciesStats">Species
+                        </button>
+                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                                data-target="#modalPlot"
+                                id="genusStats">Genus
+                        </button>
+                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                                data-target="#modalPlot"
+                                id="familyStats">Family
+                        </button>
+                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                                data-target="#modalPlot"
+                                id="orderStats">Order
+                        </button>
+                    </ul>
+                    <ul class="list-group" id="headerABRGroup">ABR
+                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                                data-target="modalPlot"
+                                id="resistanceStats">Resistance
+                        </button>
+                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                                data-target="modalPlot"
+                                id="pfamilyStats">Plasmid family
+                        </button>
+                    </ul>
+                    <ul class="list-group" id="headerOtherGroup">Other
+                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                                data-target="#modalPlot" id="lengthStats">Length
+                        </button>
                     </ul>
                 </div>
             </li>
@@ -600,7 +640,7 @@
             </button>
 
             <button class="btn btn-primary" href="#" data-toggle="modal"
-                    data-backdrop="static"
+                    data-backdrop="static" title="Quick stats"
                     data-target="#modalPlot" id="refreshButton">
                 <span class="glyphicon glyphicon-stats"></span>
             </button>

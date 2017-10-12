@@ -352,9 +352,11 @@ const onLoad = () => {
     //* ** BUTTONS ***//
     //* **************//
 
-    // Button to reset selection of nodes
-    $('#refreshButton').on('click', function (e) {
-      //console.log(listGiFilter)
+    //**** BUTTONS THAT CONTROL PLOTS ****//
+
+    // Button to open modal for plots
+    // TODO this one should become legacy
+    $("#refreshButton").on("click", function (e) {
       if (listGiFilter.length > 0) {
         getMetadata(listGiFilter)
       } else {
@@ -362,12 +364,29 @@ const onLoad = () => {
       }
     })
 
+    $("#speciesStats").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadata(listGiFilter)
+      } else {
+        statsColor(g, graphics, "species")
+      }
+    })
+    // redundant with speciesStats but may be useful in the future
+    $("#lengthStats").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadataLength(listGiFilter)
+      } else {
+        statsColor(g, graphics, "length")
+      }
+    })
+
+    // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
+
     // if buttons inside modalPlot are pressed
 
     $("#lengthPlot").on("click", function (e) {
       console.log("clicked")
       // TODO save previous plotly generated graphs before rendering the new ones
-      //console.log(listGiFilter)
       if (listGiFilter.length > 0) {
         getMetadataLength(listGiFilter)
       } else {
@@ -375,6 +394,16 @@ const onLoad = () => {
       }
 
     })
+
+    $("#speciesPlot").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadata(listGiFilter)
+      } else {
+        statsColor(g, graphics, "species")
+      }
+    })
+
+    //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
 
     // Buttons to control force play/pause using bootstrap navigation bar
     paused = true
