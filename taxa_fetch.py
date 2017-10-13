@@ -7,7 +7,7 @@
 # import os
 import sys
 import json
-
+from db_manager.db_app import db, models
 
 ## parses input genera list file
 def get_species(species_file):
@@ -19,9 +19,9 @@ def get_species(species_file):
         genus = line.strip("\n").split(" ")[0]
         species = "_".join(line.strip("\n").split(" "))
         if "Candidatus" in species:
-            print(species)
+            #print(species)
             species = "_".join(species.split("_")[1:])
-            print(species)
+            #print(species)
             genus = line.strip("\n").split(" ")[1]
         list_of_genera.append(genus)
         list_of_species.append(species)
@@ -30,7 +30,6 @@ def get_species(species_file):
     print("species query size: " + str(len(list_of_species)))
     return list_of_species, list_of_genera
 
-##1
 ## function to fetch taxids given a list of genera
 def fetch_taxid(taxa_list, names_file):
     name = open(names_file, "r")
@@ -93,7 +92,7 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
     super_dic = {}
     # then cycle each species in list
     for x, species in enumerate(species_list):
-        print(species)
+        #print(species)
         #print(x) # used to count the number of species already parsed
         k = species.split("_")[0]  # cycle genera
         # for k in taxid_dic:
@@ -157,11 +156,37 @@ def main():
     super_dic = build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic,
                                 order_dic, order_taxid_dic, species_list)
 
+
     # write to file
     print("creating file and writing to it...")
     output_file = open("taxa_tree.json", "w")
     output_file.write(json.dumps(super_dic))
 
+    # TODO in a future implementation this should be executed while
+    # generating the doc dictionary by MASHix.py
+    rows = models.Plasmid.query.all()
+    print("wallowing aka 'chafurdating' the database...")
+    for row in rows:
+        # accession = row.plasmid_id
+        entry = row.json_entry
+        # print(row)
+        species = row.json_entry["name"]
+        # have to remove row before starting modifying it
+        db.session.delete(row)
+        if species in super_dic:
+            taxa = super_dic[species]
+        else:
+            taxa = "unknown"
+        entry["taxa"] = taxa
+        try:
+            # row gets properly modified
+            db.session.add(row)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+
+    db.session.close()
 
 if __name__ == "__main__":
     main()
