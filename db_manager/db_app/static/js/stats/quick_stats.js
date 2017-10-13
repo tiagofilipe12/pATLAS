@@ -125,6 +125,51 @@ const getMetadataGenus = (tempList) => {
   }
 }
 
+const getMetadataFamily = (tempList) => {
+  const familyList = []
+  const familyObject = {}
+  for (const item in tempList) {
+    if ({}.hasOwnProperty.call(tempList, item)) {
+      const nodeId = tempList[item]
+      $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
+        // this request uses nested json object to access json entries
+        // available in the database
+        // if request return no genusName or plasmidName
+        // sometimes plasmids have no descriptor for one of these or both
+        // replace ' by nothing for proper display
+        const familyName = (data.json_entry.taxa === "unknown") ?
+          "unknown" : data.json_entry.taxa.split(",")[1].replace(/[']/g, "")
+        // push to main list to control the final of the loop
+        familyList.push(familyName)
+        // constructs the familyObject object that counts the number of
+        // occurrences of a species
+        if (!(familyName in familyObject)) {
+          familyObject[familyName] = 1
+        } else {
+          familyObject[familyName] = familyObject[familyName] + 1
+        }
+        // if familyList reaches the size of accessions given to tempList
+        // EXECUTE STATS
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "Families",
+            tickangle: -45
+          },
+          title: "Families in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        if (familyList.length === tempList.length) { statsParser(familyList, layout, true) }
+      })
+    }
+  }
+}
+
 const getMetadataLength = (tempList) => {
   const lengthList = []
   const lengthObject = {}
@@ -185,5 +230,7 @@ const statsColor = (g, graphics, mode) => {
     getMetadataLength(tempListAccessions)
   } else if (mode === "genus") {
     getMetadataGenus(tempListAccessions)
+  } else if (mode === "family") {
+    getMetadataFamily(tempListAccessions)
   }
 }
