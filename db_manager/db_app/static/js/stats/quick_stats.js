@@ -257,7 +257,7 @@ const getMetadataLength = (tempList) => {
             l: 100
           }
         }
-        if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "light blue") }
+        if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "#2196F3") }
       })
     }
   }
