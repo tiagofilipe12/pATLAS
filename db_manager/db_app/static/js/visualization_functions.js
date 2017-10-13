@@ -364,6 +364,14 @@ const onLoad = () => {
       }
     })
 
+    $("#orderStats").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadataOrder(listGiFilter)
+      } else {
+        statsColor(g, graphics, "order")
+      }
+    })
+
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").on("click", function (e) {
       if (listGiFilter.length > 0) {
