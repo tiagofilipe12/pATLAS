@@ -77,7 +77,7 @@ const getMetadata = (tempList) => {
             l: 100
           }
         }
-        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "blue") }
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C") }
       })
     }
   }
@@ -122,7 +122,7 @@ const getMetadataGenus = (tempList) => {
             l: 100
           }
         }
-        if (genusList.length === tempList.length) { statsParser(genusList, layout, true, "orange") }
+        if (genusList.length === tempList.length) { statsParser(genusList, layout, true, "red") }
       })
     }
   }
@@ -167,7 +167,7 @@ const getMetadataFamily = (tempList) => {
             l: 100
           }
         }
-        if (familyList.length === tempList.length) { statsParser(familyList, layout, true, "pink") }
+        if (familyList.length === tempList.length) { statsParser(familyList, layout, true, "#FF5722") }
       })
     }
   }
@@ -212,7 +212,7 @@ const getMetadataOrder = (tempList) => {
             l: 100
           }
         }
-        if (orderList.length === tempList.length) { statsParser(orderList, layout, true, "green") }
+        if (orderList.length === tempList.length) { statsParser(orderList, layout, true, "orange") }
       })
     }
   }
@@ -257,7 +257,7 @@ const getMetadataLength = (tempList) => {
             l: 100
           }
         }
-        if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "black") }
+        if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "light blue") }
       })
     }
   }
