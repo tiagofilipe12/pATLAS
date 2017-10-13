@@ -80,6 +80,51 @@ const getMetadata = (tempList) => {
   }
 }
 
+const getMetadataGenus = (tempList) => {
+  const genusList = []
+  const genusObject = {}
+  for (const item in tempList) {
+    if ({}.hasOwnProperty.call(tempList, item)) {
+      const nodeId = tempList[item]
+      $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
+        // this request uses nested json object to access json entries
+        // available in the database
+        // if request return no genusName or plasmidName
+        // sometimes plasmids have no descriptor for one of these or both
+        // replace [ and ' by nothing for proper display
+        const genusName = (data.json_entry.taxa === "unknown") ?
+          "unknown" : data.json_entry.taxa.split(",")[0].replace(/['[]/g, "")
+        // push to main list to control the final of the loop
+        genusList.push(genusName)
+        // constructs the genusObject object that counts the number of
+        // occurrences of a species
+        if (!(genusName in genusObject)) {
+          genusObject[genusName] = 1
+        } else {
+          genusObject[genusName] = genusObject[genusName] + 1
+        }
+        // if genusList reaches the size of accessions given to tempList
+        // EXECUTE STATS
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "Genera",
+            tickangle: -45
+          },
+          title: "Genera in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        if (genusList.length === tempList.length) { statsParser(genusList, layout, true) }
+      })
+    }
+  }
+}
+
 const getMetadataLength = (tempList) => {
   const lengthList = []
   const lengthObject = {}
@@ -138,5 +183,7 @@ const statsColor = (g, graphics, mode) => {
     getMetadata(tempListAccessions)
   } else if (mode === "length") {
     getMetadataLength(tempListAccessions)
+  } else if (mode === "genus") {
+    getMetadataGenus(tempListAccessions)
   }
 }
