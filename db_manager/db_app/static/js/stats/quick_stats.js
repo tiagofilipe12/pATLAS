@@ -17,7 +17,7 @@
 
 // function to parse stats
 
-const statsParser = (masterObj, layout, autobinxVar) => {
+const statsParser = (masterObj, layout, autobinxVar, customColor) => {
 
   // by default species are executed when opening stats visualization
   const data = [{
@@ -28,6 +28,9 @@ const statsParser = (masterObj, layout, autobinxVar) => {
       start: Math.min(...masterObj),
       end: Math.max(...masterObj),
       size: 10000
+    },
+    marker: {
+      color: customColor,
     }
   }]
 
@@ -74,7 +77,142 @@ const getMetadata = (tempList) => {
             l: 100
           }
         }
-        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true) }
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C") }
+      })
+    }
+  }
+}
+
+const getMetadataGenus = (tempList) => {
+  const genusList = []
+  const genusObject = {}
+  for (const item in tempList) {
+    if ({}.hasOwnProperty.call(tempList, item)) {
+      const nodeId = tempList[item]
+      $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
+        // this request uses nested json object to access json entries
+        // available in the database
+        // if request return no genusName or plasmidName
+        // sometimes plasmids have no descriptor for one of these or both
+        // replace [ and ' by nothing for proper display
+        const genusName = (data.json_entry.taxa === "unknown") ?
+          "unknown" : data.json_entry.taxa.split(",")[0].replace(/['[]/g, "")
+        // push to main list to control the final of the loop
+        genusList.push(genusName)
+        // constructs the genusObject object that counts the number of
+        // occurrences of a species
+        if (!(genusName in genusObject)) {
+          genusObject[genusName] = 1
+        } else {
+          genusObject[genusName] = genusObject[genusName] + 1
+        }
+        // if genusList reaches the size of accessions given to tempList
+        // EXECUTE STATS
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "Genera",
+            tickangle: -45
+          },
+          title: "Genera in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        if (genusList.length === tempList.length) { statsParser(genusList, layout, true, "red") }
+      })
+    }
+  }
+}
+
+const getMetadataFamily = (tempList) => {
+  const familyList = []
+  const familyObject = {}
+  for (const item in tempList) {
+    if ({}.hasOwnProperty.call(tempList, item)) {
+      const nodeId = tempList[item]
+      $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
+        // this request uses nested json object to access json entries
+        // available in the database
+        // if request return no genusName or plasmidName
+        // sometimes plasmids have no descriptor for one of these or both
+        // replace ' by nothing for proper display
+        const familyName = (data.json_entry.taxa === "unknown") ?
+          "unknown" : data.json_entry.taxa.split(",")[1].replace(/[']/g, "")
+        // push to main list to control the final of the loop
+        familyList.push(familyName)
+        // constructs the familyObject object that counts the number of
+        // occurrences of a species
+        if (!(familyName in familyObject)) {
+          familyObject[familyName] = 1
+        } else {
+          familyObject[familyName] = familyObject[familyName] + 1
+        }
+        // if familyList reaches the size of accessions given to tempList
+        // EXECUTE STATS
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "Families",
+            tickangle: -45
+          },
+          title: "Families in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        if (familyList.length === tempList.length) { statsParser(familyList, layout, true, "#FF5722") }
+      })
+    }
+  }
+}
+
+const getMetadataOrder = (tempList) => {
+  const orderList = []
+  const orderObject = {}
+  for (const item in tempList) {
+    if ({}.hasOwnProperty.call(tempList, item)) {
+      const nodeId = tempList[item]
+      $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
+        // this request uses nested json object to access json entries
+        // available in the database
+        // if request return no genusName or plasmidName
+        // sometimes plasmids have no descriptor for one of these or both
+        // replace ' by nothing for proper display
+        const orderName = (data.json_entry.taxa === "unknown") ?
+          "unknown" : data.json_entry.taxa.split(",")[2].replace(/['\]]/g, "")
+        // push to main list to control the final of the loop
+        orderList.push(orderName)
+        // constructs the orderObject object that counts the number of
+        // occurrences of a species
+        if (!(orderName in orderObject)) {
+          orderObject[orderName] = 1
+        } else {
+          orderObject[orderName] = orderObject[orderName] + 1
+        }
+        // if orderList reaches the size of accessions given to tempList
+        // EXECUTE STATS
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "Families",
+            tickangle: -45
+          },
+          title: "Families in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        if (orderList.length === tempList.length) { statsParser(orderList, layout, true, "orange") }
       })
     }
   }
@@ -119,7 +257,7 @@ const getMetadataLength = (tempList) => {
             l: 100
           }
         }
-        if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false) }
+        if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "#2196F3") }
       })
     }
   }
@@ -138,5 +276,11 @@ const statsColor = (g, graphics, mode) => {
     getMetadata(tempListAccessions)
   } else if (mode === "length") {
     getMetadataLength(tempListAccessions)
+  } else if (mode === "genus") {
+    getMetadataGenus(tempListAccessions)
+  } else if (mode === "family") {
+    getMetadataFamily(tempListAccessions)
+  } else if (mode === "order") {
+    getMetadataOrder(tempListAccessions)
   }
 }

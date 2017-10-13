@@ -12,7 +12,8 @@ nested_entry_fields = {
     "length": fields.String,
     "plasmid_name": fields.String,
     "name": fields.String,
-    "significantLinks": fields.String
+    "significantLinks": fields.String,
+    "taxa": fields.String
 }
 
 

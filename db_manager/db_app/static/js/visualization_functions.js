@@ -347,6 +347,31 @@ const onLoad = () => {
         statsColor(g, graphics, "species")
       }
     })
+
+    $("#genusStats").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadataGenus(listGiFilter)
+      } else {
+        statsColor(g, graphics, "genus")
+      }
+    })
+
+    $("#familyStats").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadataFamily(listGiFilter)
+      } else {
+        statsColor(g, graphics, "family")
+      }
+    })
+
+    $("#orderStats").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadataOrder(listGiFilter)
+      } else {
+        statsColor(g, graphics, "order")
+      }
+    })
+
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").on("click", function (e) {
       if (listGiFilter.length > 0) {
