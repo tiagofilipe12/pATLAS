@@ -387,11 +387,12 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
                "length": length,
                "plasmid_name": plasmid_name,
                "significantLinks": [rec.get_dict() for rec in
-                                    temporary_list]}
+                                    temporary_list]
+               }
 
         row = models.Plasmid(
-            plasmid_id="_".join(string_sequence.split("_")[:-1]),
-            json_entry=doc
+            plasmid_id = "_".join(string_sequence.split("_")[:-1]),
+            json_entry = doc
         )
         db.session.add(row)
         db.session.commit()

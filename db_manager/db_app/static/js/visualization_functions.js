@@ -42,7 +42,7 @@ const onLoad = () => {
   // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
-  let listHashes = [] // this list stores hashes that correspond to unique
+  //let listHashes = [] // this list stores hashes that correspond to unique
   // links between accession numbers
   let list_lengths = [] // list to store the lengths of all nodes
   //var list_species = [] // lists all species
@@ -62,30 +62,6 @@ const onLoad = () => {
   })
 
   const graphics = Viva.Graph.View.webglGraphics()
-
-
-  /*  // function that precomputes notes. Iterations specify the number of times
-    // a precompute must run
-    const precompute = (iterations, callback) => {
-      console.log("precompute")
-      //console.log("entering precompute")
-      // let's run 10 iterations per event loop cycle:
-      let i = 0
-      while (iterations > 0 && i < 10) {
-        layout.step()
-        iterations--
-        i++
-      }
-      // processingElement.innerHTML = 'Layout precompute: ' + iterations;
-      if (iterations > 0) {
-        setTimeout( () => {
-          precompute(iterations, callback)
-        }, 0) // keep going in next even cycle
-      } else {
-        // we are done!
-        callback()
-      }
-    }*/
 
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
@@ -140,6 +116,7 @@ const onLoad = () => {
       if (e.which === 16 && multiSelectOverlay === false) { // shift key
         $(".graph-overlay").show()
         multiSelectOverlay = startMultiSelect(g, renderer, layout)
+        console.log(multiSelectOverlay)
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
@@ -351,21 +328,58 @@ const onLoad = () => {
     //* ** BUTTONS ***//
     //* **************//
 
-    // Button to reset selection of nodes
-    $('#refreshButton').on('click', function (e) {
-      color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
-      for (id in store_nodes) {
-        const nodeUI = graphics.getNodeUI(store_nodes[id])
-        nodeUI.color = color_to_use[0]
-        g.forEachLinkedNode(store_nodes[id], function (linkedNode, link) {
-          const linkUI = graphics.getLinkUI(link.id)
-          linkUI.color = color_to_use[1]
-          const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-          linked_nodeUI.color = color_to_use[2]
-        })
+    //**** BUTTONS THAT CONTROL PLOTS ****//
+
+    // Button to open modal for plots
+    // TODO this one should become legacy
+    $("#refreshButton").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadata(listGiFilter)
+      } else {
+        statsColor(g, graphics, "species")
       }
-      renderer.rerender()
     })
+
+    $("#speciesStats").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadata(listGiFilter)
+      } else {
+        statsColor(g, graphics, "species")
+      }
+    })
+    // redundant with speciesStats but may be useful in the future
+    $("#lengthStats").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadataLength(listGiFilter)
+      } else {
+        statsColor(g, graphics, "length")
+      }
+    })
+
+    // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
+
+    // if buttons inside modalPlot are pressed
+
+    $("#lengthPlot").on("click", function (e) {
+      console.log("clicked")
+      // TODO save previous plotly generated graphs before rendering the new ones
+      if (listGiFilter.length > 0) {
+        getMetadataLength(listGiFilter)
+      } else {
+        statsColor(g, graphics, "length")
+      }
+
+    })
+
+    $("#speciesPlot").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadata(listGiFilter)
+      } else {
+        statsColor(g, graphics, "species")
+      }
+    })
+
+    //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
 
     // Buttons to control force play/pause using bootstrap navigation bar
     paused = true
@@ -612,7 +626,12 @@ const onLoad = () => {
       // print alert if no filters are selected
       counter = 0 // counts the number of taxa type that has not been selected
 
-      var alertArrays = {'order': selectedOrder, 'family': selectedFamily, 'genus': selectedGenus, 'species': selectedSpecies}
+      var alertArrays = {
+        'order': selectedOrder,
+        'family': selectedFamily,
+        'genus': selectedGenus,
+        'species': selectedSpecies
+      }
       var divAlert = document.getElementById('alertId')
       var Alert = false
       for (let i in alertArrays) {
@@ -938,7 +957,7 @@ const onLoad = () => {
       }, 100)
       var readMode = false
       color_legend(readMode)
-      document.getElementById('reset-links').disabled = ''
+      //document.getElementById('reset-links').disabled = ''
     })
 
     $('#reset-links').click(function (event) {
@@ -955,7 +974,7 @@ const onLoad = () => {
       setTimeout(function () {
         reset_link_color(g, graphics, renderer)
       }, 100)
-      document.getElementById('reset-links').disabled = 'disabled'
+      //document.getElementById('reset-links').disabled = 'disabled'
     })
 
     //* ********************//
@@ -1278,7 +1297,7 @@ const onLoad = () => {
     // TODO in this instances listGiFilter should be replaced by colors on
     // TODO the nodes
     if (listGiFilter.length > 0) {
-      downloadSeq(listGiFilter)
+      downloadSeq(listGiFilter, g)
     } else {
       downloadSeqByColor(g, graphics)
     }
