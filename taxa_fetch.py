@@ -6,7 +6,6 @@
 
 # import os
 import sys
-import json
 from db_manager.db_app import db, models
 
 ## parses input genera list file
