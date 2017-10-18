@@ -3,6 +3,28 @@
 import argparse
 from db_manager.db_app import db, models
 
+def results2psql(accession, dict_with_resistances):
+    '''
+
+    :param accession:
+    :param dict_with_resistances:
+    :return:
+    '''
+
+    '''
+    dict_with_resistances = [{"gene": gene_name,
+                               "coverage": cov_value,
+                               "identity": «id_value,
+                               }, ... ]
+    '''
+
+    row = models.Card(
+        plasmid_id = accession,
+        json_entry = dict_with_resistances
+    )
+    db.session.add(row)
+    db.session.commit()
+
 # TODO convert main into a moduole that can be imported by MASHix.py?
 def main():
     parser = argparse.ArgumentParser(description='Compares all entries in a '
@@ -29,24 +51,14 @@ def main():
     # Function to read the input and save a sequence, and a list of all [
     # resistances found with their id and cov (json like) as shown below.
 
+    # ....
 
-    # Function that dumps the dictionary ti db
+    # Function that dumps the dictionary to db which can be done while
+    # parsing stuff from abricate output.
 
-    #{"name": "Burkholderia_caribensis", "significantLinks": [
-    #    {"distance": "0.0618432", "size": 2011268,
-    #     "accession": "NZ_CP013104_1"}], "plasmid_name": null,
-    # "length": 2555069}
-
+    results2psql(accession, dict_with_resistances)
 
 
-    # doc = {"name": spp_name,
-    #        "length": length,
-    #        "plasmid_name": plasmid_name,
-    #        "significantLinks": [rec.get_dict() for rec in
-    #                             temporary_list]
-    #        }
-    #
-    # row = models.Plasmid(
-    #     plasmid_id=accession
-    #     json_entry=dict_with_resistances
-    # )
+    # Then in the end don't forget to
+
+    db.session.close()
