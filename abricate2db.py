@@ -3,7 +3,7 @@
 import argparse
 from db_manager.db_app import db, models
 
-class Db_insertion(ParentClass):
+class DbInsertion(ParentClass):
     '''
     class with DB specific methods
     This class expects to inherit a storage dictionary from its parent class
