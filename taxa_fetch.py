@@ -167,20 +167,27 @@ def main():
     rows = models.Plasmid.query.all()
     print("wallowing aka 'chafurdating' the database...")
     for row in rows:
-        # accession = row.plasmid_id
+        accession = row.plasmid_id
         entry = row.json_entry
         # print(row)
         species = row.json_entry["name"]
         # have to remove row before starting modifying it
         db.session.delete(row)
+        sdb.session.commit() # effectively assures that row is deleted
+        #print(row, accession, entry)
         if species in super_dic:
             taxa = super_dic[species]
         else:
             taxa = "unknown"
         entry["taxa"] = taxa
+        #print(row, accession, entry)
+        updated_row = models.Plasmid(
+            plasmid_id = accession,
+            json_entry = entry
+        )
         try:
             # row gets properly modified
-            db.session.add(row)
+            db.session.add(updated_row)
             db.session.commit()
         except:
             db.session.rollback()
