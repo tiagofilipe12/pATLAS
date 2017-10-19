@@ -173,7 +173,7 @@ def main():
         species = row.json_entry["name"]
         # have to remove row before starting modifying it
         db.session.delete(row)
-        sdb.session.commit() # effectively assures that row is deleted
+        db.session.commit() # effectively assures that row is deleted
         #print(row, accession, entry)
         if species in super_dic:
             taxa = super_dic[species]
