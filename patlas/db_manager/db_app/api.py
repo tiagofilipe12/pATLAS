@@ -1,6 +1,6 @@
 from flask_restful import Api
-from db_app import app
-from db_app.resources import GetSpecies, GetAccession
+from . import app
+from .resources import GetSpecies, GetAccession
 
 ## start api
 api = Api(app)

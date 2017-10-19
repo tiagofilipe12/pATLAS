@@ -1,5 +1,5 @@
-from db_app.models import Plasmid, Card, Positive, Database
-from db_app import db
+from .models import Plasmid, Card, Positive, Database
+from . import db
 from flask_restful import Resource, reqparse, fields, marshal_with
 from flask import jsonify
 
