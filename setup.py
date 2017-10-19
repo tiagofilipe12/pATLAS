@@ -10,6 +10,7 @@ setup(
     packages=[
         "patlas",
         "patlas.db_manager",
+        "patlas.db_manager.db_app",
         "patlas.templates",
         "patlas.utils"
     ],

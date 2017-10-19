@@ -14,10 +14,15 @@ import shutil
 from multiprocessing import Pool
 from functools import partial
 import tqdm
-from utils.hist_util import plot_histogram
 import json
-from db_manager.db_app import db, models
 from collections import defaultdict
+
+try:
+    from utils.hist_util import plot_histogram
+    from db_manager.db_app import db, models
+except ImportError:
+    from patlas.utils.hist_util import plot_histogram
+    from patlas.db_manager.db_app import db, models
 
 
 class Record:
