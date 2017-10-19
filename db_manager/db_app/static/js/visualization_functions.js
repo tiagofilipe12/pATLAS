@@ -404,6 +404,30 @@ const onLoad = () => {
       }
     })
 
+    $("#genusPlot").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadataGenus(listGiFilter)
+      } else {
+        statsColor(g, graphics, "genus")
+      }
+    })
+
+    $("#familyPlot").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadataFamily(listGiFilter)
+      } else {
+        statsColor(g, graphics, "family")
+      }
+    })
+
+    $("#orderPlot").on("click", function (e) {
+      if (listGiFilter.length > 0) {
+        getMetadataOrder(listGiFilter)
+      } else {
+        statsColor(g, graphics, "order")
+      }
+    })
+
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
 
     // Buttons to control force play/pause using bootstrap navigation bar
