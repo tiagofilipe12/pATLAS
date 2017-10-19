@@ -9,4 +9,5 @@ patlas/db_manager/db_app/*.pyc
 patlas/db_manager/*.pyc
 patlas/db_manager/db_app/__pycache__/
 patlas/db_manager/plasmid_db/
+patlas/utils/__pychache__
 *.pyc
