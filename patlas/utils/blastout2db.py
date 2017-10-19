@@ -10,7 +10,10 @@ import sys
 # patlas folder
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
 
-from db_manager.db_app import db, models
+try:
+    from db_manager.db_app import db, models
+except ImportError:
+    from patlas.db_manager.db_app import db, models
 
 def model_selector(selected_class):
     '''

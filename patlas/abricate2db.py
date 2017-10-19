@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
-from db_manager.db_app import db, models
+try:
+    from db_manager.db_app import db, models
+except ImportError:
+    from patlas.db_manager.db_app import db, models
 
 class DbInsertion(ParentClass):
     '''

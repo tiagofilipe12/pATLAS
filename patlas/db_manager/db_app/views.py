@@ -1,4 +1,4 @@
-from . import app
+from db_app import app
 from flask import json, render_template
 
 ## routes
