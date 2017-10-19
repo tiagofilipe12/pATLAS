@@ -1,3 +1,6 @@
 [submodule "templates"]
 	path = templates
 	url = https://github.com/ODiogoSilva/templates.git
+[submodule "patlas/templates"]
+	path = patlas/templates
+	url = https://github.com/ODiogoSilva/templates.git
