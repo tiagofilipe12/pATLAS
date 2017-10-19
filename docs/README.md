@@ -5,5 +5,7 @@
     * [Browse](Browse.md)
     * [Antibiotic resistance](ABR.md)
     * [Import](Import.md)
+    * [Statistics](Statistics.md)
 * [API]()
     * [Relationships and distances estimations](distances.md)
+    * [Antibiotic and plasmid family detection](ABR_api.md)
