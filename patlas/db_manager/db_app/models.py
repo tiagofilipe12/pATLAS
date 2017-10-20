@@ -1,6 +1,6 @@
 ## the actual file that does the structure to be imported in the database
 
-from . import db
+from db_app import db
 from sqlalchemy.dialects.postgresql import JSON
 
 class Plasmid(db.Model):

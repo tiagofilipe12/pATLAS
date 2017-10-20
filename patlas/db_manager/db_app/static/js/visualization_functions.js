@@ -330,9 +330,12 @@ const onLoad = () => {
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
 
+    let clickerButton
+
     // Button to open modal for plots
     // TODO this one should become legacy
     $("#refreshButton").on("click", function (e) {
+      clickerButton = "species"
       if (listGiFilter.length > 0) {
         getMetadata(listGiFilter)
       } else {
@@ -341,6 +344,7 @@ const onLoad = () => {
     })
 
     $("#speciesStats").on("click", function (e) {
+      clickerButton = "species"
       if (listGiFilter.length > 0) {
         getMetadata(listGiFilter)
       } else {
@@ -349,6 +353,7 @@ const onLoad = () => {
     })
 
     $("#genusStats").on("click", function (e) {
+      clickerButton = "genus"
       if (listGiFilter.length > 0) {
         getMetadataGenus(listGiFilter)
       } else {
@@ -357,6 +362,7 @@ const onLoad = () => {
     })
 
     $("#familyStats").on("click", function (e) {
+      clickerButton = "family"
       if (listGiFilter.length > 0) {
         getMetadataFamily(listGiFilter)
       } else {
@@ -365,6 +371,7 @@ const onLoad = () => {
     })
 
     $("#orderStats").on("click", function (e) {
+      clickerButton = "order"
       if (listGiFilter.length > 0) {
         getMetadataOrder(listGiFilter)
       } else {
@@ -374,10 +381,48 @@ const onLoad = () => {
 
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").on("click", function (e) {
+      clickerButton = "length"
       if (listGiFilter.length > 0) {
         getMetadataLength(listGiFilter)
       } else {
         statsColor(g, graphics, "length")
+      }
+    })
+
+    // TODO get a way to sort the array generated inside getMetadata
+
+    $("#sortGraph").on("click", function (e) {
+      console.log(clickerButton)
+      if (clickerButton === "species") {
+        if (listGiFilter.length > 0) {
+          getMetadata(listGiFilter)
+        } else {
+          statsColor(g, graphics, "species")
+        }
+      } else if (clickerButton === "genus") {
+        if (listGiFilter.length > 0) {
+          getMetadataGenus(listGiFilter)
+        } else {
+          statsColor(g, graphics, "genus")
+        }
+      } else if (clickerButton === "family") {
+        if (listGiFilter.length > 0) {
+          getMetadataFamily(listGiFilter)
+        } else {
+          statsColor(g, graphics, "family")
+        }
+      } else if (clickerButton === "order") {
+        if (listGiFilter.length > 0) {
+          getMetadataOrder(listGiFilter)
+        } else {
+          statsColor(g, graphics, "order")
+        }
+      } else if (clickerButton === "length") {
+        if (listGiFilter.length > 0) {
+          getMetadataLength(listGiFilter)
+        } else {
+          statsColor(g, graphics, "length")
+        }
       }
     })
 
@@ -386,7 +431,7 @@ const onLoad = () => {
     // if buttons inside modalPlot are pressed
 
     $("#lengthPlot").on("click", function (e) {
-      console.log("clicked")
+      clickerButton = "length"
       // TODO save previous plotly generated graphs before rendering the new ones
       if (listGiFilter.length > 0) {
         getMetadataLength(listGiFilter)
@@ -397,6 +442,7 @@ const onLoad = () => {
     })
 
     $("#speciesPlot").on("click", function (e) {
+      clickerButton = "species"
       if (listGiFilter.length > 0) {
         getMetadata(listGiFilter)
       } else {
@@ -405,6 +451,7 @@ const onLoad = () => {
     })
 
     $("#genusPlot").on("click", function (e) {
+      clickerButton = "genus"
       if (listGiFilter.length > 0) {
         getMetadataGenus(listGiFilter)
       } else {
@@ -413,6 +460,7 @@ const onLoad = () => {
     })
 
     $("#familyPlot").on("click", function (e) {
+      clickerButton = "family"
       if (listGiFilter.length > 0) {
         getMetadataFamily(listGiFilter)
       } else {
@@ -421,6 +469,7 @@ const onLoad = () => {
     })
 
     $("#orderPlot").on("click", function (e) {
+      clickerButton = "order"
       if (listGiFilter.length > 0) {
         getMetadataOrder(listGiFilter)
       } else {

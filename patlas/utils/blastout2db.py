@@ -6,9 +6,14 @@ import os
 import sys
 
 ## change path before loading modules
+# TODO instead of this, this should be a module that can be passed to a main in
+# patlas folder
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
 
-from db_manager.db_app import db, models
+try:
+    from db_manager.db_app import db, models
+except ImportError:
+    from patlas.db_manager.db_app import db, models
 
 def model_selector(selected_class):
     '''

@@ -3,9 +3,11 @@
 .idea/
 .vscode/
 
-db_manager/db_app/templates/*.json
-db_manager/db_app/templates/deprecated/
-db_manager/db_app/*.pyc
-db_manager/*.pyc
-db_manager/db_app/__pycache__/
-db_manager/plasmid_db/
+patlas/db_manager/db_app/templates/*.json
+patlas/db_manager/db_app/templates/deprecated/
+patlas/db_manager/db_app/*.pyc
+patlas/db_manager/*.pyc
+patlas/db_manager/db_app/__pycache__/
+patlas/db_manager/plasmid_db/
+patlas/utils/__pychache__
+*.pyc
