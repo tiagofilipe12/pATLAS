@@ -41,7 +41,7 @@ const statsParser = (masterObj, layout, autobinxVar, customColor) => {
 
 const getMetadata = (tempList) => {
   const speciesList = []
-  const speciesObject = {}
+  // const speciesObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
       const nodeId = tempList[item]
@@ -56,11 +56,11 @@ const getMetadata = (tempList) => {
         speciesList.push(speciesName)
         // constructs the speciesObject object that counts the number of
         // occurrences of a species
-        if (!(speciesName in speciesObject)) {
-          speciesObject[speciesName] = 1
-        } else {
-          speciesObject[speciesName] = speciesObject[speciesName] + 1
-        }
+        // if (!(speciesName in speciesObject)) {
+        //   speciesObject[speciesName] = 1
+        // } else {
+        //   speciesObject[speciesName] = speciesObject[speciesName] + 1
+        // }
         // if speciesList reaches the size of accessions given to tempList
         // EXECUTE STATS
         const layout = {
@@ -85,7 +85,7 @@ const getMetadata = (tempList) => {
 
 const getMetadataGenus = (tempList) => {
   const genusList = []
-  const genusObject = {}
+  // const genusObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
       const nodeId = tempList[item]
@@ -101,11 +101,11 @@ const getMetadataGenus = (tempList) => {
         genusList.push(genusName)
         // constructs the genusObject object that counts the number of
         // occurrences of a species
-        if (!(genusName in genusObject)) {
-          genusObject[genusName] = 1
-        } else {
-          genusObject[genusName] = genusObject[genusName] + 1
-        }
+        // if (!(genusName in genusObject)) {
+        //   genusObject[genusName] = 1
+        // } else {
+        //   genusObject[genusName] = genusObject[genusName] + 1
+        // }
         // if genusList reaches the size of accessions given to tempList
         // EXECUTE STATS
         const layout = {
@@ -130,7 +130,7 @@ const getMetadataGenus = (tempList) => {
 
 const getMetadataFamily = (tempList) => {
   const familyList = []
-  const familyObject = {}
+  // const familyObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
       const nodeId = tempList[item]
@@ -146,11 +146,11 @@ const getMetadataFamily = (tempList) => {
         familyList.push(familyName)
         // constructs the familyObject object that counts the number of
         // occurrences of a species
-        if (!(familyName in familyObject)) {
-          familyObject[familyName] = 1
-        } else {
-          familyObject[familyName] = familyObject[familyName] + 1
-        }
+        // if (!(familyName in familyObject)) {
+        //   familyObject[familyName] = 1
+        // } else {
+        //   familyObject[familyName] = familyObject[familyName] + 1
+        // }
         // if familyList reaches the size of accessions given to tempList
         // EXECUTE STATS
         const layout = {
@@ -175,7 +175,7 @@ const getMetadataFamily = (tempList) => {
 
 const getMetadataOrder = (tempList) => {
   const orderList = []
-  const orderObject = {}
+  // const orderObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
       const nodeId = tempList[item]
@@ -191,11 +191,11 @@ const getMetadataOrder = (tempList) => {
         orderList.push(orderName)
         // constructs the orderObject object that counts the number of
         // occurrences of a species
-        if (!(orderName in orderObject)) {
-          orderObject[orderName] = 1
-        } else {
-          orderObject[orderName] = orderObject[orderName] + 1
-        }
+        // if (!(orderName in orderObject)) {
+        //   orderObject[orderName] = 1
+        // } else {
+        //   orderObject[orderName] = orderObject[orderName] + 1
+        // }
         // if orderList reaches the size of accessions given to tempList
         // EXECUTE STATS
         const layout = {
@@ -220,7 +220,7 @@ const getMetadataOrder = (tempList) => {
 
 const getMetadataLength = (tempList) => {
   const lengthList = []
-  const lengthObject = {}
+  // const lengthObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
       const nodeId = tempList[item]
@@ -236,11 +236,11 @@ const getMetadataLength = (tempList) => {
         // constructs the lengthObject that counts the number of occurrences
         // of a given distribution
         // TODO this should be categorical --> Some user provided param
-        if (!(speciesLength in lengthObject)) {
-          lengthObject[speciesLength] = 1
-        } else {
-          lengthObject[speciesLength] = lengthObject[speciesLength] + 1
-        }
+        // if (!(speciesLength in lengthObject)) {
+        //   lengthObject[speciesLength] = 1
+        // } else {
+        //   lengthObject[speciesLength] = lengthObject[speciesLength] + 1
+        // }
         // if speciesList reaches the size of accessions given to tempList
         // EXECUTE STATS
         const layout = {
