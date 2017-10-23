@@ -3,16 +3,19 @@
 //********//
 // function to parse stats //
 
-const statsParser = (masterObj, layout, autobinxVar, customColor) => {
+const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp) => {
+
+  // parse the final array
+  const finalArray = (sortAlp === true) ? masterObj.sort() : masterObj
 
   // by default species are executed when opening stats visualization
   const data = [{
-    x: masterObj,
+    x: finalArray,
     type: "histogram",
     autobinx: autobinxVar,
     xbins: {
-      start: Math.min(...masterObj),
-      end: Math.max(...masterObj),
+      start: Math.min(...finalArray),
+      end: Math.max(...finalArray),
       size: 10000
     },
     marker: {
@@ -23,7 +26,7 @@ const statsParser = (masterObj, layout, autobinxVar, customColor) => {
   Plotly.newPlot("chartContainer1", data, layout)
 }
 
-const getMetadataSpecies = (data, tempList, speciesList) => {
+const getMetadataSpecies = (data, tempList, speciesList, sortAlp) => {
   // this request uses nested json object to access json entries
   // available in the database
   // if request return no speciesName or plasmidName
@@ -55,11 +58,11 @@ const getMetadataSpecies = (data, tempList, speciesList) => {
       l: 100
     }
   }
-  if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C") }
+  if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C", sortAlp) }
   return speciesList
 }
 
-const getMetadataGenus = (data, tempList, genusList) => {
+const getMetadataGenus = (data, tempList, genusList, sortAlp) => {
   // this request uses nested json object to access json entries
   // available in the database
   // if request return no genusName or plasmidName
@@ -85,12 +88,12 @@ const getMetadataGenus = (data, tempList, genusList) => {
       l: 100
     }
   }
-  if (genusList.length === tempList.length) { statsParser(genusList, layout, true, "red") }
+  if (genusList.length === tempList.length) { statsParser(genusList, layout, true, "red", sortAlp) }
   return genusList
 
 }
 
-const getMetadataFamily = (data, tempList, familyList) => {
+const getMetadataFamily = (data, tempList, familyList, sortAlp) => {
   // this request uses nested json object to access json entries
   // available in the database
   // if request return no genusName or plasmidName
@@ -116,11 +119,11 @@ const getMetadataFamily = (data, tempList, familyList) => {
       l: 100
     }
   }
-  if (familyList.length === tempList.length) { statsParser(familyList, layout, true, "#FF5722") }
+  if (familyList.length === tempList.length) { statsParser(familyList, layout, true, "#FF5722", sortAlp) }
   return familyList
 }
 
-const getMetadataOrder = (data, tempList, orderList) => {
+const getMetadataOrder = (data, tempList, orderList, sortAlp) => {
   // this request uses nested json object to access json entries
   // available in the database
   // if request return no genusName or plasmidName
@@ -145,11 +148,11 @@ const getMetadataOrder = (data, tempList, orderList) => {
       l: 100
     }
   }
-  if (orderList.length === tempList.length) { statsParser(orderList, layout, true, "orange") }
+  if (orderList.length === tempList.length) { statsParser(orderList, layout, true, "orange", sortAlp) }
   return orderList
 }
 
-const getMetadataLength = (data, tempList, lengthList) => {
+const getMetadataLength = (data, tempList, lengthList, sortAlp) => {
   // this request uses nested json object to access json entries
   // available in the database
 
@@ -173,7 +176,7 @@ const getMetadataLength = (data, tempList, lengthList) => {
       l: 100
     }
   }
-  if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "#2196F3") }
+  if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "#2196F3", sortAlp) }
   return lengthList
 }
 
@@ -183,7 +186,7 @@ const getMetadataLength = (data, tempList, lengthList) => {
 
 // metadata handler function
 
-const getMetadata = (tempList, taxaType) => {
+const getMetadata = (tempList, taxaType, sortAlp) => {
   let taxaList = []
   // const speciesObject = {}
   for (const item in tempList) {
@@ -191,17 +194,17 @@ const getMetadata = (tempList, taxaType) => {
       const nodeId = tempList[item]
       $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
         if (taxaType === "species") {
-          taxaList = getMetadataSpecies(data, tempList, taxaList)
+          taxaList = getMetadataSpecies(data, tempList, taxaList, sortAlp)
         } else if (taxaType === "genus") {
-          taxaList = getMetadataGenus(data, tempList, taxaList)
+          taxaList = getMetadataGenus(data, tempList, taxaList, sortAlp)
         } else if (taxaType === "family") {
-          taxaList = getMetadataFamily(data, tempList, taxaList)
+          taxaList = getMetadataFamily(data, tempList, taxaList, sortAlp)
         } else if (taxaType === "order") {
-          taxaList = getMetadataOrder(data, tempList, taxaList)
+          taxaList = getMetadataOrder(data, tempList, taxaList, sortAlp)
         } else if (taxaType === "length") {
           // here i reused the names but it is not actually a taxa List but
           // rather a generic list
-          taxaList = getMetadataLength(data, tempList, taxaList)
+          taxaList = getMetadataLength(data, tempList, taxaList, sortAlp)
         }
       })
     }
@@ -210,12 +213,12 @@ const getMetadata = (tempList, taxaType) => {
 
 // stats using node colors... if listGiFilter is empty
 
-const statsColor = (g, graphics, mode) => {
+const statsColor = (g, graphics, mode, sortAlp) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
     if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  getMetadata(tempListAccessions, mode)
+  getMetadata(tempListAccessions, mode, sortAlp)
 }

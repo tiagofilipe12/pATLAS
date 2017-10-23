@@ -337,45 +337,45 @@ const onLoad = () => {
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
     $("#speciesStats").on("click", function (e) {
       clickerButton = "species"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
     $("#genusStats").on("click", function (e) {
       clickerButton = "genus"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
     $("#familyStats").on("click", function (e) {
       clickerButton = "family"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
     $("#orderStats").on("click", function (e) {
       clickerButton = "order"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
@@ -383,46 +383,33 @@ const onLoad = () => {
     $("#lengthStats").on("click", function (e) {
       clickerButton = "length"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
     // TODO get a way to sort the array generated inside getMetadata
-
+    // sort by values
     $("#sortGraph").on("click", function (e) {
       console.log(clickerButton)
-      if (clickerButton === "species") {
-        if (listGiFilter.length > 0) {
-          getMetadata(listGiFilter)
-        } else {
-          statsColor(g, graphics, "species")
-        }
-      } else if (clickerButton === "genus") {
-        if (listGiFilter.length > 0) {
-          getMetadataGenus(listGiFilter)
-        } else {
-          statsColor(g, graphics, "genus")
-        }
-      } else if (clickerButton === "family") {
-        if (listGiFilter.length > 0) {
-          getMetadataFamily(listGiFilter)
-        } else {
-          statsColor(g, graphics, "family")
-        }
-      } else if (clickerButton === "order") {
-        if (listGiFilter.length > 0) {
-          getMetadataOrder(listGiFilter)
-        } else {
-          statsColor(g, graphics, "order")
-        }
-      } else if (clickerButton === "length") {
-        if (listGiFilter.length > 0) {
-          getMetadataLength(listGiFilter)
-        } else {
-          statsColor(g, graphics, "length")
-        }
+      // TODO here we need to...
+      if (listGiFilter.length > 0) {
+        getMetadata(listGiFilter, clickerButton, false)
+      } else {
+        statsColor(g, graphics, clickerButton, false)
+      }
+    })
+
+    // sort alphabetically
+    $("#sortGraphAlp").on("click", function (e) {
+      console.log(clickerButton)
+      // TODO here i just need to speciesList.sort()
+      const sortAlp = true
+      if (listGiFilter.length > 0) {
+        getMetadata(listGiFilter, clickerButton, sortAlp)
+      } else {
+        statsColor(g, graphics, clickerButton, sortAlp)
       }
     })
 
@@ -434,9 +421,9 @@ const onLoad = () => {
       clickerButton = "length"
       // TODO save previous plotly generated graphs before rendering the new ones
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
 
     })
@@ -444,36 +431,36 @@ const onLoad = () => {
     $("#speciesPlot").on("click", function (e) {
       clickerButton = "species"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
     $("#genusPlot").on("click", function (e) {
       clickerButton = "genus"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
     $("#familyPlot").on("click", function (e) {
       clickerButton = "family"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
     $("#orderPlot").on("click", function (e) {
       clickerButton = "order"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton)
+        getMetadata(listGiFilter, clickerButton, false)
       } else {
-        statsColor(g, graphics, clickerButton)
+        statsColor(g, graphics, clickerButton, false)
       }
     })
 
