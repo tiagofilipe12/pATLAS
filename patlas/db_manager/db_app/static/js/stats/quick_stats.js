@@ -9,8 +9,6 @@ const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortV
   // here it assures that sorts are made just once
   const finalArray = (sortAlp === true) ? masterObj.sort() : (sortVal === true) ? arraytByValue(masterObj) : masterObj
 
-  console.log("final", finalArray)
-
   // by default species are executed when opening stats visualization
   const data = [{
     x: finalArray,
