@@ -393,18 +393,17 @@ const onLoad = () => {
     // sort by values
     $("#sortGraph").on("click", function (e) {
       console.log(clickerButton)
-      // TODO here we need to...
+      const sortVal = true
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter, clickerButton, false)
+        getMetadata(listGiFilter, clickerButton, false, sortVal)
       } else {
-        statsColor(g, graphics, clickerButton, false)
+        statsColor(g, graphics, clickerButton, false, sortVal)
       }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").on("click", function (e) {
       console.log(clickerButton)
-      // TODO here i just need to speciesList.sort()
       const sortAlp = true
       if (listGiFilter.length > 0) {
         getMetadata(listGiFilter, clickerButton, sortAlp)

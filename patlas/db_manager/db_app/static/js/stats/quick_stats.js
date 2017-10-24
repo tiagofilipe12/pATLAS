@@ -3,10 +3,13 @@
 //********//
 // function to parse stats //
 
-const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp) => {
+const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortVal) => {
 
   // parse the final array
-  const finalArray = (sortAlp === true) ? masterObj.sort() : masterObj
+  // here it assures that sorts are made just once
+  const finalArray = (sortAlp === true) ? masterObj.sort() : (sortVal === true) ? arraytByValue(masterObj) : masterObj
+
+  console.log("final", finalArray)
 
   // by default species are executed when opening stats visualization
   const data = [{
@@ -26,7 +29,7 @@ const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp) => {
   Plotly.newPlot("chartContainer1", data, layout)
 }
 
-const getMetadataSpecies = (data, tempList, speciesList, sortAlp) => {
+const getMetadataSpecies = (data, tempList, speciesList, sortAlp, sortVal) => {
   // this request uses nested json object to access json entries
   // available in the database
   // if request return no speciesName or plasmidName
@@ -58,11 +61,11 @@ const getMetadataSpecies = (data, tempList, speciesList, sortAlp) => {
       l: 100
     }
   }
-  if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C", sortAlp) }
+  if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C", sortAlp, sortVal) }
   return speciesList
 }
 
-const getMetadataGenus = (data, tempList, genusList, sortAlp) => {
+const getMetadataGenus = (data, tempList, genusList, sortAlp, sortVal) => {
   // this request uses nested json object to access json entries
   // available in the database
   // if request return no genusName or plasmidName
@@ -88,12 +91,12 @@ const getMetadataGenus = (data, tempList, genusList, sortAlp) => {
       l: 100
     }
   }
-  if (genusList.length === tempList.length) { statsParser(genusList, layout, true, "red", sortAlp) }
+  if (genusList.length === tempList.length) { statsParser(genusList, layout, true, "red", sortAlp, sortVal) }
   return genusList
 
 }
 
-const getMetadataFamily = (data, tempList, familyList, sortAlp) => {
+const getMetadataFamily = (data, tempList, familyList, sortAlp, sortVal) => {
   // this request uses nested json object to access json entries
   // available in the database
   // if request return no genusName or plasmidName
@@ -119,11 +122,11 @@ const getMetadataFamily = (data, tempList, familyList, sortAlp) => {
       l: 100
     }
   }
-  if (familyList.length === tempList.length) { statsParser(familyList, layout, true, "#FF5722", sortAlp) }
+  if (familyList.length === tempList.length) { statsParser(familyList, layout, true, "#FF5722", sortAlp, sortVal) }
   return familyList
 }
 
-const getMetadataOrder = (data, tempList, orderList, sortAlp) => {
+const getMetadataOrder = (data, tempList, orderList, sortAlp, sortVal) => {
   // this request uses nested json object to access json entries
   // available in the database
   // if request return no genusName or plasmidName
@@ -148,11 +151,11 @@ const getMetadataOrder = (data, tempList, orderList, sortAlp) => {
       l: 100
     }
   }
-  if (orderList.length === tempList.length) { statsParser(orderList, layout, true, "orange", sortAlp) }
+  if (orderList.length === tempList.length) { statsParser(orderList, layout, true, "orange", sortAlp, sortVal) }
   return orderList
 }
 
-const getMetadataLength = (data, tempList, lengthList, sortAlp) => {
+const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
   // this request uses nested json object to access json entries
   // available in the database
 
@@ -176,7 +179,7 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp) => {
       l: 100
     }
   }
-  if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "#2196F3", sortAlp) }
+  if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "#2196F3", sortAlp, sortVal) }
   return lengthList
 }
 
@@ -186,7 +189,7 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp) => {
 
 // metadata handler function
 
-const getMetadata = (tempList, taxaType, sortAlp) => {
+const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   let taxaList = []
   // const speciesObject = {}
   for (const item in tempList) {
@@ -194,13 +197,13 @@ const getMetadata = (tempList, taxaType, sortAlp) => {
       const nodeId = tempList[item]
       $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
         if (taxaType === "species") {
-          taxaList = getMetadataSpecies(data, tempList, taxaList, sortAlp)
+          taxaList = getMetadataSpecies(data, tempList, taxaList, sortAlp, sortVal)
         } else if (taxaType === "genus") {
-          taxaList = getMetadataGenus(data, tempList, taxaList, sortAlp)
+          taxaList = getMetadataGenus(data, tempList, taxaList, sortAlp, sortVal)
         } else if (taxaType === "family") {
-          taxaList = getMetadataFamily(data, tempList, taxaList, sortAlp)
+          taxaList = getMetadataFamily(data, tempList, taxaList, sortAlp, sortVal)
         } else if (taxaType === "order") {
-          taxaList = getMetadataOrder(data, tempList, taxaList, sortAlp)
+          taxaList = getMetadataOrder(data, tempList, taxaList, sortAlp, sortVal)
         } else if (taxaType === "length") {
           // here i reused the names but it is not actually a taxa List but
           // rather a generic list
@@ -213,12 +216,12 @@ const getMetadata = (tempList, taxaType, sortAlp) => {
 
 // stats using node colors... if listGiFilter is empty
 
-const statsColor = (g, graphics, mode, sortAlp) => {
+const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
     if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  getMetadata(tempListAccessions, mode, sortAlp)
+  getMetadata(tempListAccessions, mode, sortAlp, sortVal)
 }
