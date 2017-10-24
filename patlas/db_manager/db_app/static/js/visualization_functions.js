@@ -658,6 +658,7 @@ const onLoad = () => {
       //* **** Clear selection button *****//
       // clear = false; //added to control the colors being triggered after clearing
       $('#taxaModalClear').click(function (event) {
+        document.getElementById("reset-sliders").click()
         // clear = true;
         event.preventDefault()
         resetDisplayTaxaBox(idsArrays)
@@ -1191,6 +1192,7 @@ const onLoad = () => {
 
     // resets the slider
     $('#reset-sliders').click(function (event) {
+      listGiFilter = [] //resets listGiFilter
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload)
