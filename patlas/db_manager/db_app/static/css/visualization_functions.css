@@ -569,7 +569,9 @@
 }
 
 #progressBar{
+    display: block;
     background-color: grey;
+    width: 100%;
 }
 
 #progressDiv{

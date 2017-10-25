@@ -192,7 +192,7 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
 
 const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
-  $("#actualProgress").attr("aria-valuenow", "0").css("width", "0%")
+  $("#actualProgress").css("width", "0%")
   $("#progressBar").show()
   $("#progressDiv").show()
   $("#chartContainer1").hide()
@@ -200,12 +200,10 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // const speciesObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
-
-      // and make the queries to the db
       const nodeId = tempList[item]
       $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
         // for each instance of item update progressBar
-        progressBarControl(item, tempList.length)
+        progressBarControl(parseInt(item) + 1, tempList.length)
         if (taxaType === "species") {
           taxaList = getMetadataSpecies(data, tempList, taxaList, sortAlp, sortVal)
         } else if (taxaType === "genus") {
