@@ -395,6 +395,21 @@ const onLoad = () => {
       console.log(clickerButton)
       const sortVal = true
       let color
+      const layout = {
+        yaxis: {
+          title: "Number of selected plasmids"
+        },
+        xaxis: {
+          title: clickerButton,
+          tickangle: -45
+        },
+        title: `${clickerButton} in selection`,
+        margin: {
+          b: 200,
+          l: 100
+        }
+      }
+
       if (clickerButton === "species") {
         color = "#B71C1C"
       } else if (clickerButton === "genus") {
@@ -415,6 +430,21 @@ const onLoad = () => {
       console.log(clickerButton)
       const sortAlp = true
       let color
+      const layout = {
+        yaxis: {
+          title: "Number of selected plasmids"
+        },
+        xaxis: {
+          title: clickerButton,
+          tickangle: -45
+        },
+        title: `${clickerButton} in selection`,
+        margin: {
+          b: 200,
+          l: 100
+        }
+      }
+
       if (clickerButton === "species") {
         color = "#B71C1C"
       } else if (clickerButton === "genus") {
