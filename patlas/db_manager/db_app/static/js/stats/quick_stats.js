@@ -210,6 +210,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
       })
     }
   }
+  return taxaList
 }
 
 // stats using node colors... if listGiFilter is empty
@@ -221,5 +222,6 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
     if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  getMetadata(tempListAccessions, mode, sortAlp, sortVal)
+  taxaList = getMetadata(tempListAccessions, mode, sortAlp, sortVal)
+  return taxaList
 }
