@@ -4,6 +4,8 @@
 // function to parse stats //
 
 const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortVal) => {
+  $("#progressBar").hide()
+  $("#chartContainer1").show()
 
   // parse the final array
   // here it assures that sorts are made just once
@@ -188,6 +190,8 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
 // metadata handler function
 
 const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
+  $("#progressBar").show()
+  $("#chartContainer1").hide()
   let taxaList = []
   // const speciesObject = {}
   for (const item in tempList) {
