@@ -196,8 +196,12 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // const speciesObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
+
+      // and make the queries to the db
       const nodeId = tempList[item]
       $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
+        // for each instance of item update progressBar
+        progressBarControl(item, tempList.length)
         if (taxaType === "species") {
           taxaList = getMetadataSpecies(data, tempList, taxaList, sortAlp, sortVal)
         } else if (taxaType === "genus") {
