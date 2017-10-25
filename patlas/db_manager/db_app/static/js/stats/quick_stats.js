@@ -5,6 +5,7 @@
 
 const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortVal) => {
   $("#progressBar").hide()
+  $("#progressDiv").hide()
   $("#chartContainer1").show()
 
   // parse the final array
@@ -193,6 +194,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   $("#actualProgress").attr("aria-valuenow", "0").css("width", "0%")
   $("#progressBar").show()
+  $("#progressDiv").show()
   $("#chartContainer1").hide()
   let taxaList = []
   // const speciesObject = {}
