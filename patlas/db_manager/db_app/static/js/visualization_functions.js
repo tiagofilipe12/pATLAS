@@ -330,52 +330,52 @@ const onLoad = () => {
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
 
-    let clickerButton
+    let clickerButton, listPlots
 
     // Button to open modal for plots
     // TODO this one should become legacy
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "species")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
     $("#speciesStats").on("click", function (e) {
       clickerButton = "species"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "species")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
     $("#genusStats").on("click", function (e) {
       clickerButton = "genus"
       if (listGiFilter.length > 0) {
-        getMetadataGenus(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "genus")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
     $("#familyStats").on("click", function (e) {
       clickerButton = "family"
       if (listGiFilter.length > 0) {
-        getMetadataFamily(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "family")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
     $("#orderStats").on("click", function (e) {
       clickerButton = "order"
       if (listGiFilter.length > 0) {
-        getMetadataOrder(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "order")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
@@ -383,47 +383,51 @@ const onLoad = () => {
     $("#lengthStats").on("click", function (e) {
       clickerButton = "length"
       if (listGiFilter.length > 0) {
-        getMetadataLength(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "length")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
     // TODO get a way to sort the array generated inside getMetadata
-
+    // sort by values
     $("#sortGraph").on("click", function (e) {
       console.log(clickerButton)
+      const sortVal = true
+      let color
       if (clickerButton === "species") {
-        if (listGiFilter.length > 0) {
-          getMetadata(listGiFilter)
-        } else {
-          statsColor(g, graphics, "species")
-        }
+        color = "#B71C1C"
       } else if (clickerButton === "genus") {
-        if (listGiFilter.length > 0) {
-          getMetadataGenus(listGiFilter)
-        } else {
-          statsColor(g, graphics, "genus")
-        }
+        color = "red"
       } else if (clickerButton === "family") {
-        if (listGiFilter.length > 0) {
-          getMetadataFamily(listGiFilter)
-        } else {
-          statsColor(g, graphics, "family")
-        }
+        color = "#FF5722"
       } else if (clickerButton === "order") {
-        if (listGiFilter.length > 0) {
-          getMetadataOrder(listGiFilter)
-        } else {
-          statsColor(g, graphics, "order")
-        }
+        color = "orange"
       } else if (clickerButton === "length") {
-        if (listGiFilter.length > 0) {
-          getMetadataLength(listGiFilter)
-        } else {
-          statsColor(g, graphics, "length")
-        }
+        color = "#2196F3"
       }
+      // this makes it faster instead of querying everything again
+      if (listPlots) { statsParser(listPlots, layout, true, color, false, sortVal) }
+    })
+
+    // sort alphabetically
+    $("#sortGraphAlp").on("click", function (e) {
+      console.log(clickerButton)
+      const sortAlp = true
+      let color
+      if (clickerButton === "species") {
+        color = "#B71C1C"
+      } else if (clickerButton === "genus") {
+        color = "red"
+      } else if (clickerButton === "family") {
+        color = "#FF5722"
+      } else if (clickerButton === "order") {
+        color = "orange"
+      } else if (clickerButton === "length") {
+        color = "#2196F3"
+      }
+      // this makes it faster instead of querying everything again
+      if (listPlots) { statsParser(listPlots, layout, true, color, sortAlp, false) }
     })
 
     // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -434,9 +438,9 @@ const onLoad = () => {
       clickerButton = "length"
       // TODO save previous plotly generated graphs before rendering the new ones
       if (listGiFilter.length > 0) {
-        getMetadataLength(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "length")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
 
     })
@@ -444,36 +448,36 @@ const onLoad = () => {
     $("#speciesPlot").on("click", function (e) {
       clickerButton = "species"
       if (listGiFilter.length > 0) {
-        getMetadata(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "species")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
     $("#genusPlot").on("click", function (e) {
       clickerButton = "genus"
       if (listGiFilter.length > 0) {
-        getMetadataGenus(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "genus")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
     $("#familyPlot").on("click", function (e) {
       clickerButton = "family"
       if (listGiFilter.length > 0) {
-        getMetadataFamily(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "family")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
     $("#orderPlot").on("click", function (e) {
       clickerButton = "order"
       if (listGiFilter.length > 0) {
-        getMetadataOrder(listGiFilter)
+        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
       } else {
-        statsColor(g, graphics, "order")
+        listPlots = statsColor(g, graphics, clickerButton, false, false)
       }
     })
 
@@ -672,6 +676,7 @@ const onLoad = () => {
       //* **** Clear selection button *****//
       // clear = false; //added to control the colors being triggered after clearing
       $('#taxaModalClear').click(function (event) {
+        document.getElementById("reset-sliders").click()
         // clear = true;
         event.preventDefault()
         resetDisplayTaxaBox(idsArrays)
@@ -1205,6 +1210,7 @@ const onLoad = () => {
 
     // resets the slider
     $('#reset-sliders').click(function (event) {
+      listGiFilter = [] //resets listGiFilter
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload)
