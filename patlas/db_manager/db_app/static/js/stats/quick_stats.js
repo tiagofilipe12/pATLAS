@@ -190,6 +190,8 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
 // metadata handler function
 
 const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
+  // resets progressBar
+  $("#actualProgress").attr("aria-valuenow", "0").css("width", "0%")
   $("#progressBar").show()
   $("#chartContainer1").hide()
   let taxaList = []
