@@ -1,39 +1,44 @@
 #!/usr/bin/env python3
 
 import argparse
+
 try:
     from db_manager.db_app import db, models
+    from templates.process_abricate import Abricate
 except ImportError:
     from patlas.db_manager.db_app import db, models
+    from patlas.templates.process_abricate import Abricate
 
-class DbInsertion(ParentClass):
-    '''
-    class with DB specific methods
-    This class expects to inherit a storage dictionary from its parent class
-    in which the keys are accession numbers and the values are a list of all
-    the hits from abricate for a given accession.
-    '''
+#print(Abricate)
 
-    def __init__(self, var):
-        # Here we'll call the __init__ of the base class Parent.
-        super().__init__(var)
-        print("Base class parent ")
-
-    def get_storage(self):
-        '''
-        Notice that the self.storage attribute is available, even
-        though it was not defined in the DB_INSERTATRON class.
-        '''
-
-        for key, vals in self.storage.items():
-            row = models.Card(
-                plasmid_id = key,
-                json_entry = vals
-            )
-            db.session.add(row)
-            db.session.commit()
-        # close db in the end of get_storage
-        db.session.close()
+# class DbInsertion(ParentClass):
+#     '''
+#     class with DB specific methods
+#     This class expects to inherit a storage dictionary from its parent class
+#     in which the keys are accession numbers and the values are a list of all
+#     the hits from abricate for a given accession.
+#     '''
+#
+#     def __init__(self, var):
+#         # Here we'll call the __init__ of the base class Parent.
+#         super().__init__(var)
+#         print("Base class parent ")
+#
+#     def get_storage(self):
+#         '''
+#         Notice that the self.storage attribute is available, even
+#         though it was not defined in the DB_INSERTATRON class.
+#         '''
+#
+#         for key, vals in self.storage.items():
+#             row = models.Card(
+#                 plasmid_id = key,
+#                 json_entry = vals
+#             )
+#             db.session.add(row)
+#             db.session.commit()
+#         # close db in the end of get_storage
+#         db.session.close()
 
 # TODO convert main into a moduole that can be imported by MASHix.py?
 def main():
@@ -76,3 +81,6 @@ def main():
     # Class to use initial class to output abricate results to db
     print("saving results to db {}".format(db_type))
     input_file.get_storage()
+
+if __name__ == "__main__":
+    main()
