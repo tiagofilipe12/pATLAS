@@ -4,6 +4,9 @@
 // function to parse stats //
 
 const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortVal) => {
+  $("#progressBar").hide()
+  $("#progressDiv").hide()
+  $("#chartContainer1").show()
 
   // parse the final array
   // here it assures that sorts are made just once
@@ -188,12 +191,20 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
 // metadata handler function
 
 const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
+  // resets progressBar
+  $("#actualProgress").width("0%") // sets the width to 0 at each interaction
+  $("#progressBar").show()
+  $("#progressDiv").show()
+  $("#chartContainer1").hide()
   let taxaList = []
   // const speciesObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
       const nodeId = tempList[item]
       $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
+        // for each instance of item update progressBar
+        progressBarControl(parseInt(item) + 1, tempList.length)
+        // then do everything else
         if (taxaType === "species") {
           taxaList = getMetadataSpecies(data, tempList, taxaList, sortAlp, sortVal)
         } else if (taxaType === "genus") {

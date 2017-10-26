@@ -557,15 +557,32 @@
 
 /* plot stuff */
 
-#modal-body-plot {
+#modal-body-plot{
     width: 800px;
     height: 500px;
     margin: auto;
 }
 
-#chartContainer1 {
+#chartContainer1{
     width: 100%;
     height: 100%;
+}
+
+#progressBar{
+    /*display: inline-block;*/
+    background-color: grey;
+    width: 100%;
+}
+
+#progressDiv{
+    font-size: 18px;
+    position: relative;
+    top: 40%;
+}
+
+#actualProgress{
+    width: 0%;
+    height: auto;
 }
 
 #headerTaxaGroup, #headerABRGroup, #headerOtherGroup {
