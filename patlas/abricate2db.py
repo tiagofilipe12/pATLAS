@@ -9,8 +9,6 @@ except ImportError:
     from patlas.db_manager.db_app import db, models
     from patlas.templates.process_abricate import Abricate
 
-#print(Abricate)
-
 # class DbInsertion(ParentClass):
 #     '''
 #     class with DB specific methods
@@ -72,6 +70,25 @@ def main():
     perc_id = float(args.identity)
     perc_cov = float(args.coverage)
 
+    print(input_file)
+
+    abr = Abricate(input_file)
+
+    list_of_filters = [
+        ["coverage", ">=", perc_cov],
+        ["identity", ">=", perc_id]
+    ]
+
+    for i in abr.iter_filter(list_of_filters, fields=["reference",
+                                                      "coverage",
+                                                      "identity",
+                                                      "database",
+                                                      "gene",
+                                                      "accession",
+                                                      "seq_range"]):
+        print(i)
+        break
+
     # Function to read the input and save a sequence, and a list of all [
     # resistances found with their id and cov (json like) as shown below.
 
@@ -80,7 +97,7 @@ def main():
 
     # Class to use initial class to output abricate results to db
     print("saving results to db {}".format(db_type))
-    input_file.get_storage()
+    #input_file.get_storage()
 
 if __name__ == "__main__":
     main()
