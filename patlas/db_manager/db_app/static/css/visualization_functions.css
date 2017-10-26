@@ -569,7 +569,7 @@
 }
 
 #progressBar{
-    display: block;
+    /*display: inline-block;*/
     background-color: grey;
     width: 100%;
 }
@@ -578,6 +578,11 @@
     font-size: 18px;
     position: relative;
     top: 40%;
+}
+
+#actualProgress{
+    width: 0%;
+    height: auto;
 }
 
 #headerTaxaGroup, #headerABRGroup, #headerOtherGroup {
