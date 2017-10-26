@@ -203,7 +203,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
       const nodeId = tempList[item]
       $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
         // for each instance of item update progressBar
-        setTimeout(progressBarControl(parseInt(item) + 1, tempList.length), 0)
+        progressBarControl(parseInt(item) + 1, tempList.length)
         // then do everything else
         if (taxaType === "species") {
           taxaList = getMetadataSpecies(data, tempList, taxaList, sortAlp, sortVal)
