@@ -21,7 +21,7 @@ class DbInsertion(Abricate):
         # Here we'll call the __init__ of the base class Abricate.
         super().__init__(var)
 
-    def get_storage(self, input_file, list_of_filters):
+    def get_storage(self, list_of_filters):
 
         fields = [
             "reference",
@@ -94,6 +94,9 @@ def main():
     perc_id = float(args.identity)
     perc_cov = float(args.coverage)
 
+    # Create DbInsertion instance with the provided input files
+    db_handle = DbInsertion(input_file)
+
     print(input_file)
 
     list_of_filters = [
@@ -101,7 +104,7 @@ def main():
         ["identity", ">=", perc_id]
     ]
 
-    DbInsertion.get_storage(input_file, input_file, list_of_filters)
+    db_handle.get_storage(list_of_filters)
 
 
 
