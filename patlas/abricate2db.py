@@ -9,6 +9,7 @@ except ImportError:
     from patlas.db_manager.db_app import db, models
     from patlas.templates.process_abricate import Abricate
 
+
 class DbInsertion(Abricate):
     '''
     class with DB specific methods
@@ -21,19 +22,19 @@ class DbInsertion(Abricate):
         super().__init__(var)
 
     def get_storage(self, input_file, list_of_filters):
-        print(self)
 
-        abr = Abricate(self)
-
-        # self.get_items(input_file, list_of_filters)
-        for entry in abr.iter_filter(list_of_filters, fields=[
+        fields = [
             "reference",
             "coverage",
             "identity",
             "database",
             "gene",
             "accession",
-            "seq_range"]):
+            "seq_range"
+        ]
+
+        # self.get_items(input_file, list_of_filters)
+        for entry in self.iter_filter(list_of_filters, fields=fields):
             print(entry)
             print(entry["reference"])
             reference_accession = "_".join(entry["reference"].split("_")[0:3])
