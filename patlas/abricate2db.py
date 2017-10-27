@@ -21,7 +21,7 @@ class DbInsertion(Abricate):
         # Here we'll call the __init__ of the base class Abricate.
         super().__init__(var)
 
-    def get_storage(self, list_of_filters):
+    def get_storage(self, list_of_filters, db_type):
 
         fields = [
             "reference",
@@ -35,32 +35,33 @@ class DbInsertion(Abricate):
 
         # self.get_items(input_file, list_of_filters)
         for entry in self.iter_filter(list_of_filters, fields=fields):
-            print(entry)
-            print(entry["reference"])
+            # print(entry)
+            # print(entry["reference"])
             reference_accession = "_".join(entry["reference"].split("_")[0:3])
             del entry["reference"]
             print(entry)
             print(reference_accession)
-            break
+            # print(db_type)
+            # checks database
+            # TODO when there is duplicated entries this fails
+            if db_type == "resistance":
+                row = models.Card(
+                    plasmid_id = reference_accession,
+                    json_entry = entry
+                )
 
-        '''
-        Notice that the self.storage attribute is available, even
-        though it was not defined in the DB_INSERTATRON class.
-        '''
+            elif db_type == "plasmidfinder":
+                row = models.Database(
+                    plasmid_id = reference_accession,
+                    json_entry = entry
+                )
+            else:
+                print("Wrong db type specified in '-db' option")
+                raise SystemExit
 
-    # def parse_storage(self, dict):
-    #     print(self)
-    #
-    #     for key, vals in self.dict.items():
-    #         print(key,vals)
-        #     row = models.Card(
-        #         plasmid_id = key,
-        #         json_entry = vals
-        #     )
-        #     db.session.add(row)
-        #     db.session.commit()
-        # # close db in the end of get_storage
-        # db.session.close()
+            db.session.add(row)
+            db.session.commit()
+        db.session.close()
 
 # TODO convert main into a moduole that can be imported by MASHix.py?
 def main():
@@ -77,8 +78,8 @@ def main():
                                                              'file in the '
                                                              'case of resistances')
     options.add_argument('-db', '--db', dest='output_psql_db',
-                              required=True, help='Provide the db to output '
-                                                  'in psql models.')
+        choices=["resistance", "plasmidfinder"], required=True,
+        help='Provide the db to output in psql models.')
     options.add_argument('-id', '--identity', dest='identity',
                          default="90.00", help='minimum identity to be '
                                                'reported '
@@ -104,7 +105,7 @@ def main():
         ["identity", ">=", perc_id]
     ]
 
-    db_handle.get_storage(list_of_filters)
+    db_handle.get_storage(list_of_filters, db_type)
 
 
 
