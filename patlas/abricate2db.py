@@ -101,7 +101,6 @@ class DbInsertion(Abricate):
             db.session.commit()
         db.session.close()
 
-# TODO convert main into a moduole that can be imported by MASHix.py?
 def main():
     parser = argparse.ArgumentParser(description='Compares all entries in a '
                                                  'fasta file using abricate')
