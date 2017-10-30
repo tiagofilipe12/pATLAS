@@ -263,7 +263,13 @@ const onLoad = () => {
             // function for
             // node displaying after fetching data from db
           })
+
+          $.get('api/getresistances/', {'accession': node.id}, (data, status) => {
+            console.log(data)
+          })
         }
+
+
         // exception when node has no length (used on new nodes?)
         else {
           speciesName = 'N/A'
@@ -312,6 +318,7 @@ const onLoad = () => {
           "background": "#ccc",
         })
       }
+      // requests table for sequences metadata
       requestPlasmidTable(node, setupPopupDisplay)
     })
 
