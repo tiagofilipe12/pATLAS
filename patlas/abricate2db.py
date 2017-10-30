@@ -65,15 +65,17 @@ class DbInsertion(Abricate):
                 # lists in the dict. If they are there is no reason to add
                 # them to the dictionary because we already know the
                 # respective resistance gene
-                if gene not in temp_dict[reference_accession]["gene"] and \
-                        accession not in temp_dict[reference_accession][
-                            "accession"]:
-                    temp_dict[reference_accession]["coverage"].append(coverage)
-                    temp_dict[reference_accession]["identity"].append(identity)
-                    temp_dict[reference_accession]["database"].append(database)
-                    temp_dict[reference_accession]["gene"].append(gene)
-                    temp_dict[reference_accession]["accession"].append(accession)
-                    temp_dict[reference_accession]["seq_range"].append(seq_range)
+                # if gene not in temp_dict[reference_accession]["gene"] and \
+                #         accession not in temp_dict[reference_accession][
+                #             "accession"]:
+                # previous code is no longer required... but if for some
+                # reason we suspect of duplicates that line can be re-added
+                temp_dict[reference_accession]["coverage"].append(coverage)
+                temp_dict[reference_accession]["identity"].append(identity)
+                temp_dict[reference_accession]["database"].append(database)
+                temp_dict[reference_accession]["gene"].append(gene)
+                temp_dict[reference_accession]["accession"].append(accession)
+                temp_dict[reference_accession]["seq_range"].append(seq_range)
 
         #print(temp_dict)
         # removing duplicate entries from dict
