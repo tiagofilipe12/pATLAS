@@ -10,5 +10,8 @@ db = SQLAlchemy(app)
 #ma = Marshmallow(app)
 
 #loads required files to be used
-from db_app import views, models, resources, api
+try:
+    from db_app import views, models, resources, api
+except ImportError:
+    from patlas.db_manager.db_app import views, models, resources, api
 # import views, models, resources, api
