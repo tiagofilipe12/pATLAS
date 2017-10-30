@@ -33,32 +33,70 @@ class DbInsertion(Abricate):
             "seq_range"
         ]
 
-        # self.get_items(input_file, list_of_filters)
+        unique_entries = []
+        temp_dict = {}
+
         for entry in self.iter_filter(list_of_filters, fields=fields):
             # print(entry)
             # print(entry["reference"])
-            reference_accession = "_".join(entry["reference"].split("_")[0:3])
-            del entry["reference"]
-            print(entry)
-            print(reference_accession)
-            # print(db_type)
+            # setting variables to pass to db
+            query_seq = entry["reference"]
+            coverage = entry["coverage"]
+            identity = entry["identity"]
+            database = entry["database"]
+            gene = entry["gene"]
+            accession = entry["accession"]
+            seq_range = entry["seq_range"]
+            # temp_dict keys and db plasmid_id
+            reference_accession = "_".join(query_seq.split("_")[0:3])
+            # generate a new dict to dump to db
+            if query_seq not in unique_entries:
+                unique_entries.append(query_seq)
+                temp_dict[reference_accession] = {
+                    "coverage": [coverage],
+                    "identity": [identity],
+                    "database": [database],
+                    "gene": [gene],
+                    "accession": [accession],
+                    "seq_range": [seq_range]
+                }
+            else:
+                # checks if gene and its accession is in the their respective
+                # lists in the dict. If they are there is no reason to add
+                # them to the dictionary because we already know the
+                # respective resistance gene
+                if gene not in temp_dict[reference_accession]["gene"] and \
+                        accession not in temp_dict[reference_accession][
+                            "accession"]:
+                    temp_dict[reference_accession]["coverage"].append(coverage)
+                    temp_dict[reference_accession]["identity"].append(identity)
+                    temp_dict[reference_accession]["database"].append(database)
+                    temp_dict[reference_accession]["gene"].append(gene)
+                    temp_dict[reference_accession]["accession"].append(accession)
+                    temp_dict[reference_accession]["seq_range"].append(seq_range)
+
+        #print(temp_dict)
+        # removing duplicate entries from dict
+
+        # TODO card db contains duplicated entries with the same v
+        for k,v in temp_dict.items():
+            #print(k)
+            #print(v)
             # checks database
-            # TODO when there is duplicated entries this fails
             if db_type == "resistance":
                 row = models.Card(
-                    plasmid_id = reference_accession,
-                    json_entry = entry
+                    plasmid_id = k,
+                    json_entry = v
                 )
-
             elif db_type == "plasmidfinder":
                 row = models.Database(
-                    plasmid_id = reference_accession,
-                    json_entry = entry
+                    plasmid_id = k,
+                    json_entry = v
                 )
             else:
                 print("Wrong db type specified in '-db' option")
                 raise SystemExit
-
+            # then do db magic
             db.session.add(row)
             db.session.commit()
         db.session.close()
@@ -81,11 +119,11 @@ def main():
         choices=["resistance", "plasmidfinder"], required=True,
         help='Provide the db to output in psql models.')
     options.add_argument('-id', '--identity', dest='identity',
-                         default="90.00", help='minimum identity to be '
+                         default="90", help='minimum identity to be '
                                                'reported '
                                            'to db')
     options.add_argument('-cov', '--coverage', dest='coverage',
-                         default="80.00", help='minimum coverage do be '
+                         default="80", help='minimum coverage do be '
                                                'reported to db')
 
     args = parser.parse_args()
@@ -95,10 +133,9 @@ def main():
     perc_id = float(args.identity)
     perc_cov = float(args.coverage)
 
-    # Create DbInsertion instance with the provided input files
+    # Create DbInsertion instance with the provided input files using the
+    # imported class
     db_handle = DbInsertion(input_file)
-
-    print(input_file)
 
     list_of_filters = [
         ["coverage", ">=", perc_cov],
@@ -106,15 +143,6 @@ def main():
     ]
 
     db_handle.get_storage(list_of_filters, db_type)
-
-
-
-
-    # Function to read the input and save a sequence, and a list of all [
-    # resistances found with their id and cov (json like) as shown below.
-
-    # TODO need to provide db type, id and cov to the filtering options
-    # TODO needs main parser to provide this options
 
     # Class to use initial class to output abricate results to db
     print("saving results to db {}".format(db_type))
