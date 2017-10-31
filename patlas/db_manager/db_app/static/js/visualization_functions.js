@@ -1394,7 +1394,9 @@ const onLoad = () => {
     } else {
       // storeMasterNode is empty in here
       rerun = true
-      requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics)
+      list_gi = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics)
+      // this list_gi isn't the same as the initial but has information on
+      // all the nodes that were used in filters
       // TODO masterNode needs to be used to re-center the graph
     }
   }
