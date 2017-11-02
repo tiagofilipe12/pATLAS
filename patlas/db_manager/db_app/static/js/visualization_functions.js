@@ -283,21 +283,23 @@ const onLoad = () => {
         // first needs to empty the popup in order to avoid having
         // multiple entries from previous interactions
         $('#popup_description').empty()
-        $('#popup_description').append('<div>' +
-          node.data.sequence +
-          '<br />' +
-          "<font color='#468499'>Species: </font>" + speciesName +
-          '<br />' +
-          node.data.seq_length +
-          '<br />' +
-          "<font color='#468499'>Plasmid: </font>" + plasmidName +
-          '<br />' +
-          "<font color='#468499'>Percentage: </font>" + node.data.percentage +
-          '<br />' +
-          "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +//This should be passed on request
-          '</div>' +
+        $('#popup_description').append(
           "<span id='close' type='button'" +
           " onclick='$(this).parent().hide()'>&times;</span>" +
+          "<div>General sequence info" +
+          "<br />" +
+          node.data.sequence +
+          "<br />" +
+          "<font color='#468499'>Species: </font>" + speciesName +
+          "<br />" +
+          node.data.seq_length +
+          "<br />" +
+          "<font color='#468499'>Plasmid: </font>" + plasmidName +
+          "<br />" +
+          "<font color='#468499'>Percentage: </font>" + node.data.percentage +
+          "<br />" +
+          "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +
+          "</div>" +
           // adds buttons for resistances and plasmid families
           "<br />" +
           "<div style='float: left;' class='btn btn-default'" +
@@ -307,6 +309,7 @@ const onLoad = () => {
           "<div style='float: right;' class='btn btn-default'" +
           " id='plasmidButton'>" +
           "Plasmid families" +
+          "</div>" +
           "</div>"
         )
         $('#popup_description').css({
@@ -315,8 +318,8 @@ const onLoad = () => {
           'border-radius': '10px',
           'background-color': 'white',
           'display': 'block',
-          'left': domPos.x,
-          'top': domPos.y,
+          'right': "0%",
+          'top': "5%",
           'position': 'fixed',
           'z-index': 2
         })
