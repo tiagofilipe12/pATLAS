@@ -7,6 +7,10 @@ let rerun = false // boolean that controls the prerender function if rerun
 let first_click_menu = true
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
+// this variable is used to store the clicked node to use in resistance and
+// plasmid buttons
+let clickedNode
+
 // load test JSON file
 const getArray = () => {
   return $.getJSON("/test")   // change the input file name
@@ -225,6 +229,7 @@ const onLoad = () => {
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
+      clickedNode = node.id
       nodeUI_1 = graphics.getNodeUI(node.id)
       const domPos = {
         x: nodeUI_1.position.x,
@@ -263,22 +268,6 @@ const onLoad = () => {
             // function for
             // node displaying after fetching data from db
           })
-
-          $.get('api/getresistances/', {'accession': node.id}, (data, status) => {
-            console.log(data.json_entry)
-            //data.json_entry.gene.replace(/['u\[\] ]/g,'').split(','))
-            const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g,'').split(',')
-            const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g,'').split(',')
-            const coverageList = data.json_entry.coverage.replace(/['u\[\] ]/g,'').split(',')
-            const databaseList = data.json_entry.database.replace(/['u\[\] ]/g,'').split(',')
-            const identityList = data.json_entry.identity.replace(/['u\[\] ]/g,'').split(',')
-            const rangeList = data.json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
-            console.log(rangeList)
-            for (let i in totalLenght) {
-              const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
-              console.log(totalLenght[i], acessionList[i], coverageList[i], databaseList[i], identityList[i], rangeEntry)
-            }
-          })
         }
 
 
@@ -307,7 +296,18 @@ const onLoad = () => {
           '<br />' +
           "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +//This should be passed on request
           '</div>' +
-          "<span id='close' type='button' onclick='$(this).parent().hide()'>&times;</span>"
+          "<span id='close' type='button'" +
+          " onclick='$(this).parent().hide()'>&times;</span>" +
+          // adds buttons for resistances and plasmid families
+          "<br />" +
+          "<div style='float: left;' class='btn btn-default'" +
+          " id='resButton'>" +
+          " Resistances" +
+          "</div>" +
+          "<div style='float: right;' class='btn btn-default'" +
+          " id='plasmidButton'>" +
+          "Plasmid families" +
+          "</div>"
         )
         $('#popup_description').css({
           'padding': '10px 30px 10px 30px',
@@ -1457,6 +1457,14 @@ const onLoad = () => {
       downloadSeqByColor(g, graphics)
     }
   })
+
+
+  // resistance button control //
+  $(document).on("click", "#resButton", function(event) {
+    console.log("yey", clickedNode)
+    resGetter(clickedNode)
+  })
+
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph
