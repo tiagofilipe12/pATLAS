@@ -109,5 +109,8 @@ const resGetter = (nodeId) => {
 }
 
 const plasmidFamilyGetter = (nodeId) => {
-  // TODO resource is needed before proceeding
+  $.get("api/getplasmidfinder/", {"accession": nodeId}, (data, status) => {
+    console.log(data)
+    // TODO now it needs to replicate the above function but for this db table
+  })
 }

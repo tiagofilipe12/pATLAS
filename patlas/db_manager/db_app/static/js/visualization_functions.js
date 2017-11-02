@@ -290,6 +290,7 @@ const onLoad = () => {
         // respectiv functions
         clickedPopupButtonCard = true
         clickedPopupButtonRes = true
+        clickedPopupButtonFamily = true
 
         // first needs to empty the popup in order to avoid having
         // multiple entries from previous interactions
@@ -1475,9 +1476,6 @@ const onLoad = () => {
 
   // resistance button control //
   $(document).on("click", "#resButton", function(event) {
-
-    console.log("card button", clickedPopupButtonCard)
-    // if clickedPopupButtonCard is false then it should execute
     if (clickedPopupButtonCard === true) {
       clickedPopupButtonCard = resGetter(clickedNode)
     }
