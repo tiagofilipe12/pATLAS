@@ -107,3 +107,7 @@ const resGetter = (nodeId) => {
   // again
   return false
 }
+
+const plasmidFamilyGetter = (nodeId) => {
+  // TODO resource is needed before proceeding
+}

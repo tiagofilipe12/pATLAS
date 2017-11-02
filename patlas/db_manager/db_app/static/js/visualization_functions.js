@@ -13,6 +13,7 @@ let clickedNode
 // starts a global instance for checking if button was clicked before
 let clickedPopupButtonRes = false
 let clickedPopupButtonCard = false
+let clickedPopupButtonFamily = false
 
 // load test JSON file
 const getArray = () => {
@@ -1478,8 +1479,13 @@ const onLoad = () => {
     console.log("card button", clickedPopupButtonCard)
     // if clickedPopupButtonCard is false then it should execute
     if (clickedPopupButtonCard === true) {
-      console.log("yey", clickedNode)
       clickedPopupButtonCard = resGetter(clickedNode)
+    }
+  })
+
+  $(document).on("click", "#plasmidButton", function(event) {
+    if (clickedPopupButtonFamily === true) {
+      clickedPopupButtonFamily = plasmidFamilyGetter(clickedNode)
     }
   })
 
