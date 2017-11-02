@@ -73,4 +73,9 @@ const resGetter = (nodeId) => {
 
     )
   })
+  // returns false in order to tell to not duplicate the info if clicking too
+  // many times in this resButton
+  // popup_description sets it again to true in order to get the above code
+  // again
+  return false
 }

@@ -10,6 +10,9 @@ let firstInstace = true
 // this variable is used to store the clicked node to use in resistance and
 // plasmid buttons
 let clickedNode
+// starts a global instance for checking if button was clicked before
+let clickedPopupButtonRes = false
+let clickedPopupButtonCard = false
 
 // load test JSON file
 const getArray = () => {
@@ -280,10 +283,17 @@ const onLoad = () => {
       }
 
       const setupPopupDisplay = (node, speciesName, plasmidName) => {
+        // this sets the popup internal buttons to allow them to run,
+        // otherwise they won't run because its own function returns this
+        // variable to false, preveting the popup to expand with its
+        // respectiv functions
+        clickedPopupButtonCard = true
+        clickedPopupButtonRes = true
+
         // first needs to empty the popup in order to avoid having
         // multiple entries from previous interactions
-        $('#popup_description').empty()
-        $('#popup_description').append(
+        $("#popup_description").empty()
+        $("#popup_description").append(
           "<span id='close' type='button'" +
           " onclick='$(this).parent().hide()'>&times;</span>" +
           "<div>General sequence info" +
@@ -1450,7 +1460,7 @@ const onLoad = () => {
   // download button //
   $("#download_ds").unbind("click").bind("click", function (e) {
     // for now this is just taking what have been changed by taxa coloring
-    // TODO there is a conflit when we want to have all selection before
+    // TODO there is a conflict when we want to have all selection before
     // TODO re-run were we have a listGiFilter
     // TODO in this instances listGiFilter should be replaced by colors on
     // TODO the nodes
@@ -1464,8 +1474,13 @@ const onLoad = () => {
 
   // resistance button control //
   $(document).on("click", "#resButton", function(event) {
-    console.log("yey", clickedNode)
-    resGetter(clickedNode)
+
+    console.log("card button", clickedPopupButtonCard)
+    // if clickedPopupButtonCard is false then it should execute
+    if (clickedPopupButtonCard === true) {
+      console.log("yey", clickedNode)
+      clickedPopupButtonCard = resGetter(clickedNode)
+    }
   })
 
   // this forces the entire script to run
