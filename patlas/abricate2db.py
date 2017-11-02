@@ -37,8 +37,6 @@ class DbInsertion(Abricate):
         temp_dict = {}
 
         for entry in self.iter_filter(list_of_filters, fields=fields):
-            # print(entry)
-            # print(entry["reference"])
             # setting variables to pass to db
             query_seq = entry["reference"]
             coverage = entry["coverage"]
@@ -77,13 +75,7 @@ class DbInsertion(Abricate):
                 temp_dict[reference_accession]["accession"].append(accession)
                 temp_dict[reference_accession]["seq_range"].append(seq_range)
 
-        #print(temp_dict)
-        # removing duplicate entries from dict
-
-        # TODO card db contains duplicated entries with the same v
         for k,v in temp_dict.items():
-            #print(k)
-            #print(v)
             # checks database
             if db_type == "resistance":
                 row = models.Card(

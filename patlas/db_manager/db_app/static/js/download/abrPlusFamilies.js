@@ -1,3 +1,19 @@
+// function to turn string into a clickable link ... useful for accession
+// numbers
+const makeItClickable = (string) => {
+  const clickableElement = "<a href='https://www.ncbi.nlm.nih.gov/nuccore/" +
+    string + "' target='_blank'>" + string + "</a>"
+  return clickableElement
+}
+
+const googleIt = (string) => {
+  // TODO this should be refactored to include direct card entry
+  const googleLink = "<a target='_blank'" +
+    " href='http://www.google.com/search?q=" + string +
+    "%20site:https://card.mcmaster.ca'>" + string + "</a>"
+  return googleLink
+}
+
 // this function is intended to use in single query instances such as
 // popup_description button
 const resGetter = (nodeId) => {
@@ -28,16 +44,20 @@ const resGetter = (nodeId) => {
     for (let i in totalLenght) {
       const num = (parseFloat(i) + 1).toString()
       const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
-      console.log(totalLenght[i], acessionList[i], coverageList[i], databaseList[i], identityList[i], rangeEntry)
       if (databaseList[i].indexOf("card") > -1) {
-        queryArrayCardGenes.push(num + ": " + totalLenght[i])
-        queryArrayCardAccession.push(num + ": " + acessionList[i])
+        queryArrayCardGenes.push(num + ": " + googleIt(totalLenght[i]))
+        // card retrieves some odd numbers after the accession... that
+        // prevent to form a linkable item to genbank
+        // TODO create the link for accession
+        queryArrayCardAccession.push(num + ": " +
+          makeItClickable(acessionList[i].split(":")[0]))
         queryArrayCardCoverage.push(num + ": " + coverageList[i])
         queryArrayCardIdentity.push(num + ": " + identityList[i])
         queryArrayCardRange.push(num + ": " + rangeEntry)
       } else if (databaseList[i].indexOf("resfinder") > -1) {
         queryArrayResfinderGenes.push(num + ": " + totalLenght[i])
-        queryArrayResfinderAccession.push(num + ": " + acessionList[i])
+        queryArrayResfinderAccession.push(num + ": " +
+          makeItClickable(acessionList[i]))
         queryArrayResfinderCoverage.push(num + ": " + coverageList[i])
         queryArrayResfinderIdentity.push(num + ": " + identityList[i])
         queryArrayResfinderRange.push(num + ": " + rangeEntry)
@@ -47,30 +67,38 @@ const resGetter = (nodeId) => {
     }
     // then actually add it to popup_description div
     $("#popup_description").append(
-       "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
+      "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
       " 40px; margin-bottom: 40px;'>" +
       "</div>" +
-      //"<div>" +
-      //"<br />" +
       "<div'>Card database" +
       "<br />" +
       "<font color='#468499'>gene: </font>" + queryArrayCardGenes.toString() +
       "<br />" +
       "<font color='#468499'>accession: </font>" + queryArrayCardAccession.toString() +
-      "<div>Matching resistance genees information</div>" +
+      "<div>Matching resistance genes information</div>" +
       "<font color='#468499'>coverage: </font>" + queryArrayCardCoverage.toString() +
       "<br />" +
       "<font color='#468499'>identity: </font>" + queryArrayCardIdentity.toString() +
       "<br />" +
-      "<font color='#468499'>range: </font>" + queryArrayCardRange.toString() +
+      "<font color='#468499'>range in plasmid: </font>" + queryArrayCardRange.toString() +
       "<br />" +
-      "</div>" //+
-      // "<div>Resfinder database" +
-      // "<br />" +
-      // "<font color='#468499'>Species: </font>" + speciesName +
-      // "<br />" +
-      // "</div>"
-
+      "</div>" +
+      "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
+      " 40px; margin-bottom: 40px;'>" +
+      "</div>" +
+      "<div'>Resfinder database" +
+      "<br />" +
+      "<font color='#468499'>gene: </font>" + queryArrayResfinderGenes.toString() +
+      "<br />" +
+      "<font color='#468499'>accession: </font>" + queryArrayResfinderAccession.toString() +
+      "<div>Matching resistance genees information</div>" +
+      "<font color='#468499'>coverage: </font>" + queryArrayResfinderCoverage.toString() +
+      "<br />" +
+      "<font color='#468499'>identity: </font>" + queryArrayResfinderIdentity.toString() +
+      "<br />" +
+      "<font color='#468499'>range in plasmid: </font>" + queryArrayResfinderRange.toString() +
+      "<br />" +
+      "</div>"
     )
   })
   // returns false in order to tell to not duplicate the info if clicking too
