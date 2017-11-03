@@ -121,6 +121,7 @@ const plasmidFamilyGetter = (nodeId) => {
     const queryArrayPFIdentity = []
     const queryArrayPFRange = []
 
+    try{
     // totalLength array corresponds to gene names
     const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g, '').split(',')
     const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g, '').split(',')
@@ -158,5 +159,8 @@ const plasmidFamilyGetter = (nodeId) => {
       "<br />" +
       "</div>"
     )
+    } catch (error) {
+      console.log("error", error)
+    }
   })
 }
