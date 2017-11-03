@@ -9,7 +9,7 @@ let first_click_menu = true
 let firstInstace = true
 // this variable is used to store the clicked node to use in resistance and
 // plasmid buttons
-let clickedNode
+let clickedNode = false
 // starts a global instance for checking if button was clicked before
 let clickedPopupButtonRes = false
 let clickedPopupButtonCard = false
@@ -235,9 +235,11 @@ const onLoad = () => {
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
+      // this resets previous selected node to previous color
       if (clickedNode) {
-        graphics.getNodeUI(clickedNode).color = nodeUI_1.backupColor
+        graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
       }
+      // then starts making new changes to the newly geerated node
       clickedNode = node.id
       nodeUI_1 = graphics.getNodeUI(node.id)
       const domPos = {
@@ -304,9 +306,7 @@ const onLoad = () => {
         // multiple entries from previous interactions
         $("#popup_description").empty()
         $("#popup_description").append(
-          "<span id='close' type='button'" +
-          // TODO this should accept a function
-          " onclick='$(this).parent().hide()'>&times;</span>" +
+          "<span id='close' type='button'>&times;</span>" +
           "<div>General sequence info" +
           "<br />" +
           node.data.sequence +
@@ -349,6 +349,13 @@ const onLoad = () => {
     //* **************//
     //* ** BUTTONS ***//
     //* **************//
+
+    $(document).on("click", "#close", function() {
+      console.log("coco", clickedNode)
+      $(this).parent().hide()
+      graphics.getNodeUI(clickedNode).color = nodeUI_1.backupColor
+      renderer.rerender()
+    })
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
 
