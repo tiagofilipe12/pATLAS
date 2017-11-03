@@ -54,7 +54,7 @@ const resGetter = (nodeId) => {
         queryArrayCardCoverage.push(num + ": " + coverageList[i])
         queryArrayCardIdentity.push(num + ": " + identityList[i])
         queryArrayCardRange.push(num + ": " + rangeEntry)
-      } else if (databaseList[i].indexOf("resfinder") > -1) {
+      } else {
         queryArrayResfinderGenes.push(num + ": " + totalLenght[i])
         queryArrayResfinderAccession.push(num + ": " +
           makeItClickable(acessionList[i]))
