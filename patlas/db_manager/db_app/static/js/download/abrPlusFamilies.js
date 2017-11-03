@@ -34,6 +34,7 @@ const resGetter = (nodeId) => {
     const queryArrayResfinderIdentity = []
     const queryArrayResfinderRange = []
 
+    try {
     // totalLength array corresponds to gene names
     const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g, '').split(',')
     const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g, '').split(',')
@@ -99,6 +100,15 @@ const resGetter = (nodeId) => {
       "<br />" +
       "</div>"
     )
+    } catch (error) {
+      console.log("error", error)
+      document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
+        " This sequence has no Resistance information available in database."
+      $("#alertId_db").show()
+      $("#alertClose_db").click( () => {
+        $("#alertId_db").hide()  // hide this div
+      })
+    }
   })
   // returns false in order to tell to not duplicate the info if clicking too
   // many times in this resButton
@@ -161,6 +171,12 @@ const plasmidFamilyGetter = (nodeId) => {
     )
     } catch (error) {
       console.log("error", error)
+      document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
+        " This sequence has no PlasmidFinder information available in database."
+      $("#alertId_db").show()
+      $("#alertClose_db").click( () => {
+        $("#alertId_db").hide()  // hide this div
+      })
     }
   })
 }
