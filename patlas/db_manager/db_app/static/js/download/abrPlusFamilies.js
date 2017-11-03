@@ -48,7 +48,6 @@ const resGetter = (nodeId) => {
         queryArrayCardGenes.push(num + ": " + googleIt(totalLenght[i]))
         // card retrieves some odd numbers after the accession... that
         // prevent to form a linkable item to genbank
-        // TODO create the link for accession
         queryArrayCardAccession.push(num + ": " +
           makeItClickable(acessionList[i].split(":")[0]))
         queryArrayCardCoverage.push(num + ": " + coverageList[i])
@@ -86,7 +85,7 @@ const resGetter = (nodeId) => {
       "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
       " 40px; margin-bottom: 40px;'>" +
       "</div>" +
-      "<div'>Resfinder database" +
+      "<div'>ResFinder database" +
       "<br />" +
       "<font color='#468499'>gene: </font>" + queryArrayResfinderGenes.toString() +
       "<br />" +
@@ -109,8 +108,55 @@ const resGetter = (nodeId) => {
 }
 
 const plasmidFamilyGetter = (nodeId) => {
+  // here in this function there is no need to parse the
+  // data.json_entry.database entry since it is a single database
   $.get("api/getplasmidfinder/", {"accession": nodeId}, (data, status) => {
     console.log(data)
-    // TODO now it needs to replicate the above function but for this db table
+    // first we need to gather all information in a format that may be
+    // passed to jquery to append to popup_descriptions div
+    // set of arrays for card db
+    const queryArrayPFGenes = []
+    const queryArrayPFAccession = []
+    const queryArrayPFCoverage = []
+    const queryArrayPFIdentity = []
+    const queryArrayPFRange = []
+
+    // totalLength array corresponds to gene names
+    const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g, '').split(',')
+    const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g, '').split(',')
+    const coverageList = data.json_entry.coverage.replace(/['u\[\] ]/g, '').split(',')
+    const identityList = data.json_entry.identity.replace(/['u\[\] ]/g, '').split(',')
+    const rangeList = data.json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
+    for (let i in totalLenght) {
+      const num = (parseFloat(i) + 1).toString()
+      const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
+      queryArrayPFGenes.push(num + ": " + googleIt(totalLenght[i]))
+      // card retrieves some odd numbers after the accession... that
+      // prevent to form a linkable item to genbank
+      queryArrayPFAccession.push(num + ": " +
+        makeItClickable(acessionList[i].split(":")[0]))
+      queryArrayPFCoverage.push(num + ": " + coverageList[i])
+      queryArrayPFIdentity.push(num + ": " + identityList[i])
+      queryArrayPFRange.push(num + ": " + rangeEntry)
+    }
+    // then actually add it to popup_description div
+    $("#popup_description").append(
+      "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
+      " 40px; margin-bottom: 40px;'>" +
+      "</div>" +
+      "<div'>PlasmidFinder database" +
+      "<br />" +
+      "<font color='#468499'>gene: </font>" + queryArrayPFGenes.toString() +
+      "<br />" +
+      "<font color='#468499'>accession: </font>" + queryArrayPFAccession.toString() +
+      "<div>Matching resistance genees information</div>" +
+      "<font color='#468499'>coverage: </font>" + queryArrayPFCoverage.toString() +
+      "<br />" +
+      "<font color='#468499'>identity: </font>" + queryArrayPFIdentity.toString() +
+      "<br />" +
+      "<font color='#468499'>range in plasmid: </font>" + queryArrayPFRange.toString() +
+      "<br />" +
+      "</div>"
+    )
   })
 }
