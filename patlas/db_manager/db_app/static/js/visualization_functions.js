@@ -236,8 +236,7 @@ const onLoad = () => {
     //* * mouse click on nodes **//
     events.click( (node, e) => {
       if (clickedNode) {
-        console.log("previous", clickedNode)
-        graphics.getNodeUI(clickedNode).color = nodeColor
+        graphics.getNodeUI(clickedNode).color = nodeUI_1.backupColor
       }
       clickedNode = node.id
       nodeUI_1 = graphics.getNodeUI(node.id)
@@ -245,7 +244,7 @@ const onLoad = () => {
         x: nodeUI_1.position.x,
         y: nodeUI_1.position.y
       }
-
+      nodeUI_1.backupColor = nodeUI_1.color
       nodeUI_1.color = 0xFFC300
       renderer.rerender()
 
