@@ -44,24 +44,6 @@ card_field = {
     "json_entry": fields.Nested(nested_card_fields)
 }
 
-# TODO instead test if the above fields can be used for plasmidfinder since
-# fields are the same
-# nested_plasmid_fields = {
-#     # these are in fact lists but ok...
-#     "coverage": fields.String,
-#     "identity": fields.String,
-#     "database": fields.String,
-#     "gene": fields.String,
-#     "accession": fields.String,
-#     "seq_range": fields.String
-# }
-#
-# plasmid_field = {
-#     "plasmid_id": fields.String,
-#     "json_entry": fields.Nested(nested_plasmid_fields)
-# }
-
-
 ## define reqparse arguments
 
 req_parser = reqparse.RequestParser()
@@ -100,7 +82,9 @@ class GetPlasmidFinder(Resource):
         print(single_query)
         return single_query
 
-req_parser_2 =reqparse.RequestParser()
+# define more reqparse arguments for GetAccession classe resource
+
+req_parser_2 = reqparse.RequestParser()
 req_parser_2.add_argument("name", dest="name", type=str, help="accessions "
                                                               "to be queried")
 
