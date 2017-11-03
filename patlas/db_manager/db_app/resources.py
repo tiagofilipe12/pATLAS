@@ -90,10 +90,6 @@ class GetResistances(Resource):
             Card.plasmid_id == args.accession).first()
         return single_query
 
-req_parser_2 =reqparse.RequestParser()
-req_parser_2.add_argument("name", dest="name", type=str, help="accessions "
-                                                              "to be queried")
-
 class GetPlasmidFinder(Resource):
     @marshal_with(card_field)
     def get(self):
