@@ -324,26 +324,27 @@ const onLoad = () => {
           "</div>" +
           "</div>"
         )
-        $('#popup_description').css({
-          'padding': '10px 30px 10px 30px',
-          'border': '1px solid grey',
-          'border-radius': '10px',
-          'background-color': 'white',
-          'display': 'block',
-          'right': "0%",
-          'top': "5%",
-          'position': 'fixed',
-          'z-index': 2
-        })
-        $("#close").css({
-          "cursor": "default",
-          "position": "absolute",
-          "top": "2%",
-          "right": "2%",
-          "display": "inline-block",
-          "padding": "2px 5px 2px 5px",
-          "background": "#ccc",
-        })
+        $('#popup_description').show()
+        // $('#popup_description').css({
+          // 'padding': '10px 30px 10px 30px',
+          // 'border': '1px solid grey',
+          // 'border-radius': '10px',
+          // 'background-color': 'white',
+          // 'display': 'block',
+          // 'right': "0%",
+          // 'top': "5%",
+          // 'position': 'fixed',
+          // 'z-index': 2
+        // })
+        // $("#close").css({
+        //   "cursor": "default",
+        //   "position": "absolute",
+        //   "top": "2%",
+        //   "right": "2%",
+        //   "display": "inline-block",
+        //   "padding": "2px 5px 2px 5px",
+        //   "background": "#ccc",
+        // })
       }
       // requests table for sequences metadata
       requestPlasmidTable(node, setupPopupDisplay)
