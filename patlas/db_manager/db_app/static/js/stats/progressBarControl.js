@@ -16,7 +16,7 @@ const progressBarControl = (x, range) => {
     ((percentageConversion / greyBarWidth) * 100).toFixed(0).toString() + "%" :
     percentageConversion.toString() + "%"
 
-  console.log("percentage after function", finalPercentageConversion)
+  // console.log("percentage after function", finalPercentageConversion)
   // example log: percentage after function 99%
 
   $("#actualProgress").text(finalPercentageConversion + " complete")
@@ -24,7 +24,7 @@ const progressBarControl = (x, range) => {
 
   // TODO after setting everything to a percentage above here it reports px.
   // Why?
-  console.log("end", $("#actualProgress").css("width"))
+  // console.log("end", $("#actualProgress").css("width"))
   // example log: end 489.828125px
   // note that example logs are for the same iteration, In this case
   // greyBarWidth is 770px for 100%.

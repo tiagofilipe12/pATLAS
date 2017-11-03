@@ -116,6 +116,8 @@ const onLoad = () => {
 
     // variable used to control if div is shown or not
     let multiSelectOverlay = false
+    // variable to control stats displayer
+    let areaSelection = false
 
     // event for shift key down
     // shows overlay div and exectures startMultiSelect
@@ -130,7 +132,7 @@ const onLoad = () => {
         showDownload.style.display = "block"
         showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        //multiSelectOverlay = true
+        areaSelection = true
       }
     })
     // event for shift key up
@@ -233,12 +235,19 @@ const onLoad = () => {
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
+      if (clickedNode) {
+        console.log("previous", clickedNode)
+        graphics.getNodeUI(clickedNode).color = nodeColor
+      }
       clickedNode = node.id
       nodeUI_1 = graphics.getNodeUI(node.id)
       const domPos = {
         x: nodeUI_1.position.x,
         y: nodeUI_1.position.y
       }
+
+      nodeUI_1.color = 0xFFC300
+      renderer.rerender()
 
       // allows the control of the click appearing and locking
 
@@ -297,6 +306,7 @@ const onLoad = () => {
         $("#popup_description").empty()
         $("#popup_description").append(
           "<span id='close' type='button'" +
+          // TODO this should accept a function
           " onclick='$(this).parent().hide()'>&times;</span>" +
           "<div>General sequence info" +
           "<br />" +
@@ -349,63 +359,38 @@ const onLoad = () => {
     // TODO this one should become legacy
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#speciesStats").on("click", function (e) {
       clickerButton = "species"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#genusStats").on("click", function (e) {
       clickerButton = "genus"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#familyStats").on("click", function (e) {
       clickerButton = "family"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#orderStats").on("click", function (e) {
       clickerButton = "order"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").on("click", function (e) {
       clickerButton = "length"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     // TODO get a way to sort the array generated inside getMetadata
     // sort by values
     $("#sortGraph").on("click", function (e) {
-      console.log(clickerButton)
       const sortVal = true
       let color
       const layout = {
@@ -1254,6 +1239,7 @@ const onLoad = () => {
     // resets the slider
     $('#reset-sliders').click(function (event) {
       listGiFilter = [] //resets listGiFilter
+      areaSelection = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload)
