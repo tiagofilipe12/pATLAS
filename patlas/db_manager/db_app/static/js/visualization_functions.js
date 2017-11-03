@@ -425,7 +425,6 @@ const onLoad = () => {
 
     // sort alphabetically
     $("#sortGraphAlp").on("click", function (e) {
-      console.log(clickerButton)
       const sortAlp = true
       let color
       const layout = {
@@ -465,48 +464,27 @@ const onLoad = () => {
     $("#lengthPlot").on("click", function (e) {
       clickerButton = "length"
       // TODO save previous plotly generated graphs before rendering the new ones
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
-
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#speciesPlot").on("click", function (e) {
       clickerButton = "species"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#genusPlot").on("click", function (e) {
       clickerButton = "genus"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#familyPlot").on("click", function (e) {
       clickerButton = "family"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#orderPlot").on("click", function (e) {
       clickerButton = "order"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
