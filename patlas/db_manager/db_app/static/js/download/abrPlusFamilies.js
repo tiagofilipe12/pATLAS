@@ -36,11 +36,11 @@ const resGetter = (nodeId) => {
 
     try {
     // totalLength array corresponds to gene names
-    const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g, '').split(',')
-    const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g, '').split(',')
-    const coverageList = data.json_entry.coverage.replace(/['u\[\] ]/g, '').split(',')
-    const databaseList = data.json_entry.database.replace(/['u\[\] ]/g, '').split(',')
-    const identityList = data.json_entry.identity.replace(/['u\[\] ]/g, '').split(',')
+    const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+    const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
+    const coverageList = data.json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
+    const databaseList = data.json_entry.database.replace(/['u\[\] ]/g, "").split(",")
+    const identityList = data.json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
     const rangeList = data.json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
     for (let i in totalLenght) {
       const num = (parseFloat(i) + 1).toString()
@@ -61,9 +61,9 @@ const resGetter = (nodeId) => {
         queryArrayResfinderCoverage.push(num + ": " + coverageList[i])
         queryArrayResfinderIdentity.push(num + ": " + identityList[i])
         queryArrayResfinderRange.push(num + ": " + rangeEntry)
-      } else {
-        console.log("error: database unknown - ", databaseList[i])
-      }
+      } //else {
+        //console.log("error: database unknown - ", databaseList[i])
+      //}
     }
     // then actually add it to popup_description div
     $("#popup_description").append(
@@ -101,7 +101,6 @@ const resGetter = (nodeId) => {
       "</div>"
     )
     } catch (error) {
-      console.log("error", error)
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no Resistance information available in database."
       $("#alertId_db").show()
@@ -121,7 +120,6 @@ const plasmidFamilyGetter = (nodeId) => {
   // here in this function there is no need to parse the
   // data.json_entry.database entry since it is a single database
   $.get("api/getplasmidfinder/", {"accession": nodeId}, (data, status) => {
-    console.log(data)
     // first we need to gather all information in a format that may be
     // passed to jquery to append to popup_descriptions div
     // set of arrays for card db
@@ -133,10 +131,10 @@ const plasmidFamilyGetter = (nodeId) => {
 
     try{
     // totalLength array corresponds to gene names
-    const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g, '').split(',')
-    const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g, '').split(',')
-    const coverageList = data.json_entry.coverage.replace(/['u\[\] ]/g, '').split(',')
-    const identityList = data.json_entry.identity.replace(/['u\[\] ]/g, '').split(',')
+    const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+    const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
+    const coverageList = data.json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
+    const identityList = data.json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
     const rangeList = data.json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
     for (let i in totalLenght) {
       const num = (parseFloat(i) + 1).toString()
@@ -170,7 +168,6 @@ const plasmidFamilyGetter = (nodeId) => {
       "</div>"
     )
     } catch (error) {
-      console.log("error", error)
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no PlasmidFinder information available in database."
       $("#alertId_db").show()
