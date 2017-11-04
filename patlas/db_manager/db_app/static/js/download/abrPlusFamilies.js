@@ -1,17 +1,15 @@
 // function to turn string into a clickable link ... useful for accession
 // numbers
 const makeItClickable = (string) => {
-  const clickableElement = "<a href='https://www.ncbi.nlm.nih.gov/nuccore/" +
+  return "<a href='https://www.ncbi.nlm.nih.gov/nuccore/" +
     string + "' target='_blank'>" + string + "</a>"
-  return clickableElement
 }
 
 const googleIt = (string) => {
   // TODO this should be refactored to include direct card entry
-  const googleLink = "<a target='_blank'" +
+  return "<a target='_blank'" +
     " href='http://www.google.com/search?q=" + string +
     "%20site:https://card.mcmaster.ca'>" + string + "</a>"
-  return googleLink
 }
 
 // this function is intended to use in single query instances such as
@@ -134,20 +132,20 @@ const plasmidFamilyGetter = (nodeId) => {
 
     try{
       // totalLength array corresponds to gene names
-      const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
-      const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
+      const totalLength = data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+      const accessionList = data.json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
       const coverageList = data.json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
       const identityList = data.json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
       const rangeList = data.json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
-      for (const i in totalLenght) {
-        if ({}.hasOwnProperty.call(totalLenght, i)) {
+      for (const i in totalLength) {
+        if ({}.hasOwnProperty.call(totalLength, i)) {
           const num = (parseFloat(i) + 1).toString()
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
-          queryArrayPFGenes.push(num + ": " + googleIt(totalLenght[i]))
+          queryArrayPFGenes.push(num + ": " + googleIt(totalLength[i]))
           // card retrieves some odd numbers after the accession... that
           // prevent to form a linkable item to genbank
           queryArrayPFAccession.push(num + ": " +
-            makeItClickable(acessionList[i].split(":")[0]))
+            makeItClickable(accessionList[i].split(":")[0]))
           queryArrayPFCoverage.push(num + ": " + coverageList[i])
           queryArrayPFIdentity.push(num + ": " + identityList[i])
           queryArrayPFRange.push(num + ": " + rangeEntry)
@@ -160,10 +158,11 @@ const plasmidFamilyGetter = (nodeId) => {
         "</div>" +
         "<div'>PlasmidFinder database" +
         "<br />" +
+        // TODO replace font with <span style="color:#000000">0001100000101101100011</span>
         "<font color='#468499'>gene: </font>" + queryArrayPFGenes.toString() +
         "<br />" +
         "<font color='#468499'>accession: </font>" + queryArrayPFAccession.toString() +
-        "<div>Matching resistance genees information</div>" +
+        "<div>Matching resistance genes information</div>" +
         "<font color='#468499'>coverage: </font>" + queryArrayPFCoverage.toString() +
         "<br />" +
         "<font color='#468499'>identity: </font>" + queryArrayPFIdentity.toString() +
