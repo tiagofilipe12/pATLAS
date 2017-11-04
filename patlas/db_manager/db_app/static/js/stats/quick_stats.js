@@ -240,10 +240,8 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
 // repetitive function that is often called by main js
 // (visualization_functions.js)
 const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
-  if (areaSelection === false) {
-    listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-  } else {
-    listPlots = statsColor(g, graphics, clickerButton, false, false)
-  }
+  const listPlots = (areaSelection === false) ?
+    getMetadata(listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, clickerButton, false, false)
   return listPlots
 }
