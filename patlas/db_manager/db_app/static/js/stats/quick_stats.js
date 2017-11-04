@@ -236,3 +236,12 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
   taxaList = getMetadata(tempListAccessions, mode, sortAlp, sortVal)
   return taxaList
 }
+
+// repetitive function that is often called by main js
+// (visualization_functions.js)
+const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  const listPlots = (areaSelection === false) ?
+    getMetadata(listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, clickerButton, false, false)
+  return listPlots
+}

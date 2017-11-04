@@ -1,4 +1,7 @@
-from db_app import app
+try:
+    from db_app import app
+except ImportError:
+    from patlas.db_manager.db_app import app
 from flask import json, render_template
 
 ## routes

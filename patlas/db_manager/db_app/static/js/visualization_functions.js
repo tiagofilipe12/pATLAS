@@ -7,6 +7,17 @@ let rerun = false // boolean that controls the prerender function if rerun
 let first_click_menu = true
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
+// this variable is used to store the clicked node to use in resistance and
+// plasmid buttons
+let clickedNode = false
+// starts a global instance for checking if button was clicked before
+let clickedPopupButtonRes = false
+let clickedPopupButtonCard = false
+let clickedPopupButtonFamily = false
+
+// variable to control stats displayer
+let areaSelection = false
+
 // load test JSON file
 const getArray = () => {
   return $.getJSON("/test")   // change the input file name
@@ -122,7 +133,7 @@ const onLoad = () => {
         showDownload.style.display = "block"
         showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        //multiSelectOverlay = true
+        areaSelection = true
       }
     })
     // event for shift key up
@@ -225,11 +236,20 @@ const onLoad = () => {
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
+      // this resets previous selected node to previous color
+      if (clickedNode) {
+        graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
+      }
+      // then starts making new changes to the newly geerated node
+      clickedNode = node.id
       nodeUI_1 = graphics.getNodeUI(node.id)
       const domPos = {
         x: nodeUI_1.position.x,
         y: nodeUI_1.position.y
       }
+      nodeUI_1.backupColor = nodeUI_1.color
+      nodeUI_1.color = 0xFFC300
+      renderer.rerender()
 
       // allows the control of the click appearing and locking
 
@@ -264,6 +284,8 @@ const onLoad = () => {
             // node displaying after fetching data from db
           })
         }
+
+
         // exception when node has no length (used on new nodes?)
         else {
           speciesName = 'N/A'
@@ -273,45 +295,48 @@ const onLoad = () => {
       }
 
       const setupPopupDisplay = (node, speciesName, plasmidName) => {
+        // this sets the popup internal buttons to allow them to run,
+        // otherwise they won't run because its own function returns this
+        // variable to false, preveting the popup to expand with its
+        // respectiv functions
+        clickedPopupButtonCard = true
+        clickedPopupButtonRes = true
+        clickedPopupButtonFamily = true
+
         // first needs to empty the popup in order to avoid having
         // multiple entries from previous interactions
-        $('#popup_description').empty()
-        $('#popup_description').append('<div>' +
+        $("#popup_description").empty()
+        $("#popup_description").append(
+          "<span id='close' type='button'>&times;</span>" +
+          "<div>General sequence info" +
+          "<br />" +
           node.data.sequence +
-          '<br />' +
+          "<br />" +
           "<font color='#468499'>Species: </font>" + speciesName +
-          '<br />' +
+          "<br />" +
           node.data.seq_length +
-          '<br />' +
+          "<br />" +
           "<font color='#468499'>Plasmid: </font>" + plasmidName +
-          '<br />' +
+          "<br />" +
           "<font color='#468499'>Percentage: </font>" + node.data.percentage +
-          '<br />' +
-          "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +//This should be passed on request
-          '</div>' +
-          "<span id='close' type='button' onclick='$(this).parent().hide()'>&times;</span>"
+          "<br />" +
+          "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +
+          "</div>" +
+          // adds buttons for resistances and plasmid families
+          "<br />" +
+          "<div style='float: left;' class='btn btn-default'" +
+          " id='resButton'>" +
+          " Resistances" +
+          "</div>" +
+          "<div style='float: right;' class='btn btn-default'" +
+          " id='plasmidButton'>" +
+          "Plasmid families" +
+          "</div>" +
+          "</div>"
         )
-        $('#popup_description').css({
-          'padding': '10px 30px 10px 30px',
-          'border': '1px solid grey',
-          'border-radius': '10px',
-          'background-color': 'white',
-          'display': 'block',
-          'left': domPos.x,
-          'top': domPos.y,
-          'position': 'fixed',
-          'z-index': 2
-        })
-        $("#close").css({
-          "cursor": "default",
-          "position": "absolute",
-          "top": "2%",
-          "right": "2%",
-          "display": "inline-block",
-          "padding": "2px 5px 2px 5px",
-          "background": "#ccc",
-        })
+        $("#popup_description").show()
       }
+      // requests table for sequences metadata
       requestPlasmidTable(node, setupPopupDisplay)
     })
 
@@ -319,14 +344,19 @@ const onLoad = () => {
     renderer.rerender()
 
     //* * Loading Screen goes off **//
-    // $("#loading").hide();
-    // $("#couve-flor").show();
     $('#loading').hide()
-    document.getElementById('couve-flor').style.visibility = 'visible'
+    $("#couve-flor").css("visibility", "visible")
 
     //* **************//
     //* ** BUTTONS ***//
     //* **************//
+
+    $(document).on("click", "#close", function() {
+      console.log("coco", clickedNode)
+      $(this).parent().hide()
+      graphics.getNodeUI(clickedNode).color = nodeUI_1.backupColor
+      renderer.rerender()
+    })
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
 
@@ -336,63 +366,38 @@ const onLoad = () => {
     // TODO this one should become legacy
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#speciesStats").on("click", function (e) {
       clickerButton = "species"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#genusStats").on("click", function (e) {
       clickerButton = "genus"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#familyStats").on("click", function (e) {
       clickerButton = "family"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#orderStats").on("click", function (e) {
       clickerButton = "order"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").on("click", function (e) {
       clickerButton = "length"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     // TODO get a way to sort the array generated inside getMetadata
     // sort by values
     $("#sortGraph").on("click", function (e) {
-      console.log(clickerButton)
       const sortVal = true
       let color
       const layout = {
@@ -427,7 +432,6 @@ const onLoad = () => {
 
     // sort alphabetically
     $("#sortGraphAlp").on("click", function (e) {
-      console.log(clickerButton)
       const sortAlp = true
       let color
       const layout = {
@@ -467,48 +471,27 @@ const onLoad = () => {
     $("#lengthPlot").on("click", function (e) {
       clickerButton = "length"
       // TODO save previous plotly generated graphs before rendering the new ones
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
-
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#speciesPlot").on("click", function (e) {
       clickerButton = "species"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#genusPlot").on("click", function (e) {
       clickerButton = "genus"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#familyPlot").on("click", function (e) {
       clickerButton = "family"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#orderPlot").on("click", function (e) {
       clickerButton = "order"
-      if (listGiFilter.length > 0) {
-        listPlots = getMetadata(listGiFilter, clickerButton, false, false)
-      } else {
-        listPlots = statsColor(g, graphics, clickerButton, false, false)
-      }
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
@@ -1241,12 +1224,15 @@ const onLoad = () => {
     // resets the slider
     $('#reset-sliders').click(function (event) {
       listGiFilter = [] //resets listGiFilter
+      areaSelection = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload)
     })
     // runs the re run operation for the selected species
     $('#Re_run').click(function (event) {
+      // resets areaSelection
+      areaSelection = false
       //* * Loading Screen goes on **//
       //console.log("click", listGiFilter)
       // removes disabled from class in go_back button
@@ -1387,7 +1373,9 @@ const onLoad = () => {
     } else {
       // storeMasterNode is empty in here
       rerun = true
-      requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics)
+      list_gi = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics)
+      // this list_gi isn't the same as the initial but has information on
+      // all the nodes that were used in filters
       // TODO masterNode needs to be used to re-center the graph
     }
   }
@@ -1425,17 +1413,32 @@ const onLoad = () => {
 
   // download button //
   $("#download_ds").unbind("click").bind("click", function (e) {
+    console.log(areaSelection)
     // for now this is just taking what have been changed by taxa coloring
-    // TODO there is a conflit when we want to have all selection before
-    // TODO re-run were we have a listGiFilter
-    // TODO in this instances listGiFilter should be replaced by colors on
-    // TODO the nodes
-    if (listGiFilter.length > 0) {
-      downloadSeq(listGiFilter, g)
-    } else {
+    if (areaSelection === true) {
+      // downloads if area selection is triggered
       downloadSeqByColor(g, graphics)
+    } else {
+      // downloads when listGiFilter is defined, namely in taxa filters,
+      // mapping results
+      downloadSeq(listGiFilter, g)
     }
   })
+
+
+  // resistance button control //
+  $(document).on("click", "#resButton", function(event) {
+    if (clickedPopupButtonCard === true) {
+      clickedPopupButtonCard = resGetter(clickedNode)
+    }
+  })
+
+  $(document).on("click", "#plasmidButton", function(event) {
+    if (clickedPopupButtonFamily === true) {
+      clickedPopupButtonFamily = plasmidFamilyGetter(clickedNode)
+    }
+  })
+
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph

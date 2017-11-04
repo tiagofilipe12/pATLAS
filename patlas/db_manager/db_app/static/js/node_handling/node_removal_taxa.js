@@ -137,6 +137,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
         console.log("Error! No query was made. Error message: ", error)
       })
   }
+  return listGiFilter
 }
 
 // function that actually removes the nodes
