@@ -15,6 +15,9 @@ let clickedPopupButtonRes = false
 let clickedPopupButtonCard = false
 let clickedPopupButtonFamily = false
 
+// variable to control stats displayer
+let areaSelection = false
+
 // load test JSON file
 const getArray = () => {
   return $.getJSON("/test")   // change the input file name
@@ -116,8 +119,6 @@ const onLoad = () => {
 
     // variable used to control if div is shown or not
     let multiSelectOverlay = false
-    // variable to control stats displayer
-    let areaSelection = false
 
     // event for shift key down
     // shows overlay div and exectures startMultiSelect
@@ -1230,6 +1231,8 @@ const onLoad = () => {
     })
     // runs the re run operation for the selected species
     $('#Re_run').click(function (event) {
+      // resets areaSelection
+      areaSelection = false
       //* * Loading Screen goes on **//
       //console.log("click", listGiFilter)
       // removes disabled from class in go_back button
@@ -1410,15 +1413,15 @@ const onLoad = () => {
 
   // download button //
   $("#download_ds").unbind("click").bind("click", function (e) {
+    console.log(areaSelection)
     // for now this is just taking what have been changed by taxa coloring
-    // TODO there is a conflict when we want to have all selection before
-    // TODO re-run were we have a listGiFilter
-    // TODO in this instances listGiFilter should be replaced by colors on
-    // TODO the nodes
-    if (listGiFilter.length > 0) {
-      downloadSeq(listGiFilter, g)
-    } else {
+    if (areaSelection === true) {
+      // downloads if area selection is triggered
       downloadSeqByColor(g, graphics)
+    } else {
+      // downloads when listGiFilter is defined, namely in taxa filters,
+      // mapping results
+      downloadSeq(listGiFilter, g)
     }
   })
 
