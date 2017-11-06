@@ -11,6 +11,26 @@ except ImportError:
     from patlas.db_manager.db_app import db, models
     from patlas.templates.process_abricate import Abricate
 
+# TODO this function needs to be used inside get_storage method
+def get_card_dict(csv_file):
+    '''Function to construct a correspondence between nucleotide accession
+    numbers and aro accession numbers
+
+    :param csv_file: str, Input file string to open
+    :return: dic, dictionary with correspondence between dna_accession and
+    aro_accession
+    '''
+    csv_dict = {}
+    with open(csv_file) as f:
+        next(f)
+        for line in f:
+            tab_split = line.split(",")
+            aro_accession = tab_split[0]
+            # dna accessions have a \n character at the end of the string
+            dna_accession = tab_split[-1].strip("\n")
+            csv_dict[dna_accession] = aro_accession
+    return csv_dict
+
 
 class DbInsertion(Abricate):
     '''
@@ -23,7 +43,15 @@ class DbInsertion(Abricate):
         # Here we'll call the __init__ of the base class Abricate.
         super().__init__(var)
 
-    def get_storage(self, list_of_filters, db_type):
+    def get_storage(self, list_of_filters, db_type, csv_dict):
+        '''this function inherits a list and applies filters to Abricate
+        parent class and executes db_dump method on top of the generated
+        temp_dict
+
+        :param list_of_filters: list, list with the filters to passe to
+        Abricate class
+        :param db_type: str, database type to be used in db_dump method
+        '''
 
         fields = [
             "reference",
@@ -41,14 +69,27 @@ class DbInsertion(Abricate):
         for entry in self.iter_filter(list_of_filters, fields=fields):
             # setting variables to pass to db
             query_seq = entry["reference"]
+            # temp_dict keys and db plasmid_id
+            reference_accession = "_".join(query_seq.split("_")[0:3])
+
             coverage = entry["coverage"]
             identity = entry["identity"]
             database = entry["database"]
             gene = entry["gene"]
             accession = entry["accession"]
+            # if resistance try to get ARO accession based on DNA
+            # accession provided by abricate (parse file aro_index.csv)
+            if db_type == "resistance":
+                if accession != None: trimmed_accession = accession.split(
+                    ":")[0]
+                print(trimmed_accession)
+                try:
+                    aro_accession = csv_dict[trimmed_accession]
+                except KeyError:
+                    aro_accession = None
+
             seq_range = entry["seq_range"]
-            # temp_dict keys and db plasmid_id
-            reference_accession = "_".join(query_seq.split("_")[0:3])
+
             # generate a new dict to dump to db
             if reference_accession not in unique_entries:
                 unique_entries.append(reference_accession)
@@ -58,7 +99,8 @@ class DbInsertion(Abricate):
                     "database": [database],
                     "gene": [gene],
                     "accession": [accession],
-                    "seq_range": [seq_range]
+                    "seq_range": [seq_range],
+                    "aro_accession": [aro_accession]
                 }
             else:
                 # checks if gene and its accession is in the their respective
@@ -76,16 +118,26 @@ class DbInsertion(Abricate):
                 temp_dict[reference_accession]["gene"].append(gene)
                 temp_dict[reference_accession]["accession"].append(accession)
                 temp_dict[reference_accession]["seq_range"].append(seq_range)
+                temp_dict[reference_accession]["aro_accession"].append(aro_accession)
 
+        self.db_dump(temp_dict, db_type, csv_dict)
+
+    def db_dump(self, temp_dict, db_type, csv_dict):
+        '''This function just dumps a dict to psql database
+
+        :param temp_dict: dict, dictionary with reworked entries to properly
+        add to psql db
+        :param db_type: str, database type to properly add to psql depending
+        on the entered type.
+        '''
+        #  are added in other method that inherits the previous ones.
         for k,v in temp_dict.items():
             # checks database
             if db_type == "resistance":
-                # TODO if resistance try to get ARO accession based on DNA
-                # accession provided by abricate (parse file aro_index.csv)
                 row = models.Card(
-                    plasmid_id = k,
-                    json_entry = v
-                )
+                        plasmid_id = k,
+                        json_entry = v
+                    )
             elif db_type == "plasmidfinder":
                 row = models.Database(
                     plasmid_id = k,
@@ -135,26 +187,6 @@ class DbInsertion(Abricate):
         out_file.write(json.dumps(json_dict))
         out_file.close()
 
-# TODO this function needs to be used inside get_storage method
-def get_card_dict(csv_file):
-    '''Function to construct a correspondence between nucleotide accession
-    numbers and aro accession numbers
-
-    :param csv_file: str, Input file string to open
-    :return: dic, dictionary with correspondence between dna_accession and
-    aro_accession
-    '''
-    csv_dict = {}
-    with open(csv_file) as f:
-        next(f)
-        for line in f:
-            tab_split = line.split(",")
-            aro_accession = tab_split[0]
-            dna_accession = tab_split[1]
-            csv_dict[dna_accession] = aro_accession
-    return csv_dict
-
-
 def main():
     parser = argparse.ArgumentParser(description='Compares all entries in a '
                                                  'fasta file using abricate')
@@ -199,6 +231,9 @@ def main():
     else:
         csv_file = args.csvfile
 
+    # gets dict of aro and dna accessions
+    csv_dict = get_card_dict(csv_file)
+
     # Create DbInsertion instance with the provided input files using the
     # imported class
     db_handle = DbInsertion(input_file)
@@ -209,10 +244,10 @@ def main():
     ]
 
     # outputs to psql db
-    #db_handle.get_storage(list_of_filters, db_type)
+    db_handle.get_storage(list_of_filters, db_type, csv_dict)
 
     # outputs a json file
-    db_handle.get_json_file(list_of_filters, db_type)
+    #db_handle.get_json_file(list_of_filters, db_type)
 
     # Class to use initial class to output abricate results to db
     print("saving results to db {}".format(db_type))
