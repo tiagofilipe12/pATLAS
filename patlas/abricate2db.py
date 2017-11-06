@@ -11,7 +11,6 @@ except ImportError:
     from patlas.db_manager.db_app import db, models
     from patlas.templates.process_abricate import Abricate
 
-# TODO this function needs to be used inside get_storage method
 def get_card_dict(csv_file):
     '''Function to construct a correspondence between nucleotide accession
     numbers and aro accession numbers

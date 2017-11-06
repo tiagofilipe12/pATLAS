@@ -352,7 +352,6 @@ const onLoad = () => {
     //* **************//
 
     $(document).on("click", "#close", function() {
-      console.log("coco", clickedNode)
       $(this).parent().hide()
       graphics.getNodeUI(clickedNode).color = nodeUI_1.backupColor
       renderer.rerender()

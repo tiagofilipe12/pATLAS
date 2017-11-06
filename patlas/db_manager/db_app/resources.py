@@ -36,7 +36,8 @@ nested_card_fields = {
     "database": fields.String,
     "gene": fields.String,
     "accession": fields.String,
-    "seq_range": fields.String
+    "seq_range": fields.String,
+    "aro_accession": fields.String
 }
 
 card_field = {

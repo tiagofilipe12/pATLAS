@@ -5,11 +5,17 @@ const makeItClickable = (string) => {
     string + "' target='_blank'>" + string + "</a>"
 }
 
-const googleIt = (string) => {
+// const googleIt = (string) => {
+//   // TODO this should be refactored to include direct card entry
+//   return "<a target='_blank'" +
+//     " href='http://www.google.com/search?q=" + string +
+//     "%20site:https://card.mcmaster.ca'>" + string + "</a>"
+// }
+
+const makeCardClickable = (string) => {
   // TODO this should be refactored to include direct card entry
-  return "<a target='_blank'" +
-    " href='http://www.google.com/search?q=" + string +
-    "%20site:https://card.mcmaster.ca'>" + string + "</a>"
+  return "<a href='https://card.mcmaster.ca/aro/" +
+    string.replace("ARO:", "") + "' target='_blank'>" + string + "</a>"
 }
 
 // this function is intended to use in single query instances such as
@@ -24,6 +30,7 @@ const resGetter = (nodeId) => {
     const queryArrayCardCoverage = []
     const queryArrayCardIdentity = []
     const queryArrayCardRange = []
+    const queryArrayCardARO = []
 
     // set of arrays for resfinder db
     const queryArrayResfinderGenes = []
@@ -40,12 +47,14 @@ const resGetter = (nodeId) => {
       const databaseList = data.json_entry.database.replace(/['u\[\] ]/g, "").split(",")
       const identityList = data.json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
       const rangeList = data.json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
+      const aroList = data.json_entry.aro_accession.replace(/['u\[\] ]/g, "").split(",")
+
       for (const i in totalLenght) {
         if ({}.hasOwnProperty.call(totalLenght, i)) {
-          const num = (parseFloat(i) + 1).toString()
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
           if (databaseList[i].indexOf("card") > -1) {
-            queryArrayCardGenes.push(num + ": " + googleIt(totalLenght[i]))
+            const num = (parseFloat(i) + 1).toString()
+            queryArrayCardGenes.push(num + ": " + totalLenght[i])
             // card retrieves some odd numbers after the accession... that
             // prevent to form a linkable item to genbank
             queryArrayCardAccession.push(num + ": " +
@@ -53,16 +62,16 @@ const resGetter = (nodeId) => {
             queryArrayCardCoverage.push(num + ": " + coverageList[i])
             queryArrayCardIdentity.push(num + ": " + identityList[i])
             queryArrayCardRange.push(num + ": " + rangeEntry)
+            queryArrayCardARO.push(num + ": " +  makeCardClickable(aroList[i]))
           } else {
-            queryArrayResfinderGenes.push(num + ": " + totalLenght[i])
-            queryArrayResfinderAccession.push(num + ": " +
+            const num2 = (parseFloat(i) + 1).toString()
+            queryArrayResfinderGenes.push(num2 + ": " + totalLenght[i])
+            queryArrayResfinderAccession.push(num2 + ": " +
               makeItClickable(acessionList[i]))
-            queryArrayResfinderCoverage.push(num + ": " + coverageList[i])
-            queryArrayResfinderIdentity.push(num + ": " + identityList[i])
-            queryArrayResfinderRange.push(num + ": " + rangeEntry)
-          } //else {
-            //console.log("error: database unknown - ", databaseList[i])
-          //}
+            queryArrayResfinderCoverage.push(num2 + ": " + coverageList[i])
+            queryArrayResfinderIdentity.push(num2 + ": " + identityList[i])
+            queryArrayResfinderRange.push(num2 + ": " + rangeEntry)
+          }
         }
       }
       // then actually add it to popup_description div
@@ -75,6 +84,8 @@ const resGetter = (nodeId) => {
         "<font color='#468499'>gene: </font>" + queryArrayCardGenes.toString() +
         "<br />" +
         "<font color='#468499'>accession: </font>" + queryArrayCardAccession.toString() +
+        "<br />" +
+        "<font color='#468499'>aro accessions: </font>" + queryArrayCardARO.toString() +
         "<div>Matching resistance genes information</div>" +
         "<font color='#468499'>coverage: </font>" + queryArrayCardCoverage.toString() +
         "<br />" +
@@ -141,7 +152,7 @@ const plasmidFamilyGetter = (nodeId) => {
         if ({}.hasOwnProperty.call(totalLength, i)) {
           const num = (parseFloat(i) + 1).toString()
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
-          queryArrayPFGenes.push(num + ": " + googleIt(totalLength[i]))
+          queryArrayPFGenes.push(num + ": " + totalLength[i])
           // card retrieves some odd numbers after the accession... that
           // prevent to form a linkable item to genbank
           queryArrayPFAccession.push(num + ": " +
