@@ -6,7 +6,6 @@ const makeItClickable = (string) => {
 }
 
 // const googleIt = (string) => {
-//   // TODO this should be refactored to include direct card entry
 //   return "<a target='_blank'" +
 //     " href='http://www.google.com/search?q=" + string +
 //     "%20site:https://card.mcmaster.ca'>" + string + "</a>"
@@ -81,17 +80,17 @@ const resGetter = (nodeId) => {
         "</div>" +
         "<div'>Card database" +
         "<br />" +
-        "<font color='#468499'>gene: </font>" + queryArrayCardGenes.toString() +
+        "<font color='#468499'>Gene name: </font>" + queryArrayCardGenes.toString() +
         "<br />" +
-        "<font color='#468499'>accession: </font>" + queryArrayCardAccession.toString() +
+        "<font color='#468499'>Genbank accession: </font>" + queryArrayCardAccession.toString() +
         "<br />" +
-        "<font color='#468499'>aro accessions: </font>" + queryArrayCardARO.toString() +
+        "<font color='#468499'>ARO accessions: </font>" + queryArrayCardARO.toString() +
         "<div>Matching resistance genes information</div>" +
-        "<font color='#468499'>coverage: </font>" + queryArrayCardCoverage.toString() +
+        "<font color='#468499'>Coverage: </font>" + queryArrayCardCoverage.toString() +
         "<br />" +
-        "<font color='#468499'>identity: </font>" + queryArrayCardIdentity.toString() +
+        "<font color='#468499'>Identity: </font>" + queryArrayCardIdentity.toString() +
         "<br />" +
-        "<font color='#468499'>range in plasmid: </font>" + queryArrayCardRange.toString() +
+        "<font color='#468499'>Range in plasmid: </font>" + queryArrayCardRange.toString() +
         "<br />" +
         "</div>" +
         "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
@@ -99,15 +98,15 @@ const resGetter = (nodeId) => {
         "</div>" +
         "<div'>ResFinder database" +
         "<br />" +
-        "<font color='#468499'>gene: </font>" + queryArrayResfinderGenes.toString() +
+        "<font color='#468499'>Gene name: </font>" + queryArrayResfinderGenes.toString() +
         "<br />" +
-        "<font color='#468499'>accession: </font>" + queryArrayResfinderAccession.toString() +
+        "<font color='#468499'>Genbank accession: </font>" + queryArrayResfinderAccession.toString() +
         "<div>Matching resistance genees information</div>" +
-        "<font color='#468499'>coverage: </font>" + queryArrayResfinderCoverage.toString() +
+        "<font color='#468499'>Coverage: </font>" + queryArrayResfinderCoverage.toString() +
         "<br />" +
-        "<font color='#468499'>identity: </font>" + queryArrayResfinderIdentity.toString() +
+        "<font color='#468499'>Identity: </font>" + queryArrayResfinderIdentity.toString() +
         "<br />" +
-        "<font color='#468499'>range in plasmid: </font>" + queryArrayResfinderRange.toString() +
+        "<font color='#468499'>Range in plasmid: </font>" + queryArrayResfinderRange.toString() +
         "<br />" +
         "</div>"
       )
@@ -170,15 +169,15 @@ const plasmidFamilyGetter = (nodeId) => {
         "<div'>PlasmidFinder database" +
         "<br />" +
         // TODO replace font with <span style="color:#000000">0001100000101101100011</span>
-        "<font color='#468499'>gene: </font>" + queryArrayPFGenes.toString() +
+        "<font color='#468499'>Gene name: </font>" + queryArrayPFGenes.toString() +
         "<br />" +
-        "<font color='#468499'>accession: </font>" + queryArrayPFAccession.toString() +
+        "<font color='#468499'>Genbank Accession: </font>" + queryArrayPFAccession.toString() +
         "<div>Matching resistance genes information</div>" +
-        "<font color='#468499'>coverage: </font>" + queryArrayPFCoverage.toString() +
+        "<font color='#468499'>Coverage: </font>" + queryArrayPFCoverage.toString() +
         "<br />" +
-        "<font color='#468499'>identity: </font>" + queryArrayPFIdentity.toString() +
+        "<font color='#468499'>Identity: </font>" + queryArrayPFIdentity.toString() +
         "<br />" +
-        "<font color='#468499'>range in plasmid: </font>" + queryArrayPFRange.toString() +
+        "<font color='#468499'>Range in plasmid: </font>" + queryArrayPFRange.toString() +
         "<br />" +
         "</div>"
       )
