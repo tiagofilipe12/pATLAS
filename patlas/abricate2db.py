@@ -81,7 +81,6 @@ class DbInsertion(Abricate):
             if db_type == "resistance":
                 if accession != None: trimmed_accession = accession.split(
                     ":")[0]
-                print(trimmed_accession)
                 try:
                     aro_accession = csv_dict[trimmed_accession]
                 except KeyError:
@@ -121,7 +120,8 @@ class DbInsertion(Abricate):
 
         self.db_dump(temp_dict, db_type, csv_dict)
 
-    def db_dump(self, temp_dict, db_type, csv_dict):
+    @staticmethod
+    def db_dump(temp_dict, db_type, csv_dict):
         '''This function just dumps a dict to psql database
 
         :param temp_dict: dict, dictionary with reworked entries to properly
