@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
+import json
 
 try:
     from db_manager.db_app import db, models
@@ -48,8 +50,8 @@ class DbInsertion(Abricate):
             # temp_dict keys and db plasmid_id
             reference_accession = "_".join(query_seq.split("_")[0:3])
             # generate a new dict to dump to db
-            if query_seq not in unique_entries:
-                unique_entries.append(query_seq)
+            if reference_accession not in unique_entries:
+                unique_entries.append(reference_accession)
                 temp_dict[reference_accession] = {
                     "coverage": [coverage],
                     "identity": [identity],
@@ -78,6 +80,8 @@ class DbInsertion(Abricate):
         for k,v in temp_dict.items():
             # checks database
             if db_type == "resistance":
+                # TODO if resistance try to get ARO accession based on DNA
+                # accession provided by abricate (parse file aro_index.csv)
                 row = models.Card(
                     plasmid_id = k,
                     json_entry = v
@@ -94,6 +98,62 @@ class DbInsertion(Abricate):
             db.session.add(row)
             db.session.commit()
         db.session.close()
+
+    def get_json_file(self, list_of_filters, db_type):
+        '''
+        :param list_of_filters: list, List of filters to be applied with
+        process_abricate.py iter_filter method
+        :param input_file: str, input file for card db
+        :param db_type: str, string to specify db type to output file
+        '''
+
+        fields = [
+            "reference",
+            "database",
+            "gene"
+        ]
+
+        output_name = db_type + ".json"
+        json_dict = {}
+        unique_entries = []
+
+        for entry in self.iter_filter(list_of_filters, fields=fields):
+            query_seq = entry["reference"]
+            reference_accession = "_".join(query_seq.split("_")[0:3])
+            database = entry["database"]
+            gene = entry["gene"]
+            if reference_accession not in unique_entries:
+                unique_entries.append(reference_accession)
+                json_dict[reference_accession] = {
+                    "database": [database],
+                    "gene": [gene]
+                }
+            else:
+                json_dict[reference_accession]["database"].append(database)
+                json_dict[reference_accession]["gene"].append(gene)
+        out_file = open(output_name, "w")
+        out_file.write(json.dumps(json_dict))
+        out_file.close()
+
+# TODO this function needs to be used inside get_storage method
+def get_card_dict(csv_file):
+    '''Function to construct a correspondence between nucleotide accession
+    numbers and aro accession numbers
+
+    :param csv_file: str, Input file string to open
+    :return: dic, dictionary with correspondence between dna_accession and
+    aro_accession
+    '''
+    csv_dict = {}
+    with open(csv_file) as f:
+        next(f)
+        for line in f:
+            tab_split = line.split(",")
+            aro_accession = tab_split[0]
+            dna_accession = tab_split[1]
+            csv_dict[dna_accession] = aro_accession
+    return csv_dict
+
 
 def main():
     parser = argparse.ArgumentParser(description='Compares all entries in a '
@@ -118,6 +178,13 @@ def main():
     options.add_argument('-cov', '--coverage', dest='coverage',
                          default="80", help='minimum coverage do be '
                                                'reported to db')
+    options.add_argument('-csv', '--csv', dest='csvfile',
+                         nargs='1', help="Provide card csv "
+                                                        "file to get "
+                                                        "correspondence "
+                                                        "between DNA "
+                                                        "accessions and ARO "
+                                                        "accessions")
 
     args = parser.parse_args()
 
@@ -125,6 +192,12 @@ def main():
     db_type = args.output_psql_db
     perc_id = float(args.identity)
     perc_cov = float(args.coverage)
+    if args.csvfile is None:
+        script_dir = os.path.dirname(__file__)
+        rel_path_csv_file = "db_manager/db_app/static/csv/aro_index.csv"
+        csv_file = os.path.join(script_dir, rel_path_csv_file)
+    else:
+        csv_file = args.csvfile
 
     # Create DbInsertion instance with the provided input files using the
     # imported class
@@ -135,7 +208,11 @@ def main():
         ["identity", ">=", perc_id]
     ]
 
-    db_handle.get_storage(list_of_filters, db_type)
+    # outputs to psql db
+    #db_handle.get_storage(list_of_filters, db_type)
+
+    # outputs a json file
+    db_handle.get_json_file(list_of_filters, db_type)
 
     # Class to use initial class to output abricate results to db
     print("saving results to db {}".format(db_type))
