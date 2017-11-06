@@ -48,28 +48,32 @@ const resGetter = (nodeId) => {
       const rangeList = data.json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
       const aroList = data.json_entry.aro_accession.replace(/['u\[\] ]/g, "").split(",")
 
+      // consts to control the numbering of each database entry
+      const num = 0
+      const num2 = 0
+
       for (const i in totalLenght) {
         if ({}.hasOwnProperty.call(totalLenght, i)) {
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
           if (databaseList[i].indexOf("card") > -1) {
-            const num = (parseFloat(i) + 1).toString()
-            queryArrayCardGenes.push(num + ": " + totalLenght[i])
+            const numString =+ (num + 1).toString()
+            queryArrayCardGenes.push(numString + ": " + totalLenght[i])
             // card retrieves some odd numbers after the accession... that
             // prevent to form a linkable item to genbank
-            queryArrayCardAccession.push(num + ": " +
+            queryArrayCardAccession.push(numString + ": " +
               makeItClickable(acessionList[i].split(":")[0]))
-            queryArrayCardCoverage.push(num + ": " + coverageList[i])
-            queryArrayCardIdentity.push(num + ": " + identityList[i])
-            queryArrayCardRange.push(num + ": " + rangeEntry)
-            queryArrayCardARO.push(num + ": " +  makeCardClickable(aroList[i]))
+            queryArrayCardCoverage.push(numString + ": " + coverageList[i])
+            queryArrayCardIdentity.push(numString + ": " + identityList[i])
+            queryArrayCardRange.push(numString + ": " + rangeEntry)
+            queryArrayCardARO.push(numString + ": " +  makeCardClickable(aroList[i]))
           } else {
-            const num2 = (parseFloat(i) + 1).toString()
-            queryArrayResfinderGenes.push(num2 + ": " + totalLenght[i])
-            queryArrayResfinderAccession.push(num2 + ": " +
+            const numString2 =+ (num2 + 1).toString()
+            queryArrayResfinderGenes.push(numString2 + ": " + totalLenght[i])
+            queryArrayResfinderAccession.push(numString2 + ": " +
               makeItClickable(acessionList[i]))
-            queryArrayResfinderCoverage.push(num2 + ": " + coverageList[i])
-            queryArrayResfinderIdentity.push(num2 + ": " + identityList[i])
-            queryArrayResfinderRange.push(num2 + ": " + rangeEntry)
+            queryArrayResfinderCoverage.push(numString2 + ": " + coverageList[i])
+            queryArrayResfinderIdentity.push(numString2 + ": " + identityList[i])
+            queryArrayResfinderRange.push(numString2 + ": " + rangeEntry)
           }
         }
       }
