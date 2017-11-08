@@ -788,9 +788,9 @@ const onLoad = () => {
 
       // make tmpselectedGenus an associative array since it is the base of family and order arrays
 
-      assocFamilyGenus = {}
-      assocOrderGenus = {}
-      assocGenus = {}
+      let assocFamilyGenus = {}
+      let assocOrderGenus = {}
+      let assocGenus = {}
 
       // appends genus to selectedGenus according with the family and order for single-color selection
       // also appends to associative arrays for family and order for multi-color selection
