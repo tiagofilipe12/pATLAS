@@ -51,6 +51,8 @@ let sliderMinMax = [] // initiates an array for min and max slider entries
 const onLoad = () => {
   // store the node with more links
   let storeMasterNode = []    //cleared every instance of onload
+  // start array that controls taxa filters
+  const idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"]
 
   let counter = -1 //sets a counter for the loop between the inputs nodes
   // Sets parameters to be passed to WebglCircle in order to change
@@ -648,13 +650,14 @@ const onLoad = () => {
       // clickable <li> and control of displayer of current filters
       // TODO fix this variables, their behavior is unpredictable
       // TODO this code block needs a major refactor until clear button
-      firstInstance = true // global variable
-      existingTaxon = []   // global variable
-      taxaInList = []   // global variable
+      let firstInstance = true
+      let existingTaxon = []
+      let taxaInList = []
+      let removal = false
       const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
-      idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"] // global variable
       for (let i = 0; i < classArray.length; i++) {
         $(classArray[i]).on("click", function (e) {
+          console.log(firstInstace)
           // empties the text in this div for the first intance
           if (firstInstance === true) {
             for (let x = 0; x < idsArrays.length; x++) {
@@ -667,37 +670,42 @@ const onLoad = () => {
           const tempVar = this.firstChild.innerHTML
 
           // checks if a taxon is already in display
-          var divstringClass = document.getElementById('p_' + stringClass)
+          let divstringClass = document.getElementById("p_" + stringClass)
           removal = false
           if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
-            divstringClass.innerHTML = stringClass + ': ' + tempVar
+            divstringClass.innerHTML = stringClass + ": " + tempVar
             removal = false
           }
           // checks if selection is in list and is the last element present... removing it
           else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] === tempVar && taxaInList.length === 1) {
+            console.log(taxaInList[0], tempVar)
             // resets displayCurrentBox
             resetDisplayTaxaBox(idsArrays)
+            // resets the lists and checkers for the panel
+            firstInstace = true
+            existingTaxon = []
+            taxaInList = []
             removal = true
           } else {
             // if taxa is already not in list then append
             if (taxaInList.indexOf(tempVar) < 0) {
-              divstringClass.innerHTML = divstringClass.innerHTML + ',' + tempVar
+              divstringClass.innerHTML = divstringClass.innerHTML + "," + tempVar
               removal = false
             }
             // if it is already in list then remove it and remove from list taxaInList
             else {
-              if (taxaInList[0] == tempVar) {
-                tempString = tempVar + ','
+              if (taxaInList[0] === tempVar) {
+                tempString = tempVar + ","
               } else {
-                tempString = ',' + tempVar
+                tempString = "," + tempVar
               }
-              divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, '')
+              divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "")
               taxaInList = stringRmArray(tempVar, taxaInList)
               removal = true
             }
           }
           if (taxaInList.indexOf(tempVar) < 0 && removal === false) {
-            taxaInList.push(tempVar)  // user to store all clicked taxa
+            taxaInList.push(tempVar)  // used to store all clicked taxa
           }
           existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
         })
@@ -710,6 +718,11 @@ const onLoad = () => {
         // clear = true;
         event.preventDefault()
         resetDisplayTaxaBox(idsArrays)
+        // resets the lists and checkers for the panel
+        firstInstace = true
+        existingTaxon = []
+        taxaInList = []
+        removal = true
 
         // resets dropdown selections
         $("#orderList").selectpicker("deselectAll")
@@ -1124,15 +1137,15 @@ const onLoad = () => {
       sliderMinMax = [Math.min.apply(null, list_lengths),
         Math.max.apply(null, list_lengths)]
       // generates and costumizes slider itself
-      const slider = document.getElementById('slider')
+      const slider = document.getElementById("slider")
 
       noUiSlider.create(slider, {
         start: sliderMinMax,  //this is an array
-        behaviour: 'snap',   // snaps the closest slider
+        behaviour: "snap",   // snaps the closest slider
         connect: true,
         range: {
-          'min': sliderMinMax[0],
-          'max': sliderMinMax[1]
+          "min": sliderMinMax[0],
+          "max": sliderMinMax[1]
         },
         format: wNumb({
           decimals: 0
@@ -1142,8 +1155,8 @@ const onLoad = () => {
 
     // event handler for slider
     // trigger only if clicked to avoid looping through the nodes again
-    $('#length_filter').click(function (event) {
-      slider.noUiSlider.on('set', function (event) {
+    $("#length_filter").click(function (event) {
+      slider.noUiSlider.on("set", function (event) {
         var slider_max = slider.noUiSlider.get()[1],
           slider_min = slider.noUiSlider.get()[0]
         g.forEachNode(function (node) {
@@ -1153,7 +1166,7 @@ const onLoad = () => {
           // TODO it is hard to filter without knowing the size anyway
           // only changes nodes for nodes with seq_length data
           if (node.data.seq_length) {
-            var node_length = node.data.seq_length.split('>').slice(-1).toString()
+            var node_length = node.data.seq_length.split(">").slice(-1).toString()
             var nodeUI = graphics.getNodeUI(node.id)
             if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
               nodeUI.color = 0xcdc8b1 // shades nodes
@@ -1167,10 +1180,10 @@ const onLoad = () => {
     })
 
     // inputs mins and maxs for slider
-    var inputMin = document.getElementById('slider_input_min'),
-      inputMax = document.getElementById('slider_input_max'),
+    var inputMin = document.getElementById("slider_input_min"),
+      inputMax = document.getElementById("slider_input_max"),
       inputs = [inputMin, inputMax]
-    slider.noUiSlider.on('update', function (values, handle) {
+    slider.noUiSlider.on("update", function (values, handle) {
       inputs[handle].value = values[handle]
     })
 
@@ -1245,7 +1258,7 @@ const onLoad = () => {
       areaSelection = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload)
+        showGoback, showDownload, idsArrays)
     })
     // runs the re run operation for the selected species
     $('#Re_run').click(function (event) {

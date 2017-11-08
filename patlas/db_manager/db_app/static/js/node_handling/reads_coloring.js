@@ -241,7 +241,7 @@ const color_legend = (readMode) => {
 // Clear nodes function for reset-sliders button
 
 const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
-                       showGoback, showDownload) => {
+                       showGoback, showDownload, idsArrays) => {
   // first iters nodes to get nodeColor (default color)
   node_color_reset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
