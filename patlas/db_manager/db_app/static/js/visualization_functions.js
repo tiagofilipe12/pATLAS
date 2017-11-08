@@ -134,7 +134,6 @@ const onLoad = () => {
       if (e.which === 16 && multiSelectOverlay === false) { // shift key
         $(".graph-overlay").show()
         multiSelectOverlay = startMultiSelect(g, renderer, layout)
-        console.log(multiSelectOverlay)
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
@@ -640,69 +639,26 @@ const onLoad = () => {
         }
       })
 
-      // sort families and orders alphabetically
-
-      const sortedArray_order = list_orders.sort(),
-        sortedArray_family = list_families.sort(),
-        sortedArray_genera = list_genera.sort(),
-        sortedArray_species = list_species.sort()
-
-      // append all order present in dataset
-
-      for (let i = 0; i < sortedArray_order.length; i++) {
-        //var order_tag = 'order' + sortedArray_order[i]
-        //var orderId = "id='" + order_tag + "'"
-        $('#orderList').append("<option class='OrderClass'>" +
-          sortedArray_order[i] +
-          '</option>')
-      }
-      $('#orderList').append("<option class='OrderClass'> \
-                                    <em>Other</em></option>")
-      // append all families present in dataset
-      for (let i = 0; i < sortedArray_family.length; i++) {
-        //var family_tag = 'family' + sortedArray_family[i]
-        //var familyId = "id='" + family_tag + "'"
-        $('#familyList').append("<option class='FamilyClass'>" +
-          sortedArray_family[i] +
-          '</option>')
-      }
-      $('#familyList').append("<option class='FamilyClass'> \
-                                    <em>Other</em></li>")
-      // append all genera present in dataset
-      for (let i = 0; i < sortedArray_genera.length; i++) {
-        //var genus_tag = 'genus' + sortedArray_genera[i]
-        //var genusId = "id='" + genus_tag + "'"
-        $('#genusList').append("<option class='GenusClass'>" +
-          sortedArray_genera[i] +
-          '</option>')
-      }
-      // append all species present in dataset
-      for (let i = 0; i < sortedArray_species.length; i++) {
-        //var species_tag = 'genus' + sortedArray_species[i]
-        //var speciesId = "id='" + species_tag + "'"
-        $('#speciesList').append("<option class='SpeciesClass'>" +
-          sortedArray_species[i] +
-          '</option>')
-      }
-
-      // updates options provided to bootstrap-select
-      $('#orderList').selectpicker('refresh')
-      $('#familyList').selectpicker('refresh')
-      $('#genusList').selectpicker('refresh')
-      $('#speciesList').selectpicker('refresh')
+      // populate the menus
+      singleDropdownPopulate("#orderList", list_orders, "OrderClass")
+      singleDropdownPopulate("#familyList", list_families, "FamilyClass")
+      singleDropdownPopulate("#genusList", list_genera, "GenusClass")
+      singleDropdownPopulate("#speciesList", list_species, "SpeciesClass")
 
       // clickable <li> and control of displayer of current filters
+      // TODO fix this variables, their behavior is unpredictable
+      // TODO this code block needs a major refactor until clear button
       firstInstance = true // global variable
-      existingTaxon = [],   // global variable
-        taxaInList = []   // global variable
-      const classArray = ['.OrderClass', '.FamilyClass', '.GenusClass', '.SpeciesClass']
-      idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species'] // global variable
+      existingTaxon = []   // global variable
+      taxaInList = []   // global variable
+      const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
+      idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"] // global variable
       for (let i = 0; i < classArray.length; i++) {
-        $(classArray[i]).on('click', function (e) {
+        $(classArray[i]).on("click", function (e) {
           // empties the text in this div for the first intance
           if (firstInstance === true) {
             for (let x = 0; x < idsArrays.length; x++) {
-              $('#' + idsArrays[x]).empty()
+              $("#" + idsArrays[x]).empty()
             }
             firstInstance = false
           }
@@ -749,33 +705,33 @@ const onLoad = () => {
 
       //* **** Clear selection button *****//
       // clear = false; //added to control the colors being triggered after clearing
-      $('#taxaModalClear').click(function (event) {
+      $("#taxaModalClear").click(function (event) {
         document.getElementById("reset-sliders").click()
         // clear = true;
         event.preventDefault()
         resetDisplayTaxaBox(idsArrays)
 
         // resets dropdown selections
-        $('#orderList').selectpicker('deselectAll')
-        $('#familyList').selectpicker('deselectAll')
-        $('#genusList').selectpicker('deselectAll')
-        $('#speciesList').selectpicker('deselectAll')
+        $("#orderList").selectpicker("deselectAll")
+        $("#familyList").selectpicker("deselectAll")
+        $("#genusList").selectpicker("deselectAll")
+        $("#speciesList").selectpicker("deselectAll")
 
         slider.noUiSlider.set([min, max])
         node_color_reset(graphics, g, nodeColor, renderer)
-        if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
-          showLegend.style.display = 'none'
-          showRerun.style.display = 'none'
-          showGoback.style.display = 'none'
-          //document.getElementById('go_back').className += ' disabled'
-          showDownload.style.display = 'none'
+        if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+          showLegend.style.display = "none"
+          showRerun.style.display = "none"
+          showGoback.style.display = "none"
+          //document.getElementById("go_back").className += " disabled"
+          showDownload.style.display = "none"
         } else {
-          $('#colorLegendBox').empty()
-          document.getElementById('taxa_label').style.display = 'none' // hide label
-          showRerun.style.display = 'none'
-          showGoback.style.display = 'none'
-          //document.getElementById('go_back').className += ' disabled'
-          showDownload.style.display = 'none'
+          $("#colorLegendBox").empty()
+          document.getElementById("taxa_label").style.display = "none" // hide label
+          showRerun.style.display = "none"
+          showGoback.style.display = "none"
+          //document.getElementById("go_back").className += " disabled"
+          showDownload.style.display = "none"
         }
       })
     })
@@ -784,33 +740,33 @@ const onLoad = () => {
 
     // perform actions when submit button is clicked.
 
-    $('#taxaModalSubmit').click(function (event) {
+    $("#taxaModalSubmit").click(function (event) {
 
       //let listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
       event.preventDefault()
       // now processes the current selection
-      var species_query = document.getElementById('p_Species').innerHTML,
-        genus_query = document.getElementById('p_Genus').innerHTML,
-        family_query = document.getElementById('p_Family').innerHTML,
-        order_query = document.getElementById('p_Order').innerHTML
-      var selectedSpecies = species_query.replace('Species: ', '').split(',').filter(Boolean),
-        selectedGenus = genus_query.replace('Genus: ', '').split(',').filter(Boolean),
-        selectedFamily = family_query.replace('Family: ', '').split(',').filter(Boolean),
-        selectedOrder = order_query.replace('Order: ', '').split(',').filter(Boolean)
+      const species_query = document.getElementById("p_Species").innerHTML,
+        genus_query = document.getElementById("p_Genus").innerHTML,
+        family_query = document.getElementById("p_Family").innerHTML,
+        order_query = document.getElementById("p_Order").innerHTML
+      const selectedSpecies = species_query.replace("Species: ", "").split(",").filter(Boolean),
+        selectedGenus = genus_query.replace("Genus: ", "").split(",").filter(Boolean),
+        selectedFamily = family_query.replace("Family: ", "").split(",").filter(Boolean),
+        selectedOrder = order_query.replace("Order: ", "").split(",").filter(Boolean)
 
       //* *** Alert for taxa filter ****//
       // print alert if no filters are selected
       counter = 0 // counts the number of taxa type that has not been selected
 
-      var alertArrays = {
-        'order': selectedOrder,
-        'family': selectedFamily,
-        'genus': selectedGenus,
-        'species': selectedSpecies
+      const alertArrays = {
+        "order": selectedOrder,
+        "family": selectedFamily,
+        "genus": selectedGenus,
+        "species": selectedSpecies
       }
-      var divAlert = document.getElementById('alertId')
-      var Alert = false
+      const divAlert = document.getElementById('alertId')
+      let Alert = false
       for (let i in alertArrays) {
         if (alertArrays[i][0] === "No filters applied") {
           Alert = true
@@ -850,9 +806,9 @@ const onLoad = () => {
       // appends genus to selectedGenus according with the family and order for single-color selection
       // also appends to associative arrays for family and order for multi-color selection
       $.each(dict_genera, function (species, pair) {
-        var genus = pair[0]
-        var family = pair[1]
-        var order = pair[2]
+        const genus = pair[0]
+        const family = pair[1]
+        const order = pair[2]
         if (selectedFamily.indexOf(family) >= 0) {
           selectedGenus.push(species)
           if (!(family in assocFamilyGenus)) {
@@ -880,8 +836,9 @@ const onLoad = () => {
       })
 
       // renders the graph for the desired taxon if more than one taxon type is selected
-      var store_lis = '' // a variable to store all <li> generated for legend
-      var firstIteration = true // boolean to control the upper taxa level (order or family)
+      let store_lis = '' // a variable to store all <li> generated for legend
+      let firstIteration = true // boolean to control the upper taxa level
+      // (order or family)
 
       // first restores all nodes to default color
       node_color_reset(graphics, g, nodeColor, renderer)
@@ -907,7 +864,7 @@ const onLoad = () => {
         for (i in alertArrays.family) {
           let currentSelection = alertArrays.family
           for (i in currentSelection) {
-            const tempArray = assocFamilyGenusGenus[currentSelection[i]]
+            const tempArray = assocFamilyGenus[currentSelection[i]]
             for (sp in tempArray) {
               taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
                 .then(results => {
@@ -1474,7 +1431,7 @@ const onLoad = () => {
 
   // download button //
   $("#download_ds").unbind("click").bind("click", function (e) {
-    console.log(areaSelection)
+    //console.log(areaSelection)
     // for now this is just taking what have been changed by taxa coloring
     if (areaSelection === true) {
       // downloads if area selection is triggered
