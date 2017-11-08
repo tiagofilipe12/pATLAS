@@ -741,10 +741,19 @@
             <div class="modal-body" id="modalBodyABR">
                 <div class="row" id="modalBodyABR1">
                     <div class="dropdown col-sm-3 " id="resDropdown">
-                        <div class="header_taxa">Resistances filter</div>
+                        <div class="header_taxa">ResFinder</div>
                         <select class="selectpicker" multiple data-width="80%"
                                 data-selected-text-format="count" data-live-search="true"
-                                title="No items selected" id="resistanceList"
+                                title="No items selected" id="resList"
+                                data-size="15" data-hide-disabled="true">
+                            <!--populated by visualization_function.js-->
+                        </select>
+                    </div>
+                    <div class="dropdown col-sm-3 " id="cardDropdown">
+                        <div class="header_taxa">Card</div>
+                        <select class="selectpicker" multiple data-width="80%"
+                                data-selected-text-format="count" data-live-search="true"
+                                title="No items selected" id="cardList"
                                 data-size="15" data-hide-disabled="true">
                             <!--populated by visualization_function.js-->
                         </select>
@@ -769,9 +778,9 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-default"
-                        data-dismiss="modal" id="taxaResSubmit">Submit</button>
+                        data-dismiss="modal" id=resSubmit">Submit</button>
                 <button type="submit" class="btn btn-danger"
-                        id="taxaResClear">Clear selection</button>
+                        id="resClear">Clear selection</button>
             </div>
         </div>
 
@@ -791,7 +800,7 @@
             <div class="modal-body" id="modalBodyFAM">
                 <div class="row" id="modalBodyFAM1">
                     <div class="dropdown col-sm-3 " id="famDropdown">
-                        <div class="header_taxa">Plasmid families filter</div>
+                        <div class="header_taxa">PlasmidFinder</div>
                         <select class="selectpicker" multiple data-width="80%"
                                 data-selected-text-format="count" data-live-search="true"
                                 title="No items selected"
@@ -820,9 +829,9 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-default"
-                        data-dismiss="modal" id="taxaResSubmit">Submit</button>
+                        data-dismiss="modal" id="pfSubmit">Submit</button>
                 <button type="submit" class="btn btn-danger"
-                        id="taxaResClear">Clear selection</button>
+                        id="pfClear">Clear selection</button>
             </div>
         </div>
 
