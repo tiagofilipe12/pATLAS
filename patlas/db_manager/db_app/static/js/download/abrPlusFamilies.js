@@ -49,14 +49,15 @@ const resGetter = (nodeId) => {
       const aroList = data.json_entry.aro_accession.replace(/['u\[\] ]/g, "").split(",")
 
       // consts to control the numbering of each database entry
-      const num = 0
-      const num2 = 0
+      let num = 0
+      let num2 = 0
 
       for (const i in totalLenght) {
         if ({}.hasOwnProperty.call(totalLenght, i)) {
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
           if (databaseList[i].indexOf("card") > -1) {
-            const numString =+ (num + 1).toString()
+            num = num + 1
+            const numString = num.toString()
             queryArrayCardGenes.push(numString + ": " + totalLenght[i])
             // card retrieves some odd numbers after the accession... that
             // prevent to form a linkable item to genbank
@@ -67,7 +68,8 @@ const resGetter = (nodeId) => {
             queryArrayCardRange.push(numString + ": " + rangeEntry)
             queryArrayCardARO.push(numString + ": " +  makeCardClickable(aroList[i]))
           } else {
-            const numString2 =+ (num2 + 1).toString()
+            num2 = num2 + 1
+            const numString2 = num2.toString()
             queryArrayResfinderGenes.push(numString2 + ": " + totalLenght[i])
             queryArrayResfinderAccession.push(numString2 + ": " +
               makeItClickable(acessionList[i]))
