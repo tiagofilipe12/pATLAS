@@ -559,6 +559,57 @@ const onLoad = () => {
     // })
 
     //* ******************//
+    //* ***plasmidfinder Filters****//
+    //* ******************//
+
+
+    getArray_pf().done( (json) => {
+      // first parse the json input file
+      const listPF = []
+      // iterate over the file
+      $.each(json, (accession, entry) => {
+        geneEntries = entry.gene
+        for (let i in geneEntries) {
+          if (listPF.indexOf(geneEntries[i]) < 0) {
+            listPF.push(geneEntries[i])
+          }
+        }
+      })
+      // populate the menus
+      singleDropdownPopulate("#plasmidFamiliesList", listPF, "pfClass")
+    })
+
+
+    //* ******************//
+    //* ***Resistance Filters****//
+    //* ******************//
+
+
+    getArray_res().done( (json) => {
+      // first parse the json input file
+      const listCard = [],
+        listRes = []
+      // iterate over the file
+      $.each(json, (accession, entry) => {
+        databaseEntries = entry.database
+        geneEntries = entry.gene
+        for (let i in databaseEntries) {
+          if (databaseEntries[i] === "card" && listCard.indexOf(geneEntries[i]) < 0) {
+            listCard.push(geneEntries[i])
+          } else {
+            if (listRes.indexOf(geneEntries[i]) < 0) {
+              listRes.push(geneEntries[i])
+            }
+          }
+        }
+      })
+      // populate the menus
+      // TODO something similar could be done for taxa
+      singleDropdownPopulate("#cardList", listCard, "cardClass")
+      singleDropdownPopulate("#resList", listRes, "resClass")
+    })
+
+    //* ******************//
     //* ***Taxa Filter****//
     //* ******************//
 
