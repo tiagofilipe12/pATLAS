@@ -1,15 +1,20 @@
 // if this is a developer session please enable the below line of code
 const devel = false
-let rerun = false // boolean that controls the prerender function if rerun
+
+// boolean that controls the prerender function if rerun
 // is activated
+let rerun = false
 
 // helps set menu to close status
 let first_click_menu = true
+
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
+
 // this variable is used to store the clicked node to use in resistance and
 // plasmid buttons
 let clickedNode = false
+
 // starts a global instance for checking if button was clicked before
 let clickedPopupButtonRes = false
 let clickedPopupButtonCard = false
@@ -766,18 +771,18 @@ const onLoad = () => {
       }
       // control the alertClose button
 
-      $('#alertClose').click(function () {
-        $('#alertId').hide()  // hide this div
+      $("#alertClose").click( () => {
+        $("#alertId").hide()  // hide this div
       })
 
       // control button to close div
-      $("#alertCloseNCBI").click(function () {
+      $("#alertCloseNCBI").click( () => {
         $("#alertNCBI").hide()  // hide this div
       })
 
       // auto hide after 5 seconds without closing the div
 
-      window.setTimeout(function () { $('#alertId').hide() }, 5000)
+      window.setTimeout( () => { $("#alertId").hide() }, 5000)
 
       //* *** End Alert for taxa filter ****//
 
