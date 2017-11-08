@@ -53,7 +53,7 @@ def full_ds():
 @app.route("/taxa")
 def taxa_summary():
     return repetitiveFunction("db_app/static/json/taxa_tree.json")
-    data = make_summary("db_app/static/json/taxa_tree.json")
+    # data = make_summary("db_app/static/json/taxa_tree.json")
     # response = app.response_class(
     #     response=json.dumps(data),
     #     status=200,
