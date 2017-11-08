@@ -56,7 +56,7 @@ const onLoad = () => {
   // Sets parameters to be passed to WebglCircle in order to change
   // node shape, setting color and size.
   const nodeColor = 0x666370 // hex rrggbb
-  const min_nodeSize = 2 // a value that assures that the node is
+  const minNodeSize = 2 // a value that assures that the node is
   // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
@@ -95,7 +95,7 @@ const onLoad = () => {
     // by the custom shader:
     graphics.node( (node) => {
       //console.log("node", node)
-      nodeSize = min_nodeSize * node.data.log_length
+      nodeSize = minNodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
 
@@ -196,6 +196,9 @@ const onLoad = () => {
     $("#toggle-event").change(function () {   // jquery seems not to support es6
       toggle_status = $(this).prop("checked")
       toggle_manager(toggle_status)
+      // TODO this should be reworked because it conflicts with
+      // popup_description highlight node. Maybe it can be this function can
+      // be combined with popup_description
     })
 
     //* *************//
@@ -207,34 +210,35 @@ const onLoad = () => {
     // changes the color of node and links (and respective linked nodes) of this node when clicked
     events.dblClick( (node) => {
       store_nodes.push(node.id)
+      let colorToUse
       //console.log('Single click on node: ' + node.id)
       const nodeUI = graphics.getNodeUI(node.id)
       if (toggle_status === true) {   // if statement to check if toggle
         // button is enabled
         // statement when node and linked nodes are still in default color
         if (nodeUI.color === nodeColor) {
-          color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
+          colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
         }
         // statement when linked node is selected
         else if (nodeUI.color === 0x7c3912) {
-          color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
+          colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
         }
         // statement when node is shaded
         else if (nodeUI.color === 0xcdc8b1) {
-          color_to_use = [0xc89933, 0x000000FF, 0x7c3912]
+          colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
         }
         // statement do deselect node and linked nodes
         else {
           // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
-          color_to_use = [nodeColor, 0xb3b3b3ff, nodeColor]
+          colorToUse = [nodeColor, 0xb3b3b3ff, nodeColor]
         }
-        nodeUI.color = color_to_use[0]
+        nodeUI.color = colorToUse[0]
         g.forEachLinkedNode(node.id, (linkedNode, link) => {
           const linkUI = graphics.getLinkUI(link.id)
-          linkUI.color = color_to_use[1]
+          linkUI.color = colorToUse[1]
           const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
           if (linked_nodeUI.color !== 0xc89933) {
-            linked_nodeUI.color = color_to_use[2]
+            linked_nodeUI.color = colorToUse[2]
           }
         })
       }
@@ -1077,7 +1081,7 @@ const onLoad = () => {
       setTimeout(function () {
         link_coloring(g, graphics, renderer)
       }, 100)
-      var readMode = false
+      const readMode = false
       color_legend(readMode)
       //document.getElementById('reset-links').disabled = ''
     })

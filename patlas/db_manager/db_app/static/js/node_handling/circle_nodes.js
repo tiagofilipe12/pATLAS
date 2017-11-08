@@ -42,7 +42,7 @@ function buildCircleNodeShader () {
       '   color.r = mod(c, 256.0); c = floor(c/256.0); color /= 255.0;',
       '   color.a = 1.0;',
       '}'].join('\n')
-  var program,
+  let program,
     gl,
     buffer,
     locations,
@@ -55,7 +55,7 @@ function buildCircleNodeShader () {
         /**
           * Called by webgl renderer to load the shader into gl context.
           */
-    load: function (glContext) {
+    load(glContext) {
       gl = glContext
       webglUtils = Viva.Graph.webgl(glContext)
       program = webglUtils.createProgram(nodesVS, nodesFS)
@@ -71,7 +71,7 @@ function buildCircleNodeShader () {
           * @param nodeUI - data model for the rendered node (WebGLCircle in this case)
           * @param pos - {x, y} coordinates of the node.
           */
-    position: function (nodeUI, pos) {
+    position(nodeUI, pos) {
       var idx = nodeUI.id
       nodes[idx * ATTRIBUTES_PER_PRIMITIVE] = pos.x
       nodes[idx * ATTRIBUTES_PER_PRIMITIVE + 1] = -pos.y
@@ -82,7 +82,7 @@ function buildCircleNodeShader () {
           * Request from webgl renderer to actually draw our stuff into the
           * gl context. This is the core of our shader.
           */
-    render: function () {
+    render() {
       gl.useProgram(program)
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
       gl.bufferData(gl.ARRAY_BUFFER, nodes, gl.DYNAMIC_DRAW)
@@ -98,14 +98,14 @@ function buildCircleNodeShader () {
         /**
           * Called by webgl renderer when user scales/pans the canvas with nodes.
           */
-    updateTransform: function (newTransform) {
+    updateTransform(newTransform) {
       transform = newTransform
       isCanvasDirty = true
     },
         /**
           * Called by webgl renderer when user resizes the canvas with nodes.
           */
-    updateSize: function (newCanvasWidth, newCanvasHeight) {
+    updateSize(newCanvasWidth, newCanvasHeight) {
       canvasWidth = newCanvasWidth
       canvasHeight = newCanvasHeight
       isCanvasDirty = true
@@ -113,14 +113,14 @@ function buildCircleNodeShader () {
         /**
           * Called by webgl renderer to notify us that the new node was created in the graph
           */
-    createNode: function (node) {
+    createNode(node) {
       nodes = webglUtils.extendArray(nodes, nodesCount, ATTRIBUTES_PER_PRIMITIVE)
       nodesCount += 1
     },
         /**
           * Called by webgl renderer to notify us that the node was removed from the graph
           */
-    removeNode: function (node) {
+    removeNode(node) {
       if (nodesCount > 0) { nodesCount -= 1 }
       if (node.id < nodesCount && nodesCount > 0) {
                 // we do not really delete anything from the buffer.
@@ -135,6 +135,6 @@ function buildCircleNodeShader () {
           * buffers. We don't use it here, but it's needed by API (see the comment
           * in the removeNode() method)
           */
-    replaceProperties: function (replacedNode, newNode) {}
+    replaceProperties(replacedNode, newNode) {}
   }
 }
