@@ -54,7 +54,6 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
   showLegend.style.display = "block"
   const tmpArray = new Array(x)// create an empty array with length x
   style_width = 100 / x
-  console.log(readMode)
   // enters this statement for coloring the links and not the nodes
   if (readMode !== true) {
     $("#scaleLegend").empty()
