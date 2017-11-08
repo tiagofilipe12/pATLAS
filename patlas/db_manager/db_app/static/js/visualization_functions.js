@@ -18,19 +18,21 @@ let clickedPopupButtonFamily = false
 // variable to control stats displayer
 let areaSelection = false
 
-// load test JSON file
-const getArray = () => {
-  return $.getJSON("/test")   // change the input file name
-}
-
-// load full JSON file
-const getArrayFull = () => {
-  return $.getJSON("/fullDS")   // change the input file name
-}
+const getArray = (devel === true) ? $.getJSON("/test") : $.getJSON("/fullDS")
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
   return $.getJSON("/taxa")
+}
+
+// load JSON file with resistance dictionary
+const getArray_res = () => {
+  return $.getJSON("/resistance")
+}
+
+// load JSON file with taxa dictionary
+const getArray_pf = () => {
+  return $.getJSON("/plasmidfinder")
 }
 
 // list used to store for re-run button (apply filters)
@@ -1256,7 +1258,7 @@ const onLoad = () => {
       // the next if statement is only executed on development session, it
       // is way less efficient than the non development session.
       if (devel === true) {
-        getArray().done(function (json) {
+        getArray.done(function (json) {
           $.each(json, function (sequence_info, dict_dist) {
             counter++
             // next we need to retrieve each information type independently
@@ -1304,7 +1306,7 @@ const onLoad = () => {
         // this renders the graph when not in development session
         // this is a more efficient implementation which takes a different
         // file for loading the graph.
-        getArrayFull().done(function (json) {
+        getArray.done(function (json) {
 
           const addAllNodes = (array, callback) => {
             counter++
