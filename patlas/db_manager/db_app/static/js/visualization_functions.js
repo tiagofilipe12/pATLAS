@@ -585,7 +585,6 @@ const onLoad = () => {
     //* ***Resistance Filters****//
     //* ******************//
 
-
     getArray_res().done( (json) => {
       // first parse the json input file
       const listCard = [],
@@ -650,80 +649,115 @@ const onLoad = () => {
       // clickable <li> and control of displayer of current filters
       // TODO fix this variables, their behavior is unpredictable
       // TODO this code block needs a major refactor until clear button
-      let firstInstance = true
-      let existingTaxon = []
-      let taxaInList = []
-      let removal = false
+      // let firstInstance = true
+      // let multiLevel = false
+      // let existingTaxon = []
+      // let taxaInList = []
+      // let removal = false
       const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
       for (let i = 0; i < classArray.length; i++) {
         $(classArray[i]).on("click", function (e) {
-          console.log(firstInstace)
-          // empties the text in this div for the first intance
-          if (firstInstance === true) {
-            for (let x = 0; x < idsArrays.length; x++) {
-              $("#" + idsArrays[x]).empty()
-            }
-            firstInstance = false
-          }
           // fill panel group displaying current selected taxa filters //
           const stringClass = this.className.slice(0, -5)
           const tempVar = this.firstChild.innerHTML
 
           // checks if a taxon is already in display
-          const divstringClass = document.getElementById("p_" + stringClass)
-          removal = false
-          // adds taxa if everything is empty
-          if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
-            console.log("1:", taxaInList, tempVar)
-            divstringClass.innerHTML = stringClass + ": " + tempVar
-            removal = false
-            firstInstace = false
-          } else if (existingTaxon.indexOf(stringClass) >= 0 &&
-            taxaInList[0] === tempVar && taxaInList.length === 1) {
-            // checks if selection is in list and is the last element present... removing it
-            console.log("2:", taxaInList, tempVar)
-            // resets displayCurrentBox
-            resetDisplayTaxaBox(idsArrays)
-            // resets the lists and checkers for the panel
-            firstInstace = true
-            existingTaxon = []
-            taxaInList = []
-            removal = true
-          } else {
-            // if taxa not in listed menu entries but there are already some
-            // taxon there... this is executed
-            if (taxaInList.indexOf(tempVar) < 0 && firstInstace === false) {
-              console.log("3:", taxaInList, tempVar)
-              divstringClass.innerHTML = divstringClass.innerHTML + "," + tempVar
-              removal = false
-            } else if (taxaInList.indexOf(tempVar) <0 && firstInstace === true) {
-              console.log("3.1", taxaInList, tempVar)
-              for (let x = 0; x < idsArrays.length; x++) {
-                $("#" + idsArrays[x]).empty()
-              }
-              divstringClass.innerHTML = stringClass + ": " + tempVar
-              firstInstace = false
-              removal = false
-            }
-            // if it is already in list then remove it and remove from list taxaInList
-            else {
-              if (taxaInList[0] === tempVar) {
-                console.log("4:", taxaInList, tempVar)
-                tempString = tempVar + ","
-              } else {
-                // enters here to remove entries when there are entries in menu
-                console.log("5:", taxaInList, tempVar)
-                tempString = "," + tempVar
-              }
-              divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "")
-              taxaInList = stringRmArray(tempVar, taxaInList)
-              removal = true
-            }
-          }
-          if (taxaInList.indexOf(tempVar) < 0 && removal === false) {
-            taxaInList.push(tempVar)  // used to store all clicked taxa
-          }
-          existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
+          const divStringClass = "#p_" + stringClass
+
+          console.log(stringClass, tempVar, divStringClass)
+
+          filterDisplayer(tempVar, stringClass, divStringClass)
+
+          // removal = false
+          // // adds taxa if everything is empty
+          // if (existingTaxon.indexOf(stringClass) < 0 &&
+          //   taxaInList.indexOf(tempVar) < 0 && firstInstance === true) {
+          //   console.log("1:", taxaInList, tempVar, firstInstance)
+          //   firstInstance = resetsFirstInstance(idsArrays)
+          //   existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
+          //   // firstInstance = false
+          //   divstringClass.innerHTML = stringClass + ": " + tempVar
+          //   removal = false
+          // } else if (existingTaxon.indexOf(stringClass) >= 0 &&
+          //   taxaInList[0] === tempVar && taxaInList.length === 1) {
+          //   // checks if selection is in list and is the last element present... removing it
+          //   // just works for multi level selection
+          //   console.log("2:", taxaInList, tempVar, firstInstance)
+          //   // resets displayCurrentBox
+          //   resetDisplayTaxaBox(idsArrays)
+          //   // resets the lists and checkers for the panel
+          //   firstInstance = true
+          //   existingTaxon = []
+          //   taxaInList = []
+          //   removal = true
+          // } else {
+          //   // if taxa not in listed menu entries but there are already some
+          //   // taxon there... this is executed
+          //   if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) > -1 && firstInstance === false) {
+          //     // used for single taxa level selection
+          //     console.log("3:", taxaInList, tempVar, firstInstance)
+          //     divstringClass.innerHTML = divstringClass.innerHTML + "," + tempVar
+          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
+          //     removal = false
+          //   } else if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) > -1 && firstInstance === true) {
+          //     // used for single taxa level selection
+          //     console.log("3.1", taxaInList, tempVar, firstInstance)
+          //     firstInstance = resetsFirstInstance(idsArrays)
+          //     divstringClass.innerHTML = stringClass + ": " + tempVar
+          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
+          //     removal = false
+          //   } else if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) < 0 && multiLevel === true) {
+          //     // used when multi-level selections with more than 2 levels are
+          //     // made
+          //     console.log("3.2:", taxaInList, tempVar, firstInstance, multiLevel, existingTaxon)
+          //     divstringClass.innerHTML = stringClass + ": " + tempVar
+          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
+          //     removal = false
+          //   } else if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) > -1 && multiLevel === true) {
+          //     console.log("3.4:", taxaInList, tempVar, firstInstance, multiLevel, existingTaxon)
+          //     // used when multi-level selections are made and stringClass
+          //     // is added by below else if statemnt when multilevel is false
+          //     // basically when multilevel has just 2 levels
+          //     console.log("3.2:", taxaInList, tempVar, firstInstance, multiLevel, existingTaxon)
+          //     divstringClass.innerHTML = divstringClass.innerHTML + "," + tempVar
+          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
+          //     removal = false
+          //   } else if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) < 0 && multiLevel === false) {
+          //     // used when multi-level selections are made
+          //     console.log("3.3", taxaInList, tempVar, existingTaxon, firstInstance, multiLevel)
+          //     //firstInstance = resetsFirstInstance(idsArrays)
+          //     divstringClass.innerHTML = stringClass + ": " + tempVar
+          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
+          //     multiLevel = true
+          //     removal = false
+          //   } else {
+          //     // used to remove entries
+          //     // if it is already in list then remove it and remove from list taxaInList
+          //     if (taxaInList[0] === tempVar) {
+          //       console.log("4:", taxaInList, tempVar, firstInstance)
+          //       tempString = tempVar + ","
+          //     } else {
+          //       // enters here to remove entries when there are entries in menu
+          //       console.log("5:", taxaInList, tempVar, firstInstance)
+          //       tempString = "," + tempVar
+          //     }
+          //     if (divstringClass.innerHTML.indexOf(tempString) > -1) {
+          //       divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "")
+          //     } else {
+          //       console.log(divstringClass.innerHTM)
+          //       divstringClass.innerHTML = ""
+          //       existingTaxon = []
+          //       multiLevel = false
+          //     }
+          //     taxaInList = stringRmArray(tempVar, taxaInList, firstInstance)
+          //     removal = true
+          //   }
+          // }
+          // // adds to taxaInList if tempVar not in this array and if removal
+          // // is set to false
+          // if (taxaInList.indexOf(tempVar) < 0 && removal === false) {
+          //   taxaInList.push(tempVar)  // used to store all clicked taxa
+          // }
         })
       }
 
@@ -735,10 +769,11 @@ const onLoad = () => {
         event.preventDefault()
         resetDisplayTaxaBox(idsArrays)
         // resets the lists and checkers for the panel
-        firstInstace = true
-        existingTaxon = []
-        taxaInList = []
-        removal = true
+        // firstInstance = true
+        // multiLevel = false
+        // existingTaxon = []
+        // taxaInList = []
+        // removal = true
 
         // resets dropdown selections
         $("#orderList").selectpicker("deselectAll")
