@@ -585,10 +585,10 @@ const onLoad = () => {
     //* ***Resistance Filters****//
     //* ******************//
 
+    // first parse the json input file
+    const listCard = [],
+      listRes = []
     getArray_res().done( (json) => {
-      // first parse the json input file
-      const listCard = [],
-        listRes = []
       // iterate over the file
       $.each(json, (accession, entry) => {
         databaseEntries = entry.database
@@ -604,10 +604,55 @@ const onLoad = () => {
         }
       })
       // populate the menus
-      // TODO something similar could be done for taxa
-      singleDropdownPopulate("#cardList", listCard, "cardClass")
-      singleDropdownPopulate("#resList", listRes, "resClass")
+      singleDropdownPopulate("#cardList", listCard, "CardClass")
+      singleDropdownPopulate("#resList", listRes, "ResfinderClass")
+
+      const classArray = [".CardClass", ".ResfinderClass"]
+      for (let i = 0; i < classArray.length; i++) {
+        $(classArray[i]).on("click", function (e) {
+          // fill panel group displaying current selected taxa filters //
+          const stringClass = this.className.slice(0,-5)
+          const tempVar = this.firstChild.innerHTML
+
+          // checks if a taxon is already in display
+          const divStringClass = "#p_" + stringClass
+
+          filterDisplayer(tempVar, stringClass, divStringClass)
+        })
+      }
     })
+
+    $("#resClear").click( (event) => {
+      document.getElementById("reset-sliders").click()
+      // clear = true;
+      event.preventDefault()
+      resetDisplayTaxaBox(["p_Resfinder", "p_Card"])
+
+      // resets dropdown selections
+      $("#cardList").selectpicker("deselectAll")
+      $("#resList").selectpicker("deselectAll")
+
+      slider.noUiSlider.set([min, max])
+      node_color_reset(graphics, g, nodeColor, renderer)
+      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+        showLegend.style.display = "none"
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        showDownload.style.display = "none"
+      } else {
+        $("#colorLegendBox").empty()
+        document.getElementById("taxa_label").style.display = "none" // hide label
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        showDownload.style.display = "none"
+      }
+    })
+    $("#resSubmit").click( (event) => {
+      event.preventDefault()
+      console.log("clicked")
+      resSubmitFunction()
+    })
+
 
     //* ******************//
     //* ***Taxa Filter****//
