@@ -5,7 +5,7 @@ function resetDisplayTaxaBox (idsArrays) {
     // empty field
     $(`#${idsArrays[x]}`).empty()
     // reset to default of html
-    $(`#${idsArrays[x]}`).append(`${idsArrays[x].replace("p_", "")}: No filters applied`)
+    $(`#${idsArrays[x]}`).append(`${idsArrays[x].replace("p_", "")}:`)
   }
 }
 
@@ -38,6 +38,8 @@ const taxaElementsToString = (taxaElements) => {
   return (starter + allOthers.toString())
 }
 
+// TODO needs testing for actual datasets execution b/c string was modified
+// it is allways retrieving multi taxa selected because of the comma
 const filterDisplayer = (taxaName, stringClass, divStringClass) => {
   const taxaElements = $(divStringClass).html().split(/:|,/)
   const taxaToParse = " " + taxaName + ","
