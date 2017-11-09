@@ -3,9 +3,9 @@
 function resetDisplayTaxaBox (idsArrays) {
   for (let x = 0; x < idsArrays.length; x++) {
     // empty field
-    $("#" + idsArrays[x]).empty()
+    $(`#${idsArrays[x]}`).empty()
     // reset to default of html
-    $("#" + idsArrays[x]).append(idsArrays[x].replace("p_", "") + ": No filters applied")
+    $(`#${idsArrays[x]}`).append(`${idsArrays[x].replace("p_", "")}: No filters applied`)
   }
 }
 

@@ -670,15 +670,18 @@ const onLoad = () => {
           const tempVar = this.firstChild.innerHTML
 
           // checks if a taxon is already in display
-          let divstringClass = document.getElementById("p_" + stringClass)
+          const divstringClass = document.getElementById("p_" + stringClass)
           removal = false
+          // adds taxa if everything is empty
           if (existingTaxon.indexOf(stringClass) < 0 && taxaInList.indexOf(tempVar) < 0) {
+            console.log("1:", taxaInList, tempVar)
             divstringClass.innerHTML = stringClass + ": " + tempVar
             removal = false
-          }
-          // checks if selection is in list and is the last element present... removing it
-          else if (existingTaxon.indexOf(stringClass) >= 0 && taxaInList[0] === tempVar && taxaInList.length === 1) {
-            console.log(taxaInList[0], tempVar)
+            firstInstace = false
+          } else if (existingTaxon.indexOf(stringClass) >= 0 &&
+            taxaInList[0] === tempVar && taxaInList.length === 1) {
+            // checks if selection is in list and is the last element present... removing it
+            console.log("2:", taxaInList, tempVar)
             // resets displayCurrentBox
             resetDisplayTaxaBox(idsArrays)
             // resets the lists and checkers for the panel
@@ -687,16 +690,29 @@ const onLoad = () => {
             taxaInList = []
             removal = true
           } else {
-            // if taxa is already not in list then append
-            if (taxaInList.indexOf(tempVar) < 0) {
+            // if taxa not in listed menu entries but there are already some
+            // taxon there... this is executed
+            if (taxaInList.indexOf(tempVar) < 0 && firstInstace === false) {
+              console.log("3:", taxaInList, tempVar)
               divstringClass.innerHTML = divstringClass.innerHTML + "," + tempVar
+              removal = false
+            } else if (taxaInList.indexOf(tempVar) <0 && firstInstace === true) {
+              console.log("3.1", taxaInList, tempVar)
+              for (let x = 0; x < idsArrays.length; x++) {
+                $("#" + idsArrays[x]).empty()
+              }
+              divstringClass.innerHTML = stringClass + ": " + tempVar
+              firstInstace = false
               removal = false
             }
             // if it is already in list then remove it and remove from list taxaInList
             else {
               if (taxaInList[0] === tempVar) {
+                console.log("4:", taxaInList, tempVar)
                 tempString = tempVar + ","
               } else {
+                // enters here to remove entries when there are entries in menu
+                console.log("5:", taxaInList, tempVar)
                 tempString = "," + tempVar
               }
               divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "")
