@@ -647,13 +647,6 @@ const onLoad = () => {
       singleDropdownPopulate("#speciesList", list_species, "SpeciesClass")
 
       // clickable <li> and control of displayer of current filters
-      // TODO fix this variables, their behavior is unpredictable
-      // TODO this code block needs a major refactor until clear button
-      // let firstInstance = true
-      // let multiLevel = false
-      // let existingTaxon = []
-      // let taxaInList = []
-      // let removal = false
       const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
       for (let i = 0; i < classArray.length; i++) {
         $(classArray[i]).on("click", function (e) {
@@ -664,100 +657,7 @@ const onLoad = () => {
           // checks if a taxon is already in display
           const divStringClass = "#p_" + stringClass
 
-          console.log(stringClass, tempVar, divStringClass)
-
           filterDisplayer(tempVar, stringClass, divStringClass)
-
-          // removal = false
-          // // adds taxa if everything is empty
-          // if (existingTaxon.indexOf(stringClass) < 0 &&
-          //   taxaInList.indexOf(tempVar) < 0 && firstInstance === true) {
-          //   console.log("1:", taxaInList, tempVar, firstInstance)
-          //   firstInstance = resetsFirstInstance(idsArrays)
-          //   existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
-          //   // firstInstance = false
-          //   divstringClass.innerHTML = stringClass + ": " + tempVar
-          //   removal = false
-          // } else if (existingTaxon.indexOf(stringClass) >= 0 &&
-          //   taxaInList[0] === tempVar && taxaInList.length === 1) {
-          //   // checks if selection is in list and is the last element present... removing it
-          //   // just works for multi level selection
-          //   console.log("2:", taxaInList, tempVar, firstInstance)
-          //   // resets displayCurrentBox
-          //   resetDisplayTaxaBox(idsArrays)
-          //   // resets the lists and checkers for the panel
-          //   firstInstance = true
-          //   existingTaxon = []
-          //   taxaInList = []
-          //   removal = true
-          // } else {
-          //   // if taxa not in listed menu entries but there are already some
-          //   // taxon there... this is executed
-          //   if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) > -1 && firstInstance === false) {
-          //     // used for single taxa level selection
-          //     console.log("3:", taxaInList, tempVar, firstInstance)
-          //     divstringClass.innerHTML = divstringClass.innerHTML + "," + tempVar
-          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
-          //     removal = false
-          //   } else if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) > -1 && firstInstance === true) {
-          //     // used for single taxa level selection
-          //     console.log("3.1", taxaInList, tempVar, firstInstance)
-          //     firstInstance = resetsFirstInstance(idsArrays)
-          //     divstringClass.innerHTML = stringClass + ": " + tempVar
-          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
-          //     removal = false
-          //   } else if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) < 0 && multiLevel === true) {
-          //     // used when multi-level selections with more than 2 levels are
-          //     // made
-          //     console.log("3.2:", taxaInList, tempVar, firstInstance, multiLevel, existingTaxon)
-          //     divstringClass.innerHTML = stringClass + ": " + tempVar
-          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
-          //     removal = false
-          //   } else if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) > -1 && multiLevel === true) {
-          //     console.log("3.4:", taxaInList, tempVar, firstInstance, multiLevel, existingTaxon)
-          //     // used when multi-level selections are made and stringClass
-          //     // is added by below else if statemnt when multilevel is false
-          //     // basically when multilevel has just 2 levels
-          //     console.log("3.2:", taxaInList, tempVar, firstInstance, multiLevel, existingTaxon)
-          //     divstringClass.innerHTML = divstringClass.innerHTML + "," + tempVar
-          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
-          //     removal = false
-          //   } else if (taxaInList.indexOf(tempVar) < 0 && existingTaxon.indexOf(stringClass) < 0 && multiLevel === false) {
-          //     // used when multi-level selections are made
-          //     console.log("3.3", taxaInList, tempVar, existingTaxon, firstInstance, multiLevel)
-          //     //firstInstance = resetsFirstInstance(idsArrays)
-          //     divstringClass.innerHTML = stringClass + ": " + tempVar
-          //     existingTaxon.push(stringClass) // used to store previous string and for comparing with new one
-          //     multiLevel = true
-          //     removal = false
-          //   } else {
-          //     // used to remove entries
-          //     // if it is already in list then remove it and remove from list taxaInList
-          //     if (taxaInList[0] === tempVar) {
-          //       console.log("4:", taxaInList, tempVar, firstInstance)
-          //       tempString = tempVar + ","
-          //     } else {
-          //       // enters here to remove entries when there are entries in menu
-          //       console.log("5:", taxaInList, tempVar, firstInstance)
-          //       tempString = "," + tempVar
-          //     }
-          //     if (divstringClass.innerHTML.indexOf(tempString) > -1) {
-          //       divstringClass.innerHTML = divstringClass.innerHTML.replace(tempString, "")
-          //     } else {
-          //       console.log(divstringClass.innerHTM)
-          //       divstringClass.innerHTML = ""
-          //       existingTaxon = []
-          //       multiLevel = false
-          //     }
-          //     taxaInList = stringRmArray(tempVar, taxaInList, firstInstance)
-          //     removal = true
-          //   }
-          // }
-          // // adds to taxaInList if tempVar not in this array and if removal
-          // // is set to false
-          // if (taxaInList.indexOf(tempVar) < 0 && removal === false) {
-          //   taxaInList.push(tempVar)  // used to store all clicked taxa
-          // }
         })
       }
 
@@ -768,12 +668,6 @@ const onLoad = () => {
         // clear = true;
         event.preventDefault()
         resetDisplayTaxaBox(idsArrays)
-        // resets the lists and checkers for the panel
-        // firstInstance = true
-        // multiLevel = false
-        // existingTaxon = []
-        // taxaInList = []
-        // removal = true
 
         // resets dropdown selections
         $("#orderList").selectpicker("deselectAll")
@@ -814,10 +708,17 @@ const onLoad = () => {
         genus_query = document.getElementById("p_Genus").innerHTML,
         family_query = document.getElementById("p_Family").innerHTML,
         order_query = document.getElementById("p_Order").innerHTML
-      const selectedSpecies = species_query.replace("Species: ", "").split(",").filter(Boolean),
-        selectedGenus = genus_query.replace("Genus: ", "").split(",").filter(Boolean),
-        selectedFamily = family_query.replace("Family: ", "").split(",").filter(Boolean),
-        selectedOrder = order_query.replace("Order: ", "").split(",").filter(Boolean)
+      console.log(species_query)
+      let selectedSpecies = species_query.replace("Species:", "").split(",").filter(Boolean),
+        selectedGenus = genus_query.replace("Genus:", "").split(",").filter(Boolean),
+        selectedFamily = family_query.replace("Family:", "").split(",").filter(Boolean),
+        selectedOrder = order_query.replace("Order:", "").split(",").filter(Boolean)
+      console.log(selectedSpecies)
+      // remove first char from selected* arrays
+      selectedSpecies = removeFirstCharFromArray(selectedSpecies)
+      selectedGenus = removeFirstCharFromArray(selectedGenus)
+      selectedFamily = removeFirstCharFromArray(selectedFamily)
+      selectedOrder = removeFirstCharFromArray(selectedOrder)
 
       //* *** Alert for taxa filter ****//
       // print alert if no filters are selected
