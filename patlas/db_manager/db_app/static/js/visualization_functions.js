@@ -653,6 +653,10 @@ const onLoad = () => {
       resSubmitFunction(g, graphics, renderer)
       console.log(listGiFilter)
       showRerun.style.display = 'block'
+      showGoback.style.display = "block"
+      showDownload.style.display = "block"
+      showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
     })
 
 
