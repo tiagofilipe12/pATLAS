@@ -73,7 +73,6 @@ const resSubmitFunction = (g, graphics, renderer) => {
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
     storeLis = iterateSelectedArrays(selectedCard, g, graphics, renderer)
-    console.log(storeLis)
     noLegend = false
   } else if (selectedCard.length === 0 && selectedResfinder.length !== 0) {
     // if only resfinder has selected entries
@@ -83,7 +82,8 @@ const resSubmitFunction = (g, graphics, renderer) => {
     // if multiple menus are selected
     currentColor = 0xf71735   // sets color of all changes_nodes to be red
     storeLis = "<li class='centeredList'><button class='jscolor btn'" +
-      " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
+      " btn-default'" +
+      " style='background-color:#f71735'></button>&nbsp;multiple selection</li>"
     noLegend = false
     mergedSelectedArray = selectedCard.concat(selectedResfinder)
     // in this case selected color must be the same and constant
