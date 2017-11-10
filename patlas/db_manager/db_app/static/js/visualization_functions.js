@@ -523,7 +523,6 @@ const onLoad = () => {
     })
 
     // Form and button for search box
-    let changed_nodes = []
     $("#submitButton").click(function (event) {
       const query = $("#formValueId").val().replace(".", "_")
       //console.log('search query: ' + query)
@@ -649,8 +648,9 @@ const onLoad = () => {
     })
     $("#resSubmit").click( (event) => {
       event.preventDefault()
-      console.log("clicked")
-      resSubmitFunction()
+      // TODO reset nodes before adding new colors
+      // same should be done for taxa filters submit button
+      resSubmitFunction(g, graphics, renderer)
     })
 
 
@@ -744,6 +744,8 @@ const onLoad = () => {
     // perform actions when submit button is clicked.
 
     $("#taxaModalSubmit").click(function (event) {
+      // changed nodes is reset every instance of taxaModalSubmit button
+      // let changed_nodes = []
 
       //let listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
@@ -856,13 +858,14 @@ const onLoad = () => {
       // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
         currentColor = 0xf71735   // sets color of all changes_nodes to be red
-        store_lis = '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#f71735"></button>&nbsp;multi-level selected taxa</li>'
+        store_lis = "<li class='centeredList'><button class='jscolor btn'" +
+          " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
         for (i in alertArrays.order) {
           let currentSelection = alertArrays.order
           for (i in currentSelection) {
             const tempArray = assocOrderGenus[currentSelection[i]]
             for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
                 .then(results => {
                   results.map(request => {
                     listGiFilter.push(request.plasmid_id)
@@ -876,7 +879,7 @@ const onLoad = () => {
           for (i in currentSelection) {
             const tempArray = assocFamilyGenus[currentSelection[i]]
             for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
                 .then(results => {
                   results.map(request => {
                     listGiFilter.push(request.plasmid_id)
@@ -890,7 +893,7 @@ const onLoad = () => {
           for (i in currentSelection) {
             const tempArray = assocGenus[currentSelection[i]]
             for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
                 .then(results => {
                   results.map(request => {
                     listGiFilter.push(request.plasmid_id)
@@ -902,7 +905,7 @@ const onLoad = () => {
         for (i in alertArrays.species) {
           let currentSelection = alertArrays.species
           for (i in currentSelection) {
-            taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
+            taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, changed_nodes)
               .then(results => {
                 results.map(request => {
                   listGiFilter.push(request.plasmid_id)
@@ -924,15 +927,15 @@ const onLoad = () => {
 
               // orders //
               if (alertArrays['order'] != '') {
-                var currentColor = color[i].replace('#', '0x')
+                var currentColor = colorList[i].replace('#', '0x')
                 var tempArray = assocOrderGenus[currentSelection[i]]
-                style_color = 'background-color:' + color[i]
+                style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li' +
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family and orders
                 for (sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
@@ -943,15 +946,15 @@ const onLoad = () => {
 
               // families //
               else if (alertArrays['family'] != '') {
-                var currentColor = color[i].replace('#', '0x')
+                var currentColor = colorList[i].replace('#', '0x')
                 var tempArray = assocFamilyGenus[currentSelection[i]]
-                style_color = 'background-color:' + color[i]
+                style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li' +
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family
                 for (sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
@@ -962,15 +965,15 @@ const onLoad = () => {
 
               // genus //
               else if (alertArrays['genus'] != '') {
-                var currentColor = color[i].replace('#', '0x')
+                var currentColor = colorList[i].replace('#', '0x')
                 var tempArray = assocGenus[currentSelection[i]]
-                style_color = 'background-color:' + color[i]
+                style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
                 for (sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, changed_nodes)
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
@@ -981,13 +984,13 @@ const onLoad = () => {
 
               // species //
               else if (alertArrays['species'] != '') {
-                var currentColor = color[i].replace('#', '0x')
-                style_color = 'background-color:' + color[i]
+                var currentColor = colorList[i].replace('#', '0x')
+                style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, changed_nodes)
+                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, changed_nodes)
                   .then(results => {
                     results.map(request => {
                       listGiFilter.push(request.plasmid_id)

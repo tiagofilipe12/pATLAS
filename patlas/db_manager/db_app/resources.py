@@ -80,13 +80,12 @@ class GetPlasmidFinder(Resource):
         args = req_parser.parse_args()
         single_query = db.session.query(Database).filter(
             Database.plasmid_id == args.accession).first()
-        print(single_query)
         return single_query
 
 # define more reqparse arguments for GetAccession classe resource
 
 req_parser_2 = reqparse.RequestParser()
-req_parser_2.add_argument("name", dest="name", type=str, help="accessions "
+req_parser_2.add_argument("name", dest="name", type=str, help="taxa "
                                                               "to be queried")
 
 class GetAccession(Resource):
@@ -102,4 +101,21 @@ class GetAccession(Resource):
         return records
 
 
+# define more reqparse arguments for GetAccession classe resource
+
+req_parser_3 = reqparse.RequestParser()
+req_parser_3.add_argument("gene", dest="gene", type=str, help="gene "
+                                                              "to be queried")
+
+class GetAccessionRes(Resource):
+    @marshal_with(entry_field)
+    def get(self):
+        # Put req_parser inside get function. Only this way it parses the request.
+        args = req_parser_3.parse_args()
+        # This queries name object in json_entry and retrieves an array with
+        # all objects that matched the args (json_entry, plasmid_id)
+        records = db.session.query(Card).filter(
+            Card.json_entry["gene"].astext == args.name
+        ).all()
+        return records
 
