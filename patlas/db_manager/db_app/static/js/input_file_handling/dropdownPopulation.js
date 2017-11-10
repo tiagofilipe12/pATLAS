@@ -29,29 +29,31 @@ const resRequest = (g, graphics, renderer, gene, currentColor) => {
 const iterateSelectedArrays = (array, g, graphics, renderer) => {
   let storeLis
   for (let i in array) {
-    // establish current color to use
-    const currentColor = colorList[i].replace('#', '0x')
-    // variable with the selected gene
-    const gene = array[i]
-    // variable to store all lis for legend
-    if (storeLis === undefined) {
-      storeLis = "<li" +
-        " class='centeredList'><button class='jscolor btn'" +
-        " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
-        "</li>"
-    } else {
-      storeLis = storeLis + "<li" +
-        " class='centeredList'><button class='jscolor btn'" +
-        " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
-        "</li>"
-    }
+    if ({}.hasOwnProperty.call(array, i)) {
+      // establish current color to use
+      const currentColor = colorList[i].replace('#', '0x')
+      // variable with the selected gene
+      const gene = array[i]
+      // variable to store all lis for legend
+      if (storeLis === undefined) {
+        storeLis = "<li" +
+          " class='centeredList'><button class='jscolor btn'" +
+          " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+          "</li>"
+      } else {
+        storeLis = storeLis + "<li" +
+          " class='centeredList'><button class='jscolor btn'" +
+          " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+          "</li>"
+      }
 
-    resRequest(g, graphics, renderer, gene, currentColor)
-      .then(results => {
-        results.map(request => {
-          listGiFilter.push(request.plasmid_id)
+      resRequest(g, graphics, renderer, gene, currentColor)
+        .then(results => {
+          results.map(request => {
+            listGiFilter.push(request.plasmid_id)
+          })
         })
-      })
+    }
   }
   return storeLis
 }
