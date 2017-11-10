@@ -12,8 +12,20 @@ const singleDropdownPopulate = (divId, arrayToSort, className) => {
 }
 
 // function to query resistance database
-const resRequest = (g, graphics, renderer) => {
-
+const resRequest = (g, graphics, renderer, gene, currentColor) => {
+  // return a promise for each query
+  geneQuotes = `"${gene}"`
+  console.log(geneQuotes)
+  return $.get("api/getaccessionres/", {"gene": geneQuotes}, (data, status) => {
+    console.log(data)
+    let listData = []
+    for (object in data) {
+      listData.push(data[object].plasmid_id)
+    }
+    colorNodes(g, graphics, listData, currentColor)
+    //return listData
+    renderer.rerender()
+  })
 }
 
 // function to display resistances after clicking resSubmit button
@@ -31,6 +43,11 @@ const resSubmitFunction = (g, graphics, renderer) => {
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
+    for (let i in selectedCard) {
+      currentColor = colorList[i]
+      gene = selectedCard[i]
+      resRequest(g, graphics, renderer, gene, currentColor)
+    }
 
   } else if (selectedCard.length === 0 && selectedResfinder.length !== 0) {
     // if only resfinder has selected entries
@@ -43,6 +60,6 @@ const resSubmitFunction = (g, graphics, renderer) => {
   }
   let colorIndex = 0
   // TODO query both of these entries similarly to taxaRequest function
-  resRequest(g, graphics, renderer, gene, currentColor, changedNodes)
+  //resRequest(g, graphics, renderer, gene, currentColor)
   // needs setting up a flask resource first
 }

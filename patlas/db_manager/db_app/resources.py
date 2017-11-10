@@ -115,7 +115,9 @@ class GetAccessionRes(Resource):
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
         records = db.session.query(Card).filter(
-            Card.json_entry["gene"].astext == args.name
+            Card.json_entry["gene"].astext.contains(args.gene)
         ).all()
+        # contains method allows us to query in array that is converted to a
+        # string
         return records
 

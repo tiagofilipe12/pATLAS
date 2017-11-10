@@ -17,7 +17,7 @@ const colorNodes = (g, graphics, accessionRequested, currentColor) => {
 const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
   taxaDb = taxa.split(" ").join("_")
   // return a promise for each query
-  return $.get('api/getaccession/', {'name': taxaDb}, (data, status) => {
+  return $.get("api/getaccession/", {"name": taxaDb}, (data, status) => {
     let listData = []
     for (object in data) {
       listData.push(data[object].plasmid_id)
