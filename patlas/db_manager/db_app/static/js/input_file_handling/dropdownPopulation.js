@@ -28,7 +28,7 @@ const resRequest = (g, graphics, renderer, gene, currentColor) => {
 
 const iterateSelectedArrays = (array, g, graphics, renderer) => {
   for (let i in array) {
-    currentColor = colorList[i]
+    currentColor = colorList[i].replace('#', '0x')
     gene = array[i]
     resRequest(g, graphics, renderer, gene, currentColor)
       .then(results => {
