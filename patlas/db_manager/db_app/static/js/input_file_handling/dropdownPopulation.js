@@ -57,14 +57,22 @@ const resSubmitFunction = (g, graphics, renderer) => {
     iterateSelectedArrays(selectedCard, g, graphics, renderer)
   } else if (selectedCard.length === 0 && selectedResfinder.length !== 0) {
     // if only resfinder has selected entries
-
+    iterateSelectedArrays(selectedResfinder, g, graphics, renderer)
   } else {
     // if multiple menus are selected
     currentColor = 0xf71735   // sets color of all changes_nodes to be red
     storeLis = "<li class='centeredList'><button class='jscolor btn'" +
       " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
+    mergedSelectedArray = selectedCard.concat(selectedResfinder)
+    // in this case selected color must be the same and constant
+    for (let i in mergedSelectedArray) {
+      gene = mergedSelectedArray[i]
+      resRequest(g, graphics, renderer, gene, currentColor)
+        .then(results => {
+          results.map(request => {
+            listGiFilter.push(request.plasmid_id)
+          })
+        })
+    }
   }
-  // TODO query both of these entries similarly to taxaRequest function
-  //resRequest(g, graphics, renderer, gene, currentColor)
-  // needs setting up a flask resource first
 }
