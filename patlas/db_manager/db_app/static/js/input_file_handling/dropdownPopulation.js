@@ -30,9 +30,9 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
   let storeLis
   for (let i in array) {
     // establish current color to use
-    currentColor = colorList[i].replace('#', '0x')
+    const currentColor = colorList[i].replace('#', '0x')
     // variable with the selected gene
-    gene = array[i]
+    const gene = array[i]
     // variable to store all lis for legend
     if (storeLis === undefined) {
       storeLis = "<li" +
@@ -85,16 +85,18 @@ const resSubmitFunction = (g, graphics, renderer) => {
       " btn-default'" +
       " style='background-color:#f71735'></button>&nbsp;multiple selection</li>"
     noLegend = false
-    mergedSelectedArray = selectedCard.concat(selectedResfinder)
+    const mergedSelectedArray = selectedCard.concat(selectedResfinder)
     // in this case selected color must be the same and constant
     for (let i in mergedSelectedArray) {
-      gene = mergedSelectedArray[i]
-      resRequest(g, graphics, renderer, gene, currentColor)
-        .then(results => {
-          results.map(request => {
-            listGiFilter.push(request.plasmid_id)
+      if ({}.hasOwnProperty.call(mergedSelectedArray, i)) {
+        const gene = mergedSelectedArray[i]
+        resRequest(g, graphics, renderer, gene, currentColor)
+          .then(results => {
+            results.map(request => {
+              listGiFilter.push(request.plasmid_id)
+            })
           })
-        })
+      }
     }
   }
   // if legend is requested then execute this!
