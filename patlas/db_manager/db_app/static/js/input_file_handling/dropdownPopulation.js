@@ -27,9 +27,25 @@ const resRequest = (g, graphics, renderer, gene, currentColor) => {
 }
 
 const iterateSelectedArrays = (array, g, graphics, renderer) => {
+  let storeLis
   for (let i in array) {
+    // establish current color to use
     currentColor = colorList[i].replace('#', '0x')
+    // variable with the selected gene
     gene = array[i]
+    // variable to store all lis for legend
+    if (storeLis === undefined) {
+      storeLis = "<li" +
+        " class='centeredList'><button class='jscolor btn'" +
+        " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+        "</li>"
+    } else {
+      storeLis = storeLis + "<li" +
+        " class='centeredList'><button class='jscolor btn'" +
+        " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+        "</li>"
+    }
+
     resRequest(g, graphics, renderer, gene, currentColor)
       .then(results => {
         results.map(request => {
@@ -37,12 +53,14 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
         })
       })
   }
+  return storeLis
 }
 
 // function to display resistances after clicking resSubmit button
 const resSubmitFunction = (g, graphics, renderer) => {
-  // reset every button click
-  changedNodes = []
+  // starts legend variable
+  let noLegend = true // by default legend is off
+  let storeLis  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const cardQuery = document.getElementById("p_Card").innerHTML,
     resfinderQuery = document.getElementById("p_Resfinder").innerHTML
@@ -54,15 +72,19 @@ const resSubmitFunction = (g, graphics, renderer) => {
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
-    iterateSelectedArrays(selectedCard, g, graphics, renderer)
+    storeLis = iterateSelectedArrays(selectedCard, g, graphics, renderer)
+    console.log(storeLis)
+    noLegend = false
   } else if (selectedCard.length === 0 && selectedResfinder.length !== 0) {
     // if only resfinder has selected entries
-    iterateSelectedArrays(selectedResfinder, g, graphics, renderer)
+    storeLis = iterateSelectedArrays(selectedResfinder, g, graphics, renderer)
+    noLegend = false
   } else {
     // if multiple menus are selected
     currentColor = 0xf71735   // sets color of all changes_nodes to be red
     storeLis = "<li class='centeredList'><button class='jscolor btn'" +
       " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
+    noLegend = false
     mergedSelectedArray = selectedCard.concat(selectedResfinder)
     // in this case selected color must be the same and constant
     for (let i in mergedSelectedArray) {
@@ -74,5 +96,16 @@ const resSubmitFunction = (g, graphics, renderer) => {
           })
         })
     }
+  }
+  // if legend is requested then execute this!
+  // shows legend
+  if (noLegend === false) {
+    document.getElementById("taxa_label").style.display = "block" // show label
+    $("#colorLegendBox").empty()
+    $("#colorLegendBox").append(
+      storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
+    )
   }
 }

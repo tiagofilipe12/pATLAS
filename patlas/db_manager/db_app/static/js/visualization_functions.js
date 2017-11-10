@@ -651,8 +651,8 @@ const onLoad = () => {
       // TODO reset nodes before adding new colors
       // same should be done for taxa filters submit button
       resSubmitFunction(g, graphics, renderer)
-      console.log(listGiFilter)
-      showRerun.style.display = 'block'
+      showLegend.style.display = "block"
+      showRerun.style.display = "block"
       showGoback.style.display = "block"
       showDownload.style.display = "block"
       showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
@@ -810,7 +810,7 @@ const onLoad = () => {
       })
 
       // auto hide after 5 seconds without closing the div
-
+      // TODO what is this for? XD
       window.setTimeout( () => { $("#alertId").hide() }, 5000)
 
       //* *** End Alert for taxa filter ****//
@@ -854,7 +854,7 @@ const onLoad = () => {
       })
 
       // renders the graph for the desired taxon if more than one taxon type is selected
-      let store_lis = '' // a variable to store all <li> generated for legend
+      let store_lis = "" // a variable to store all <li> generated for legend
       let firstIteration = true // boolean to control the upper taxa level
       // (order or family)
 
