@@ -650,13 +650,16 @@ const onLoad = () => {
       event.preventDefault()
       // TODO reset nodes before adding new colors
       // same should be done for taxa filters submit button
-      resSubmitFunction(g, graphics, renderer)
-      showLegend.style.display = "block"
-      showRerun.style.display = "block"
-      showGoback.style.display = "block"
-      showDownload.style.display = "block"
-      showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      const legendInst = resSubmitFunction(g, graphics, renderer)
+      // just show legend if any selection is made at all
+      if (legendInst === true) {
+        showLegend.style.display = "block"
+        showRerun.style.display = "block"
+        showGoback.style.display = "block"
+        showDownload.style.display = "block"
+        showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      }
     })
 
 
@@ -786,14 +789,14 @@ const onLoad = () => {
       const divAlert = document.getElementById('alertId')
       let Alert = false
       for (let i in alertArrays) {
-        if (alertArrays[i][0] === "No filters applied") {
+        if (alertArrays[i].length === 0) {
           Alert = true
           counter = 4  // counter used to check if more than one dropdown has selected options
         } else if (alertArrays[i].length > 0) {
           counter = counter + 1
         }
       }
-      if (Alert == true) {
+      if (Alert === true) {
         divAlert.style.display = 'block'
         showLegend.style.display = 'none' // removes legend when this warning is raised
         Alert = false

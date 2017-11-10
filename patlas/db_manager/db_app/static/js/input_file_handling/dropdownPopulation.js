@@ -61,7 +61,7 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
 // function to display resistances after clicking resSubmit button
 const resSubmitFunction = (g, graphics, renderer) => {
   // starts legend variable
-  let noLegend = true // by default legend is off
+  let legendInst = false // by default legend is off
   let storeLis  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const cardQuery = document.getElementById("p_Card").innerHTML,
@@ -75,18 +75,18 @@ const resSubmitFunction = (g, graphics, renderer) => {
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
     storeLis = iterateSelectedArrays(selectedCard, g, graphics, renderer)
-    noLegend = false
+    legendInst = true
   } else if (selectedCard.length === 0 && selectedResfinder.length !== 0) {
     // if only resfinder has selected entries
     storeLis = iterateSelectedArrays(selectedResfinder, g, graphics, renderer)
-    noLegend = false
-  } else {
+    legendInst = true
+  } else if (selectedCard.length !== 0 && selectedResfinder.length !== 0) {
     // if multiple menus are selected
     currentColor = 0xf71735   // sets color of all changes_nodes to be red
     storeLis = "<li class='centeredList'><button class='jscolor btn'" +
       " btn-default'" +
       " style='background-color:#f71735'></button>&nbsp;multiple selection</li>"
-    noLegend = false
+    legendInst = true
     const mergedSelectedArray = selectedCard.concat(selectedResfinder)
     // in this case selected color must be the same and constant
     for (let i in mergedSelectedArray) {
@@ -100,10 +100,13 @@ const resSubmitFunction = (g, graphics, renderer) => {
           })
       }
     }
+  } else {
+    // raise error message for the user
+    document.getElementById("alertId").style.display = "block"
   }
   // if legend is requested then execute this!
   // shows legend
-  if (noLegend === false) {
+  if (legendInst === true) {
     document.getElementById("taxa_label").style.display = "block" // show label
     $("#colorLegendBox").empty()
     $("#colorLegendBox").append(
@@ -112,4 +115,5 @@ const resSubmitFunction = (g, graphics, renderer) => {
       " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
     )
   }
+  return legendInst
 }
