@@ -14,18 +14,29 @@ const singleDropdownPopulate = (divId, arrayToSort, className) => {
 // function to query resistance database
 const resRequest = (g, graphics, renderer, gene, currentColor) => {
   // return a promise for each query
-  geneQuotes = `"${gene}"`
-  console.log(geneQuotes)
+  geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
+  // inside other genes such as ermc ermc1 and so on
   return $.get("api/getaccessionres/", {"gene": geneQuotes}, (data, status) => {
-    console.log(data)
     let listData = []
     for (object in data) {
       listData.push(data[object].plasmid_id)
     }
     colorNodes(g, graphics, listData, currentColor)
-    //return listData
     renderer.rerender()
   })
+}
+
+const iterateSelectedArrays = (array, g, graphics, renderer) => {
+  for (let i in array) {
+    currentColor = colorList[i]
+    gene = array[i]
+    resRequest(g, graphics, renderer, gene, currentColor)
+      .then(results => {
+        results.map(request => {
+          listGiFilter.push(request.plasmid_id)
+        })
+      })
+  }
 }
 
 // function to display resistances after clicking resSubmit button
@@ -43,12 +54,7 @@ const resSubmitFunction = (g, graphics, renderer) => {
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
-    for (let i in selectedCard) {
-      currentColor = colorList[i]
-      gene = selectedCard[i]
-      resRequest(g, graphics, renderer, gene, currentColor)
-    }
-
+    iterateSelectedArrays(selectedCard, g, graphics, renderer)
   } else if (selectedCard.length === 0 && selectedResfinder.length !== 0) {
     // if only resfinder has selected entries
 
@@ -58,7 +64,6 @@ const resSubmitFunction = (g, graphics, renderer) => {
     storeLis = "<li class='centeredList'><button class='jscolor btn'" +
       " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
   }
-  let colorIndex = 0
   // TODO query both of these entries similarly to taxaRequest function
   //resRequest(g, graphics, renderer, gene, currentColor)
   // needs setting up a flask resource first

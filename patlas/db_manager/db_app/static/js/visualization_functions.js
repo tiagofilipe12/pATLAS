@@ -651,6 +651,8 @@ const onLoad = () => {
       // TODO reset nodes before adding new colors
       // same should be done for taxa filters submit button
       resSubmitFunction(g, graphics, renderer)
+      console.log(listGiFilter)
+      showRerun.style.display = 'block'
     })
 
 
