@@ -193,12 +193,14 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
   return lengthList
 }
 
-// function equivalent to getMetadata but for Card db
+// function equivalent to getMetadata but for Database db (plasmidfinder db)
 const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
+  // TODO this somehow sometimes work sometimes it doesn't (check single
+  // query case
   // resets progressBar
   resetProgressBar()
 
-  PFList = []
+  let PFList = []
 
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
@@ -242,12 +244,15 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
     }
   }
 }
-// function equivalent to getMetadata but for Database db (plasmidfinder db)
+
+// function equivalent to getMetadata but for Card db
 const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
+  // TODO this should plot resfinder and card seperately
+  // TODO this somehow sometimes work sometimes it doesn't
   // resets progressBar
   resetProgressBar()
 
-  resList = []
+  let resList = []
 
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
