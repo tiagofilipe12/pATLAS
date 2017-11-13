@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/nouislider/nouislider.css') }}">
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/vivagraph/dist/vivagraph.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/wNumb.js') }}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='dependencies/wNumb.js') }}"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
     <!--bootstrap select-->
@@ -47,6 +48,8 @@
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/zooming_control.js') }}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='js/input_file_handling/dropdownPopulation.js') }}"></script>
 
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/abrPlusFamilies.js') }}"></script>
@@ -357,10 +360,10 @@
                                 <div class="panel-heading">Current filters</div>
                                 <div class="panel-body" id="displayCurrentBox">
                                     <!--Populated by visualization_functions.js-->
-                                    <p id="p_Order">Order: No filters applied</p>
-                                    <p id="p_Family">Family: No filters applied</p>
-                                    <p id="p_Genus">Genus: No filters applied</p>
-                                    <p id="p_Species">Species: No filters applied</p>
+                                    <p id="p_Order">Order:</p>
+                                    <p id="p_Family">Family:</p>
+                                    <p id="p_Genus">Genus:</p>
+                                    <p id="p_Species">Species:</p>
                                 </div>
                             </div>
                         </div>
@@ -444,11 +447,15 @@
                 <a href="#">ABR</a>
                 <div id="collapse2" class="panel-collapse collapse">
                     <ul class="list-group">
-                        <button class="button list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                id="families_filter" >Plasmid types
+                        <button class="button list-group-item" href="#"
+                                data-toggle="modal" data-backdrop="static"
+                                data-target="#plasmidFamiliesModal"
+                                id="familiesFilter" >Plasmid families
                         </button>
-                        <button class="button list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                id="resistances_filter" >Resistances
+                        <button class="button list-group-item" href="#"
+                                data-toggle="modal" data-backdrop="static"
+                                data-target="#resModal"
+                                id="resistancesFilter" >Resistances
                         </button>
                     </ul>
                 </div>
@@ -511,15 +518,6 @@
                     </ul>
                 </div>
             </li>
-            <!--            <li class="collapse_groups">
-                                <a href="#">Events</a>
-                            </li>
-                            <li class="collapse_groups">
-                                <a href="#">About</a>
-                            </li>
-                            <li class="collapse_groups">
-                                <a href="#">Services</a>
-                            </li>-->
             <li class="collapse_groups">
                 <a href="#">About</a>
             </li>
@@ -726,6 +724,115 @@
                 </button>
                 <button class="btn btn-default" id="lengthPlot">Length
                 </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal for resistances-->
+<div id="resModal" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Filter plasmids by
+                    resistance genes</h4>
+            </div>
+            <div class="modal-body" id="modalBodyABR">
+                <div class="row" id="modalBodyABR1">
+                    <div class="dropdown col-sm-3 " id="resDropdown">
+                        <div class="header_taxa">ResFinder</div>
+                        <select class="selectpicker" multiple data-width="80%"
+                                data-selected-text-format="count" data-live-search="true"
+                                title="No items selected" id="resList"
+                                data-size="15" data-hide-disabled="true">
+                            <!--populated by visualization_function.js-->
+                        </select>
+                    </div>
+                    <div class="dropdown col-sm-3 " id="cardDropdown">
+                        <div class="header_taxa">Card</div>
+                        <select class="selectpicker" multiple data-width="80%"
+                                data-selected-text-format="count" data-live-search="true"
+                                title="No items selected" id="cardList"
+                                data-size="15" data-hide-disabled="true">
+                            <!--populated by visualization_function.js-->
+                        </select>
+                    </div>
+                </div>
+                <div class="row" id="modalBodyABR2">
+                    <div class='col-md-12'>
+                        <div class="panel-group" id="displayCurrentABR">
+                            <div class="panel panel-info" >
+                                <div class="panel-heading">
+                                    Selected genes</div>
+                                <div class="panel-body"
+                                     id="displayCurrentBoxABR">
+                                    <!--Populated by visualization_functions.js-->
+                                    <p id="p_Card">Card:</p>
+                                    <p id="p_Resfinder">Resfinder:</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-default"
+                        data-dismiss="modal" id="resSubmit">Submit</button>
+                <button type="submit" class="btn btn-danger"
+                        id="resClear">Clear selection</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal for families-->
+<div id="plasmidFamiliesModal" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Filter plasmids by
+                    plasmid family genes</h4>
+            </div>
+            <div class="modal-body" id="modalBodyFAM">
+                <div class="row" id="modalBodyFAM1">
+                    <div class="dropdown col-sm-3 " id="famDropdown">
+                        <div class="header_taxa">PlasmidFinder</div>
+                        <select class="selectpicker" multiple data-width="80%"
+                                data-selected-text-format="count" data-live-search="true"
+                                title="No items selected"
+                                id="plasmidFamiliesList"
+                                data-size="15" data-hide-disabled="true">
+                            <!--populated by visualization_function.js-->
+                        </select>
+                    </div>
+                </div>
+                <div class="row" id="modalBodyFAM2">
+                    <div class='col-md-12'>
+                        <div class="panel-group" id="displayCurrentFAM">
+                            <div class="panel panel-info" >
+                                <div class="panel-heading">
+                                    Selected genes</div>
+                                <div class="panel-body"
+                                     id="displayCurrentBoxFAM">
+                                    <!--Populated by visualization_functions.js-->
+                                    <p id="p_Plasmidfinder">Plasmidfinder:</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-default"
+                        data-dismiss="modal" id="pfSubmit">Submit</button>
+                <button type="submit" class="btn btn-danger"
+                        id="pfClear">Clear selection</button>
             </div>
         </div>
 

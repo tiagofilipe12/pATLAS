@@ -55,7 +55,7 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
   const tmpArray = new Array(x)// create an empty array with length x
   style_width = 100 / x
   // enters this statement for coloring the links and not the nodes
-  if (readMode === undefined || readMode !== true) {
+  if (readMode !== true) {
     $("#scaleLegend").empty()
     // this loop should be reversed since the higher values will have a lighter color
     for (let i = tmpArray.length - 1; i >= 0; i--) {
@@ -106,7 +106,7 @@ const readColoring = (g, list_gi, graphics, renderer) => {
     if (list_gi.indexOf(gi) <= -1) {
       g.addNode(gi, {
         sequence: "<font color='#468499'>Accession: </font><a " +
-        "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split('_').slice(0, 2).join('_') + "' target='_blank'>" + gi + '</a>',
+        "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split("_").slice(0, 2).join("_") + "' target='_blank'>" + gi + "</a>",
         log_length: 10
         // percentage: "<font color='#468499'>percentage: </font>" + perc
       })
@@ -181,7 +181,7 @@ const readColoring = (g, list_gi, graphics, renderer) => {
   showGoback.style.display = "block"
   showDownload.style.display = "block"
   renderer.rerender()
-  $('#loading').hide()
+  $("#loading").hide()
   return list_gi, listGiFilter
 }
 
@@ -194,22 +194,23 @@ const link_coloring = (g, graphics, renderer) => {
   g.forEachLink( (link) => {
     const dist = link.data * 10
     const linkUI = graphics.getLinkUI(link.id)
+    let linkColor
     if (document.getElementById("colorForm").value === "Green color scheme" || document.getElementById("colorForm").value === "") {
-      link_color = chroma.mix("#65B661", "#CAE368", dist).hex().replace("#", "0x") + "FF"
+      linkColor = chroma.mix("#65B661", "#CAE368", dist).hex().replace("#", "0x") + "FF"
     } else if (document.getElementById("colorForm").value === "Blue color" +
       " scheme") {
-      link_color = chroma.mix("#025D8C", "#73C2FF", dist).hex().replace("#", "0x") + "FF"
+      linkColor = chroma.mix("#025D8C", "#73C2FF", dist).hex().replace("#", "0x") + "FF"
     } else if (document.getElementById("colorForm").value === "Red color" +
       " scheme") {
-      link_color = chroma.mix("#4D0E1C", "#E87833", dist).hex().replace("#", "0x") + "FF"
+      linkColor = chroma.mix("#4D0E1C", "#E87833", dist).hex().replace("#", "0x") + "FF"
     }
 
     // since linkUI seems to use alpha in its color definition we had to set alpha to 100%
     // opacity by adding "FF" at the end of color string
-    linkUI.color = link_color
+    linkUI.color = linkColor
   })
   renderer.rerender()
-  $('#loading').hide()
+  $("#loading").hide()
 }
 
 // option to return links to their default color
@@ -219,7 +220,7 @@ const reset_link_color = (g, graphics, renderer) => {
     linkUI.color = 0xb3b3b3ff
   })
   renderer.rerender()
-  $('#loading').hide()
+  $("#loading").hide()
 }
 
 // *** color scale legend *** //
@@ -240,33 +241,33 @@ const color_legend = (readMode) => {
 // Clear nodes function for reset-sliders button
 
 const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
-                       showGoback, showDownload) => {
+                       showGoback, showDownload, idsArrays) => {
   // first iters nodes to get nodeColor (default color)
   node_color_reset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
-  if (typeof showLegend !== 'undefined' && $('#scaleLegend').html() === '') {
-    showLegend.style.display = 'none'
-    showRerun.style.display = 'none'
-    showGoback.style.display = 'none'
-    //document.getElementById('go_back').className += ' disabled'
-    showDownload.style.display = 'none'
-    document.getElementById('read_label').style.display = 'none' // hide label
-    $('#readLegend').empty()
+  if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+    showLegend.style.display = "none"
+    showRerun.style.display = "none"
+    showGoback.style.display = "none"
+    //document.getElementById("go_back").className += " disabled"
+    showDownload.style.display = "none"
+    document.getElementById("read_label").style.display = "none" // hide label
+    $("#readLegend").empty()
   } else {
-    $('#colorLegendBox').empty()
-    document.getElementById('taxa_label').style.display = 'none' // hide label
-    showRerun.style.display = 'none'
-    showGoback.style.display = 'none'
-    //document.getElementById('go_back').className += ' disabled'
-    showDownload.style.display = 'none'
-    document.getElementById('read_label').style.display = 'none' // hide label
-    $('#readLegend').empty()
+    $("#colorLegendBox").empty()
+    document.getElementById("taxa_label").style.display = "none" // hide label
+    showRerun.style.display = "none"
+    showGoback.style.display = "none"
+    //document.getElementById("go_back").className += " disabled"
+    showDownload.style.display = "none"
+    document.getElementById("read_label").style.display = "none" // hide label
+    $("#readLegend").empty()
   }
   resetDisplayTaxaBox(idsArrays)
 
   // resets dropdown selections
-  $('#orderList').selectpicker('deselectAll')
-  $('#familyList').selectpicker('deselectAll')
-  $('#genusList').selectpicker('deselectAll')
-  $('#speciesList').selectpicker('deselectAll')
+  $("#orderList").selectpicker("deselectAll")
+  $("#familyList").selectpicker("deselectAll")
+  $("#genusList").selectpicker("deselectAll")
+  $("#speciesList").selectpicker("deselectAll")
 }

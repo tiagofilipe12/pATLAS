@@ -1,9 +1,9 @@
 const assembly = (listGi, assemblyJson, g, graphics, renderer) => {
   //console.log(assembly_json)
   // removes everything within []
-  const assemblyString = assemblyJson.replace(/[{}"[ ]/g, '').split('],')
+  const assemblyString = assemblyJson.replace(/[{}"[ ]/g, "").split("],")
   // this gets the contig name
-  contigName = assemblyString[0].split(":")[0]
+  const contigName = assemblyString[0].split(":")[0]
   g.addNode(contigName, {sequence: "<font color='#468499'>seq_id: </font>"
     + contigName, log_length: 10} )
   // change the color of the input node
@@ -18,8 +18,9 @@ const assembly = (listGi, assemblyJson, g, graphics, renderer) => {
     //  const nodeEntry = assemblyString[string]
     //}
     // redefinition of the above if statement
-    const nodeEntry = (string === 0) ?  assemblyString[string].split(':')[1] : assemblyString[string]
-    let accession = nodeEntry.split('_').slice(0, 2).join('_')
+    const nodeEntry = (string === 0) ?  assemblyString[string].split(":")[1]
+      : assemblyString[string]
+    let accession = nodeEntry.split("_").slice(0, 2).join("_")
     const dist = nodeEntry.split(',')[1]
     if (accession in listGi) {
       g.addLink(contigName, accession, dist)
@@ -36,11 +37,11 @@ const assembly = (listGi, assemblyJson, g, graphics, renderer) => {
     }
   }
   // control all related divs
-  let showRerun = document.getElementById('Re_run')
-  let showGoback = document.getElementById('go_back')
-  let showDownload = document.getElementById('download_ds')
-  showRerun.style.display = 'block'
-  showGoback.style.display = 'block'
-  showDownload.style.display = 'block'
+  let showRerun = document.getElementById("Re_run")
+  let showGoback = document.getElementById("go_back")
+  let showDownload = document.getElementById("download_ds")
+  showRerun.style.display = "block"
+  showGoback.style.display = "block"
+  showDownload.style.display = "block"
   renderer.run()
 }

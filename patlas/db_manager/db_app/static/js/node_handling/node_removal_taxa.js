@@ -149,57 +149,59 @@ const actual_removal = (g, graphics, onload) => {
   // change play button in order to be properly set to pause
   $("#couve-flor").empty()
   // TODO check if this can be cleaner... removing vivagraph canvas?
-  $("#couve-flor").append('        <!--hidden div for color legend-->\n' +
-    '        <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">\n' +
-    '          <div class="panel panel-default" >\n' +
-    '            <div class="panel-heading">Color legend</div>\n' +
-    '            <div class="panel-body">\n' +
-    '              <!--Populated by visualization_functions.js-->\n' +
-    '              <label id="taxa_label" style="display: none">Taxa filters</label>\n' +
-    '              <ul class="legend" id="colorLegendBox"></ul>\n' +
-    '              <!--Populated by visualization_functions.js-->\n' +
-    '              <label id="distance_label" style="display: none">Distance filters</label>\n' +
-    '              <div class="gradient" id="scaleLegend"></div>\n' +
-    '              <!--Populated by visualization_functions.js-->\n' +
-    '              <label id="read_label" style="display: none">Read filters</label>\n' +
-    '              <div class="gradient" id="readLegend"></div>\n' +
-    '            </div>\n' +
-    '          </div>\n' +
-    '        </div>\n' +
-    '\n' +
-    '        <div id="buttonStuff">\n' +
-    '          <div class="btn-group">\n' +
-    '\n' +
-    '            <!-- Buttons that overlay the graph and interact with it -->\n' +
-    '            <button id="playpauseButton" data-toggle="tooltip" \n' +
-    '                    title="Play/Pause" type="button" \n' +
-    '                    class="btn btn-success">\n' +
-    '              <span class="glyphicon glyphicon-play"></span>\n' +
-    '            </button>\n' +
-    '\n' +
-    '            <button id="refreshButton" data-toggle="tooltip" \n' +
-    '                    title="Reset clicked nodes color (legacy)" type="button" \n' +
-    '                    class="btn btn-primary">\n' +
-    '              <span class="glyphicon glyphicon-refresh"></span>\n' +
-    '            </button>\n' +
-    '          </div>\n' +
-    '          <!--zoom buttons-->\n' +
-    '          <div class="btn-group">\n' +
-    '            <button id="zoom_in" class="zoom in btn btn-default"\n' +
-    '                    data-toggle="tooltip" title="Zoom in" \n' +
-    '                    type="button">\n' +
-    '              <span class="glyphicon glyphicon-zoom-in"></span>\n' +
-    '            </button>\n' +
-    '            <button id="zoom_out" class="zoom out btn btn-default"\n' +
-    '                    data-toggle="tooltip" title="Zoom out" \n' +
-    '                    type="button">\n' +
-    '              <span class="glyphicon glyphicon-zoom-out"></span>\n' +
-    '            </button>\n' +
-    '          </div> \n' +
-    '      \n' +
-    '          <!-- End buttons -->\n' +
-    '        </div>\n' +
-    '        <div id="popup_description" style="display: none"></div>')
+  $("#couve-flor").append(
+    "<!--hidden div for color legend-->\n" +
+    "<div class='panel-group colorpicker-component' id='colorLegend' style='display: none'>\n" +
+    "<div class='panel panel-default' >\n" +
+    "<div class='panel-heading'>Color legend</div>\n" +
+    "<div class='panel-body'>\n" +
+  "<!--Populated by visualization_functions.js-->\n" +
+  "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
+  "<ul class='legend' id='colorLegendBox'></ul>\n" +
+  "<!--Populated by visualization_functions.js-->\n" +
+  "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
+  "<div class='gradient' id='scaleLegend'></div>\n" +
+  "<!--Populated by visualization_functions.js-->\n" +
+  "<label id='read_label' style='display: none'>Read filters</label>\n" +
+  "<div class='gradient' id='readLegend'></div>\n" +
+  "</div>\n" +
+  "</div>\n" +
+  "</div>\n" +
+  "\n" +
+  "<div id='buttonStuff'>\n" +
+  "<div class='btn-group'>\n" +
+  "\n" +
+  "<!-- Buttons that overlay the graph and interact with it -->\n" +
+  "<button id='playpauseButton' data-toggle='tooltip' \n" +
+  "        title='Play/Pause' type='button' \n" +
+  "        class='btn btn-success'>\n" +
+  "<span class='glyphicon glyphicon-play'></span>\n" +
+  "</button>\n" +
+  "\n" +
+  "<button class='btn btn-primary' href='#' data-toggle='modal' " +
+  "        data-backdrop='static' title='Quick stats' " +
+  "        data-target='#modalPlot' id='refreshButton'>" +
+  "<span class='glyphicon glyphicon-stats'></span>\n" +
+  "</button>\n" +
+  "</div>\n" +
+  "<!--zoom buttons-->\n" +
+  "<div class='btn-group'>\n" +
+  "<button id='zoom_in' class='zoom in btn btn-default'\n" +
+  "        data-toggle='tooltip' title='Zoom in' \n" +
+  "        type='button'>\n" +
+  "<span class='glyphicon glyphicon-zoom-in'></span>\n" +
+  "</button>\n" +
+  "<button id='zoom_out' class='zoom out btn btn-default'\n" +
+  "        data-toggle='tooltip' title='Zoom out' \n" +
+  "        type='button'>\n" +
+  "<span class='glyphicon glyphicon-zoom-out'></span>\n" +
+  "</button>\n" +
+  "</div> \n" +
+  "\n" +
+  "<!-- End buttons -->\n" +
+  "</div>\n" +
+  "<div id='popup_description' style='display: none'></div>"
+)
 
 
   // should be executed when listGiFilter is empty ... mainly for area selection

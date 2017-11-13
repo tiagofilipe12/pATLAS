@@ -1,24 +1,38 @@
 // function to repopulate #displayCurrentBox
-idsArrays = ['p_Order', 'p_Family', 'p_Genus', 'p_Species'] //global variable
-function resetDisplayTaxaBox (idsArrays) {
-  for (var x = 0; x < idsArrays.length; x++) {
+// idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"] //global variable
+const resetDisplayTaxaBox = (array) => {
+  //TODO this function is being executed twice for idsArrays...
+  for (let x = 0; x < array.length; x++) {
     // empty field
-    $('#' + idsArrays[x]).empty()
+    $(`#${array[x]}`).empty()
     // reset to default of html
-    $('#' + idsArrays[x]).append(idsArrays[x].replace('p_', '') + ': No filters applied')
-    // resets the lists and checkers for the panel
-    firstInstance = true
-    existingTaxon = []
-    taxaInList = []
+    $(`#${array[x]}`).append(`${array[x].replace("p_", "")}:`)
   }
 }
 
-// function to remove a specific string from an array
-function stringRmArray (string, array) {
-  for (var i = array.length - 1; i >= 0; i--) {
-    if (array[i] === string) {
-      array.splice(i, 1)
+// function to remove taxa elements from div with main control string
+const taxaElementsToString = (taxaElements) => {
+  const starter = taxaElements[0] + ":"
+  const allOthers = taxaElements.slice(1, taxaElements.length)
+  return (starter + allOthers.toString())
+}
+
+// function that controls if taxa is present in div and adds or removes
+// depending if it is already there or not
+const filterDisplayer = (taxaName, stringClass, divStringClass) => {
+  const taxaElements = $(divStringClass).html().split(/[:,]/)
+  const taxaToParse = " " + taxaName + ","
+  if (taxaElements.indexOf(taxaToParse.replace(",", "")) > -1) {
+    // remove string from array
+    const index = taxaElements.indexOf(taxaToParse.replace(",", "")) // gets
+    // the index of the string if higher than -1 then remove it
+    if (index !== -1) {
+      taxaElements.splice(index, 1)
+      $(divStringClass).empty()
+        .append(taxaElementsToString(taxaElements))
     }
+  } else {
+    // if not already in taxaElements then add it
+    $(divStringClass).append(taxaToParse)
   }
-  return array
 }

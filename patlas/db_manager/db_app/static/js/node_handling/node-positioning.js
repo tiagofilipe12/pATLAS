@@ -7,21 +7,19 @@ const recenterDOM = (renderer, layout, storeMasterNode) => {
 
 // this function stores the node with more links
 
-const storeRecenterDom = (storeMasterNode, dict_dist, sequence, counter) => {
+const storeRecenterDom = (storeMasterNode, dictDist, sequence, counter) => {
   //console.log(dict_dist, sequence, counter)
   //let previousDictDist = storeMasterNode[1]
   //let storedNode = storeMasterNode[0]
   // checks if the node is the one with most links and stores it in storedNode
-  if (counter > 0) {
-    if (storeMasterNode[1] < dict_dist.length) {
-      storedNode = sequence
-      previousDictDist = dict_dist.length
-    }
-  } else if (counter === 0) {
+  const returnedArray = (counter > 0) ? (storeMasterNode[1] < dictDist.length) ?
+    // if counter > 0 and dist_dict of current node is < than previous node
+    // dict_dist
+    [sequence, dictDist.length] :
+    // otherwise return previous dict_dist
+    [storeMasterNode[0], storeMasterNode[1]] :
     // this is used to check if counter is the first instance of the loop
-    storedNode = sequence
-    previousDictDist = dict_dist.length
+    [sequence, dictDist.length]
 
-  }
-  return [storedNode, previousDictDist]
+  return returnedArray
 }
