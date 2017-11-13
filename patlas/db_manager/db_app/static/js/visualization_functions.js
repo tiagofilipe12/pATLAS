@@ -616,15 +616,30 @@ const onLoad = () => {
       }
     })
 
+    $("#pfSubmit").click( (event) => {
+      event.preventDefault()
+      // reset nodes before submitting new colors
+      const legendInst = pfSubmitFunction(g, graphics, renderer)
+      // just show legend if any selection is made at all
+      if (legendInst === true) {
+        showLegend.style.display = "block"
+        showRerun.style.display = "block"
+        showGoback.style.display = "block"
+        showDownload.style.display = "block"
+        showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      }
+    })
 
     //* ******************//
     //* ***Resistance Filters****//
     //* ******************//
 
     // first parse the json input file
-    const listCard = [],
-      listRes = []
+
     getArray_res().done( (json) => {
+      const listCard = [],
+        listRes = []
       // iterate over the file
       $.each(json, (accession, entry) => {
         databaseEntries = entry.database

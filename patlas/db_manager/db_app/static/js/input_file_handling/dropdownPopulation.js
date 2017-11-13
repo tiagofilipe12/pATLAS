@@ -26,6 +26,23 @@ const resRequest = (g, graphics, renderer, gene, currentColor) => {
   })
 }
 
+// function to query plasmidfinder database
+const pfRequest = (g, graphics, renderer, gene, currentColor) => {
+  console.log("pfRequest", gene)
+  // return a promise for each query
+  geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
+  // inside other genes such as ermc ermc1 and so on
+  return $.get("api/getaccessionpf/", {"gene": geneQuotes}, (data, status) => {
+    console.log("data", data)
+    let listData = []
+    for (object in data) {
+      listData.push(data[object].plasmid_id)
+    }
+    colorNodes(g, graphics, listData, currentColor)
+    renderer.rerender()
+  })
+}
+
 const iterateSelectedArrays = (array, g, graphics, renderer) => {
   let storeLis
   for (let i in array) {
@@ -100,6 +117,67 @@ const resSubmitFunction = (g, graphics, renderer) => {
           })
       }
     }
+  } else {
+    // raise error message for the user
+    document.getElementById("alertId").style.display = "block"
+  }
+  // if legend is requested then execute this!
+  // shows legend
+  if (legendInst === true) {
+    document.getElementById("taxa_label").style.display = "block" // show label
+    $("#colorLegendBox").empty()
+    $("#colorLegendBox").append(
+      storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
+    )
+  }
+  return legendInst
+}
+
+// function to display resistances after clicking resSubmit button
+const pfSubmitFunction = (g, graphics, renderer) => {
+  console.log("pfSubmitFunction")
+  // starts legend variable
+  let legendInst = false // by default legend is off
+  let storeLis  // initiates storeLis to store the legend entries and colors
+  // now processes the current selection
+  const pfQuery = document.getElementById("p_Plasmidfinder").innerHTML
+  let selectedPf = pfQuery.replace("Plasmidfinder:", "").split(",").filter(Boolean)
+  console.log("selectedPf", selectedPf)
+  // remove first char from selected* arrays
+  // selectedPf = removeFirstCharFromArray(selectedPf)
+  // check if arrays are empty
+  if (selectedPf.length !== 0) {
+    // if only card has selected entries
+    for (let i in selectedPf) {
+      if ({}.hasOwnProperty.call(selectedPf, i)) {
+        // establish current color to use
+        const currentColor = colorList[i].replace('#', '0x')
+        // variable with the selected gene
+        const gene = selectedPf[i].replace(" ", "")
+        // variable to store all lis for legend
+        if (storeLis === undefined) {
+          storeLis = "<li" +
+            " class='centeredList'><button class='jscolor btn'" +
+            " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            "</li>"
+        } else {
+          storeLis = storeLis + "<li" +
+            " class='centeredList'><button class='jscolor btn'" +
+            " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            "</li>"
+        }
+
+        pfRequest(g, graphics, renderer, gene, currentColor)
+          .then(results => {
+            results.map(request => {
+              listGiFilter.push(request.plasmid_id)
+            })
+          })
+      }
+    }
+    legendInst = true
   } else {
     // raise error message for the user
     document.getElementById("alertId").style.display = "block"
