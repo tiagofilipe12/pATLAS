@@ -27,7 +27,6 @@ const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortV
       color: customColor,
     }
   }]
-
   Plotly.newPlot("chartContainer1", data, layout)
 }
 
