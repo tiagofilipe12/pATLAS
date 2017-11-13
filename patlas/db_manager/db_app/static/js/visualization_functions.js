@@ -375,6 +375,8 @@ const onLoad = () => {
 
     // Button to open modal for plots
     // TODO this one should become legacy
+    // TODO all these buttons are broken but the plot buttons are not...
+    // sometimes render an odd instance with an odd plotly graph
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
