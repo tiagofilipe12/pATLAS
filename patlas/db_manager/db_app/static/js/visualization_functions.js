@@ -577,6 +577,17 @@ const onLoad = () => {
       })
       // populate the menus
       singleDropdownPopulate("#plasmidFamiliesList", listPF, "pfClass")
+
+      $(".pfClass").on("click", function (e) {
+        // fill panel group displaying current selected taxa filters //
+        const stringClass = this.className.slice(0,-5)
+        const tempVar = this.firstChild.innerHTML
+
+        // checks if a taxon is already in display
+        const divStringClass = "#p_" + stringClass
+
+        filterDisplayer(tempVar, stringClass, divStringClass)
+      })
     })
 
 

@@ -121,3 +121,17 @@ class GetAccessionRes(Resource):
         # string
         return records
 
+class GetAccessionPF(Resource):
+    @marshal_with(entry_field)
+    def get(self):
+        # Put req_parser inside get function. Only this way it parses the request.
+        args = req_parser_3.parse_args()
+        # This queries name object in json_entry and retrieves an array with
+        # all objects that matched the args (json_entry, plasmid_id)
+        records = db.session.query(Database).filter(
+            Database.json_entry["gene"].astext.contains(args.gene)
+        ).all()
+        # contains method allows us to query in array that is converted to a
+        # string
+        return records
+

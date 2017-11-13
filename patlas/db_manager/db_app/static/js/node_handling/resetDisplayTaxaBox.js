@@ -22,7 +22,9 @@ const taxaElementsToString = (taxaElements) => {
 // depending if it is already there or not
 const filterDisplayer = (taxaName, stringClass, divStringClass) => {
   const taxaElements = $(divStringClass).html().split(/[:,]/)
+  console.log(taxaElements)
   const taxaToParse = " " + taxaName + ","
+  console.log(taxaToParse.replace(",", ""))
   if (taxaElements.indexOf(taxaToParse.replace(",", "")) > -1) {
     // remove string from array
     const index = taxaElements.indexOf(taxaToParse.replace(",", "")) // gets

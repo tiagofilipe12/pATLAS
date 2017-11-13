@@ -3,11 +3,11 @@ from flask_restful import Api
 try:
     from db_app import app
     from db_app.resources import GetSpecies, GetAccession, GetResistances, \
-        GetPlasmidFinder, GetAccessionRes
+        GetPlasmidFinder, GetAccessionRes, GetAccessionPF
 except ImportError:
     from patlas.db_manager.db_app import app
     from patlas.db_manager.db_app.resources import GetSpecies, GetAccession, \
-        GetResistances, GetPlasmidFinder, GetAccessionRes
+        GetResistances, GetPlasmidFinder, GetAccessionRes, GetAccessionPF
 
 ## start api
 api = Api(app)
@@ -26,3 +26,6 @@ api.add_resource(GetAccession, "/api/getaccession/", endpoint="get_accession")
 
 api.add_resource(GetAccessionRes, "/api/getaccessionres/",
                  endpoint="get_accession_res")
+
+api.add_resource(GetAccessionPF, "/api/getaccessionpf/",
+endpoint="get_accessionpf")
