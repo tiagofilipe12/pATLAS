@@ -576,18 +576,44 @@ const onLoad = () => {
         }
       })
       // populate the menus
-      singleDropdownPopulate("#plasmidFamiliesList", listPF, "pfClass")
+      singleDropdownPopulate("#plasmidFamiliesList", listPF, "PlasmidfinderClass")
 
-      $(".pfClass").on("click", function (e) {
+      $(".PlasmidfinderClass").on("click", function (e) {
         // fill panel group displaying current selected taxa filters //
         const stringClass = this.className.slice(0,-5)
         const tempVar = this.firstChild.innerHTML
-
         // checks if a taxon is already in display
         const divStringClass = "#p_" + stringClass
 
         filterDisplayer(tempVar, stringClass, divStringClass)
       })
+    })
+
+    // setup clear button for plasmidfinder functions
+    $("#pfClear").click( (event) => {
+      document.getElementById("reset-sliders").click()
+      // clear = true;
+      event.preventDefault()
+      // this needs an array for reusability purposes
+      resetDisplayTaxaBox(["p_Plasmidfinder"])
+
+      // resets dropdown selections
+      $("#plasmidFamiliesList").selectpicker("deselectAll")
+
+      slider.noUiSlider.set([min, max])
+      node_color_reset(graphics, g, nodeColor, renderer)
+      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+        showLegend.style.display = "none"
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        showDownload.style.display = "none"
+      } else {
+        $("#colorLegendBox").empty()
+        document.getElementById("taxa_label").style.display = "none" // hide label
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        showDownload.style.display = "none"
+      }
     })
 
 
