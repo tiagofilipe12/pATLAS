@@ -1,3 +1,9 @@
+// function to remove first char from every string in array
+// of course array must have strings
+const removeFirstCharFromArray = (array) => {
+  return array.map( (el) => el.slice(1))
+}
+
 // function to populate any dropdown menu with select
 const singleDropdownPopulate = (divId, arrayToSort, className) => {
   // first sort the array alphabetically
@@ -14,12 +20,14 @@ const singleDropdownPopulate = (divId, arrayToSort, className) => {
 // function to query resistance database
 const resRequest = (g, graphics, renderer, gene, currentColor) => {
   // return a promise for each query
-  geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
+  const geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
   // inside other genes such as ermc ermc1 and so on
   return $.get("api/getaccessionres/", {"gene": geneQuotes}, (data, status) => {
     let listData = []
-    for (object in data) {
-      listData.push(data[object].plasmid_id)
+    for (let object in data) {
+      if ({}.hasOwnProperty.call(data, object)) {
+        listData.push(data[object].plasmid_id)
+      }
     }
     colorNodes(g, graphics, listData, currentColor)
     renderer.rerender()
@@ -28,16 +36,15 @@ const resRequest = (g, graphics, renderer, gene, currentColor) => {
 
 // function to query plasmidfinder database
 const pfRequest = (g, graphics, renderer, gene, currentColor) => {
-  console.log("pfRequest", gene)
   // return a promise for each query
-  geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
+  const geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
   // inside other genes such as ermc ermc1 and so on
   return $.get("api/getaccessionpf/", {"gene": geneQuotes}, (data, status) => {
-    console.log("data", data)
     let listData = []
-    for (object in data) {
-      listData.push(data[object].plasmid_id)
-    }
+    for (let object in data) {
+      if ({}.hasOwnProperty.call(data, object)) {
+        listData.push(data[object].plasmid_id)
+      }    }
     colorNodes(g, graphics, listData, currentColor)
     renderer.rerender()
   })
@@ -48,7 +55,7 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
   for (let i in array) {
     if ({}.hasOwnProperty.call(array, i)) {
       // establish current color to use
-      const currentColor = colorList[i].replace('#', '0x')
+      const currentColor = colorList[i].replace("#", "0x")
       // variable with the selected gene
       const gene = array[i]
       // variable to store all lis for legend
@@ -65,8 +72,8 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
       }
 
       resRequest(g, graphics, renderer, gene, currentColor)
-        .then(results => {
-          results.map(request => {
+        .then( (results) => {
+          results.map( (request) => {
             listGiFilter.push(request.plasmid_id)
           })
         })
@@ -99,7 +106,7 @@ const resSubmitFunction = (g, graphics, renderer) => {
     legendInst = true
   } else if (selectedCard.length !== 0 && selectedResfinder.length !== 0) {
     // if multiple menus are selected
-    currentColor = 0xf71735   // sets color of all changes_nodes to be red
+    const currentColor = 0xf71735   // sets color of all changes_nodes to be red
     storeLis = "<li class='centeredList'><button class='jscolor btn'" +
       " btn-default'" +
       " style='background-color:#f71735'></button>&nbsp;multiple selection</li>"
@@ -110,8 +117,8 @@ const resSubmitFunction = (g, graphics, renderer) => {
       if ({}.hasOwnProperty.call(mergedSelectedArray, i)) {
         const gene = mergedSelectedArray[i]
         resRequest(g, graphics, renderer, gene, currentColor)
-          .then(results => {
-            results.map(request => {
+          .then( (results) => {
+            results.map( (request) => {
               listGiFilter.push(request.plasmid_id)
             })
           })
@@ -137,14 +144,12 @@ const resSubmitFunction = (g, graphics, renderer) => {
 
 // function to display resistances after clicking resSubmit button
 const pfSubmitFunction = (g, graphics, renderer) => {
-  console.log("pfSubmitFunction")
   // starts legend variable
   let legendInst = false // by default legend is off
   let storeLis  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const pfQuery = document.getElementById("p_Plasmidfinder").innerHTML
   let selectedPf = pfQuery.replace("Plasmidfinder:", "").split(",").filter(Boolean)
-  console.log("selectedPf", selectedPf)
   // remove first char from selected* arrays
   // selectedPf = removeFirstCharFromArray(selectedPf)
   // check if arrays are empty
@@ -168,10 +173,10 @@ const pfSubmitFunction = (g, graphics, renderer) => {
             " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
             "</li>"
         }
-
+        // after setting the legend make the actual request
         pfRequest(g, graphics, renderer, gene, currentColor)
-          .then(results => {
-            results.map(request => {
+          .then( (results) => {
+            results.map( (request) => {
               listGiFilter.push(request.plasmid_id)
             })
           })

@@ -2,7 +2,6 @@
 // idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"] //global variable
 const resetDisplayTaxaBox = (array) => {
   //TODO this function is being executed twice for idsArrays...
-  console.log(array)
   for (let x = 0; x < array.length; x++) {
     // empty field
     $(`#${array[x]}`).empty()
@@ -22,9 +21,7 @@ const taxaElementsToString = (taxaElements) => {
 // depending if it is already there or not
 const filterDisplayer = (taxaName, stringClass, divStringClass) => {
   const taxaElements = $(divStringClass).html().split(/[:,]/)
-  console.log(taxaElements)
   const taxaToParse = " " + taxaName + ","
-  console.log(taxaToParse.replace(",", ""))
   if (taxaElements.indexOf(taxaToParse.replace(",", "")) > -1) {
     // remove string from array
     const index = taxaElements.indexOf(taxaToParse.replace(",", "")) // gets
@@ -38,10 +35,4 @@ const filterDisplayer = (taxaName, stringClass, divStringClass) => {
     // if not already in taxaElements then add it
     $(divStringClass).append(taxaToParse)
   }
-}
-
-// function to remove first char from every string in array
-// of course array must have strings
-const removeFirstCharFromArray = (array) => {
-  return array.map(el => el.slice(1))
 }
