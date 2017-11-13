@@ -18,7 +18,8 @@ const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortV
     type: "histogram",
     autobinx: autobinxVar,
     xbins: {
-      start: Math.min(...finalArray),
+      start: Math.min(...finalArray),  //... spread operator allows to pass
+      // args in array to function
       end: Math.max(...finalArray),
       size: 10000
     },
