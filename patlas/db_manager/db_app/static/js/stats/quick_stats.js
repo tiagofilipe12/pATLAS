@@ -31,6 +31,14 @@ const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortV
   Plotly.newPlot("chartContainer1", data, layout)
 }
 
+const resetProgressBar = () => {
+  // resets progressBar
+  $("#actualProgress").width("0%") // sets the width to 0 at each interaction
+  $("#progressBar").show()
+  $("#progressDiv").show()
+  $("#chartContainer1").hide()
+}
+
 const getMetadataSpecies = (data, tempList, speciesList, sortAlp, sortVal) => {
   // this request uses nested json object to access json entries
   // available in the database
@@ -185,6 +193,65 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
   return lengthList
 }
 
+// function equivalent to getMetadata but for Card db
+const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
+  // resets progressBar
+  resetProgressBar()
+
+  PFList = []
+
+  for (const item in tempList) {
+    if ({}.hasOwnProperty.call(tempList, item)) {
+      const nodeId = tempList[item]
+      $.get("api/getplasmidfinder/", {"accession": nodeId}, (data, status) => {
+        // for each instance of item update progressBar
+        progressBarControl(parseInt(item) + 1, tempList.length)
+        // this request uses nested json object to access json entries
+        // available in the database
+
+        // get data for length
+        console.log(data)
+        const pfName = (data.json_entry.gene === null) ?
+          "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+
+        //then if unknown can push directly to array
+        if (pfName === "unknown") {
+          PFList.push(pfName)
+        } else {
+          // otherwise needs to parse the array into an array
+          for (const i in pfName) { PFList.push(pfName[i]) }
+        }
+
+        console.log("pfList", PFList)
+
+        // EXECUTE STATS
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "plasmid families",
+            tickangle: -45
+          },
+          title: "plasmid families in selection (from plasmidfinder database)",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        if (PFList.length === tempList.length) { statsParser(PFList, layout, false, "#2196F3", sortAlp, sortVal) }
+        return PFList
+      })
+    }
+  }
+}
+// function equivalent to getMetadata but for Database db (plasmidfinder db)
+const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
+  // resets progressBar
+  resetProgressBar()
+  console.log(tempList)
+}
+
 //**********************//
 //*** MAIN FUNCTIONS ***//
 //**********************//
@@ -193,10 +260,7 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
 
 const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
-  $("#actualProgress").width("0%") // sets the width to 0 at each interaction
-  $("#progressBar").show()
-  $("#progressDiv").show()
-  $("#chartContainer1").hide()
+  resetProgressBar()
   let taxaList = []
   // const speciesObject = {}
   for (const item in tempList) {
@@ -217,7 +281,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
         } else if (taxaType === "length") {
           // here i reused the names but it is not actually a taxa List but
           // rather a generic list
-          taxaList = getMetadataLength(data, tempList, taxaList, sortAlp)
+          taxaList = getMetadataLength(data, tempList, taxaList, sortAlp, sortVal)
         }
       })
     }
@@ -234,7 +298,9 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
     if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  taxaList = getMetadata(tempListAccessions, mode, sortAlp, sortVal)
+  const taxaList = (mode === "pf") ? getMetadataPF(tempListAccessions, mode, sortAlp, sortVal)
+    : (mode === "res") ? getMetadataRes(tempListAccessions, mode, sortAlp, sortVal) :
+    getMetadata(tempListAccessions, mode, sortAlp, sortVal)
   return taxaList
 }
 
@@ -243,6 +309,18 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
 const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
   const listPlots = (areaSelection === false) ?
     getMetadata(listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, clickerButton, false, false)
+  return listPlots
+}
+
+const pfRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  const listPlots = (areaSelection === false) ? getMetadataPF(listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, clickerButton, false, false)
+  return listPlots
+}
+
+const resRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  const listPlots = (areaSelection === false) ? getMetadataRes(listGiFilter, clickerButton, false, false)
     : statsColor(g, graphics, clickerButton, false, false)
   return listPlots
 }

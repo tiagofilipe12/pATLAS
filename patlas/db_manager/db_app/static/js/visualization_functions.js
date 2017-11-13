@@ -400,6 +400,17 @@ const onLoad = () => {
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
+    $("#resistanceStats").on("click", function (e) {
+      clickerButton = "res"
+      listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+    })
+
+    $("#pfamilyStats").on("click", function (e) {
+      clickerButton = "pf"
+      console.log("pfstats")
+      listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+    })
+
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").on("click", function (e) {
       clickerButton = "length"
