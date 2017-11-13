@@ -59,7 +59,7 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
       // variable with the selected gene
       const gene = array[i]
       // variable to store all lis for legend
-      if (storeLis === undefined) {
+      if (storeLis === "undefined") {
         storeLis = "<li" +
           " class='centeredList'><button class='jscolor btn'" +
           " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
@@ -158,11 +158,11 @@ const pfSubmitFunction = (g, graphics, renderer) => {
     for (let i in selectedPf) {
       if ({}.hasOwnProperty.call(selectedPf, i)) {
         // establish current color to use
-        const currentColor = colorList[i].replace('#', '0x')
+        const currentColor = colorList[i].replace("#", "0x")
         // variable with the selected gene
         const gene = selectedPf[i].replace(" ", "")
         // variable to store all lis for legend
-        if (storeLis === undefined) {
+        if (storeLis === "undefined") {
           storeLis = "<li" +
             " class='centeredList'><button class='jscolor btn'" +
             " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
