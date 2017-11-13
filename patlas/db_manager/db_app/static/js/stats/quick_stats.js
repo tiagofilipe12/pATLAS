@@ -210,7 +210,6 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
         // available in the database
 
         // get data for length
-        console.log(data)
         const pfName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
 
@@ -222,15 +221,13 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
           for (const i in pfName) { PFList.push(pfName[i]) }
         }
 
-        console.log("pfList", PFList)
-
         // EXECUTE STATS
         const layout = {
           yaxis: {
             title: "Number of selected plasmids"
           },
           xaxis: {
-            title: "plasmid families",
+            title: "plasmid families genes",
             tickangle: -45
           },
           title: "plasmid families in selection (from plasmidfinder database)",
@@ -239,7 +236,7 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
             l: 100
           }
         }
-        if (PFList.length === tempList.length) { statsParser(PFList, layout, false, "#2196F3", sortAlp, sortVal) }
+        if (PFList.length === tempList.length) { statsParser(PFList, layout, true, "#2196F3", sortAlp, sortVal) }
         return PFList
       })
     }
@@ -249,7 +246,50 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
 const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
-  console.log(tempList)
+
+  resList = []
+
+  for (const item in tempList) {
+    if ({}.hasOwnProperty.call(tempList, item)) {
+      const nodeId = tempList[item]
+      $.get("api/getresistances/", {"accession": nodeId}, (data, status) => {
+        // for each instance of item update progressBar
+        progressBarControl(parseInt(item) + 1, tempList.length)
+        // this request uses nested json object to access json entries
+        // available in the database
+
+        // get data for length
+        const pfName = (data.json_entry.gene === null) ?
+          "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+
+        //then if unknown can push directly to array
+        if (pfName === "unknown") {
+          resList.push(pfName)
+        } else {
+          // otherwise needs to parse the array into an array
+          for (const i in pfName) { resList.push(pfName[i]) }
+        }
+
+        // EXECUTE STATS
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "resistance genes",
+            tickangle: -45
+          },
+          title: "resistance genes in selection (from card + resfinder database)",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        if (resList.length === tempList.length) { statsParser(resList, layout, true, "#2196F3", sortAlp, sortVal) }
+        return resList
+      })
+    }
+  }
 }
 
 //**********************//
