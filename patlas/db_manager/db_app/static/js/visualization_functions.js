@@ -377,71 +377,50 @@ const onLoad = () => {
     // TODO this one should become legacy
     // TODO all these buttons are broken but the plot buttons are not...
     // sometimes render an odd instance with an odd plotly graph
+    // maybe modal is being loaded before the selection is fully made
     $("#refreshButton").on("click", function (e) {
-      // making sure the modal is displayed before rendering the plotly instance
-      $("#modalPlot").on("shown.bs.modal", function (e) {
-        clickerButton = "species"
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
-      })
+      clickerButton = "species"
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      // show modal only after this
+      console.log("after function", listPlots)
     })
 
     $("#speciesStats").on("click", function (e) {
-      // making sure the modal is displayed before rendering the plotly instance
-      $("#modalPlot").on("shown.bs.modal", function (e) {
-        clickerButton = "species"
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
-      })
+      clickerButton = "species"
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#genusStats").on("click", function (e) {
-      // making sure the modal is displayed before rendering the plotly instance
-      $("#modalPlot").on("shown.bs.modal", function (e) {
-        clickerButton = "genus"
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
-      })
+      clickerButton = "genus"
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#familyStats").on("click", function (e) {
-      // making sure the modal is displayed before rendering the plotly instance
-      $("#modalPlot").on("shown.bs.modal", function (e) {
-        clickerButton = "family"
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
-      })
+      clickerButton = "family"
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#orderStats").on("click", function (e) {
-      // making sure the modal is displayed before rendering the plotly instance
-      $("#modalPlot").on("shown.bs.modal", function (e) {
-        clickerButton = "order"
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
-      })
+      clickerButton = "order"
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#resistanceStats").on("click", function (e) {
-      // making sure the modal is displayed before rendering the plotly instance
-      $("#modalPlot").on("shown.bs.modal", function (e) {
-        clickerButton = "res"
-        console.log("resstats")
-        listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
-      })
+      clickerButton = "res"
+      console.log("resstats")
+      listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#pfamilyStats").on("click", function (e) {
-      // making sure the modal is displayed before rendering the plotly instance
-      $("#modalPlot").on("shown.bs.modal", function (e) {
-        clickerButton = "pf"
-        console.log("pfstats")
-        listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
-      })
+      clickerButton = "pf"
+      console.log("pfstats")
+      listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").on("click", function (e) {
-      // making sure the modal is displayed before rendering the plotly instance
-      $("#modalPlot").on("shown.bs.modal", function (e) {
-        clickerButton = "length"
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
-      })
+      clickerButton = "length"
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     // TODO get a way to sort the array generated inside getMetadata

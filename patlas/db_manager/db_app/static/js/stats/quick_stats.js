@@ -70,6 +70,7 @@ const getMetadataSpecies = (data, tempList, speciesList, sortAlp, sortVal) => {
       l: 100
     }
   }
+  console.log("speciesList", speciesList)
   if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C", sortAlp, sortVal) }
   return speciesList
 }
@@ -194,8 +195,6 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
 
 // function equivalent to getMetadata but for Database db (plasmidfinder db)
 const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
-  // TODO this somehow sometimes work sometimes it doesn't (check single
-  // query case
   // resets progressBar
   resetProgressBar()
 
@@ -247,7 +246,6 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
 // function equivalent to getMetadata but for Card db
 const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
   // TODO this should plot resfinder and card seperately
-  // TODO this somehow sometimes work sometimes it doesn't
   // resets progressBar
   resetProgressBar()
 
@@ -330,7 +328,10 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
       })
     }
   }
-  return taxaList
+  console.log("taxaList2", taxaType, taxaList)
+  return taxaList // TODO this is getting returned before being returned by
+  // inner
+  // functions
 }
 
 // stats using node colors... if listGiFilter is empty
@@ -341,19 +342,23 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
     if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
   })
+  console.log("tempListAccessions", tempListAccessions)
   // function to get the data from the accessions on the list
   const taxaList = (mode === "pf") ? getMetadataPF(tempListAccessions, mode, sortAlp, sortVal)
     : (mode === "res") ? getMetadataRes(tempListAccessions, mode, sortAlp, sortVal) :
     getMetadata(tempListAccessions, mode, sortAlp, sortVal)
+  console.log("taxaList", taxaList)
   return taxaList
 }
 
 // repetitive function that is often called by main js
 // (visualization_functions.js)
 const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  console.log("within function")
   const listPlots = (areaSelection === false) ?
     getMetadata(listGiFilter, clickerButton, false, false)
     : statsColor(g, graphics, clickerButton, false, false)
+  console.log(listPlots)
   return listPlots
 }
 
