@@ -859,16 +859,17 @@ const onLoad = () => {
         selectedGenus = genus_query.replace("Genus:", "").split(",").filter(Boolean),
         selectedFamily = family_query.replace("Family:", "").split(",").filter(Boolean),
         selectedOrder = order_query.replace("Order:", "").split(",").filter(Boolean)
-      console.log(selectedSpecies)
       // remove first char from selected* arrays
       selectedSpecies = removeFirstCharFromArray(selectedSpecies)
       selectedGenus = removeFirstCharFromArray(selectedGenus)
       selectedFamily = removeFirstCharFromArray(selectedFamily)
       selectedOrder = removeFirstCharFromArray(selectedOrder)
+      console.log(selectedSpecies)
 
       //* *** Alert for taxa filter ****//
       // print alert if no filters are selected
-      counter = 0 // counts the number of taxa type that has not been selected
+      let counter = 0 // counts the number of taxa type that has not been
+      // selected
 
       const alertArrays = {
         "order": selectedOrder,
@@ -876,19 +877,30 @@ const onLoad = () => {
         "genus": selectedGenus,
         "species": selectedSpecies
       }
-      const divAlert = document.getElementById('alertId')
+
+      console.log(alertArrays)
+      const divAlert = document.getElementById("alertId")
       let Alert = false
-      for (let i in alertArrays) {
-        if (alertArrays[i].length === 0) {
-          Alert = true
-          counter = 4  // counter used to check if more than one dropdown has selected options
-        } else if (alertArrays[i].length > 0) {
+      for (const i in alertArrays) {
+        console.log("alert", alertArrays[i])
+        // if (alertArrays[i].length === 0) {
+        //   Alert = true
+        //   counter = 4  // counter used to check if more than one dropdown has selected options
+        if (alertArrays[i].length > 0) {
           counter = counter + 1
+          Alert = false
+        } else if (alertArrays.order.length === 0 &&
+          alertArrays.family.length === 0 &&
+            alertArrays.genus.length === 0 &&
+            alertArrays.species.length === 0) {
+          Alert = true
         }
+
       }
       if (Alert === true) {
-        divAlert.style.display = 'block'
-        showLegend.style.display = 'none' // removes legend when this warning is raised
+        divAlert.style.display = "block"
+        showLegend.style.display = "none" // removes legend when this
+        // warning is raised
         Alert = false
       }
       // control the alertClose button
@@ -1015,12 +1027,14 @@ const onLoad = () => {
       }
       // renders the graph for the desired taxon if one taxon type is selected
       // allows for different colors between taxa of the same level
-      else if (counter == 1) {
+      else if (counter === 1) {
         // first cycle between all the arrays to find which one is not empty
         for (array in alertArrays) {
+          console.log("arrayname", array)
           // selects the not empty array
           if (alertArrays[array] != '' && firstIteration == true) {
             var currentSelection = alertArrays[array]
+            console.log(currentSelection)
             // performs the actual interaction for color picking and assigning
             for (i in currentSelection) {
 
@@ -1082,7 +1096,8 @@ const onLoad = () => {
               }
 
               // species //
-              else if (alertArrays['species'] != '') {
+              else if (alertArrays['species'] != []) {
+                console.log("within", currentSelection)
                 var currentColor = colorList[i].replace('#', '0x')
                 style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
