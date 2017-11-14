@@ -374,53 +374,64 @@ const onLoad = () => {
     let clickerButton, listPlots
 
     // Button to open modal for plots
-    // TODO this one should become legacy
-    // TODO all these buttons are broken but the plot buttons are not...
-    // sometimes render an odd instance with an odd plotly graph
-    // maybe modal is being loaded before the selection is fully made
+    // all these buttons require that the modalPlot modal opens before
+    // executing the function and that is the reason why they wait half a
+    // second before executing repetitivePlotFunction's
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
-      // show modal only after this
-      console.log("after function", listPlots)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     $("#speciesStats").on("click", function (e) {
       clickerButton = "species"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      },500)
     })
 
     $("#genusStats").on("click", function (e) {
       clickerButton = "genus"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     $("#familyStats").on("click", function (e) {
       clickerButton = "family"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     $("#orderStats").on("click", function (e) {
       clickerButton = "order"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     $("#resistanceStats").on("click", function (e) {
       clickerButton = "res"
-      console.log("resstats")
-      listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     $("#pfamilyStats").on("click", function (e) {
       clickerButton = "pf"
-      console.log("pfstats")
-      listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").on("click", function (e) {
       clickerButton = "length"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     // TODO get a way to sort the array generated inside getMetadata
