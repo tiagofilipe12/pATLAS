@@ -374,36 +374,64 @@ const onLoad = () => {
     let clickerButton, listPlots
 
     // Button to open modal for plots
-    // TODO this one should become legacy
+    // all these buttons require that the modalPlot modal opens before
+    // executing the function and that is the reason why they wait half a
+    // second before executing repetitivePlotFunction's
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     $("#speciesStats").on("click", function (e) {
       clickerButton = "species"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      },500)
     })
 
     $("#genusStats").on("click", function (e) {
       clickerButton = "genus"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     $("#familyStats").on("click", function (e) {
       clickerButton = "family"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     $("#orderStats").on("click", function (e) {
       clickerButton = "order"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
+    })
+
+    $("#resistanceStats").on("click", function (e) {
+      clickerButton = "res"
+      setTimeout( () => {
+        listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
+    })
+
+    $("#pfamilyStats").on("click", function (e) {
+      clickerButton = "pf"
+      setTimeout( () => {
+        listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").on("click", function (e) {
       clickerButton = "length"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
     })
 
     // TODO get a way to sort the array generated inside getMetadata
@@ -503,6 +531,16 @@ const onLoad = () => {
     $("#orderPlot").on("click", function (e) {
       clickerButton = "order"
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+    })
+
+    $("#resPlot").on("click", function (e) {
+      clickerButton = "res"
+      listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+    })
+
+    $("#pfPlot").on("click", function (e) {
+      clickerButton = "pf"
+      listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
@@ -821,7 +859,6 @@ const onLoad = () => {
         selectedGenus = genus_query.replace("Genus:", "").split(",").filter(Boolean),
         selectedFamily = family_query.replace("Family:", "").split(",").filter(Boolean),
         selectedOrder = order_query.replace("Order:", "").split(",").filter(Boolean)
-      console.log(selectedSpecies)
       // remove first char from selected* arrays
       selectedSpecies = removeFirstCharFromArray(selectedSpecies)
       selectedGenus = removeFirstCharFromArray(selectedGenus)
@@ -830,7 +867,8 @@ const onLoad = () => {
 
       //* *** Alert for taxa filter ****//
       // print alert if no filters are selected
-      counter = 0 // counts the number of taxa type that has not been selected
+      let counter = 0 // counts the number of taxa type that has not been
+      // selected
 
       const alertArrays = {
         "order": selectedOrder,
@@ -838,19 +876,28 @@ const onLoad = () => {
         "genus": selectedGenus,
         "species": selectedSpecies
       }
-      const divAlert = document.getElementById('alertId')
+
+      const divAlert = document.getElementById("alertId")
       let Alert = false
-      for (let i in alertArrays) {
-        if (alertArrays[i].length === 0) {
-          Alert = true
-          counter = 4  // counter used to check if more than one dropdown has selected options
-        } else if (alertArrays[i].length > 0) {
+      for (const i in alertArrays) {
+        // if (alertArrays[i].length === 0) {
+        //   Alert = true
+        //   counter = 4  // counter used to check if more than one dropdown has selected options
+        if (alertArrays[i].length > 0) {
           counter = counter + 1
+          Alert = false
+        } else if (alertArrays.order.length === 0 &&
+          alertArrays.family.length === 0 &&
+            alertArrays.genus.length === 0 &&
+            alertArrays.species.length === 0) {
+          Alert = true
         }
+
       }
       if (Alert === true) {
-        divAlert.style.display = 'block'
-        showLegend.style.display = 'none' // removes legend when this warning is raised
+        divAlert.style.display = "block"
+        showLegend.style.display = "none" // removes legend when this
+        // warning is raised
         Alert = false
       }
       // control the alertClose button
@@ -977,7 +1024,7 @@ const onLoad = () => {
       }
       // renders the graph for the desired taxon if one taxon type is selected
       // allows for different colors between taxa of the same level
-      else if (counter == 1) {
+      else if (counter === 1) {
         // first cycle between all the arrays to find which one is not empty
         for (array in alertArrays) {
           // selects the not empty array
@@ -1044,7 +1091,7 @@ const onLoad = () => {
               }
 
               // species //
-              else if (alertArrays['species'] != '') {
+              else if (alertArrays['species'] != []) {
                 var currentColor = colorList[i].replace('#', '0x')
                 style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'

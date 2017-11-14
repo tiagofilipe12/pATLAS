@@ -18,7 +18,8 @@ const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortV
     type: "histogram",
     autobinx: autobinxVar,
     xbins: {
-      start: Math.min(...finalArray),
+      start: Math.min(...finalArray),  //... spread operator allows to pass
+      // args in array to function
       end: Math.max(...finalArray),
       size: 10000
     },
@@ -26,162 +27,146 @@ const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortV
       color: customColor,
     }
   }]
-
   Plotly.newPlot("chartContainer1", data, layout)
 }
 
-const getMetadataSpecies = (data, tempList, speciesList, sortAlp, sortVal) => {
-  // this request uses nested json object to access json entries
-  // available in the database
-  // if request return no speciesName or plasmidName
-  // sometimes plasmids have no descriptor for one of these or both
-  const speciesName = (data.json_entry.name === null) ?
-    "unknown" : data.json_entry.name.split("_").join(" ")
-  // push to main list to control the final of the loop
-  speciesList.push(speciesName)
-  // constructs the speciesObject object that counts the number of
-  // occurrences of a species
-  // if (!(speciesName in speciesObject)) {
-  //   speciesObject[speciesName] = 1
-  // } else {
-  //   speciesObject[speciesName] = speciesObject[speciesName] + 1
-  // }
-  // if speciesList reaches the size of accessions given to tempList
-  // EXECUTE STATS
-  const layout = {
-    yaxis: {
-      title: "Number of selected plasmids"
-    },
-    xaxis: {
-      title: "Species",
-      tickangle: -45
-    },
-    title: "Species in selection",
-    margin: {
-      b: 200,
-      l: 100
-    }
-  }
-  if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C", sortAlp, sortVal) }
-  return speciesList
+const resetProgressBar = () => {
+  // resets progressBar
+  $("#actualProgress").width("0%") // sets the width to 0 at each interaction
+  $("#progressBar").show()
+  $("#progressDiv").show()
+  $("#chartContainer1").hide()
 }
 
-const getMetadataGenus = (data, tempList, genusList, sortAlp, sortVal) => {
-  // this request uses nested json object to access json entries
-  // available in the database
-  // if request return no genusName or plasmidName
-  // sometimes plasmids have no descriptor for one of these or both
-  // replace [ and ' by nothing for proper display
-  const genusName = (data.json_entry.taxa === "unknown") ?
-    "unknown" : data.json_entry.taxa.split(",")[0].replace(/['[]/g, "")
-  // push to main list to control the final of the loop
-  genusList.push(genusName)
-  // if genusList reaches the size of accessions given to tempList
-  // EXECUTE STATS
-  const layout = {
-    yaxis: {
-      title: "Number of selected plasmids"
-    },
-    xaxis: {
-      title: "Genera",
-      tickangle: -45
-    },
-    title: "Genera in selection",
-    margin: {
-      b: 200,
-      l: 100
+// function equivalent to getMetadata but for Database db (plasmidfinder db)
+const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
+  // resets progressBar
+  resetProgressBar()
+
+  let PFList = []
+  let promises = []
+
+  for (const item in tempList) {
+    if ({}.hasOwnProperty.call(tempList, item)) {
+
+      const nodeId = tempList[item]
+      promises.push(
+        $.get("api/getplasmidfinder/", {"accession": nodeId}, () => {
+          // for each instance of item update progressBar
+          progressBarControl(parseInt(item) + 1, tempList.length)
+        })
+      )
     }
   }
-  if (genusList.length === tempList.length) { statsParser(genusList, layout, true, "red", sortAlp, sortVal) }
-  return genusList
 
+  let counter = 0
+  // when all promises are gathered
+  Promise.all(promises)
+    .then( (results) => {
+      results.map( (data) => {
+        const pfName = (data.json_entry.gene === null) ?
+          "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+        //then if unknown can push directly to array
+        if (pfName === "unknown") {
+          PFList.push(pfName)
+          counter += 1
+        } else {
+          // otherwise needs to parse the array into an array
+          for (const i in pfName) {
+            if ({}.hasOwnProperty.call(pfName, i)) {
+              PFList.push(pfName[i])
+              counter += 1
+            }
+          }
+        }
+
+      })
+      // EXECUTE STATS
+      const layout = {
+        yaxis: {
+          title: "Number of selected plasmids"
+        },
+        xaxis: {
+          title: "plasmid family genes",
+          tickangle: -45
+        },
+        title: "plasmid families in selection (from card + resfinder" +
+        " database)",
+        margin: {
+          b: 200,
+          l: 100
+        }
+      }
+      if (PFList.length === counter) {
+        statsParser(PFList, layout, true, "#2196F3", sortAlp, sortVal)
+      }
+    })
+
+  return PFList
 }
 
-const getMetadataFamily = (data, tempList, familyList, sortAlp, sortVal) => {
-  // this request uses nested json object to access json entries
-  // available in the database
-  // if request return no genusName or plasmidName
-  // sometimes plasmids have no descriptor for one of these or both
-  // replace ' by nothing for proper display
-  const familyName = (data.json_entry.taxa === "unknown") ?
-    "unknown" : data.json_entry.taxa.split(",")[1].replace(/[']/g, "")
-  // push to main list to control the final of the loop
-  familyList.push(familyName)
-  // if familyList reaches the size of accessions given to tempList
-  // EXECUTE STATS
-  const layout = {
-    yaxis: {
-      title: "Number of selected plasmids"
-    },
-    xaxis: {
-      title: "Families",
-      tickangle: -45
-    },
-    title: "Families in selection",
-    margin: {
-      b: 200,
-      l: 100
+// function equivalent to getMetadata but for Card db
+const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
+  // TODO this should plot resfinder and card seperately
+  // resets progressBar
+  resetProgressBar()
+
+  let resList = []
+  let promises = []
+
+  for (const item in tempList) {
+    if ({}.hasOwnProperty.call(tempList, item)) {
+      const nodeId = tempList[item]
+      promises.push(
+        $.get("api/getresistances/", {"accession": nodeId}, () => {
+          // for each instance of item update progressBar
+          progressBarControl(parseInt(item) + 1, tempList.length)
+        })
+      )
     }
   }
-  if (familyList.length === tempList.length) { statsParser(familyList, layout, true, "#FF5722", sortAlp, sortVal) }
-  return familyList
-}
 
-const getMetadataOrder = (data, tempList, orderList, sortAlp, sortVal) => {
-  // this request uses nested json object to access json entries
-  // available in the database
-  // if request return no genusName or plasmidName
-  // sometimes plasmids have no descriptor for one of these or both
-  // replace ' by nothing for proper display
-  const orderName = (data.json_entry.taxa === "unknown") ?
-    "unknown" : data.json_entry.taxa.split(",")[2].replace(/['\]]/g, "")
-  // push to main list to control the final of the loop
-  orderList.push(orderName)
-  // EXECUTE STATS
-  const layout = {
-    yaxis: {
-      title: "Number of selected plasmids"
-    },
-    xaxis: {
-      title: "Orders",
-      tickangle: -45
-    },
-    title: "Orders in selection",
-    margin: {
-      b: 200,
-      l: 100
-    }
-  }
-  if (orderList.length === tempList.length) { statsParser(orderList, layout, true, "orange", sortAlp, sortVal) }
-  return orderList
-}
+  // when all promises are gathered
+  let counter = 0
+  Promise.all(promises)
+    .then( (results) => {
+      results.map( (data) => {
+        const pfName = (data.json_entry.gene === null) ?
+          "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+        //then if unknown can push directly to array
+        if (pfName === "unknown") {
+          counter += 1
+          resList.push(pfName)
+        } else {
+          // otherwise needs to parse the array into an array
+          for (const i in pfName) {
+            resList.push(pfName[i])
+            counter += 1
+          }
+        }
 
-const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
-  // this request uses nested json object to access json entries
-  // available in the database
+      })
+      // EXECUTE STATS
+      const layout = {
+        yaxis: {
+          title: "Number of selected plasmids"
+        },
+        xaxis: {
+          title: "resistance genes",
+          tickangle: -45
+        },
+        title: "resistance genes in selection (from card + resfinder database)",
+        margin: {
+          b: 200,
+          l: 100
+        }
+      }
+      if (resList.length === counter) {
+        statsParser(resList, layout, true, "#2196F3", sortAlp, sortVal)
+      }
+    })
 
-  // get data for length
-  const speciesLength = (data.json_entry.length === null) ?
-    "unknown" : data.json_entry.length
-  // push to main list to control the final of the loop
-  lengthList.push(speciesLength)
-  // EXECUTE STATS
-  const layout = {
-    yaxis: {
-      title: "Number of selected plasmids"
-    },
-    xaxis: {
-      title: "Length",
-      tickangle: -45
-    },
-    title: "Lengths in selection",
-    margin: {
-      b: 200,
-      l: 100
-    }
-  }
-  if (lengthList.length === tempList.length) { statsParser(lengthList, layout, false, "#2196F3", sortAlp, sortVal) }
-  return lengthList
+  return resList
 }
 
 //**********************//
@@ -192,36 +177,151 @@ const getMetadataLength = (data, tempList, lengthList, sortAlp, sortVal) => {
 
 const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
-  $("#actualProgress").width("0%") // sets the width to 0 at each interaction
-  $("#progressBar").show()
-  $("#progressDiv").show()
-  $("#chartContainer1").hide()
-  let taxaList = []
+  resetProgressBar()
+  let speciesList = []
+  let promises = []
   // const speciesObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
       const nodeId = tempList[item]
-      $.get("api/getspecies/", {"accession": nodeId}, (data, status) => {
-        // for each instance of item update progressBar
-        progressBarControl(parseInt(item) + 1, tempList.length)
-        // then do everything else
-        if (taxaType === "species") {
-          taxaList = getMetadataSpecies(data, tempList, taxaList, sortAlp, sortVal)
-        } else if (taxaType === "genus") {
-          taxaList = getMetadataGenus(data, tempList, taxaList, sortAlp, sortVal)
-        } else if (taxaType === "family") {
-          taxaList = getMetadataFamily(data, tempList, taxaList, sortAlp, sortVal)
-        } else if (taxaType === "order") {
-          taxaList = getMetadataOrder(data, tempList, taxaList, sortAlp, sortVal)
-        } else if (taxaType === "length") {
-          // here i reused the names but it is not actually a taxa List but
-          // rather a generic list
-          taxaList = getMetadataLength(data, tempList, taxaList, sortAlp)
-        }
-      })
+      promises.push(
+        // query used to push to promise the . there is no need for the
+        // function that parses the data and status but just to push data
+        // into the promises array
+        $.get("api/getspecies/", {"accession": nodeId}, () => {
+          // for each instance of item update progressBar
+          progressBarControl(parseInt(item) + 1, tempList.length)
+        })
+      )
     }
   }
-  return taxaList
+  // waits for all promises to finish and then execute functions that will
+  // render the graph
+  Promise.all(promises)
+    .then( (results) => {
+      results.map( (result) => {
+        if (taxaType === "species") {
+          const speciesName = (result.json_entry.name === null) ?
+            "unknown" : result.json_entry.name.split("_").join(" ")
+          // push to main list to control the final of the loop
+          speciesList.push(speciesName)
+        } else if (taxaType === "genus") {
+          const genusName = (result.json_entry.taxa === "unknown") ?
+            "unknown" : result.json_entry.taxa.split(",")[0].replace(/['[]/g, "")
+          // push to main list to control the final of the loop
+          speciesList.push(genusName)
+        } else if (taxaType === "family") {
+          const familyName = (result.json_entry.taxa === "unknown") ?
+            "unknown" : result.json_entry.taxa.split(",")[1].replace(/[']/g, "")
+          speciesList.push(familyName)
+        } else if (taxaType === "order") {
+          const orderName = (result.json_entry.taxa === "unknown") ?
+            "unknown" : result.json_entry.taxa.split(",")[2].replace(/['\]]/g, "")
+          speciesList.push(orderName)
+        } else {
+          const speciesLength = (result.json_entry.length === null) ?
+            "unknown" : result.json_entry.length
+          speciesList.push(speciesLength)
+          // assumes that it is length by default
+        }
+      })
+      // execute some function
+      if (taxaType === "species") {
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "species",
+            tickangle: -45
+          },
+          title: "species in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        // assures that speciesList is fully generated before instanciating
+        // plotly
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C", sortAlp, sortVal) }
+      } else if (taxaType === "genus") {
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "genera",
+            tickangle: -45
+          },
+          title: "genera in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        // assures that speciesList is fully generated before instanciating
+        // plotly
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "red", sortAlp, sortVal) }
+      } else if (taxaType === "family") {
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "families",
+            tickangle: -45
+          },
+          title: "families in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        // assures that speciesList is fully generated before instanciating
+        // plotly
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#FF5722", sortAlp, sortVal) }
+      } else if (taxaType === "order") {
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "orders",
+            tickangle: -45
+          },
+          title: "orders in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        // assures that speciesList is fully generated before instanciating
+        // plotly
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "orange", sortAlp, sortVal) }
+      } else {
+        const layout = {
+          yaxis: {
+            title: "Number of selected plasmids"
+          },
+          xaxis: {
+            title: "length",
+            tickangle: -45
+          },
+          title: "lengths in selection",
+          margin: {
+            b: 200,
+            l: 100
+          }
+        }
+        // assures that speciesList is fully generated before instanciating
+        // plotly
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#2196F3", sortAlp, sortVal) }
+      }
+    })
+    .catch( (error) => {
+      console.log("Error: ", error)
+    })
+  return speciesList // this is returned async but there is no problem
 }
 
 // stats using node colors... if listGiFilter is empty
@@ -233,7 +333,9 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
     if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  taxaList = getMetadata(tempListAccessions, mode, sortAlp, sortVal)
+  const taxaList = (mode === "pf") ? getMetadataPF(tempListAccessions, mode, sortAlp, sortVal)
+    : (mode === "res") ? getMetadataRes(tempListAccessions, mode, sortAlp, sortVal) :
+    getMetadata(tempListAccessions, mode, sortAlp, sortVal)
   return taxaList
 }
 
@@ -242,6 +344,18 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
 const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
   const listPlots = (areaSelection === false) ?
     getMetadata(listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, clickerButton, false, false)
+  return listPlots
+}
+
+const pfRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  const listPlots = (areaSelection === false) ? getMetadataPF(listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, clickerButton, false, false)
+  return listPlots
+}
+
+const resRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  const listPlots = (areaSelection === false) ? getMetadataRes(listGiFilter, clickerButton, false, false)
     : statsColor(g, graphics, clickerButton, false, false)
   return listPlots
 }
