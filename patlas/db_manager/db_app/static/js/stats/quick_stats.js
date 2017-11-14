@@ -62,8 +62,8 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
   let counter = 0
   // when all promises are gathered
   Promise.all(promises)
-    .then((results) => {
-      results.map(data => {
+    .then( (results) => {
+      results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
         //then if unknown can push directly to array
@@ -73,8 +73,10 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
         } else {
           // otherwise needs to parse the array into an array
           for (const i in pfName) {
-            PFList.push(pfName[i])
-            counter += 1
+            if ({}.hasOwnProperty.call(pfName, i)) {
+              PFList.push(pfName[i])
+              counter += 1
+            }
           }
         }
 
@@ -127,8 +129,8 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
   // when all promises are gathered
   let counter = 0
   Promise.all(promises)
-    .then((results) => {
-      results.map(data => {
+    .then( (results) => {
+      results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
         //then if unknown can push directly to array
@@ -196,8 +198,8 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // waits for all promises to finish and then execute functions that will
   // render the graph
   Promise.all(promises)
-    .then((results) => {
-      results.map(result => {
+    .then( (results) => {
+      results.map( (result) => {
         if (taxaType === "species") {
           const speciesName = (result.json_entry.name === null) ?
             "unknown" : result.json_entry.name.split("_").join(" ")
@@ -316,7 +318,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
         if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#2196F3", sortAlp, sortVal) }
       }
     })
-    .catch((error) => {
+    .catch( (error) => {
       console.log("Error: ", error)
     })
   return speciesList // this is returned async but there is no problem

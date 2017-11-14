@@ -864,7 +864,6 @@ const onLoad = () => {
       selectedGenus = removeFirstCharFromArray(selectedGenus)
       selectedFamily = removeFirstCharFromArray(selectedFamily)
       selectedOrder = removeFirstCharFromArray(selectedOrder)
-      console.log(selectedSpecies)
 
       //* *** Alert for taxa filter ****//
       // print alert if no filters are selected
@@ -878,11 +877,9 @@ const onLoad = () => {
         "species": selectedSpecies
       }
 
-      console.log(alertArrays)
       const divAlert = document.getElementById("alertId")
       let Alert = false
       for (const i in alertArrays) {
-        console.log("alert", alertArrays[i])
         // if (alertArrays[i].length === 0) {
         //   Alert = true
         //   counter = 4  // counter used to check if more than one dropdown has selected options
@@ -1030,11 +1027,9 @@ const onLoad = () => {
       else if (counter === 1) {
         // first cycle between all the arrays to find which one is not empty
         for (array in alertArrays) {
-          console.log("arrayname", array)
           // selects the not empty array
           if (alertArrays[array] != '' && firstIteration == true) {
             var currentSelection = alertArrays[array]
-            console.log(currentSelection)
             // performs the actual interaction for color picking and assigning
             for (i in currentSelection) {
 
@@ -1097,7 +1092,6 @@ const onLoad = () => {
 
               // species //
               else if (alertArrays['species'] != []) {
-                console.log("within", currentSelection)
                 var currentColor = colorList[i].replace('#', '0x')
                 style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
