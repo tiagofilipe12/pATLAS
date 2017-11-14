@@ -522,6 +522,16 @@ const onLoad = () => {
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
+    $("#resPlot").on("click", function (e) {
+      clickerButton = "res"
+      listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+    })
+
+    $("#pfPlot").on("click", function (e) {
+      clickerButton = "pf"
+      listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+    })
+
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
 
     // Buttons to control force play/pause using bootstrap navigation bar
