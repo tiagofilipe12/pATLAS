@@ -1158,8 +1158,9 @@ const onLoad = () => {
     $('#fileSubmit_mash').click(function (event) {
       read_json = mash_json // conerts mash_json into read_json to overwrite
       // it and use the same function (readColoring)
+      console.log("mash")
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload)
+        showGoback, showDownload, idsArrays)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
@@ -1183,7 +1184,7 @@ const onLoad = () => {
     $('#assemblySubmit').click(function (event) {
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload)
+        showGoback, showDownload, idsArrays)
       $('#loading').show()
       setTimeout(function () {
         assembly(list_gi, assembly_json, g, graphics, renderer)
