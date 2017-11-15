@@ -42,6 +42,7 @@ const getArray_pf = () => {
 
 // list used to store for re-run button (apply filters)
 let listGiFilter = []
+let reloadAccessionList = []
 
 let sliderMinMax = [] // initiates an array for min and max slider entries
 // and stores it for reloading instances of onload()
@@ -379,6 +380,14 @@ const onLoad = () => {
     // second before executing repetitivePlotFunction's
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
+      console.log("listgifilter refreshbutton", listGiFilter)
+      console.log("reloadaccessionlist", reloadAccessionList)
+      listGiFilter = (reloadAccessionList.length !== 0) ?
+        // reduces listGiFilter to reloadAccessionList
+        listGiFilter.filter((n) => reloadAccessionList.includes(n)) :
+        // otherwise maintain listGiFilter untouched
+        listGiFilter
+
       setTimeout( () => {
         listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
@@ -600,32 +609,33 @@ const onLoad = () => {
     //* ***plasmidfinder Filters****//
     //* ******************//
 
-
-    getArray_pf().done( (json) => {
-      // first parse the json input file
-      const listPF = []
-      // iterate over the file
-      $.each(json, (accession, entry) => {
-        geneEntries = entry.gene
-        for (let i in geneEntries) {
-          if (listPF.indexOf(geneEntries[i]) < 0) {
-            listPF.push(geneEntries[i])
+    if (firstInstace === true) {
+      getArray_pf().done((json) => {
+        // first parse the json input file
+        const listPF = []
+        // iterate over the file
+        $.each(json, (accession, entry) => {
+          geneEntries = entry.gene
+          for (let i in geneEntries) {
+            if (listPF.indexOf(geneEntries[i]) < 0) {
+              listPF.push(geneEntries[i])
+            }
           }
-        }
-      })
-      // populate the menus
-      singleDropdownPopulate("#plasmidFamiliesList", listPF, "PlasmidfinderClass")
+        })
+        // populate the menus
+        singleDropdownPopulate("#plasmidFamiliesList", listPF, "PlasmidfinderClass")
 
-      $(".PlasmidfinderClass").on("click", function (e) {
-        // fill panel group displaying current selected taxa filters //
-        const stringClass = this.className.slice(0,-5)
-        const tempVar = this.firstChild.innerHTML
-        // checks if a taxon is already in display
-        const divStringClass = "#p_" + stringClass
+        $(".PlasmidfinderClass").on("click", function (e) {
+          // fill panel group displaying current selected taxa filters //
+          const stringClass = this.className.slice(0, -5)
+          const tempVar = this.firstChild.innerHTML
+          // checks if a taxon is already in display
+          const divStringClass = "#p_" + stringClass
 
-        filterDisplayer(tempVar, stringClass, divStringClass)
+          filterDisplayer(tempVar, stringClass, divStringClass)
+        })
       })
-    })
+    }
 
     // setup clear button for plasmidfinder functions
     $("#pfClear").click( (event) => {
@@ -674,42 +684,43 @@ const onLoad = () => {
     //* ******************//
 
     // first parse the json input file
-
-    getArray_res().done( (json) => {
-      const listCard = [],
-        listRes = []
-      // iterate over the file
-      $.each(json, (accession, entry) => {
-        databaseEntries = entry.database
-        geneEntries = entry.gene
-        for (let i in databaseEntries) {
-          if (databaseEntries[i] === "card" && listCard.indexOf(geneEntries[i]) < 0) {
-            listCard.push(geneEntries[i])
-          } else {
-            if (listRes.indexOf(geneEntries[i]) < 0) {
-              listRes.push(geneEntries[i])
+    if (firstInstace === true) {
+      getArray_res().done((json) => {
+        const listCard = [],
+          listRes = []
+        // iterate over the file
+        $.each(json, (accession, entry) => {
+          databaseEntries = entry.database
+          geneEntries = entry.gene
+          for (let i in databaseEntries) {
+            if (databaseEntries[i] === "card" && listCard.indexOf(geneEntries[i]) < 0) {
+              listCard.push(geneEntries[i])
+            } else {
+              if (listRes.indexOf(geneEntries[i]) < 0) {
+                listRes.push(geneEntries[i])
+              }
             }
           }
+        })
+        // populate the menus
+        singleDropdownPopulate("#cardList", listCard, "CardClass")
+        singleDropdownPopulate("#resList", listRes, "ResfinderClass")
+
+        const classArray = [".CardClass", ".ResfinderClass"]
+        for (let i = 0; i < classArray.length; i++) {
+          $(classArray[i]).on("click", function (e) {
+            // fill panel group displaying current selected taxa filters //
+            const stringClass = this.className.slice(0, -5)
+            const tempVar = this.firstChild.innerHTML
+
+            // checks if a taxon is already in display
+            const divStringClass = "#p_" + stringClass
+
+            filterDisplayer(tempVar, stringClass, divStringClass)
+          })
         }
       })
-      // populate the menus
-      singleDropdownPopulate("#cardList", listCard, "CardClass")
-      singleDropdownPopulate("#resList", listRes, "ResfinderClass")
-
-      const classArray = [".CardClass", ".ResfinderClass"]
-      for (let i = 0; i < classArray.length; i++) {
-        $(classArray[i]).on("click", function (e) {
-          // fill panel group displaying current selected taxa filters //
-          const stringClass = this.className.slice(0,-5)
-          const tempVar = this.firstChild.innerHTML
-
-          // checks if a taxon is already in display
-          const divStringClass = "#p_" + stringClass
-
-          filterDisplayer(tempVar, stringClass, divStringClass)
-        })
-      }
-    })
+    }
 
     $("#resClear").click( (event) => {
       document.getElementById("reset-sliders").click()
@@ -762,81 +773,83 @@ const onLoad = () => {
       list_genera = [],
       dict_genera = {},
       list_species = []
-    getArray_taxa().done( (json) => {
-      $.each(json, (sps, other) => {    // sps aka species
-        const species = sps.split("_").join(" ")
-        const genus = other[0]
-        const family = other[1]
-        const order = other[2]
-        dict_genera[species] = [genus, family, order] // append the list to
-        // this dict to be used later
-        if (list_genera.indexOf(genus) < 0) {
-          list_genera.push(genus)
-        }
-        if (list_families.indexOf(family) < 0) {
-          list_families.push(family)
-        }
-        if (list_orders.indexOf(order) < 0) {
-          list_orders.push(order)
-        }
-        if (list_species.indexOf(species) < 0) {
-          list_species.push(species)
-        }
-      })
-
-      // populate the menus
-      singleDropdownPopulate("#orderList", list_orders, "OrderClass")
-      singleDropdownPopulate("#familyList", list_families, "FamilyClass")
-      singleDropdownPopulate("#genusList", list_genera, "GenusClass")
-      singleDropdownPopulate("#speciesList", list_species, "SpeciesClass")
-
-      // clickable <li> and control of displayer of current filters
-      const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
-      for (let i = 0; i < classArray.length; i++) {
-        $(classArray[i]).on("click", function (e) {
-          // fill panel group displaying current selected taxa filters //
-          const stringClass = this.className.slice(0, -5)
-          const tempVar = this.firstChild.innerHTML
-
-          // checks if a taxon is already in display
-          const divStringClass = "#p_" + stringClass
-
-          filterDisplayer(tempVar, stringClass, divStringClass)
+    if (firstInstace === true) {
+      getArray_taxa().done((json) => {
+        $.each(json, (sps, other) => {    // sps aka species
+          const species = sps.split("_").join(" ")
+          const genus = other[0]
+          const family = other[1]
+          const order = other[2]
+          dict_genera[species] = [genus, family, order] // append the list to
+          // this dict to be used later
+          if (list_genera.indexOf(genus) < 0) {
+            list_genera.push(genus)
+          }
+          if (list_families.indexOf(family) < 0) {
+            list_families.push(family)
+          }
+          if (list_orders.indexOf(order) < 0) {
+            list_orders.push(order)
+          }
+          if (list_species.indexOf(species) < 0) {
+            list_species.push(species)
+          }
         })
-      }
 
-      //* **** Clear selection button *****//
-      // clear = false; //added to control the colors being triggered after clearing
-      $("#taxaModalClear").click(function (event) {
-        document.getElementById("reset-sliders").click()
-        // clear = true;
-        event.preventDefault()
-        resetDisplayTaxaBox(idsArrays)
+        // populate the menus
+        singleDropdownPopulate("#orderList", list_orders, "OrderClass")
+        singleDropdownPopulate("#familyList", list_families, "FamilyClass")
+        singleDropdownPopulate("#genusList", list_genera, "GenusClass")
+        singleDropdownPopulate("#speciesList", list_species, "SpeciesClass")
 
-        // resets dropdown selections
-        $("#orderList").selectpicker("deselectAll")
-        $("#familyList").selectpicker("deselectAll")
-        $("#genusList").selectpicker("deselectAll")
-        $("#speciesList").selectpicker("deselectAll")
+        // clickable <li> and control of displayer of current filters
+        const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
+        for (let i = 0; i < classArray.length; i++) {
+          $(classArray[i]).on("click", function (e) {
+            // fill panel group displaying current selected taxa filters //
+            const stringClass = this.className.slice(0, -5)
+            const tempVar = this.firstChild.innerHTML
 
-        slider.noUiSlider.set([min, max])
-        node_color_reset(graphics, g, nodeColor, renderer)
-        if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-          showLegend.style.display = "none"
-          showRerun.style.display = "none"
-          showGoback.style.display = "none"
-          //document.getElementById("go_back").className += " disabled"
-          showDownload.style.display = "none"
-        } else {
-          $("#colorLegendBox").empty()
-          document.getElementById("taxa_label").style.display = "none" // hide label
-          showRerun.style.display = "none"
-          showGoback.style.display = "none"
-          //document.getElementById("go_back").className += " disabled"
-          showDownload.style.display = "none"
+            // checks if a taxon is already in display
+            const divStringClass = "#p_" + stringClass
+
+            filterDisplayer(tempVar, stringClass, divStringClass)
+          })
         }
+
+        //* **** Clear selection button *****//
+        // clear = false; //added to control the colors being triggered after clearing
+        $("#taxaModalClear").click(function (event) {
+          document.getElementById("reset-sliders").click()
+          // clear = true;
+          event.preventDefault()
+          resetDisplayTaxaBox(idsArrays)
+
+          // resets dropdown selections
+          $("#orderList").selectpicker("deselectAll")
+          $("#familyList").selectpicker("deselectAll")
+          $("#genusList").selectpicker("deselectAll")
+          $("#speciesList").selectpicker("deselectAll")
+
+          slider.noUiSlider.set([min, max])
+          node_color_reset(graphics, g, nodeColor, renderer)
+          if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+            showLegend.style.display = "none"
+            showRerun.style.display = "none"
+            showGoback.style.display = "none"
+            //document.getElementById("go_back").className += " disabled"
+            showDownload.style.display = "none"
+          } else {
+            $("#colorLegendBox").empty()
+            document.getElementById("taxa_label").style.display = "none" // hide label
+            showRerun.style.display = "none"
+            showGoback.style.display = "none"
+            //document.getElementById("go_back").className += " disabled"
+            showDownload.style.display = "none"
+          }
+        })
       })
-    })
+    }
 
     //* **** Submit button for taxa filter *****//
 
@@ -846,7 +859,8 @@ const onLoad = () => {
       // changed nodes is reset every instance of taxaModalSubmit button
       // let changed_nodes = []
 
-      //let listGiFilter = []   // makes listGiFilter an empty array
+      console.log("listGiFilter taxamodalsubmit", listGiFilter)
+      listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
       event.preventDefault()
       // now processes the current selection
@@ -973,7 +987,7 @@ const onLoad = () => {
           for (i in currentSelection) {
             const tempArray = assocOrderGenus[currentSelection[i]]
             for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                 .then(results => {
                   results.map(request => {
                     listGiFilter.push(request.plasmid_id)
@@ -987,7 +1001,7 @@ const onLoad = () => {
           for (i in currentSelection) {
             const tempArray = assocFamilyGenus[currentSelection[i]]
             for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                 .then(results => {
                   results.map(request => {
                     listGiFilter.push(request.plasmid_id)
@@ -1001,7 +1015,7 @@ const onLoad = () => {
           for (i in currentSelection) {
             const tempArray = assocGenus[currentSelection[i]]
             for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
+              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                 .then(results => {
                   results.map(request => {
                     listGiFilter.push(request.plasmid_id)
@@ -1013,7 +1027,7 @@ const onLoad = () => {
         for (i in alertArrays.species) {
           let currentSelection = alertArrays.species
           for (i in currentSelection) {
-            taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, changed_nodes)
+            taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)//, changed_nodes)
               .then(results => {
                 results.map(request => {
                   listGiFilter.push(request.plasmid_id)
@@ -1043,7 +1057,7 @@ const onLoad = () => {
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family and orders
                 for (sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
@@ -1062,7 +1076,7 @@ const onLoad = () => {
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family
                 for (sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
@@ -1081,7 +1095,7 @@ const onLoad = () => {
                 // requests taxa associated accession from db and colors
                 // respective nodes
                 for (sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
@@ -1098,7 +1112,7 @@ const onLoad = () => {
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, changed_nodes)
+                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)//, changed_nodes)
                   .then(results => {
                     results.map(request => {
                       listGiFilter.push(request.plasmid_id)
@@ -1371,6 +1385,7 @@ const onLoad = () => {
     })
     // runs the re run operation for the selected species
     $('#Re_run').click(function (event) {
+      console.log("rerun listGiFilter", listGiFilter)
       // resets areaSelection
       areaSelection = false
       //* * Loading Screen goes on **//
@@ -1513,7 +1528,9 @@ const onLoad = () => {
     } else {
       // storeMasterNode is empty in here
       rerun = true
-      list_gi = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics)
+      console.log("listGiFilter before requestDB", listGiFilter)
+      list_gi, reloadAccessionList = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList)
+
       // this list_gi isn't the same as the initial but has information on
       // all the nodes that were used in filters
       // TODO masterNode needs to be used to re-center the graph

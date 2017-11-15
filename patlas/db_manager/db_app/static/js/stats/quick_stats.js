@@ -180,6 +180,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   resetProgressBar()
   let speciesList = []
   let promises = []
+  console.log("tempList", tempList)
   // const speciesObject = {}
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
@@ -342,6 +343,7 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
 // repetitive function that is often called by main js
 // (visualization_functions.js)
 const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  console.log("withint reptitive", listGiFilter)
   const listPlots = (areaSelection === false) ?
     getMetadata(listGiFilter, clickerButton, false, false)
     : statsColor(g, graphics, clickerButton, false, false)
