@@ -638,7 +638,7 @@ const onLoad = () => {
     }
 
     // setup clear button for plasmidfinder functions
-    $("#pfClear").click( (event) => {
+    $("#pfClear").unbind("click").bind("click", (event) => {
       document.getElementById("reset-sliders").click()
       // clear = true;
       event.preventDefault()
@@ -664,7 +664,7 @@ const onLoad = () => {
       }
     })
 
-    $("#pfSubmit").click( (event) => {
+    $("#pfSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
       // reset nodes before submitting new colors
       const legendInst = pfSubmitFunction(g, graphics, renderer)
@@ -722,7 +722,7 @@ const onLoad = () => {
       })
     }
 
-    $("#resClear").click( (event) => {
+    $("#resClear").unbind("click").bind("click", (event) => {
       document.getElementById("reset-sliders").click()
       // clear = true;
       event.preventDefault()
@@ -747,7 +747,8 @@ const onLoad = () => {
         showDownload.style.display = "none"
       }
     })
-    $("#resSubmit").click( (event) => {
+    $("#resSubmit").unbind("click").bind("click", (event) => {
+      console.log("ressubmit")
       event.preventDefault()
       // TODO reset nodes before adding new colors
       // same should be done for taxa filters submit button
@@ -816,53 +817,53 @@ const onLoad = () => {
             filterDisplayer(tempVar, stringClass, divStringClass)
           })
         }
-
-        //* **** Clear selection button *****//
-        // clear = false; //added to control the colors being triggered after clearing
-        $("#taxaModalClear").click(function (event) {
-          document.getElementById("reset-sliders").click()
-          // clear = true;
-          event.preventDefault()
-          resetDisplayTaxaBox(idsArrays)
-
-          // resets dropdown selections
-          $("#orderList").selectpicker("deselectAll")
-          $("#familyList").selectpicker("deselectAll")
-          $("#genusList").selectpicker("deselectAll")
-          $("#speciesList").selectpicker("deselectAll")
-
-          slider.noUiSlider.set([min, max])
-          node_color_reset(graphics, g, nodeColor, renderer)
-          if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-            showLegend.style.display = "none"
-            showRerun.style.display = "none"
-            showGoback.style.display = "none"
-            //document.getElementById("go_back").className += " disabled"
-            showDownload.style.display = "none"
-          } else {
-            $("#colorLegendBox").empty()
-            document.getElementById("taxa_label").style.display = "none" // hide label
-            showRerun.style.display = "none"
-            showGoback.style.display = "none"
-            //document.getElementById("go_back").className += " disabled"
-            showDownload.style.display = "none"
-          }
-        })
       })
     }
+
+    //* **** Clear selection button *****//
+    // clear = false; //added to control the colors being triggered after clearing
+    $("#taxaModalClear").unbind("click").bind("click", (event) => {
+      document.getElementById("reset-sliders").click()
+      // clear = true;
+      event.preventDefault()
+      resetDisplayTaxaBox(idsArrays)
+
+      // resets dropdown selections
+      $("#orderList").selectpicker("deselectAll")
+      $("#familyList").selectpicker("deselectAll")
+      $("#genusList").selectpicker("deselectAll")
+      $("#speciesList").selectpicker("deselectAll")
+
+      slider.noUiSlider.set([min, max])
+      node_color_reset(graphics, g, nodeColor, renderer)
+      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+        showLegend.style.display = "none"
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        //document.getElementById("go_back").className += " disabled"
+        showDownload.style.display = "none"
+      } else {
+        $("#colorLegendBox").empty()
+        document.getElementById("taxa_label").style.display = "none" // hide label
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        //document.getElementById("go_back").className += " disabled"
+        showDownload.style.display = "none"
+      }
+    })
 
     //* **** Submit button for taxa filter *****//
 
     // perform actions when submit button is clicked.
 
-    $("#taxaModalSubmit").click(function (event) {
+    $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
+      event.preventDefault()
       // changed nodes is reset every instance of taxaModalSubmit button
       // let changed_nodes = []
 
       console.log("listGiFilter taxamodalsubmit", listGiFilter)
       listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
-      event.preventDefault()
       // now processes the current selection
       const species_query = document.getElementById("p_Species").innerHTML,
         genus_query = document.getElementById("p_Genus").innerHTML,
@@ -1106,6 +1107,7 @@ const onLoad = () => {
 
               // species //
               else if (alertArrays['species'] != []) {
+                console.log("test species")
                 var currentColor = colorList[i].replace('#', '0x')
                 style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
