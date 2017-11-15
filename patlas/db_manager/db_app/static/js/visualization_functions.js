@@ -1259,8 +1259,8 @@ const onLoad = () => {
     // this is only triggered on first instance because we only want to get
     // the limits of all plasmids once
     if (sliderMinMax.length === 0) {
-      sliderMinMax = [Math.min.apply(null, list_lengths),
-        Math.max.apply(null, list_lengths)]
+      sliderMinMax = [Math.log(Math.min.apply(null, list_lengths)),
+        Math.log(Math.max.apply(null, list_lengths))]
       // generates and costumizes slider itself
       const slider = document.getElementById("slider")
 
@@ -1271,28 +1271,24 @@ const onLoad = () => {
         range: {
           "min": sliderMinMax[0],
           "max": sliderMinMax[1]
-        },
-        format: wNumb({
-          decimals: 0
-        })
+        }
       })
     }
 
     // event handler for slider
     // trigger only if clicked to avoid looping through the nodes again
-    $("#length_filter").click(function (event) {
-      slider.noUiSlider.on("set", function (event) {
-        var slider_max = slider.noUiSlider.get()[1],
-          slider_min = slider.noUiSlider.get()[0]
-        g.forEachNode(function (node) {
+    $("#length_filter").click( (event) => {
+      slider.noUiSlider.on("set", (event) => {
+        let slider_max = Math.exp(slider.noUiSlider.get()[1]),
+          slider_min = Math.exp(slider.noUiSlider.get()[0])
+        g.forEachNode( (node) => {
           // check if node is not a singleton
           // singletons for now do not have size set so they cannot be
           // filtered with this method
-          // TODO it is hard to filter without knowing the size anyway
           // only changes nodes for nodes with seq_length data
           if (node.data.seq_length) {
-            var node_length = node.data.seq_length.split(">").slice(-1).toString()
-            var nodeUI = graphics.getNodeUI(node.id)
+            const node_length = node.data.seq_length.split(">").slice(-1).toString()
+            let nodeUI = graphics.getNodeUI(node.id)
             if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
               nodeUI.color = 0xcdc8b1 // shades nodes
             } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
@@ -1305,77 +1301,77 @@ const onLoad = () => {
     })
 
     // inputs mins and maxs for slider
-    var inputMin = document.getElementById("slider_input_min"),
+    const inputMin = document.getElementById("slider_input_min"),
       inputMax = document.getElementById("slider_input_max"),
       inputs = [inputMin, inputMax]
     slider.noUiSlider.on("update", function (values, handle) {
-      inputs[handle].value = values[handle]
+      inputs[handle].value = Math.trunc(Math.exp(values[handle]))
     })
 
-    function setSliderHandle (i, value) {
-      var r = [null, null]
-      r[i] = value
-      slider.noUiSlider.set(r)
-    }
+    // function setSliderHandle (i, value) {
+    //   var r = [null, null]
+    //   r[i] = value
+    //   slider.noUiSlider.set(r)
+    // }
 
     // Listen to keydown events on the input field.
-    inputs.forEach(function (input, handle) {
-      input.addEventListener('change', function () {
-        setSliderHandle(handle, this.value)
-      })
-
-      input.addEventListener('keydown', function (e) {
-        var values = slider.noUiSlider.get()
-        var value = Number(values[handle])
-
-        // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
-        var steps = slider.noUiSlider.steps()
-
-        // [down, up]
-        var step = steps[handle]
-
-        var position
-
-        // 13 is enter,
-        // 38 is key up,
-        // 40 is key down.
-        switch (e.which) {
-          case 13:
-            setSliderHandle(handle, this.value)
-            break
-
-          case 38:
-
-            // Get step to go increase slider value (up)
-            position = step[1]
-
-            // false = no step is set
-            if (position === false) {
-              position = 1
-            }
-
-            // null = edge of slider
-            if (position !== null) {
-              setSliderHandle(handle, value + position)
-            }
-
-            break
-
-          case 40:
-
-            position = step[0]
-
-            if (position === false) {
-              position = 1
-            }
-
-            if (position !== null) {
-              setSliderHandle(handle, value - position)
-            }
-            break
-        }
-      })
-    })
+    // inputs.forEach(function (input, handle) {
+    //   input.addEventListener('change', function () {
+    //     setSliderHandle(handle, this.value)
+    //   })
+    //
+    //   input.addEventListener('keydown', function (e) {
+    //     var values = slider.noUiSlider.get()
+    //     var value = Number(values[handle])
+    //
+    //     // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
+    //     var steps = slider.noUiSlider.steps()
+    //
+    //     // [down, up]
+    //     var step = steps[handle]
+    //
+    //     var position
+    //
+    //     // 13 is enter,
+    //     // 38 is key up,
+    //     // 40 is key down.
+    //     switch (e.which) {
+    //       case 13:
+    //         setSliderHandle(handle, this.value)
+    //         break
+    //
+    //       case 38:
+    //
+    //         // Get step to go increase slider value (up)
+    //         position = step[1]
+    //
+    //         // false = no step is set
+    //         if (position === false) {
+    //           position = 1
+    //         }
+    //
+    //         // null = edge of slider
+    //         if (position !== null) {
+    //           setSliderHandle(handle, value + position)
+    //         }
+    //
+    //         break
+    //
+    //       case 40:
+    //
+    //         position = step[0]
+    //
+    //         if (position === false) {
+    //           position = 1
+    //         }
+    //
+    //         if (position !== null) {
+    //           setSliderHandle(handle, value - position)
+    //         }
+    //         break
+    //     }
+    //   })
+    // })
 
     // resets the slider
     $('#reset-sliders').click(function (event) {
