@@ -1149,7 +1149,7 @@ const onLoad = () => {
 
     $('#fileSubmit').click(function (event) {
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload)
+        showGoback, showDownload, idsArrays)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
