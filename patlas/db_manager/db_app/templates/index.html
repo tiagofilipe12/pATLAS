@@ -11,6 +11,10 @@
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/vivagraph/dist/vivagraph.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.js') }}"></script>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.css') }}">
 
     <!--bootstrap select-->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>
@@ -70,6 +74,27 @@
     <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
 </div>
 
+
+<!-- Modal for table-->
+<div id="tableModal" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Table for selected plasmids
+                    metadata</h4>
+            </div>
+            <div class="modal-body" id="modalTableBody">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" id="cancelTable">Close
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <!-- Modal for file loading-->
 <div id="fileModal" class="modal fade" role="dialog" tabindex="-1">
@@ -576,6 +601,10 @@
                             type="button" data-toogle="tooptip"
                             title="Download current selection" style="display: none">
                         <span class="glyphicon glyphicon-save"></span></button>
+                    <button class="btn btn-default disabled" id="tableShow"
+                            type="button" data-toogle="tooptip"
+                            title="Download current selection" style="display: none">
+                        <span class="glyphicon glyphicon-list-alt"></span></button>
 
                     <!--<button class="btn btn-default" id="download_img"
                             type="button" data-toogle="tooptip"

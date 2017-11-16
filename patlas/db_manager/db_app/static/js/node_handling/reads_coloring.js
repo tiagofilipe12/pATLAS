@@ -241,7 +241,7 @@ const color_legend = (readMode) => {
 // Clear nodes function for reset-sliders button
 
 const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
-                       showGoback, showDownload, idsArrays) => {
+                       showGoback, showDownload, showTable, idsArrays) => {
   // first iters nodes to get nodeColor (default color)
   node_color_reset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
@@ -251,6 +251,7 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
     showGoback.style.display = "none"
     //document.getElementById("go_back").className += " disabled"
     showDownload.style.display = "none"
+    showTable.style.display = "none"
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   } else {
@@ -260,6 +261,7 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
     showGoback.style.display = "none"
     //document.getElementById("go_back").className += " disabled"
     showDownload.style.display = "none"
+    showTable.style.display = "none"
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   }

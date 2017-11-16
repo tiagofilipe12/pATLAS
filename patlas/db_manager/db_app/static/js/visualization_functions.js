@@ -122,6 +122,7 @@ const onLoad = () => {
       showGoback = document.getElementById("go_back"),
       showDownload = document.getElementById("download_ds"),
       showLegend = document.getElementById("colorLegend")
+      showTable = document.getElementById("tableShow")
 
     /*******************/
     /* MULTI-SELECTION */
@@ -140,8 +141,10 @@ const onLoad = () => {
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
+        showTable.style.display = "block"
         showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         areaSelection = true
       }
     })
@@ -655,12 +658,14 @@ const onLoad = () => {
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       }
     })
 
@@ -674,8 +679,10 @@ const onLoad = () => {
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
+        showTable.style.display = "block"
         showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       }
     })
 
@@ -739,12 +746,14 @@ const onLoad = () => {
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       }
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
@@ -759,8 +768,10 @@ const onLoad = () => {
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
+        showTable.style.display = "block"
         showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       }
     })
 
@@ -842,6 +853,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         //document.getElementById("go_back").className += " disabled"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
@@ -849,6 +861,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         //document.getElementById("go_back").className += " disabled"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       }
     })
 
@@ -1140,6 +1153,7 @@ const onLoad = () => {
         showRerun.style.display = 'block'
         showGoback.style.display = 'block'
         showDownload.style.display = 'block'
+        showTable.style.display = 'block'
       }
     })
 
@@ -1149,7 +1163,7 @@ const onLoad = () => {
 
     $('#fileSubmit').click(function (event) {
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, idsArrays)
+        showGoback, showDownload, showTable, idsArrays)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
@@ -1176,7 +1190,7 @@ const onLoad = () => {
       // it and use the same function (readColoring)
       console.log("mash")
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, idsArrays)
+        showGoback, showDownload, showtable, idsArrays)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
@@ -1200,7 +1214,7 @@ const onLoad = () => {
     $('#assemblySubmit').click(function (event) {
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, idsArrays)
+        showGoback, showDownload, showTable, idsArrays)
       $('#loading').show()
       setTimeout(function () {
         assembly(list_gi, assembly_json, g, graphics, renderer)
@@ -1379,7 +1393,7 @@ const onLoad = () => {
       areaSelection = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, idsArrays)
+        showGoback, showDownload, showTable, idsArrays)
     })
     // runs the re run operation for the selected species
     $('#Re_run').click(function (event) {
@@ -1391,6 +1405,7 @@ const onLoad = () => {
       // removes disabled from class in go_back button
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       show_div(
         // removes nodes
         actual_removal(g, graphics, onload)
@@ -1578,6 +1593,15 @@ const onLoad = () => {
       // mapping results
       downloadSeq(listGiFilter, g)
     }
+  })
+
+  $("#tableShow").unbind("click").bind("click", (e) => {
+    console.log("trunfas")
+    $("#tableModal").modal()
+  })
+
+  $("#cancelTable").unbind("click").bind("click", (e) => {
+    $("#tableModal").modal("toggle")
   })
 
 
