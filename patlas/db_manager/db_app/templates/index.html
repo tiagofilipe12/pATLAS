@@ -15,6 +15,13 @@
             src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.js') }}"></script>
     <link rel="stylesheet"
           href="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.css') }}">
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table-export.min.js') }}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='dependencies/bootstrap-table/tableExport.js') }}"></script>
+    <!--<script
+        src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport
+        .js"></script>-->
 
     <!--bootstrap select-->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>
@@ -62,6 +69,8 @@
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/sort_array_by_value.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/progressBarControl.js') }}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
 
 </head>
 
@@ -77,7 +86,7 @@
 
 <!-- Modal for table-->
 <div id="tableModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width: 80%">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -85,7 +94,15 @@
                     metadata</h4>
             </div>
             <div class="modal-body" id="modalTableBody">
-
+                <table id="metadataTable" data-striped="true"
+                       data-show-columns="true" data-search="true"
+                       data-show-refresh="true"
+                       data-show-toggle="true"
+                       data-query-params="queryParams"
+                       data-pagination="true"
+                       data-height="550"
+                       data-show-export="true"
+                       ></table>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-default" id="cancelTable">Close

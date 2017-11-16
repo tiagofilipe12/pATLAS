@@ -610,3 +610,22 @@
     padding: 2px 5px 2px 5px;
     background: #ccc;
 }
+
+#modalTableBody{
+    height: 600px;
+}
+/*
+tr{ display: block; }
+th, td{
+    width: 300px;
+}
+thead{
+    width: 1500px;
+}
+tbody{
+    display: block;
+    width: 1500px;
+    height: 520px;
+    overflow: auto;
+}
+*/

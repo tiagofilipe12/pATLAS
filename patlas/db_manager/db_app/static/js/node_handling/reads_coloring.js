@@ -174,12 +174,15 @@ const readColoring = (g, list_gi, graphics, renderer) => {
     }
   }
   // control all related divs
+  // TODO this code is duplicated, should be fixed
   let showRerun = document.getElementById("Re_run")
   let showGoback = document.getElementById("go_back")
   let showDownload = document.getElementById("download_ds")
+  let showTable = document.getElementById("tableShow")
   showRerun.style.display = "block"
   showGoback.style.display = "block"
   showDownload.style.display = "block"
+  showTable.style.display = "block"
   renderer.rerender()
   $("#loading").hide()
   return list_gi, listGiFilter

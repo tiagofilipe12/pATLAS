@@ -46,6 +46,7 @@ let reloadAccessionList = []
 
 let sliderMinMax = [] // initiates an array for min and max slider entries
 // and stores it for reloading instances of onload()
+let list_gi = []
 
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
@@ -63,12 +64,8 @@ const onLoad = () => {
   // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
-  //let listHashes = [] // this list stores hashes that correspond to unique
   // links between accession numbers
   let list_lengths = [] // list to store the lengths of all nodes
-  //var list_species = [] // lists all species
-  //var list_genera = [] // list all genera
-  let list_gi = []
 
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
@@ -1542,7 +1539,7 @@ const onLoad = () => {
       // storeMasterNode is empty in here
       rerun = true
       console.log("listGiFilter before requestDB", listGiFilter)
-      list_gi, reloadAccessionList = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList)
+      listGiFilter, reloadAccessionList = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList)
 
       // this list_gi isn't the same as the initial but has information on
       // all the nodes that were used in filters
@@ -1596,8 +1593,8 @@ const onLoad = () => {
   })
 
   $("#tableShow").unbind("click").bind("click", (e) => {
-    console.log("trunfas")
     $("#tableModal").modal()
+    makeTable(listGiFilter, g)
   })
 
   $("#cancelTable").unbind("click").bind("click", (e) => {
