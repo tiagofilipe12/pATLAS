@@ -14,18 +14,20 @@ const makeTable = (listGiFilter, g) => {
       // querying database is required before this
       promises.push(
         $.get("api/getspecies/", {"accession": accession}, (data, status) => {
-          const species = data.json_entry.name.split("_").join(" ")
-          const plasmid = data.json_entry.plasmid_name
+          if (data.plasmid_id) {
+            const species = data.json_entry.name.split("_").join(" ")
+            const plasmid = data.json_entry.plasmid_name
 
-          // then add all to the object
-          const entry = {
-            id: accession,
-            length: seqLength,
-            percentage: seqPercentage,
-            speciesName: species,
-            plasmidName: plasmid
+            // then add all to the object
+            const entry = {
+              id: accession,
+              length: seqLength,
+              percentage: seqPercentage,
+              speciesName: species,
+              plasmidName: plasmid
+            }
+            dataArray.push(entry)
           }
-          dataArray.push(entry)
         })
       )
 
