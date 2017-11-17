@@ -1,3 +1,13 @@
+const linkFormatter = (value, row, index) => {
+  console.log(value, row, index)
+  const reducedAccession = value.split("_").slice(0, 2).join("_")
+  const cleanAccession = reducedAccession + "." + value.split("_").slice(2)
+  console.log("cleanAccession", cleanAccession)
+  return "<a href='https://www.ncbi.nlm.nih.gov/nuccore/" +
+    reducedAccession +
+    "' target='_blank'>" + cleanAccession + "</a>"
+}
+
 const makeTable = (listGiFilter, g) => {
   let dataArray = []
   let promises = []
@@ -44,7 +54,8 @@ const makeTable = (listGiFilter, g) => {
           columns: [{
             field: "id",
             title: "Accession number",
-            switchable: false
+            switchable: false,
+            formatter: linkFormatter
           }, {
             field: "length",
             title: "Sequence length",
