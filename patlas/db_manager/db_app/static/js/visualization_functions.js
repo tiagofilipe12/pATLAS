@@ -84,6 +84,12 @@ const onLoad = () => {
   // define render on the scope of onload in order to be used by buttons
   // outside renderGraph
   let renderer
+  // buttons that are able to hide
+  let showRerun = document.getElementById("Re_run"),
+    showGoback = document.getElementById("go_back"),
+    showDownload = document.getElementById("download_ds"),
+    showLegend = document.getElementById("colorLegend")
+    showTable = document.getElementById("tableShow")
 
   const graphics = Viva.Graph.View.webglGraphics()
 
@@ -120,12 +126,6 @@ const onLoad = () => {
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
-
-    let showRerun = document.getElementById("Re_run"),
-      showGoback = document.getElementById("go_back"),
-      showDownload = document.getElementById("download_ds"),
-      showLegend = document.getElementById("colorLegend")
-      showTable = document.getElementById("tableShow")
 
     /*******************/
     /* MULTI-SELECTION */
@@ -1639,6 +1639,11 @@ const onLoad = () => {
   $("#tableSubmit").unbind("click").bind("click", (e) => {
     $("#reset-sliders").click()
     colorNodes(g, graphics, bootstrapTableList, "0x3957ff")
+    // handles hidden buttons
+    showRerun.style.display = "block"
+    showGoback.style.display = "block"
+    showDownload.style.display = "block"
+    showTable.style.display = "block"
     // sets listGiFilter to the selected nodes
     listGiFilter = bootstrapTableList
     renderer.rerender()
