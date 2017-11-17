@@ -81,6 +81,9 @@ const onLoad = () => {
     gravity: -1.2,
     theta: 1
   })
+  // define render on the scope of onload in order to be used by buttons
+  // outside renderGraph
+  let renderer
 
   const graphics = Viva.Graph.View.webglGraphics()
 
@@ -105,7 +108,7 @@ const onLoad = () => {
     //* * END block #1 for node customization **//
     const prerender = (devel === true || rerun === true) ? 500 : 0
 
-    const renderer = Viva.Graph.View.renderer(g, {
+    renderer = Viva.Graph.View.renderer(g, {
       layout,
       graphics,
       container: document.getElementById('couve-flor'),
@@ -1600,25 +1603,47 @@ const onLoad = () => {
   //*********//
   // function to add accession to bootstrapTableList in order to use in
   // downloadTable function or in submitTable button
-  $("#metadataTable").on("check.bs.table", function (e, row) {
+  $("#metadataTable").on("check.bs.table", (e, row) => {
     bootstrapTableList.push(row.id)
   })
   // function to remove accession from bootstrapTableList in order to use in
   // downloadTable function or in submitTable button
-  $("#metadataTable").on("uncheck.bs.table", function (e, row) {
+  $("#metadataTable").on("uncheck.bs.table", (e, row) => {
     console.log(row.id)
-    for (value in bootstrapTableList) {
+    for (const value in bootstrapTableList) {
       if (bootstrapTableList[value] === row.id) {
         bootstrapTableList.splice(value, 1)
       }
     }
   })
+  // function to handle when all are selected
+  $("#metadataTable").on("check-all.bs.table", (e, rows) => {
+    for (row in rows) {
+      bootstrapTableList.push(rows[row].id)
+    }
+  })
+  // function to remove when all are selected
+  $("#metadataTable").on("uncheck-all.bs.table", (e, rows) => {
+    bootstrapTableList = []
+  })
+
   // function to download dataset selected in table
   $("#downloadTable").unbind("click").bind("click", (e) => {
-    // TODO need a method to get listAccessions
-    const acc = bootstrapTableList.map((uniqueAcc) => {return uniqueAcc.split("_").splice(0,2).join("_")})
-    listGiFilter = downloadFromTable(acc, g)
+    // transform internal accession numbers to ncbi acceptable accesions
+    const acc = bootstrapTableList.map((uniqueAcc) => {
+      return uniqueAcc.split("_").splice(0,2).join("_")
+    })
+    multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
   })
+  // button to color selected nodes by check boxes
+  $("#tableSubmit").unbind("click").bind("click", (e) => {
+    $("#reset-sliders").click()
+    colorNodes(g, graphics, bootstrapTableList, "0x3957ff")
+    // sets listGiFilter to the selected nodes
+    listGiFilter = bootstrapTableList
+    renderer.rerender()
+  })
+
   // function to create table
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()

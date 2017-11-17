@@ -84,28 +84,3 @@ const makeTable = (listGiFilter, g) => {
     // TODO iterate by color
   }
 }
-
-var $table = $('#table');
-
-$(function () {
-  $table.on('click-row.bs.table', function (e, row, $element) {
-    $('.success').removeClass('success');
-    $($element).addClass('success');
-  });
-  $('#button').click(function () {
-    alert('Selected name: ' + getSelectedRow().name);
-  });
-});
-
-function getSelectedRow() {
-  var index = $table.find('tr.success').data('index');
-  return $table.bootstrapTable('getData')[index];
-}
-
-
-const downloadFromTable = (listAccessions, g) => {
-  const dbType = "nuccore"
-  const exportType = "fasta"
-  multiDownload(listAccessions, dbType, exportType, fireMultipleDownloads)
-  return listAccessions
-}
