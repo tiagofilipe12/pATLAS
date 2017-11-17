@@ -24,6 +24,9 @@ let clickedPopupButtonFamily = false
 let areaSelection = false
 
 const getArray = (devel === true) ? $.getJSON("/test") : $.getJSON("/fullDS")
+// an array to store bootstrap table related list for downloads and coloring
+// nodes on submit
+let bootstrapTableList = []
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
@@ -1579,7 +1582,7 @@ const onLoad = () => {
   })
 
   // download button //
-  $("#download_ds").unbind("click").bind("click", function (e) {
+  $("#download_ds").unbind("click").bind("click", (e) => {
     //console.log(areaSelection)
     // for now this is just taking what have been changed by taxa coloring
     if (areaSelection === true) {
@@ -1592,11 +1595,36 @@ const onLoad = () => {
     }
   })
 
+  //*********//
+  //* TABLE *//
+  //*********//
+  // function to add accession to bootstrapTableList in order to use in
+  // downloadTable function or in submitTable button
+  $("#metadataTable").on("check.bs.table", function (e, row) {
+    bootstrapTableList.push(row.id)
+  })
+  // function to remove accession from bootstrapTableList in order to use in
+  // downloadTable function or in submitTable button
+  $("#metadataTable").on("uncheck.bs.table", function (e, row) {
+    console.log(row.id)
+    for (value in bootstrapTableList) {
+      if (bootstrapTableList[value] === row.id) {
+        bootstrapTableList.splice(value, 1)
+      }
+    }
+  })
+  // function to download dataset selected in table
+  $("#downloadTable").unbind("click").bind("click", (e) => {
+    // TODO need a method to get listAccessions
+    const acc = bootstrapTableList.map((uniqueAcc) => {return uniqueAcc.split("_").splice(0,2).join("_")})
+    listGiFilter = downloadFromTable(acc, g)
+  })
+  // function to create table
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
     makeTable(listGiFilter, g)
   })
-
+  // function to close table
   $("#cancelTable").unbind("click").bind("click", (e) => {
     $("#tableModal").modal("toggle")
   })

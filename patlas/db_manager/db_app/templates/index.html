@@ -92,6 +92,13 @@
                     metadata</h4>
             </div>
             <div class="modal-body" id="modalTableBody">
+                <div id="toolbar">
+                    <button class="btn btn-default" id="downloadTable"
+                            type="button" data-toogle="tooptip"
+                            title="Download selection">
+                        <span class="glyphicon glyphicon-download-alt"></span>
+                    </button>
+                </div>
                 <table id="metadataTable"
                        data-striped="true"
                        data-search="true"
@@ -101,9 +108,11 @@
                        data-pagination="true"
                        data-height="550"
                        data-show-export="true"
-                       data-click-to-select="true">
+                       data-click-to-select="true"
+                       data-toolbar="#toolbar">
 
                 </table>
+
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-default"
