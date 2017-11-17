@@ -326,7 +326,12 @@ const onLoad = () => {
         // multiple entries from previous interactions
         $("#popup_description").empty()
         $("#popup_description").append(
-          "<span id='close' type='button'>&times;</span>" +
+          "<button id='close' class='btn btn-default' type='button'>&times;</button>" +
+          "<button class='btn btn-default' id='downloadCsv'" +
+          "type='button' data-toogle='tooptip'" +
+          "title='Export as csv'>" +
+          "<span class='glyphicon glyphicon-save-file'></span>" +
+          "</button>" +
           "<div>General sequence info" +
           "<br />" +
           node.data.sequence +
@@ -1609,7 +1614,6 @@ const onLoad = () => {
   // function to remove accession from bootstrapTableList in order to use in
   // downloadTable function or in submitTable button
   $("#metadataTable").on("uncheck.bs.table", (e, row) => {
-    console.log(row.id)
     for (const value in bootstrapTableList) {
       if (bootstrapTableList[value] === row.id) {
         bootstrapTableList.splice(value, 1)
@@ -1659,6 +1663,10 @@ const onLoad = () => {
     $("#tableModal").modal("toggle")
   })
 
+  // popup button for download csv
+  $(document).on("click", "#downloadCsv", () => {
+    console.log("teste")
+  })
 
   // resistance button control //
   $(document).on("click", "#resButton", function(event) {

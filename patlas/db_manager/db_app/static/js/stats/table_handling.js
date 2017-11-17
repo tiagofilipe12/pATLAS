@@ -1,8 +1,6 @@
 const linkFormatter = (value, row, index) => {
-  console.log(value, row, index)
   const reducedAccession = value.split("_").slice(0, 2).join("_")
   const cleanAccession = reducedAccession + "." + value.split("_").slice(2)
-  console.log("cleanAccession", cleanAccession)
   return "<a href='https://www.ncbi.nlm.nih.gov/nuccore/" +
     reducedAccession +
     "' target='_blank'>" + cleanAccession + "</a>"
