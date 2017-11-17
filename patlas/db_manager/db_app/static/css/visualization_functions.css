@@ -614,18 +614,7 @@
 #modalTableBody{
     height: 600px;
 }
-/*
-tr{ display: block; }
-th, td{
-    width: 300px;
+
+#modalTableBody > .bootstrap-table > .fixed-table-toolbar > .columns > .btn{
+    height: 34px;
 }
-thead{
-    width: 1500px;
-}
-tbody{
-    display: block;
-    width: 1500px;
-    height: 520px;
-    overflow: auto;
-}
-*/

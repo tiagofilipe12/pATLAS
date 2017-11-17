@@ -52,10 +52,17 @@ const makeTable = (listGiFilter, g) => {
         $("#metadataTable").bootstrapTable({
           // columens are used to generate headers
           columns: [{
+            field: "state",
+            checkbox: true
+          }, {
             field: "id",
             title: "Accession number",
             switchable: false,
             formatter: linkFormatter
+          }, {
+            field: "plasmidName",
+            title: "Plasmid name",
+            sortable: true
           }, {
             field: "length",
             title: "Sequence length",
@@ -67,10 +74,6 @@ const makeTable = (listGiFilter, g) => {
           }, {
             field: "speciesName",
             title: "Species name",
-            sortable: true
-          }, {
-            field: "plasmidName",
-            title: "Plasmid name",
             sortable: true
           }],
           // data is an array of rows
