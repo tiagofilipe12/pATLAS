@@ -1667,16 +1667,45 @@ const onLoad = () => {
   // popup button for download csv
   // this only does single entry exports, for more exports table should be used
   $(document).on("click", "#downloadCsv", () => {
-    const accessionToCsv = $("#accessionPop").text().replace(":", ",")
-    const speciesToCsv = $("#speciesNamePop").text().replace(":", ",")
-    const plasmidToCsv = $("#plasmidNamePop").text().replace(":", ",")
-    const percentageToCsv = $("#percentagePop").text().replace(":", ",")
-    const copyToCsv = $("#copyNumberPop").text().replace(":", ",")
-    arrayToCsv([accessionToCsv,
-      speciesToCsv,
-      plasmidToCsv,
-      percentageToCsv,
-      copyToCsv])
+
+    const quickFixString = (divNameList) => {
+      let returnArray = []
+      for (i in divNameList) {
+        const divName = divNameList[i]
+        returnArray.push($(divName).text().replace(":", ","))
+      }
+      console.log(returnArray)
+      return returnArray
+    }
+    // execute the same replacement function for all this divs
+    const targetArray = quickFixString([
+      "#accessionPop",
+      "#speciesNamePop",
+      "#speciesNamePop",
+      "#percentagePop",
+      "#copyNumberPop",
+      "#cardPop",
+      "#cardGenePop",
+      "#cardGenbankPop",
+      "#cardAroPop",
+      "#cardCoveragePop",
+      "#cardIdPop",
+      "#cardRangePop",
+      "#resfinderPop",
+      "#resfinderGenePop",
+      "#resfinderGenbankPop",
+      "#resfinderCoveragePop",
+      "#resfinderIdPop",
+      "#resfinderRangePop",
+      "#pfPop",
+      "#pfGenePop",
+      "#pfGenbankPop",
+      "#pfCoveragePop",
+      "#pfIdentityPop",
+      "#pfRangePop"
+    ])
+    // then convert the resulting array to a csv file
+    arrayToCsv(targetArray)
   })
 
   // resistance button control //
