@@ -84,6 +84,7 @@ const resGetter = (nodeId) => {
       }
       // then actually add it to popup_description div
       $("#popup_description").append(
+        "<div id='resTab'>" +
         "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
         " 40px; margin-bottom: 40px;'></div>" +
         "<div id='cardPop'>Card database</div>" +
@@ -126,7 +127,7 @@ const resGetter = (nodeId) => {
         "</div>" +
         "<div id='resfinderRangePop'>" +
         "<span style='color: #468499'>Range in plasmid: </span>" + queryArrayResfinderRange.toString() +
-        "</div>"
+        "</div></div>"
       )
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
@@ -183,6 +184,7 @@ const plasmidFamilyGetter = (nodeId) => {
       }
       // then actually add it to popup_description div
       $("#popup_description").append(
+        "<div id='pfTab'>" +
         "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
         " 40px; margin-bottom: 40px;'>" +
         "</div>" +
@@ -198,7 +200,7 @@ const plasmidFamilyGetter = (nodeId) => {
         "<span style='color: #468499'>Identity: </span>" + queryArrayPFIdentity.toString() +
         "</div><div id='pfRangePop'>" +
         "<span style='color: #468499'>Range in plasmid: </span>" + queryArrayPFRange.toString() +
-        "</div>"
+        "</div></div>"
       )
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +

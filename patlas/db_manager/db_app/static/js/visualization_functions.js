@@ -1710,14 +1710,32 @@ const onLoad = () => {
 
   // resistance button control //
   $(document).on("click", "#resButton", function(event) {
+    // controls the look of buttons
+    $("#resButton").removeClass("btn-default").addClass("btn-primary")
+    $("#plasmidButton").removeClass("btn-primary").addClass("btn-default")
     if (clickedPopupButtonCard === true) {
       clickedPopupButtonCard = resGetter(clickedNode)
+      $("#pfTab").hide()
+    } else {
+      // when it is already queried and we are just cycling b/w the two divs
+      // (tabs) then just show and hide the respective divs
+      $("#resTab").show()
+      $("#pfTab").hide()
     }
   })
 
   $(document).on("click", "#plasmidButton", function(event) {
+    // controls the look of buttons
+    $("#plasmidButton").removeClass("btn-default").addClass("btn-primary")
+    $("#resButton").removeClass("btn-primary").addClass("btn-default")
     if (clickedPopupButtonFamily === true) {
       clickedPopupButtonFamily = plasmidFamilyGetter(clickedNode)
+      $("#resTab").hide()
+    } else {
+      // when it is already queried and we are just cycling b/w the two divs
+      // (tabs) then just show and hide the respective divs
+      $("#pfTab").show()
+      $("#resTab").hide()
     }
   })
 
