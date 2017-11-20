@@ -333,18 +333,19 @@ const onLoad = () => {
           "<span class='glyphicon glyphicon-save-file'></span>" +
           "</button>" +
           "<div>General sequence info" +
-          "<br />" +
-          node.data.sequence +
-          "<br />" +
-          "<font color='#468499'>Species: </font>" + speciesName +
-          "<br />" +
-          node.data.seq_length +
-          "<br />" +
-          "<font color='#468499'>Plasmid: </font>" + plasmidName +
-          "<br />" +
-          "<font color='#468499'>Percentage: </font>" + node.data.percentage +
-          "<br />" +
-          "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +
+          "<div id='generalInfo'>" +
+          node.data.sequence + "</div>" +
+          "<div id='speciesNamePop'><span style='color: #468499'>Species:" +
+          " </span>" + speciesName +
+          "</div>" + node.data.seq_length +
+          "<div id='plasmidNamePop'>" +
+          "<span style='color: #468499'>Plasmid: </span>" + plasmidName +
+          "</div><div id='percentagePop'>" +
+          "<span style='color: #468499'>Percentage:" +
+          " </span>" + node.data.percentage +
+          "</div><div id='copyNumberPop'>" +
+          "<span style='color: #468499'>Relative copy number: " +
+          "</span>" + node.data.copyNumber +
           "</div>" +
           // adds buttons for resistances and plasmid families
           "<br />" +
@@ -1613,23 +1614,23 @@ const onLoad = () => {
   })
   // function to remove accession from bootstrapTableList in order to use in
   // downloadTable function or in submitTable button
-  $("#metadataTable").on("uncheck.bs.table", (e, row) => {
-    for (const value in bootstrapTableList) {
-      if (bootstrapTableList[value] === row.id) {
-        bootstrapTableList.splice(value, 1)
+    .on("uncheck.bs.table", (e, row) => {
+      for (const value in bootstrapTableList) {
+        if (bootstrapTableList[value] === row.id) {
+          bootstrapTableList.splice(value, 1)
+        }
       }
-    }
-  })
-  // function to handle when all are selected
-  $("#metadataTable").on("check-all.bs.table", (e, rows) => {
-    for (row in rows) {
-      bootstrapTableList.push(rows[row].id)
-    }
-  })
-  // function to remove when all are selected
-  $("#metadataTable").on("uncheck-all.bs.table", (e, rows) => {
-    bootstrapTableList = []
-  })
+    })
+    // function to handle when all are selected
+    .on("check-all.bs.table", (e, rows) => {
+      for (row in rows) {
+        bootstrapTableList.push(rows[row].id)
+      }
+    })
+    // function to remove when all are selected
+    .on("uncheck-all.bs.table", (e, rows) => {
+      bootstrapTableList = []
+    })
 
   // function to download dataset selected in table
   $("#downloadTable").unbind("click").bind("click", (e) => {
@@ -1666,6 +1667,11 @@ const onLoad = () => {
   // popup button for download csv
   $(document).on("click", "#downloadCsv", () => {
     console.log("teste")
+    console.log($("#generalInfo").text())
+    console.log($("#speciesNamePop").text())
+    console.log($("#plasmidNamePop").text())
+    console.log($("#percentagePop").text())
+    console.log($("#copyNumberPop").text())
   })
 
   // resistance button control //
