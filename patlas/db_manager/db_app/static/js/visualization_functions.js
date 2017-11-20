@@ -333,7 +333,7 @@ const onLoad = () => {
           "<span class='glyphicon glyphicon-save-file'></span>" +
           "</button>" +
           "<div>General sequence info" +
-          "<div id='generalInfo'>" +
+          "<div id='accessionPop'>" +
           node.data.sequence + "</div>" +
           "<div id='speciesNamePop'><span style='color: #468499'>Species:" +
           " </span>" + speciesName +
@@ -1665,13 +1665,18 @@ const onLoad = () => {
   })
 
   // popup button for download csv
+  // this only does single entry exports, for more exports table should be used
   $(document).on("click", "#downloadCsv", () => {
-    console.log("teste")
-    console.log($("#generalInfo").text())
-    console.log($("#speciesNamePop").text())
-    console.log($("#plasmidNamePop").text())
-    console.log($("#percentagePop").text())
-    console.log($("#copyNumberPop").text())
+    const accessionToCsv = $("#accessionPop").text().replace(":", ",")
+    const speciesToCsv = $("#speciesNamePop").text().replace(":", ",")
+    const plasmidToCsv = $("#plasmidNamePop").text().replace(":", ",")
+    const percentageToCsv = $("#percentagePop").text().replace(":", ",")
+    const copyToCsv = $("#copyNumberPop").text().replace(":", ",")
+    arrayToCsv([accessionToCsv,
+      speciesToCsv,
+      plasmidToCsv,
+      percentageToCsv,
+      copyToCsv])
   })
 
   // resistance button control //
