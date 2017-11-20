@@ -57,7 +57,6 @@ const resGetter = (nodeId) => {
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
             rangeList[i].replace(" ", "").replace(", ", ":") :
             (rangeList[i] + "]").replace(", ", ":")
-          console.log(rangeEntry.replace(", ", ":"))
           if (databaseList[i].indexOf("card") > -1) {
             num = num + 1
             const numString = num.toString()

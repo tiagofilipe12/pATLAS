@@ -11,34 +11,35 @@ const makeTable = (listGiFilter, g) => {
   let promises = []
   if (listGiFilter.length !== 0) {
     for (const i in listGiFilter) {
-      // gets info for every node and puts it in a line
-      const accession = listGiFilter[i]
-      const nodeData = g.getNode(accession).data
-      const seqPercentage = (nodeData.percentage) ? nodeData.percentage : "N/A" // this may be
-      // undefined
-      // depending if input file is provided or not
+      if ({}.hasOwnProperty.call(listGiFilter, i)) {
+        // gets info for every node and puts it in a line
+        const accession = listGiFilter[i]
+        const nodeData = g.getNode(accession).data
+        const seqPercentage = (nodeData.percentage) ? nodeData.percentage : "N/A" // this may be
+        // undefined
+        // depending if input file is provided or not
 
-      const seqLength = (nodeData.seq_length) ? nodeData.seq_length.split(">")[2] : "N/A"
-      // querying database is required before this
-      promises.push(
-        $.get("api/getspecies/", {"accession": accession}, (data, status) => {
-          if (data.plasmid_id) {
-            const species = data.json_entry.name.split("_").join(" ")
-            const plasmid = data.json_entry.plasmid_name
+        const seqLength = (nodeData.seq_length) ? nodeData.seq_length.split(">")[2] : "N/A"
+        // querying database is required before this
+        promises.push(
+          $.get("api/getspecies/", {accession}, (data, status) => {
+            if (data.plasmid_id) {
+              const species = data.json_entry.name.split("_").join(" ")
+              const plasmid = data.json_entry.plasmid_name
 
-            // then add all to the object
-            const entry = {
-              id: accession,
-              length: seqLength,
-              percentage: seqPercentage,
-              speciesName: species,
-              plasmidName: plasmid
+              // then add all to the object
+              const entry = {
+                id: accession,
+                length: seqLength,
+                percentage: seqPercentage,
+                speciesName: species,
+                plasmidName: plasmid
+              }
+              dataArray.push(entry)
             }
-            dataArray.push(entry)
-          }
-        })
-      )
-
+          })
+        )
+      }
       // for every loop instance entries could be added to array, each entry
       // in dataArray should be a single row
     }
@@ -78,6 +79,7 @@ const makeTable = (listGiFilter, g) => {
           data: dataArray
         })
       })
+
   } else {
     // TODO iterate by color
   }

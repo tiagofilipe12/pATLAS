@@ -15,7 +15,7 @@ const colorNodes = (g, graphics, accessionRequested, currentColor) => {
 // piece of code that should be used to match species name with
 // dropdown selection
 const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
-  const taxaDb = taxa.split(' ').join('_')
+  const taxaDb = taxa.split(" ").join("_")
   // return a promise for each query
   return $.get("api/getaccession/", {"name": taxaDb}, (data, status) => {
     let listData = []
