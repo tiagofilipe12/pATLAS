@@ -27,6 +27,10 @@ const getArray = (devel === true) ? $.getJSON("/test") : $.getJSON("/fullDS")
 // an array to store bootstrap table related list for downloads and coloring
 // nodes on submit
 let bootstrapTableList = []
+// dictionary to store all the connections between species and other taxa
+// level available. This needs to be stored here because there is no reason
+// to execute the getArray_taxa twice.
+const dict_genera = {}
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
@@ -266,7 +270,9 @@ const onLoad = () => {
         x: nodeUI_1.position.x,
         y: nodeUI_1.position.y
       }
-      nodeUI_1.backupColor = nodeUI_1.color
+      // if statement used to check if backup color is set
+      if (nodeUI_1.backupColor) { nodeUI_1.backupColor = nodeUI_1.color }
+
       nodeUI_1.color = 0xFFC300
       renderer.rerender()
 
@@ -792,7 +798,6 @@ const onLoad = () => {
     const list_orders = [],
       list_families = [],
       list_genera = [],
-      dict_genera = {},
       list_species = []
     if (firstInstace === true) {
       getArray_taxa().done((json) => {
@@ -883,7 +888,7 @@ const onLoad = () => {
       // changed nodes is reset every instance of taxaModalSubmit button
       // let changed_nodes = []
 
-      console.log("listGiFilter taxamodalsubmit", listGiFilter)
+      console.log("listGiFilter taxamodalsubmit", listGiFilter, dict_genera)
       listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
       // now processes the current selection
@@ -1062,6 +1067,7 @@ const onLoad = () => {
       // renders the graph for the desired taxon if one taxon type is selected
       // allows for different colors between taxa of the same level
       else if (counter === 1) {
+        console.log("alert arrays 1", alertArrays, assocGenus)
         // first cycle between all the arrays to find which one is not empty
         for (array in alertArrays) {
           // selects the not empty array
