@@ -888,7 +888,7 @@ const onLoad = () => {
       // changed nodes is reset every instance of taxaModalSubmit button
       // let changed_nodes = []
 
-      console.log("listGiFilter taxamodalsubmit", listGiFilter, dict_genera)
+      // console.log("listGiFilter taxamodalsubmit", listGiFilter, dict_genera)
       listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
       // now processes the current selection
@@ -967,7 +967,7 @@ const onLoad = () => {
 
       // appends genus to selectedGenus according with the family and order for single-color selection
       // also appends to associative arrays for family and order for multi-color selection
-      $.each(dict_genera, function (species, pair) {
+      $.each(dict_genera, (species, pair) => {
         const genus = pair[0]
         const family = pair[1]
         const order = pair[2]
@@ -1007,55 +1007,16 @@ const onLoad = () => {
 
       // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
-        currentColor = 0xf71735   // sets color of all changes_nodes to be red
+        const currentColor = 0xf71735   // sets color of all changes_nodes to
+        // be red
         store_lis = "<li class='centeredList'><button class='jscolor btn'" +
           " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
-        for (i in alertArrays.order) {
-          let currentSelection = alertArrays.order
-          for (i in currentSelection) {
-            const tempArray = assocOrderGenus[currentSelection[i]]
-            for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                .then(results => {
-                  results.map(request => {
-                    listGiFilter.push(request.plasmid_id)
-                  })
-                })
-            }
-          }
-        }
-        for (i in alertArrays.family) {
-          let currentSelection = alertArrays.family
-          for (i in currentSelection) {
-            const tempArray = assocFamilyGenus[currentSelection[i]]
-            for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                .then(results => {
-                  results.map(request => {
-                    listGiFilter.push(request.plasmid_id)
-                  })
-                })
-            }
-          }
-        }
-        for (i in alertArrays.genus) {
-          let currentSelection = alertArrays.genus
-          for (i in currentSelection) {
-            const tempArray = assocGenus[currentSelection[i]]
-            for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                .then(results => {
-                  results.map(request => {
-                    listGiFilter.push(request.plasmid_id)
-                  })
-                })
-            }
-          }
-        }
-        for (i in alertArrays.species) {
-          let currentSelection = alertArrays.species
-          for (i in currentSelection) {
-            taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)//, changed_nodes)
+        // for (const i in alertArrays.order) {
+        let currentSelectionOrder = alertArrays.order
+        for (const i in currentSelectionOrder) {
+          const tempArray = assocOrderGenus[currentSelectionOrder[i]]
+          for (const sp in tempArray) {
+            taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
               .then(results => {
                 results.map(request => {
                   listGiFilter.push(request.plasmid_id)
@@ -1063,29 +1024,68 @@ const onLoad = () => {
               })
           }
         }
+        // }
+        // for (i in alertArrays.family) {
+        let currentSelectionFamily = alertArrays.family
+        for (const i in currentSelectionFamily) {
+          const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
+          for (const sp in tempArray) {
+            taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+              .then(results => {
+                results.map(request => {
+                  listGiFilter.push(request.plasmid_id)
+                })
+              })
+          }
+        }
+        // }
+        // for (i in alertArrays.genus) {
+        let currentSelectionGenus = alertArrays.genus
+        for (const i in currentSelectionGenus) {
+          const tempArray = assocGenus[currentSelectionGenus[i]]
+          for (const sp in tempArray) {
+            taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+              .then(results => {
+                results.map(request => {
+                  listGiFilter.push(request.plasmid_id)
+                })
+              })
+          }
+        }
+        // }
+        // for (i in alertArrays.species) {
+        let currentSelectionSpecies = alertArrays.species
+        for (const i in currentSelectionSpecies) {
+          taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor, reloadAccessionList)//, changed_nodes)
+            .then(results => {
+              results.map(request => {
+                listGiFilter.push(request.plasmid_id)
+              })
+            })
+          // }
+        }
       }
       // renders the graph for the desired taxon if one taxon type is selected
       // allows for different colors between taxa of the same level
       else if (counter === 1) {
-        console.log("alert arrays 1", alertArrays, assocGenus)
+        let currentSelection
         // first cycle between all the arrays to find which one is not empty
-        for (array in alertArrays) {
+        for (const array in alertArrays) {
           // selects the not empty array
-          if (alertArrays[array] != '' && firstIteration == true) {
-            var currentSelection = alertArrays[array]
+          if (alertArrays[array].length !== 0 && firstIteration === true) {
+            currentSelection = alertArrays[array]
             // performs the actual interaction for color picking and assigning
-            for (i in currentSelection) {
-
+            for (const i in currentSelection) {
               // orders //
-              if (alertArrays['order'] != '') {
-                var currentColor = colorList[i].replace('#', '0x')
-                var tempArray = assocOrderGenus[currentSelection[i]]
-                style_color = 'background-color:' + colorList[i]
+              if (alertArrays.order.length !== 0) {
+                const currentColor = colorList[i].replace("#", "0x")
+                const tempArray = assocOrderGenus[currentSelection[i]]
+                const style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li' +
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family and orders
-                for (sp in tempArray) {
+                for (const sp in tempArray) {
                   taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
@@ -1096,15 +1096,15 @@ const onLoad = () => {
               }
 
               // families //
-              else if (alertArrays['family'] != '') {
-                var currentColor = colorList[i].replace('#', '0x')
-                var tempArray = assocFamilyGenus[currentSelection[i]]
-                style_color = 'background-color:' + colorList[i]
+              else if (alertArrays.family.length !== 0) {
+                const currentColor = colorList[i].replace("#", "0x")
+                const tempArray = assocFamilyGenus[currentSelection[i]]
+                const style_color = "background-color:" + colorList[i]
                 store_lis = store_lis + '<li' +
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family
-                for (sp in tempArray) {
+                for (const sp in tempArray) {
                   taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
@@ -1115,15 +1115,17 @@ const onLoad = () => {
               }
 
               // genus //
-              else if (alertArrays['genus'] != '') {
-                var currentColor = colorList[i].replace('#', '0x')
-                var tempArray = assocGenus[currentSelection[i]]
-                style_color = 'background-color:' + colorList[i]
-                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+              else if (alertArrays.genus.length !== 0) {
+                const currentColor = colorList[i].replace("#", "0x")
+                const tempArray = assocGenus[currentSelection[i]]
+                const style_color = "background-color:" + colorList[i]
+                console.log(currentColor, tempArray, style_color)
+                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
+                  style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                for (sp in tempArray) {
+                for (const sp in tempArray) {
                   taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
@@ -1134,11 +1136,11 @@ const onLoad = () => {
               }
 
               // species //
-              else if (alertArrays['species'] != []) {
-                console.log("test species")
-                var currentColor = colorList[i].replace('#', '0x')
-                style_color = 'background-color:' + colorList[i]
-                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+              else if (alertArrays.species.length !== 0) {
+                const currentColor = colorList[i].replace("#", "0x")
+                const style_color = "background-color:" + colorList[i]
+                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
+                  style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
@@ -1159,16 +1161,16 @@ const onLoad = () => {
         noLegend = true
       }
       // show legend //
-      if (noLegend == false) {
-        showLegend.style.display = 'block'
-        document.getElementById('taxa_label').style.display = 'block' // show label
-        $('#colorLegendBox').empty()
-        $('#colorLegendBox').append(store_lis +
+      if (noLegend === false) {
+        showLegend.style.display = "block"
+        document.getElementById("taxa_label").style.display = "block" // show label
+        $("#colorLegendBox").empty()
+        $("#colorLegendBox").append(store_lis +
           '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
-        showRerun.style.display = 'block'
-        showGoback.style.display = 'block'
-        showDownload.style.display = 'block'
-        showTable.style.display = 'block'
+        showRerun.style.display = "block"
+        showGoback.style.display = "block"
+        showDownload.style.display = "block"
+        showTable.style.display = "block"
       }
     })
 
