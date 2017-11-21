@@ -476,12 +476,17 @@ const onLoad = () => {
 
     // Form and button for search box
     $("#submitButton").click(function (event) {
+      event.preventDefault()
       if (toggle_status === false) {
         const query = $("#formValueId").val().replace(".", "_")
-        currentQueryNode = centerToggleQuery(g, graphics, renderer, query, currentQueryNode)
+        currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
+          currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
+          clickedPopupButtonFamily)
       } else {
         // executed for plasmid search
-        currentQueryNode = toggleOnSearch(g, graphics, renderer, currentQueryNode)
+        currentQueryNode = toggleOnSearch(g, graphics, renderer,
+          currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
+          clickedPopupButtonFamily)
       }
     })
     // Button to clear the selected nodes by form

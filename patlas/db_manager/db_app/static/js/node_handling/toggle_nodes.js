@@ -14,9 +14,47 @@ const toggle_manager = (toggle_status) => {
   }
 }
 
+// call the requests
+const requestPlasmidTable = (node, setupPopupDisplay) => {
+  // if statement to check if node is in database or is a new import
+  // from mapping
+  let speciesName, plasmidName
+  if (node.data.seq_length) {
+    $.get("api/getspecies/", {"accession": node.id}, (data, status) => {
+      // this request uses nested json object to access json entries
+      // available in the database
+      // if request return no speciesName or plasmidName
+      // sometimes plasmids have no descriptor for one of these or both
+      if (data.json_entry.name === null) {
+        speciesName = "N/A"
+      } else {
+        speciesName = data.json_entry.name.split("_").join(" ")
+      }
+      if (data.json_entry.plasmid_name === null) {
+        plasmidName = "N/A"
+      } else {
+        plasmidName = data.json_entry.plasmid_name
+      }
+      // check if data can be called as json object properly from db something like data.species or data.length
+      setupPopupDisplay(node, speciesName, plasmidName) //callback
+      // function for
+      // node displaying after fetching data from db
+    })
+  }
+  // exception when node has no length (used on new nodes?)
+  else {
+    speciesName = "N/A"
+    plasmidName = "N/A"
+    setupPopupDisplay(node, speciesName, plasmidName) //callback
+  }
+}
+
 // function that iterates all nodes and when it finds a match recenters the dom
-const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
+const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
+                           clickedPopupButtonCard, clickedPopupButtonRes,
+                           clickedPopupButtonFamily) => {
   g.forEachNode( (node) => {
+    console.log(currentQueryNode, node.id)
     const nodeUI = graphics.getNodeUI(node.id)
     const sequence = node.data.sequence.split(">")[3].split("<")[0]
     // console.log(sequence)
@@ -39,7 +77,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
       requestPlasmidTable(node, setupPopupDisplay)
       // also needs to reset previous node to its original color
       if (window.currentQueryNode) {
-        previousNodeUI = graphics.getNodeUI(currentQueryNode)
+        const previousNodeUI = graphics.getNodeUI(currentQueryNode)
         previousNodeUI.color = previousNodeUI.backupColor
       }
       renderer.rerender()
@@ -49,12 +87,16 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
 }
 
 // function to search plasmidnames when toggle is on
-const toggleOnSearch = (g, graphics, renderer, currentQueryNode) => {
+const toggleOnSearch = (g, graphics, renderer, currentQueryNode,
+                        clickedPopupButtonCard, clickedPopupButtonRes,
+                        clickedPopupButtonFamily) => {
   const query = $("#formValueId").val()
   $.get("api/getplasmidname/", {"plasmid_name": query})
     .then( (results) => {
       const centerAccession = results.plasmid_id
-      centerToggleQuery(g, graphics, renderer, centerAccession, currentQueryNode)
+      centerToggleQuery(g, graphics, renderer, centerAccession, currentQueryNode,
+        clickedPopupButtonCard, clickedPopupButtonRes,
+        clickedPopupButtonFamily)
     })
   return query
 }

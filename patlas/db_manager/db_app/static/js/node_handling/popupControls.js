@@ -54,37 +54,3 @@ const setupPopupDisplay = (node, speciesName, plasmidName) => {
   )
   $("#popup_description").show()
 }
-
-// call the requests
-const requestPlasmidTable = (node, setupPopupDisplay) => {
-  // if statement to check if node is in database or is a new import
-  // from mapping
-  if (node.data.seq_length) {
-    $.get('api/getspecies/', {'accession': node.id}, (data, status) => {
-      // this request uses nested json object to access json entries
-      // available in the database
-      // if request return no speciesName or plasmidName
-      // sometimes plasmids have no descriptor for one of these or both
-      if (data.json_entry.name === null) {
-        speciesName = "N/A"
-      } else {
-        speciesName = data.json_entry.name.split("_").join(" ")
-      }
-      if (data.json_entry.plasmid_name === null) {
-        plasmidName = "N/A"
-      } else {
-        plasmidName = data.json_entry.plasmid_name
-      }
-      // check if data can be called as json object properly from db something like data.species or data.length
-      setupPopupDisplay(node, speciesName, plasmidName) //callback
-      // function for
-      // node displaying after fetching data from db
-    })
-  }
-  // exception when node has no length (used on new nodes?)
-  else {
-    speciesName = 'N/A'
-    plasmidName = 'N/A'
-    setupPopupDisplay(node, speciesName, plasmidName) //callback
-  }
-}
