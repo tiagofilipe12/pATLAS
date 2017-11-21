@@ -942,11 +942,6 @@ const onLoad = () => {
         // warning is raised
         Alert = false
       }
-      // control the alertClose button
-
-      $("#alertClose").click( () => {
-        $("#alertId").hide()  // hide this div
-      })
 
       // control button to close div
       $("#alertCloseNCBI").click( () => {
@@ -1745,6 +1740,11 @@ const onLoad = () => {
       $("#pfTab").show()
       $("#resTab").hide()
     }
+  })
+
+  // control the alertClose button
+  $("#alertClose").click( () => {
+    $("#alertId").hide()  // hide this div
   })
 
   // this forces the entire script to run
