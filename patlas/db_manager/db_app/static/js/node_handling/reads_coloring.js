@@ -275,4 +275,15 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
   $("#familyList").selectpicker("deselectAll")
   $("#genusList").selectpicker("deselectAll")
   $("#speciesList").selectpicker("deselectAll")
+
+  // reset plasmid families and resistance associated divs
+  // this needs an array for reusability purposes
+  resetDisplayTaxaBox(["p_Plasmidfinder"])
+  // resets dropdown selections
+  $("#plasmidFamiliesList").selectpicker("deselectAll")
+
+  resetDisplayTaxaBox(["p_Resfinder", "p_Card"])
+  // resets dropdown selections
+  $("#cardList").selectpicker("deselectAll")
+  $("#resList").selectpicker("deselectAll")
 }
