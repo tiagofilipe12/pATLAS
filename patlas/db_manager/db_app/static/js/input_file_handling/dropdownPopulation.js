@@ -59,17 +59,10 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
       // variable with the selected gene
       const gene = array[i]
       // variable to store all lis for legend
-      if (storeLis === "undefined") {
-        storeLis = "<li" +
-          " class='centeredList'><button class='jscolor btn'" +
-          " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
-          "</li>"
-      } else {
-        storeLis = storeLis + "<li" +
-          " class='centeredList'><button class='jscolor btn'" +
-          " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
-          "</li>"
-      }
+      storeLis = storeLis + "<li" +
+        " class='centeredList'><button class='jscolor btn'" +
+        " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+        "</li>"
 
       resRequest(g, graphics, renderer, gene, currentColor)
         .then( (results) => {
@@ -79,7 +72,6 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
         })
     }
   }
-  console.log(storeLis)
   return storeLis
 }
 
@@ -96,7 +88,6 @@ const resSubmitFunction = (g, graphics, renderer) => {
   // remove first char from selected* arrays
   selectedCard = removeFirstCharFromArray(selectedCard)
   selectedResfinder = removeFirstCharFromArray(selectedResfinder)
-  console.log(selectedCard)
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
