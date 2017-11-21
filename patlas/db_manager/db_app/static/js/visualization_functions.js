@@ -208,9 +208,7 @@ const onLoad = () => {
     $("#toggle-event").change(function () {   // jquery seems not to support es6
       toggle_status = $(this).prop("checked")
       toggle_manager(toggle_status)
-      // TODO this should be reworked because it conflicts with
-      // popup_description highlight node. Maybe it can be this function can
-      // be combined with popup_description
+
     })
 
     //* *************//
@@ -220,42 +218,43 @@ const onLoad = () => {
     const events = Viva.Graph.webglInputEvents(graphics, g)
     store_nodes = []  // list used to store nodes
     // changes the color of node and links (and respective linked nodes) of this node when clicked
-    events.dblClick( (node) => {
-      store_nodes.push(node.id)
-      let colorToUse
-      //console.log('Single click on node: ' + node.id)
-      const nodeUI = graphics.getNodeUI(node.id)
-      if (toggle_status === true) {   // if statement to check if toggle
-        // button is enabled
-        // statement when node and linked nodes are still in default color
-        if (nodeUI.color === nodeColor) {
-          colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
-        }
-        // statement when linked node is selected
-        else if (nodeUI.color === 0x7c3912) {
-          colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
-        }
-        // statement when node is shaded
-        else if (nodeUI.color === 0xcdc8b1) {
-          colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
-        }
-        // statement do deselect node and linked nodes
-        else {
-          // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
-          colorToUse = [nodeColor, 0xb3b3b3ff, nodeColor]
-        }
-        nodeUI.color = colorToUse[0]
-        g.forEachLinkedNode(node.id, (linkedNode, link) => {
-          const linkUI = graphics.getLinkUI(link.id)
-          linkUI.color = colorToUse[1]
-          const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-          if (linked_nodeUI.color !== 0xc89933) {
-            linked_nodeUI.color = colorToUse[2]
-          }
-        })
-      }
-      renderer.rerender()
-    })
+    // TODO remove this legacy block later
+    // events.dblClick( (node) => {
+    //   store_nodes.push(node.id)
+    //   let colorToUse
+    //   //console.log('Single click on node: ' + node.id)
+    //   const nodeUI = graphics.getNodeUI(node.id)
+    //   if (toggle_status === true) {   // if statement to check if toggle
+    //     // button is enabled
+    //     // statement when node and linked nodes are still in default color
+    //     if (nodeUI.color === nodeColor) {
+    //       colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
+    //     }
+    //     // statement when linked node is selected
+    //     else if (nodeUI.color === 0x7c3912) {
+    //       colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
+    //     }
+    //     // statement when node is shaded
+    //     else if (nodeUI.color === 0xcdc8b1) {
+    //       colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
+    //     }
+    //     // statement do deselect node and linked nodes
+    //     else {
+    //       // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
+    //       colorToUse = [nodeColor, 0xb3b3b3ff, nodeColor]
+    //     }
+    //     nodeUI.color = colorToUse[0]
+    //     g.forEachLinkedNode(node.id, (linkedNode, link) => {
+    //       const linkUI = graphics.getLinkUI(link.id)
+    //       linkUI.color = colorToUse[1]
+    //       const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
+    //       if (linked_nodeUI.color !== 0xc89933) {
+    //         linked_nodeUI.color = colorToUse[2]
+    //       }
+    //     })
+    //   }
+    //   renderer.rerender()
+    // })
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
@@ -589,21 +588,13 @@ const onLoad = () => {
 
     // Form and button for search box
     $("#submitButton").click(function (event) {
-      const query = $("#formValueId").val().replace(".", "_")
-      //console.log('search query: ' + query)
-      event.preventDefault()
-      g.forEachNode( (node) => {
-        const nodeUI = graphics.getNodeUI(node.id)
-        const sequence = node.data.sequence.split(">")[3].split("<")[0]
-        // console.log(sequence)
-        //nodeUI = graphics.getNodeUI(node.id)
-        const x = nodeUI.position.x,
-          y = nodeUI.position.y
-        if (sequence === query) {
-          // centers graph visualization in a given node, searching for gi
-          renderer.moveTo(x, y)
-        }
-      })
+      if (toggle_status === false) {
+        const query = $("#formValueId").val().replace(".", "_")
+        centerToggleQuery(g, graphics, renderer, query)
+      } else {
+        // executed for plasmid search
+        toggleOnSearch(g, graphics, renderer)
+      }
     })
     // Button to clear the selected nodes by form
     $("#clearButton").click(function (event) {

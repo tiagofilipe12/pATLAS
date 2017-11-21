@@ -1,5 +1,6 @@
 
 from flask_restful import Resource, reqparse, fields, marshal_with
+from sqlalchemy import func
 
 try:
     from db_app import db
@@ -135,3 +136,21 @@ class GetAccessionPF(Resource):
         # string
         return records
 
+req_parser_4 = reqparse.RequestParser()
+req_parser_4.add_argument("plasmid_name", dest="plasmid_name", type=str, help="plasmid name "
+                                                              "to be queried")
+
+class GetPlasmidName(Resource):
+    @marshal_with(entry_field)
+    def get(self):
+        # Put req_parser inside get function. Only this way it parses the request.
+        args = req_parser_4.parse_args()
+        print(args.plasmid_name)
+        # This queries if input plasmid name is present in db
+        # func.lower() function from sqalchemy allows the user to make case insensitive searches
+        records = db.session.query(Plasmid).filter(func.lower(
+            Plasmid.json_entry["plasmid_name"].astext) == func.lower(args.plasmid_name)
+        ).first()
+        # contains method allows us to query in array that is converted to a
+        # string
+        return records
