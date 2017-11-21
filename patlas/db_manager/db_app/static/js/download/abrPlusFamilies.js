@@ -139,7 +139,6 @@ const resGetter = (nodeId) => {
           }
         }
       }
-      // TODO function to append a list of all things
       // then actually add it to popup_description div
       resPopupPopulate(queryArrayCardGenes, queryArrayCardAccession,
         queryArrayCardARO, queryArrayCardCoverage,
@@ -231,7 +230,6 @@ const plasmidFamilyGetter = (nodeId) => {
           queryArrayPFRange.push(num + ": " + rangeEntry)
         }
       }
-      // TODO function to append a list of all things
       // then actually add it to popup_description div
       pfPopupPopulate(queryArrayPFGenes, queryArrayPFAccession,
         queryArrayPFCoverage, queryArrayPFIdentity, queryArrayPFRange)
