@@ -949,7 +949,6 @@ const onLoad = () => {
       })
 
       // auto hide after 5 seconds without closing the div
-      // TODO what is this for? XD
       window.setTimeout( () => { $("#alertId").hide() }, 5000)
 
       //* *** End Alert for taxa filter ****//
