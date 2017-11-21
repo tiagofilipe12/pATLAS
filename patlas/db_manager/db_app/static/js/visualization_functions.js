@@ -1405,7 +1405,7 @@ const onLoad = () => {
     // })
 
     // resets the slider
-    $('#reset-sliders').click(function (event) {
+    $("#reset-sliders").click(function (event) {
       listGiFilter = [] //resets listGiFilter
       areaSelection = false
       slider.noUiSlider.set(sliderMinMax)
@@ -1413,7 +1413,7 @@ const onLoad = () => {
         showGoback, showDownload, showTable, idsArrays)
     })
     // runs the re run operation for the selected species
-    $('#Re_run').click(function (event) {
+    $("#Re_run").click(function (event) {
       console.log("rerun listGiFilter", listGiFilter)
       // resets areaSelection
       areaSelection = false
@@ -1430,8 +1430,8 @@ const onLoad = () => {
     })
 
     // returns to the initial tree by reloading the page
-    $('#go_back').click(function (event) {
-      //console.log('returning to main')
+    $("#go_back").click(function (event) {
+      //console.log("returning to main")
       window.location.reload()   // a temporary fix to go back to full dataset
     })
   } // closes renderGraph
@@ -1457,14 +1457,14 @@ const onLoad = () => {
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
-                sequence: "<font color='#468499'>Accession:" +
-                " </font><a" +
+                sequence: "<span style='color:#468499'>Accession:" +
+                " </span><a" +
                 " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
                 //species:"<font color='#468499'>Species:
                 // </font>" + species,
-                seq_length: "<font" +
-                " color='#468499'>Sequence length:" +
-                " </font>" + seqLength,
+                seq_length: "<span" +
+                " style='color:#468499'>Sequence length:" +
+                " </span>" + seqLength,
                 log_length: log_length
               })
               list.push(sequence)
@@ -1503,12 +1503,12 @@ const onLoad = () => {
 
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
-                sequence: "<font color='#468499'>Accession:" +
-                " </font><a" +
+                sequence: "<span style='color:#468499'>Accession:" +
+                " </span><a" +
                 " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                seq_length: "<font" +
-                " color='#468499'>Sequence length:" +
-                " </font>" + seqLength,
+                seq_length: "<span" +
+                " style='color:#468499'>Sequence length:" +
+                " </span>" + seqLength,
                 log_length: log_length
               })
               layout.setNodePosition(sequence, array.position.x, array.position.y)

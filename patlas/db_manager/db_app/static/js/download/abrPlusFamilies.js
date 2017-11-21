@@ -88,7 +88,9 @@ const resGetter = (nodeId) => {
         " 40px; margin-bottom: 40px;'></div>" +
         "<div id='cardPop'>Card database</div>" +
         "<div id='cardGenePop'>" +
-        "<span style='color: #468499'>Gene name: </span>" + queryArrayCardGenes.toString() +
+        // replace " by nothing because sometimes gene names get " for no
+        // apparent reasion
+        "<span style='color: #468499'>Gene name: </span>" + queryArrayCardGenes.toString().replace(/["]+/g, '') +
         "</div>" +
         "<div id='cardGenbankPop'>" +
         "<span style='color: #468499'>Genbank accession: </span>" + queryArrayCardAccession.toString() +
@@ -112,7 +114,9 @@ const resGetter = (nodeId) => {
         "<div id='resfinderPop'>ResFinder database" +
         "</div>" +
         "<div id='resfinderGenePop'>" +
-        "<span style='color: #468499'>Gene name: </span>" + queryArrayResfinderGenes.toString() +
+        // replace " by nothing because sometimes gene names get " for no
+        // apparent reasion
+        "<span style='color: #468499'>Gene name: </span>" + queryArrayResfinderGenes.toString().replace(/["]+/g, '') +
         "</div>" +
         "<div id='resfinderGenbankPop'>" +
         "<span style='color: #468499'>Genbank accession: </span>" + queryArrayResfinderAccession.toString() +
@@ -189,7 +193,9 @@ const plasmidFamilyGetter = (nodeId) => {
         "</div>" +
         "<div id='pfPop'>PlasmidFinder database</div>" +
         "<div id='pfGenePop'>" +
-        "<span style='color: #468499'>Gene name: </span>" + queryArrayPFGenes.toString() +
+        // replace " by nothing because sometimes gene names get " for no
+        // apparent reasion
+        "<span style='color: #468499'>Gene name: </span>" + queryArrayPFGenes.toString().replace(/["]+/g, '') +
         "</div><div id='pfGenbankPop'>" +
         "<span style='color: #468499'>Genbank Accession: </span>" + queryArrayPFAccession.toString() +
         "</div><div>Matching resistance genes information</div>" +
