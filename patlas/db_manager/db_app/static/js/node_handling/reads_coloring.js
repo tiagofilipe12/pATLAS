@@ -174,12 +174,15 @@ const readColoring = (g, list_gi, graphics, renderer) => {
     }
   }
   // control all related divs
+  // TODO this code is duplicated, should be fixed
   let showRerun = document.getElementById("Re_run")
   let showGoback = document.getElementById("go_back")
   let showDownload = document.getElementById("download_ds")
+  let showTable = document.getElementById("tableShow")
   showRerun.style.display = "block"
   showGoback.style.display = "block"
   showDownload.style.display = "block"
+  showTable.style.display = "block"
   renderer.rerender()
   $("#loading").hide()
   return list_gi, listGiFilter
@@ -241,7 +244,7 @@ const color_legend = (readMode) => {
 // Clear nodes function for reset-sliders button
 
 const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
-                       showGoback, showDownload, idsArrays) => {
+                       showGoback, showDownload, showTable, idsArrays) => {
   // first iters nodes to get nodeColor (default color)
   node_color_reset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
@@ -251,6 +254,7 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
     showGoback.style.display = "none"
     //document.getElementById("go_back").className += " disabled"
     showDownload.style.display = "none"
+    showTable.style.display = "none"
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   } else {
@@ -260,6 +264,7 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
     showGoback.style.display = "none"
     //document.getElementById("go_back").className += " disabled"
     showDownload.style.display = "none"
+    showTable.style.display = "none"
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   }
@@ -270,4 +275,15 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
   $("#familyList").selectpicker("deselectAll")
   $("#genusList").selectpicker("deselectAll")
   $("#speciesList").selectpicker("deselectAll")
+
+  // reset plasmid families and resistance associated divs
+  // this needs an array for reusability purposes
+  resetDisplayTaxaBox(["p_Plasmidfinder"])
+  // resets dropdown selections
+  $("#plasmidFamiliesList").selectpicker("deselectAll")
+
+  resetDisplayTaxaBox(["p_Resfinder", "p_Card"])
+  // resets dropdown selections
+  $("#cardList").selectpicker("deselectAll")
+  $("#resList").selectpicker("deselectAll")
 }

@@ -51,7 +51,7 @@ const pfRequest = (g, graphics, renderer, gene, currentColor) => {
 }
 
 const iterateSelectedArrays = (array, g, graphics, renderer) => {
-  let storeLis
+  let storeLis = ""
   for (let i in array) {
     if ({}.hasOwnProperty.call(array, i)) {
       // establish current color to use
@@ -59,17 +59,10 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
       // variable with the selected gene
       const gene = array[i]
       // variable to store all lis for legend
-      if (storeLis === "undefined") {
-        storeLis = "<li" +
-          " class='centeredList'><button class='jscolor btn'" +
-          " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
-          "</li>"
-      } else {
-        storeLis = storeLis + "<li" +
-          " class='centeredList'><button class='jscolor btn'" +
-          " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
-          "</li>"
-      }
+      storeLis = storeLis + "<li" +
+        " class='centeredList'><button class='jscolor btn'" +
+        " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+        "</li>"
 
       resRequest(g, graphics, renderer, gene, currentColor)
         .then( (results) => {
@@ -131,9 +124,9 @@ const resSubmitFunction = (g, graphics, renderer) => {
   // if legend is requested then execute this!
   // shows legend
   if (legendInst === true) {
-    document.getElementById("taxa_label").style.display = "block" // show label
-    $("#colorLegendBox").empty()
-    $("#colorLegendBox").append(
+    document.getElementById("res_label").style.display = "block" // show label
+    $("#colorLegendBoxRes").empty()
+    $("#colorLegendBoxRes").append(
       storeLis +
       "<li class='centeredList'><button class='jscolor btn btn-default'" +
       " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
@@ -146,7 +139,7 @@ const resSubmitFunction = (g, graphics, renderer) => {
 const pfSubmitFunction = (g, graphics, renderer) => {
   // starts legend variable
   let legendInst = false // by default legend is off
-  let storeLis  // initiates storeLis to store the legend entries and colors
+  let storeLis = ""  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const pfQuery = document.getElementById("p_Plasmidfinder").innerHTML
   let selectedPf = pfQuery.replace("Plasmidfinder:", "").split(",").filter(Boolean)
@@ -190,9 +183,9 @@ const pfSubmitFunction = (g, graphics, renderer) => {
   // if legend is requested then execute this!
   // shows legend
   if (legendInst === true) {
-    document.getElementById("taxa_label").style.display = "block" // show label
-    $("#colorLegendBox").empty()
-    $("#colorLegendBox").append(
+    document.getElementById("pf_label").style.display = "block" // show label
+    $("#colorLegendBoxPf").empty()
+    $("#colorLegendBoxPf").append(
       storeLis +
       "<li class='centeredList'><button class='jscolor btn btn-default'" +
       " style='background-color:#666370' ></button>&nbsp;unselected</li>'"

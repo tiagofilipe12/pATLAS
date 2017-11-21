@@ -17,6 +17,64 @@ const makeCardClickable = (string) => {
     string.replace("ARO:", "") + "' target='_blank'>" + string + "</a>"
 }
 
+const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
+                          queryArrayCardARO, queryArrayCardCoverage,
+                          queryArrayCardIdentity, queryArrayCardRange,
+                          queryArrayResfinderGenes, queryArrayResfinderAccession,
+                          queryArrayResfinderCoverage, queryArrayResfinderIdentity,
+                          queryArrayResfinderRange) => {
+  $("#popup_description").append(
+    "<div id='resTab'>" +
+    "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
+    " 40px; margin-bottom: 40px;'></div>" +
+    "<div id='cardPop'>Card database</div>" +
+    "<div id='cardGenePop'>" +
+    // replace " by nothing because sometimes gene names get " for no
+    // apparent reasion
+    "<span style='color: #468499'>Gene name: </span>" + queryArrayCardGenes.toString().replace(/["]+/g, "") +
+    "</div>" +
+    "<div id='cardGenbankPop'>" +
+    "<span style='color: #468499'>Genbank accession: </span>" + queryArrayCardAccession.toString() +
+    "</div>" +
+    "<div id='cardAroPop'>" +
+    "<span style='color: #468499'>ARO accessions: </span>" + queryArrayCardARO.toString() +
+    "</div>" +
+    "<div>Matching resistance genes information</div>" +
+    "<div id='cardCoveragePop'>" +
+    "<span style='color: #468499'>Coverage: </span>" + queryArrayCardCoverage.toString() +
+    "</div>" +
+    "<div id='cardIdPop'>" +
+    "<span style='color: #468499'>Identity: </span>" + queryArrayCardIdentity.toString() +
+    "</div>" +
+    "<div id='cardRangePop'>" +
+    "<span style='color: #468499'>Range in plasmid: </span>" + queryArrayCardRange.toString() +
+    "</div>" +
+    "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
+    " 40px; margin-bottom: 40px;'>" +
+    "</div>" +
+    "<div id='resfinderPop'>ResFinder database" +
+    "</div>" +
+    "<div id='resfinderGenePop'>" +
+    // replace " by nothing because sometimes gene names get " for no
+    // apparent reasion
+    "<span style='color: #468499'>Gene name: </span>" + queryArrayResfinderGenes.toString().replace(/["]+/g, "") +
+    "</div>" +
+    "<div id='resfinderGenbankPop'>" +
+    "<span style='color: #468499'>Genbank accession: </span>" + queryArrayResfinderAccession.toString() +
+    "</div>" +
+    "<div>Matching resistance genees information</div>" +
+    "<div id='resfinderCoveragePop'>" +
+    "<span style='color: #468499'>Coverage: </span>" + queryArrayResfinderCoverage.toString() +
+    "</div>" +
+    "<div id='resfinderIdPop'>" +
+    "<span style='color: #468499'>Identity: </span>" + queryArrayResfinderIdentity.toString() +
+    "</div>" +
+    "<div id='resfinderRangePop'>" +
+    "<span style='color: #468499'>Range in plasmid: </span>" + queryArrayResfinderRange.toString() +
+    "</div></div>"
+  )
+}
+
 // this function is intended to use in single query instances such as
 // popup_description button
 const resGetter = (nodeId) => {
@@ -54,7 +112,9 @@ const resGetter = (nodeId) => {
 
       for (const i in totalLenght) {
         if ({}.hasOwnProperty.call(totalLenght, i)) {
-          const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
+          const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
+            rangeList[i].replace(" ", "").replace(", ", ":") :
+            (rangeList[i] + "]").replace(", ", ":")
           if (databaseList[i].indexOf("card") > -1) {
             num = num + 1
             const numString = num.toString()
@@ -80,42 +140,13 @@ const resGetter = (nodeId) => {
         }
       }
       // then actually add it to popup_description div
-      $("#popup_description").append(
-        "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
-        " 40px; margin-bottom: 40px;'>" +
-        "</div>" +
-        "<div'>Card database" +
-        "<br />" +
-        "<font color='#468499'>Gene name: </font>" + queryArrayCardGenes.toString() +
-        "<br />" +
-        "<font color='#468499'>Genbank accession: </font>" + queryArrayCardAccession.toString() +
-        "<br />" +
-        "<font color='#468499'>ARO accessions: </font>" + queryArrayCardARO.toString() +
-        "<div>Matching resistance genes information</div>" +
-        "<font color='#468499'>Coverage: </font>" + queryArrayCardCoverage.toString() +
-        "<br />" +
-        "<font color='#468499'>Identity: </font>" + queryArrayCardIdentity.toString() +
-        "<br />" +
-        "<font color='#468499'>Range in plasmid: </font>" + queryArrayCardRange.toString() +
-        "<br />" +
-        "</div>" +
-        "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
-        " 40px; margin-bottom: 40px;'>" +
-        "</div>" +
-        "<div'>ResFinder database" +
-        "<br />" +
-        "<font color='#468499'>Gene name: </font>" + queryArrayResfinderGenes.toString() +
-        "<br />" +
-        "<font color='#468499'>Genbank accession: </font>" + queryArrayResfinderAccession.toString() +
-        "<div>Matching resistance genees information</div>" +
-        "<font color='#468499'>Coverage: </font>" + queryArrayResfinderCoverage.toString() +
-        "<br />" +
-        "<font color='#468499'>Identity: </font>" + queryArrayResfinderIdentity.toString() +
-        "<br />" +
-        "<font color='#468499'>Range in plasmid: </font>" + queryArrayResfinderRange.toString() +
-        "<br />" +
-        "</div>"
-      )
+      resPopupPopulate(queryArrayCardGenes, queryArrayCardAccession,
+        queryArrayCardARO, queryArrayCardCoverage,
+        queryArrayCardIdentity, queryArrayCardRange,
+        queryArrayResfinderGenes, queryArrayResfinderAccession,
+        queryArrayResfinderCoverage, queryArrayResfinderIdentity,
+        queryArrayResfinderRange)
+
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no Resistance information available in database."
@@ -123,6 +154,10 @@ const resGetter = (nodeId) => {
       $("#alertClose_db").click( () => {
         $("#alertId_db").hide()  // hide this div
       })
+      resPopupPopulate("N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
+        "N/A", "N/A", "N/A")
+      // hides the div after 5 seconds
+      window.setTimeout( () => { $("#alertId_db").hide() }, 5000)
     }
 
   })
@@ -131,6 +166,32 @@ const resGetter = (nodeId) => {
   // popup_description sets it again to true in order to get the above code
   // again
   return false
+}
+
+const pfPopupPopulate = (queryArrayPFGenes, queryArrayPFAccession,
+                         queryArrayPFCoverage, queryArrayPFIdentity,
+                         queryArrayPFRange) => {
+  $("#popup_description").append(
+    "<div id='pfTab'>" +
+    "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
+    " 40px; margin-bottom: 40px;'>" +
+    "</div>" +
+    "<div id='pfPop'>PlasmidFinder database</div>" +
+    "<div id='pfGenePop'>" +
+    // replace " by nothing because sometimes gene names get " for no
+    // apparent reasion
+    "<span style='color: #468499'>Gene name: </span>" + queryArrayPFGenes.toString().replace(/["]+/g, "") +
+    "</div><div id='pfGenbankPop'>" +
+    "<span style='color: #468499'>Genbank Accession: </span>" + queryArrayPFAccession.toString() +
+    "</div><div>Matching resistance genes information</div>" +
+    "<div id='pfCoveragePop'>" +
+    "<span style='color: #468499'>Coverage: </span>" + queryArrayPFCoverage.toString() +
+    "</div><div id='pfIdentityPop'>" +
+    "<span style='color: #468499'>Identity: </span>" + queryArrayPFIdentity.toString() +
+    "</div><div id='pfRangePop'>" +
+    "<span style='color: #468499'>Range in plasmid: </span>" + queryArrayPFRange.toString() +
+    "</div></div>"
+  )
 }
 
 const plasmidFamilyGetter = (nodeId) => {
@@ -156,7 +217,9 @@ const plasmidFamilyGetter = (nodeId) => {
       for (const i in totalLength) {
         if ({}.hasOwnProperty.call(totalLength, i)) {
           const num = (parseFloat(i) + 1).toString()
-          const rangeEntry = (rangeList[i].indexOf("]") > -1) ? rangeList[i].replace(" ", "") : rangeList[i] + "]"
+          const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
+            rangeList[i].replace(" ", "").replace(",", ":") :
+            (rangeList[i] + "]").replace(", ", ":")
           queryArrayPFGenes.push(num + ": " + totalLength[i])
           // card retrieves some odd numbers after the accession... that
           // prevent to form a linkable item to genbank
@@ -168,25 +231,8 @@ const plasmidFamilyGetter = (nodeId) => {
         }
       }
       // then actually add it to popup_description div
-      $("#popup_description").append(
-        "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
-        " 40px; margin-bottom: 40px;'>" +
-        "</div>" +
-        "<div'>PlasmidFinder database" +
-        "<br />" +
-        // TODO replace font with <span style="color:#000000">0001100000101101100011</span>
-        "<font color='#468499'>Gene name: </font>" + queryArrayPFGenes.toString() +
-        "<br />" +
-        "<font color='#468499'>Genbank Accession: </font>" + queryArrayPFAccession.toString() +
-        "<div>Matching resistance genes information</div>" +
-        "<font color='#468499'>Coverage: </font>" + queryArrayPFCoverage.toString() +
-        "<br />" +
-        "<font color='#468499'>Identity: </font>" + queryArrayPFIdentity.toString() +
-        "<br />" +
-        "<font color='#468499'>Range in plasmid: </font>" + queryArrayPFRange.toString() +
-        "<br />" +
-        "</div>"
-      )
+      pfPopupPopulate(queryArrayPFGenes, queryArrayPFAccession,
+        queryArrayPFCoverage, queryArrayPFIdentity, queryArrayPFRange)
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no PlasmidFinder information available in database."
@@ -194,6 +240,9 @@ const plasmidFamilyGetter = (nodeId) => {
       $("#alertClose_db").click( () => {
         $("#alertId_db").hide()  // hide this div
       })
+      pfPopupPopulate("N/A", "N/A", "N/A", "N/A", "N/A")
+      // hides the div after 5 seconds
+      window.setTimeout( () => { $("#alertId_db").hide() }, 5000)
     }
   })
 }

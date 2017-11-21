@@ -24,6 +24,13 @@ let clickedPopupButtonFamily = false
 let areaSelection = false
 
 const getArray = (devel === true) ? $.getJSON("/test") : $.getJSON("/fullDS")
+// an array to store bootstrap table related list for downloads and coloring
+// nodes on submit
+let bootstrapTableList = []
+// dictionary to store all the connections between species and other taxa
+// level available. This needs to be stored here because there is no reason
+// to execute the getArray_taxa twice.
+const dict_genera = {}
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
@@ -42,9 +49,11 @@ const getArray_pf = () => {
 
 // list used to store for re-run button (apply filters)
 let listGiFilter = []
+let reloadAccessionList = []
 
 let sliderMinMax = [] // initiates an array for min and max slider entries
 // and stores it for reloading instances of onload()
+let list_gi = []
 
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
@@ -62,12 +71,8 @@ const onLoad = () => {
   // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
-  //let listHashes = [] // this list stores hashes that correspond to unique
   // links between accession numbers
   let list_lengths = [] // list to store the lengths of all nodes
-  //var list_species = [] // lists all species
-  //var list_genera = [] // list all genera
-  let list_gi = []
 
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
@@ -80,6 +85,15 @@ const onLoad = () => {
     gravity: -1.2,
     theta: 1
   })
+  // define render on the scope of onload in order to be used by buttons
+  // outside renderGraph
+  let renderer
+  // buttons that are able to hide
+  let showRerun = document.getElementById("Re_run"),
+    showGoback = document.getElementById("go_back"),
+    showDownload = document.getElementById("download_ds"),
+    showLegend = document.getElementById("colorLegend")
+    showTable = document.getElementById("tableShow")
 
   const graphics = Viva.Graph.View.webglGraphics()
 
@@ -104,7 +118,7 @@ const onLoad = () => {
     //* * END block #1 for node customization **//
     const prerender = (devel === true || rerun === true) ? 500 : 0
 
-    const renderer = Viva.Graph.View.renderer(g, {
+    renderer = Viva.Graph.View.renderer(g, {
       layout,
       graphics,
       container: document.getElementById('couve-flor'),
@@ -116,11 +130,6 @@ const onLoad = () => {
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
-
-    let showRerun = document.getElementById("Re_run"),
-      showGoback = document.getElementById("go_back"),
-      showDownload = document.getElementById("download_ds"),
-      showLegend = document.getElementById("colorLegend")
 
     /*******************/
     /* MULTI-SELECTION */
@@ -139,8 +148,10 @@ const onLoad = () => {
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
+        showTable.style.display = "block"
         showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         areaSelection = true
       }
     })
@@ -259,7 +270,9 @@ const onLoad = () => {
         x: nodeUI_1.position.x,
         y: nodeUI_1.position.y
       }
-      nodeUI_1.backupColor = nodeUI_1.color
+      // if statement used to check if backup color is set
+      if (nodeUI_1.backupColor) { nodeUI_1.backupColor = nodeUI_1.color }
+
       nodeUI_1.color = 0xFFC300
       renderer.rerender()
 
@@ -319,20 +332,26 @@ const onLoad = () => {
         // multiple entries from previous interactions
         $("#popup_description").empty()
         $("#popup_description").append(
-          "<span id='close' type='button'>&times;</span>" +
+          "<button id='close' class='btn btn-default' type='button'>&times;</button>" +
+          "<button class='btn btn-default' id='downloadCsv'" +
+          "type='button' data-toogle='tooptip'" +
+          "title='Export as csv'>" +
+          "<span class='glyphicon glyphicon-save-file'></span>" +
+          "</button>" +
           "<div>General sequence info" +
-          "<br />" +
-          node.data.sequence +
-          "<br />" +
-          "<font color='#468499'>Species: </font>" + speciesName +
-          "<br />" +
-          node.data.seq_length +
-          "<br />" +
-          "<font color='#468499'>Plasmid: </font>" + plasmidName +
-          "<br />" +
-          "<font color='#468499'>Percentage: </font>" + node.data.percentage +
-          "<br />" +
-          "<font color='#468499'>Estimated copy number: </font>" + node.data.copyNumber +
+          "<div id='accessionPop'>" +
+          node.data.sequence + "</div>" +
+          "<div id='speciesNamePop'><span style='color: #468499'>Species:" +
+          " </span>" + speciesName +
+          "</div>" + node.data.seq_length +
+          "<div id='plasmidNamePop'>" +
+          "<span style='color: #468499'>Plasmid: </span>" + plasmidName +
+          "</div><div id='percentagePop'>" +
+          "<span style='color: #468499'>Percentage:" +
+          " </span>" + node.data.percentage +
+          "</div><div id='copyNumberPop'>" +
+          "<span style='color: #468499'>Relative copy number: " +
+          "</span>" + node.data.copyNumber +
           "</div>" +
           // adds buttons for resistances and plasmid families
           "<br />" +
@@ -379,6 +398,14 @@ const onLoad = () => {
     // second before executing repetitivePlotFunction's
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
+      console.log("listgifilter refreshbutton", listGiFilter)
+      console.log("reloadaccessionlist", reloadAccessionList)
+      listGiFilter = (reloadAccessionList.length !== 0) ?
+        // reduces listGiFilter to reloadAccessionList
+        listGiFilter.filter((n) => reloadAccessionList.includes(n)) :
+        // otherwise maintain listGiFilter untouched
+        listGiFilter
+
       setTimeout( () => {
         listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
@@ -600,35 +627,36 @@ const onLoad = () => {
     //* ***plasmidfinder Filters****//
     //* ******************//
 
-
-    getArray_pf().done( (json) => {
-      // first parse the json input file
-      const listPF = []
-      // iterate over the file
-      $.each(json, (accession, entry) => {
-        geneEntries = entry.gene
-        for (let i in geneEntries) {
-          if (listPF.indexOf(geneEntries[i]) < 0) {
-            listPF.push(geneEntries[i])
+    if (firstInstace === true) {
+      getArray_pf().done((json) => {
+        // first parse the json input file
+        const listPF = []
+        // iterate over the file
+        $.each(json, (accession, entry) => {
+          geneEntries = entry.gene
+          for (let i in geneEntries) {
+            if (listPF.indexOf(geneEntries[i]) < 0) {
+              listPF.push(geneEntries[i])
+            }
           }
-        }
-      })
-      // populate the menus
-      singleDropdownPopulate("#plasmidFamiliesList", listPF, "PlasmidfinderClass")
+        })
+        // populate the menus
+        singleDropdownPopulate("#plasmidFamiliesList", listPF, "PlasmidfinderClass")
 
-      $(".PlasmidfinderClass").on("click", function (e) {
-        // fill panel group displaying current selected taxa filters //
-        const stringClass = this.className.slice(0,-5)
-        const tempVar = this.firstChild.innerHTML
-        // checks if a taxon is already in display
-        const divStringClass = "#p_" + stringClass
+        $(".PlasmidfinderClass").on("click", function (e) {
+          // fill panel group displaying current selected taxa filters //
+          const stringClass = this.className.slice(0, -5)
+          const tempVar = this.firstChild.innerHTML
+          // checks if a taxon is already in display
+          const divStringClass = "#p_" + stringClass
 
-        filterDisplayer(tempVar, stringClass, divStringClass)
+          filterDisplayer(tempVar, stringClass, divStringClass)
+        })
       })
-    })
+    }
 
     // setup clear button for plasmidfinder functions
-    $("#pfClear").click( (event) => {
+    $("#pfClear").unbind("click").bind("click", (event) => {
       document.getElementById("reset-sliders").click()
       // clear = true;
       event.preventDefault()
@@ -645,16 +673,18 @@ const onLoad = () => {
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       }
     })
 
-    $("#pfSubmit").click( (event) => {
+    $("#pfSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
       // reset nodes before submitting new colors
       const legendInst = pfSubmitFunction(g, graphics, renderer)
@@ -664,8 +694,10 @@ const onLoad = () => {
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
+        showTable.style.display = "block"
         showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       }
     })
 
@@ -674,44 +706,45 @@ const onLoad = () => {
     //* ******************//
 
     // first parse the json input file
-
-    getArray_res().done( (json) => {
-      const listCard = [],
-        listRes = []
-      // iterate over the file
-      $.each(json, (accession, entry) => {
-        databaseEntries = entry.database
-        geneEntries = entry.gene
-        for (let i in databaseEntries) {
-          if (databaseEntries[i] === "card" && listCard.indexOf(geneEntries[i]) < 0) {
-            listCard.push(geneEntries[i])
-          } else {
-            if (listRes.indexOf(geneEntries[i]) < 0) {
-              listRes.push(geneEntries[i])
+    if (firstInstace === true) {
+      getArray_res().done((json) => {
+        const listCard = [],
+          listRes = []
+        // iterate over the file
+        $.each(json, (accession, entry) => {
+          databaseEntries = entry.database
+          geneEntries = entry.gene
+          for (let i in databaseEntries) {
+            if (databaseEntries[i] === "card" && listCard.indexOf(geneEntries[i]) < 0) {
+              listCard.push(geneEntries[i])
+            } else {
+              if (listRes.indexOf(geneEntries[i]) < 0) {
+                listRes.push(geneEntries[i])
+              }
             }
           }
+        })
+        // populate the menus
+        singleDropdownPopulate("#cardList", listCard, "CardClass")
+        singleDropdownPopulate("#resList", listRes, "ResfinderClass")
+
+        const classArray = [".CardClass", ".ResfinderClass"]
+        for (let i = 0; i < classArray.length; i++) {
+          $(classArray[i]).on("click", function (e) {
+            // fill panel group displaying current selected taxa filters //
+            const stringClass = this.className.slice(0, -5)
+            const tempVar = this.firstChild.innerHTML
+
+            // checks if a taxon is already in display
+            const divStringClass = "#p_" + stringClass
+
+            filterDisplayer(tempVar, stringClass, divStringClass)
+          })
         }
       })
-      // populate the menus
-      singleDropdownPopulate("#cardList", listCard, "CardClass")
-      singleDropdownPopulate("#resList", listRes, "ResfinderClass")
+    }
 
-      const classArray = [".CardClass", ".ResfinderClass"]
-      for (let i = 0; i < classArray.length; i++) {
-        $(classArray[i]).on("click", function (e) {
-          // fill panel group displaying current selected taxa filters //
-          const stringClass = this.className.slice(0,-5)
-          const tempVar = this.firstChild.innerHTML
-
-          // checks if a taxon is already in display
-          const divStringClass = "#p_" + stringClass
-
-          filterDisplayer(tempVar, stringClass, divStringClass)
-        })
-      }
-    })
-
-    $("#resClear").click( (event) => {
+    $("#resClear").unbind("click").bind("click", (event) => {
       document.getElementById("reset-sliders").click()
       // clear = true;
       event.preventDefault()
@@ -728,15 +761,18 @@ const onLoad = () => {
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
+        showTable.style.display = "none"
       }
     })
-    $("#resSubmit").click( (event) => {
+    $("#resSubmit").unbind("click").bind("click", (event) => {
+      console.log("ressubmit")
       event.preventDefault()
       // TODO reset nodes before adding new colors
       // same should be done for taxa filters submit button
@@ -747,8 +783,10 @@ const onLoad = () => {
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
+        showTable.style.display = "block"
         showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       }
     })
 
@@ -760,95 +798,99 @@ const onLoad = () => {
     const list_orders = [],
       list_families = [],
       list_genera = [],
-      dict_genera = {},
       list_species = []
-    getArray_taxa().done( (json) => {
-      $.each(json, (sps, other) => {    // sps aka species
-        const species = sps.split("_").join(" ")
-        const genus = other[0]
-        const family = other[1]
-        const order = other[2]
-        dict_genera[species] = [genus, family, order] // append the list to
-        // this dict to be used later
-        if (list_genera.indexOf(genus) < 0) {
-          list_genera.push(genus)
-        }
-        if (list_families.indexOf(family) < 0) {
-          list_families.push(family)
-        }
-        if (list_orders.indexOf(order) < 0) {
-          list_orders.push(order)
-        }
-        if (list_species.indexOf(species) < 0) {
-          list_species.push(species)
-        }
-      })
-
-      // populate the menus
-      singleDropdownPopulate("#orderList", list_orders, "OrderClass")
-      singleDropdownPopulate("#familyList", list_families, "FamilyClass")
-      singleDropdownPopulate("#genusList", list_genera, "GenusClass")
-      singleDropdownPopulate("#speciesList", list_species, "SpeciesClass")
-
-      // clickable <li> and control of displayer of current filters
-      const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
-      for (let i = 0; i < classArray.length; i++) {
-        $(classArray[i]).on("click", function (e) {
-          // fill panel group displaying current selected taxa filters //
-          const stringClass = this.className.slice(0, -5)
-          const tempVar = this.firstChild.innerHTML
-
-          // checks if a taxon is already in display
-          const divStringClass = "#p_" + stringClass
-
-          filterDisplayer(tempVar, stringClass, divStringClass)
+    if (firstInstace === true) {
+      getArray_taxa().done((json) => {
+        $.each(json, (sps, other) => {    // sps aka species
+          const species = sps.split("_").join(" ")
+          const genus = other[0]
+          const family = other[1]
+          const order = other[2]
+          dict_genera[species] = [genus, family, order] // append the list to
+          // this dict to be used later
+          if (list_genera.indexOf(genus) < 0) {
+            list_genera.push(genus)
+          }
+          if (list_families.indexOf(family) < 0) {
+            list_families.push(family)
+          }
+          if (list_orders.indexOf(order) < 0) {
+            list_orders.push(order)
+          }
+          if (list_species.indexOf(species) < 0) {
+            list_species.push(species)
+          }
         })
-      }
 
-      //* **** Clear selection button *****//
-      // clear = false; //added to control the colors being triggered after clearing
-      $("#taxaModalClear").click(function (event) {
-        document.getElementById("reset-sliders").click()
-        // clear = true;
-        event.preventDefault()
-        resetDisplayTaxaBox(idsArrays)
+        // populate the menus
+        singleDropdownPopulate("#orderList", list_orders, "OrderClass")
+        singleDropdownPopulate("#familyList", list_families, "FamilyClass")
+        singleDropdownPopulate("#genusList", list_genera, "GenusClass")
+        singleDropdownPopulate("#speciesList", list_species, "SpeciesClass")
 
-        // resets dropdown selections
-        $("#orderList").selectpicker("deselectAll")
-        $("#familyList").selectpicker("deselectAll")
-        $("#genusList").selectpicker("deselectAll")
-        $("#speciesList").selectpicker("deselectAll")
+        // clickable <li> and control of displayer of current filters
+        const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
+        for (let i = 0; i < classArray.length; i++) {
+          $(classArray[i]).on("click", function (e) {
+            // fill panel group displaying current selected taxa filters //
+            const stringClass = this.className.slice(0, -5)
+            const tempVar = this.firstChild.innerHTML
 
-        slider.noUiSlider.set([min, max])
-        node_color_reset(graphics, g, nodeColor, renderer)
-        if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-          showLegend.style.display = "none"
-          showRerun.style.display = "none"
-          showGoback.style.display = "none"
-          //document.getElementById("go_back").className += " disabled"
-          showDownload.style.display = "none"
-        } else {
-          $("#colorLegendBox").empty()
-          document.getElementById("taxa_label").style.display = "none" // hide label
-          showRerun.style.display = "none"
-          showGoback.style.display = "none"
-          //document.getElementById("go_back").className += " disabled"
-          showDownload.style.display = "none"
+            // checks if a taxon is already in display
+            const divStringClass = "#p_" + stringClass
+
+            filterDisplayer(tempVar, stringClass, divStringClass)
+          })
         }
       })
+    }
+
+    //* **** Clear selection button *****//
+    // clear = false; //added to control the colors being triggered after clearing
+    $("#taxaModalClear").unbind("click").bind("click", (event) => {
+      document.getElementById("reset-sliders").click()
+      // clear = true;
+      event.preventDefault()
+      resetDisplayTaxaBox(idsArrays)
+
+      // resets dropdown selections
+      $("#orderList").selectpicker("deselectAll")
+      $("#familyList").selectpicker("deselectAll")
+      $("#genusList").selectpicker("deselectAll")
+      $("#speciesList").selectpicker("deselectAll")
+
+      slider.noUiSlider.set([min, max])
+      node_color_reset(graphics, g, nodeColor, renderer)
+      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+        showLegend.style.display = "none"
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        //document.getElementById("go_back").className += " disabled"
+        showDownload.style.display = "none"
+        showTable.style.display = "none"
+      } else {
+        $("#colorLegendBox").empty()
+        document.getElementById("taxa_label").style.display = "none" // hide label
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        //document.getElementById("go_back").className += " disabled"
+        showDownload.style.display = "none"
+        showTable.style.display = "none"
+      }
     })
 
     //* **** Submit button for taxa filter *****//
 
     // perform actions when submit button is clicked.
 
-    $("#taxaModalSubmit").click(function (event) {
+    $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
+      event.preventDefault()
       // changed nodes is reset every instance of taxaModalSubmit button
       // let changed_nodes = []
 
-      //let listGiFilter = []   // makes listGiFilter an empty array
+      // console.log("listGiFilter taxamodalsubmit", listGiFilter, dict_genera)
+      listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
-      event.preventDefault()
       // now processes the current selection
       const species_query = document.getElementById("p_Species").innerHTML,
         genus_query = document.getElementById("p_Genus").innerHTML,
@@ -900,11 +942,6 @@ const onLoad = () => {
         // warning is raised
         Alert = false
       }
-      // control the alertClose button
-
-      $("#alertClose").click( () => {
-        $("#alertId").hide()  // hide this div
-      })
 
       // control button to close div
       $("#alertCloseNCBI").click( () => {
@@ -912,7 +949,6 @@ const onLoad = () => {
       })
 
       // auto hide after 5 seconds without closing the div
-      // TODO what is this for? XD
       window.setTimeout( () => { $("#alertId").hide() }, 5000)
 
       //* *** End Alert for taxa filter ****//
@@ -925,7 +961,7 @@ const onLoad = () => {
 
       // appends genus to selectedGenus according with the family and order for single-color selection
       // also appends to associative arrays for family and order for multi-color selection
-      $.each(dict_genera, function (species, pair) {
+      $.each(dict_genera, (species, pair) => {
         const genus = pair[0]
         const family = pair[1]
         const order = pair[2]
@@ -965,55 +1001,16 @@ const onLoad = () => {
 
       // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
-        currentColor = 0xf71735   // sets color of all changes_nodes to be red
+        const currentColor = 0xf71735   // sets color of all changes_nodes to
+        // be red
         store_lis = "<li class='centeredList'><button class='jscolor btn'" +
           " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
-        for (i in alertArrays.order) {
-          let currentSelection = alertArrays.order
-          for (i in currentSelection) {
-            const tempArray = assocOrderGenus[currentSelection[i]]
-            for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
-                .then(results => {
-                  results.map(request => {
-                    listGiFilter.push(request.plasmid_id)
-                  })
-                })
-            }
-          }
-        }
-        for (i in alertArrays.family) {
-          let currentSelection = alertArrays.family
-          for (i in currentSelection) {
-            const tempArray = assocFamilyGenus[currentSelection[i]]
-            for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
-                .then(results => {
-                  results.map(request => {
-                    listGiFilter.push(request.plasmid_id)
-                  })
-                })
-            }
-          }
-        }
-        for (i in alertArrays.genus) {
-          let currentSelection = alertArrays.genus
-          for (i in currentSelection) {
-            const tempArray = assocGenus[currentSelection[i]]
-            for (sp in tempArray) {
-              taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
-                .then(results => {
-                  results.map(request => {
-                    listGiFilter.push(request.plasmid_id)
-                  })
-                })
-            }
-          }
-        }
-        for (i in alertArrays.species) {
-          let currentSelection = alertArrays.species
-          for (i in currentSelection) {
-            taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, changed_nodes)
+        // for (const i in alertArrays.order) {
+        let currentSelectionOrder = alertArrays.order
+        for (const i in currentSelectionOrder) {
+          const tempArray = assocOrderGenus[currentSelectionOrder[i]]
+          for (const sp in tempArray) {
+            taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
               .then(results => {
                 results.map(request => {
                   listGiFilter.push(request.plasmid_id)
@@ -1021,29 +1018,69 @@ const onLoad = () => {
               })
           }
         }
+        // }
+        // for (i in alertArrays.family) {
+        let currentSelectionFamily = alertArrays.family
+        for (const i in currentSelectionFamily) {
+          const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
+          for (const sp in tempArray) {
+            taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+              .then(results => {
+                results.map(request => {
+                  listGiFilter.push(request.plasmid_id)
+                })
+              })
+          }
+        }
+        // }
+        // for (i in alertArrays.genus) {
+        let currentSelectionGenus = alertArrays.genus
+        for (const i in currentSelectionGenus) {
+          const tempArray = assocGenus[currentSelectionGenus[i]]
+          for (const sp in tempArray) {
+            taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+              .then(results => {
+                results.map(request => {
+                  listGiFilter.push(request.plasmid_id)
+                })
+              })
+          }
+        }
+        // }
+        // for (i in alertArrays.species) {
+        let currentSelectionSpecies = alertArrays.species
+        for (const i in currentSelectionSpecies) {
+          taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor, reloadAccessionList)//, changed_nodes)
+            .then(results => {
+              results.map(request => {
+                listGiFilter.push(request.plasmid_id)
+              })
+            })
+          // }
+        }
       }
       // renders the graph for the desired taxon if one taxon type is selected
       // allows for different colors between taxa of the same level
       else if (counter === 1) {
+        let currentSelection
         // first cycle between all the arrays to find which one is not empty
-        for (array in alertArrays) {
+        for (const array in alertArrays) {
           // selects the not empty array
-          if (alertArrays[array] != '' && firstIteration == true) {
-            var currentSelection = alertArrays[array]
+          if (alertArrays[array].length !== 0 && firstIteration === true) {
+            currentSelection = alertArrays[array]
             // performs the actual interaction for color picking and assigning
-            for (i in currentSelection) {
-
+            for (const i in currentSelection) {
               // orders //
-              if (alertArrays['order'] != '') {
-                var currentColor = colorList[i].replace('#', '0x')
-                var tempArray = assocOrderGenus[currentSelection[i]]
-                style_color = 'background-color:' + colorList[i]
+              if (alertArrays.order.length !== 0) {
+                const currentColor = colorList[i].replace("#", "0x")
+                const tempArray = assocOrderGenus[currentSelection[i]]
+                const style_color = 'background-color:' + colorList[i]
                 store_lis = store_lis + '<li' +
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family and orders
-                for (sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
+                for (const sp in tempArray) {
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
@@ -1053,16 +1090,16 @@ const onLoad = () => {
               }
 
               // families //
-              else if (alertArrays['family'] != '') {
-                var currentColor = colorList[i].replace('#', '0x')
-                var tempArray = assocFamilyGenus[currentSelection[i]]
-                style_color = 'background-color:' + colorList[i]
+              else if (alertArrays.family.length !== 0) {
+                const currentColor = colorList[i].replace("#", "0x")
+                const tempArray = assocFamilyGenus[currentSelection[i]]
+                const style_color = "background-color:" + colorList[i]
                 store_lis = store_lis + '<li' +
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family
-                for (sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
+                for (const sp in tempArray) {
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
@@ -1072,16 +1109,18 @@ const onLoad = () => {
               }
 
               // genus //
-              else if (alertArrays['genus'] != '') {
-                var currentColor = colorList[i].replace('#', '0x')
-                var tempArray = assocGenus[currentSelection[i]]
-                style_color = 'background-color:' + colorList[i]
-                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+              else if (alertArrays.genus.length !== 0) {
+                const currentColor = colorList[i].replace("#", "0x")
+                const tempArray = assocGenus[currentSelection[i]]
+                const style_color = "background-color:" + colorList[i]
+                console.log(currentColor, tempArray, style_color)
+                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
+                  style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                for (sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, changed_nodes)
+                for (const sp in tempArray) {
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
                     .then(results => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
@@ -1091,14 +1130,15 @@ const onLoad = () => {
               }
 
               // species //
-              else if (alertArrays['species'] != []) {
-                var currentColor = colorList[i].replace('#', '0x')
-                style_color = 'background-color:' + colorList[i]
-                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+              else if (alertArrays.species.length !== 0) {
+                const currentColor = colorList[i].replace("#", "0x")
+                const style_color = "background-color:" + colorList[i]
+                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
+                  style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, changed_nodes)
+                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)//, changed_nodes)
                   .then(results => {
                     results.map(request => {
                       listGiFilter.push(request.plasmid_id)
@@ -1115,15 +1155,16 @@ const onLoad = () => {
         noLegend = true
       }
       // show legend //
-      if (noLegend == false) {
-        showLegend.style.display = 'block'
-        document.getElementById('taxa_label').style.display = 'block' // show label
-        $('#colorLegendBox').empty()
-        $('#colorLegendBox').append(store_lis +
+      if (noLegend === false) {
+        showLegend.style.display = "block"
+        document.getElementById("taxa_label").style.display = "block" // show label
+        $("#colorLegendBox").empty()
+        $("#colorLegendBox").append(store_lis +
           '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
-        showRerun.style.display = 'block'
-        showGoback.style.display = 'block'
-        showDownload.style.display = 'block'
+        showRerun.style.display = "block"
+        showGoback.style.display = "block"
+        showDownload.style.display = "block"
+        showTable.style.display = "block"
       }
     })
 
@@ -1133,7 +1174,7 @@ const onLoad = () => {
 
     $('#fileSubmit').click(function (event) {
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload)
+        showGoback, showDownload, showTable, idsArrays)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
@@ -1158,8 +1199,9 @@ const onLoad = () => {
     $('#fileSubmit_mash').click(function (event) {
       read_json = mash_json // conerts mash_json into read_json to overwrite
       // it and use the same function (readColoring)
+      console.log("mash")
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload)
+        showGoback, showDownload, showtable, idsArrays)
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
@@ -1183,7 +1225,7 @@ const onLoad = () => {
     $('#assemblySubmit').click(function (event) {
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload)
+        showGoback, showDownload, showTable, idsArrays)
       $('#loading').show()
       setTimeout(function () {
         assembly(list_gi, assembly_json, g, graphics, renderer)
@@ -1242,8 +1284,8 @@ const onLoad = () => {
     // this is only triggered on first instance because we only want to get
     // the limits of all plasmids once
     if (sliderMinMax.length === 0) {
-      sliderMinMax = [Math.min.apply(null, list_lengths),
-        Math.max.apply(null, list_lengths)]
+      sliderMinMax = [Math.log(Math.min.apply(null, list_lengths)),
+        Math.log(Math.max.apply(null, list_lengths))]
       // generates and costumizes slider itself
       const slider = document.getElementById("slider")
 
@@ -1254,28 +1296,24 @@ const onLoad = () => {
         range: {
           "min": sliderMinMax[0],
           "max": sliderMinMax[1]
-        },
-        format: wNumb({
-          decimals: 0
-        })
+        }
       })
     }
 
     // event handler for slider
     // trigger only if clicked to avoid looping through the nodes again
-    $("#length_filter").click(function (event) {
-      slider.noUiSlider.on("set", function (event) {
-        var slider_max = slider.noUiSlider.get()[1],
-          slider_min = slider.noUiSlider.get()[0]
-        g.forEachNode(function (node) {
+    $("#length_filter").click( (event) => {
+      slider.noUiSlider.on("set", (event) => {
+        let slider_max = Math.exp(slider.noUiSlider.get()[1]),
+          slider_min = Math.exp(slider.noUiSlider.get()[0])
+        g.forEachNode( (node) => {
           // check if node is not a singleton
           // singletons for now do not have size set so they cannot be
           // filtered with this method
-          // TODO it is hard to filter without knowing the size anyway
           // only changes nodes for nodes with seq_length data
           if (node.data.seq_length) {
-            var node_length = node.data.seq_length.split(">").slice(-1).toString()
-            var nodeUI = graphics.getNodeUI(node.id)
+            const node_length = node.data.seq_length.split(">").slice(-1).toString()
+            let nodeUI = graphics.getNodeUI(node.id)
             if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
               nodeUI.color = 0xcdc8b1 // shades nodes
             } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
@@ -1288,88 +1326,89 @@ const onLoad = () => {
     })
 
     // inputs mins and maxs for slider
-    var inputMin = document.getElementById("slider_input_min"),
+    const inputMin = document.getElementById("slider_input_min"),
       inputMax = document.getElementById("slider_input_max"),
       inputs = [inputMin, inputMax]
     slider.noUiSlider.on("update", function (values, handle) {
-      inputs[handle].value = values[handle]
+      inputs[handle].value = Math.trunc(Math.exp(values[handle]))
     })
 
-    function setSliderHandle (i, value) {
-      var r = [null, null]
-      r[i] = value
-      slider.noUiSlider.set(r)
-    }
+    // function setSliderHandle (i, value) {
+    //   var r = [null, null]
+    //   r[i] = value
+    //   slider.noUiSlider.set(r)
+    // }
 
     // Listen to keydown events on the input field.
-    inputs.forEach(function (input, handle) {
-      input.addEventListener('change', function () {
-        setSliderHandle(handle, this.value)
-      })
-
-      input.addEventListener('keydown', function (e) {
-        var values = slider.noUiSlider.get()
-        var value = Number(values[handle])
-
-        // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
-        var steps = slider.noUiSlider.steps()
-
-        // [down, up]
-        var step = steps[handle]
-
-        var position
-
-        // 13 is enter,
-        // 38 is key up,
-        // 40 is key down.
-        switch (e.which) {
-          case 13:
-            setSliderHandle(handle, this.value)
-            break
-
-          case 38:
-
-            // Get step to go increase slider value (up)
-            position = step[1]
-
-            // false = no step is set
-            if (position === false) {
-              position = 1
-            }
-
-            // null = edge of slider
-            if (position !== null) {
-              setSliderHandle(handle, value + position)
-            }
-
-            break
-
-          case 40:
-
-            position = step[0]
-
-            if (position === false) {
-              position = 1
-            }
-
-            if (position !== null) {
-              setSliderHandle(handle, value - position)
-            }
-            break
-        }
-      })
-    })
+    // inputs.forEach(function (input, handle) {
+    //   input.addEventListener('change', function () {
+    //     setSliderHandle(handle, this.value)
+    //   })
+    //
+    //   input.addEventListener('keydown', function (e) {
+    //     var values = slider.noUiSlider.get()
+    //     var value = Number(values[handle])
+    //
+    //     // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
+    //     var steps = slider.noUiSlider.steps()
+    //
+    //     // [down, up]
+    //     var step = steps[handle]
+    //
+    //     var position
+    //
+    //     // 13 is enter,
+    //     // 38 is key up,
+    //     // 40 is key down.
+    //     switch (e.which) {
+    //       case 13:
+    //         setSliderHandle(handle, this.value)
+    //         break
+    //
+    //       case 38:
+    //
+    //         // Get step to go increase slider value (up)
+    //         position = step[1]
+    //
+    //         // false = no step is set
+    //         if (position === false) {
+    //           position = 1
+    //         }
+    //
+    //         // null = edge of slider
+    //         if (position !== null) {
+    //           setSliderHandle(handle, value + position)
+    //         }
+    //
+    //         break
+    //
+    //       case 40:
+    //
+    //         position = step[0]
+    //
+    //         if (position === false) {
+    //           position = 1
+    //         }
+    //
+    //         if (position !== null) {
+    //           setSliderHandle(handle, value - position)
+    //         }
+    //         break
+    //     }
+    //   })
+    // })
 
     // resets the slider
-    $('#reset-sliders').click(function (event) {
+    $("#reset-sliders").click(function (event) {
       listGiFilter = [] //resets listGiFilter
       areaSelection = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, idsArrays)
+        showGoback, showDownload, showTable, idsArrays)
     })
     // runs the re run operation for the selected species
-    $('#Re_run').click(function (event) {
+    $("#Re_run").click(function (event) {
+      console.log("rerun listGiFilter", listGiFilter)
       // resets areaSelection
       areaSelection = false
       //* * Loading Screen goes on **//
@@ -1377,6 +1416,7 @@ const onLoad = () => {
       // removes disabled from class in go_back button
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       show_div(
         // removes nodes
         actual_removal(g, graphics, onload)
@@ -1384,8 +1424,8 @@ const onLoad = () => {
     })
 
     // returns to the initial tree by reloading the page
-    $('#go_back').click(function (event) {
-      //console.log('returning to main')
+    $("#go_back").click(function (event) {
+      //console.log("returning to main")
       window.location.reload()   // a temporary fix to go back to full dataset
     })
   } // closes renderGraph
@@ -1411,14 +1451,14 @@ const onLoad = () => {
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
-                sequence: "<font color='#468499'>Accession:" +
-                " </font><a" +
+                sequence: "<span style='color:#468499'>Accession:" +
+                " </span><a" +
                 " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
                 //species:"<font color='#468499'>Species:
                 // </font>" + species,
-                seq_length: "<font" +
-                " color='#468499'>Sequence length:" +
-                " </font>" + seqLength,
+                seq_length: "<span" +
+                " style='color:#468499'>Sequence length:" +
+                " </span>" + seqLength,
                 log_length: log_length
               })
               list.push(sequence)
@@ -1457,12 +1497,12 @@ const onLoad = () => {
 
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
-                sequence: "<font color='#468499'>Accession:" +
-                " </font><a" +
+                sequence: "<span style='color:#468499'>Accession:" +
+                " </span><a" +
                 " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                seq_length: "<font" +
-                " color='#468499'>Sequence length:" +
-                " </font>" + seqLength,
+                seq_length: "<span" +
+                " style='color:#468499'>Sequence length:" +
+                " </span>" + seqLength,
                 log_length: log_length
               })
               layout.setNodePosition(sequence, array.position.x, array.position.y)
@@ -1512,7 +1552,9 @@ const onLoad = () => {
     } else {
       // storeMasterNode is empty in here
       rerun = true
-      list_gi = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics)
+      console.log("listGiFilter before requestDB", listGiFilter)
+      listGiFilter, reloadAccessionList = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList)
+
       // this list_gi isn't the same as the initial but has information on
       // all the nodes that were used in filters
       // TODO masterNode needs to be used to re-center the graph
@@ -1551,7 +1593,7 @@ const onLoad = () => {
   })
 
   // download button //
-  $("#download_ds").unbind("click").bind("click", function (e) {
+  $("#download_ds").unbind("click").bind("click", (e) => {
     //console.log(areaSelection)
     // for now this is just taking what have been changed by taxa coloring
     if (areaSelection === true) {
@@ -1564,18 +1606,144 @@ const onLoad = () => {
     }
   })
 
+  //*********//
+  //* TABLE *//
+  //*********//
+  // function to add accession to bootstrapTableList in order to use in
+  // downloadTable function or in submitTable button
+  $("#metadataTable").on("check.bs.table", (e, row) => {
+    bootstrapTableList.push(row.id)
+  })
+  // function to remove accession from bootstrapTableList in order to use in
+  // downloadTable function or in submitTable button
+    .on("uncheck.bs.table", (e, row) => {
+      for (const value in bootstrapTableList) {
+        if (bootstrapTableList[value] === row.id) {
+          bootstrapTableList.splice(value, 1)
+        }
+      }
+    })
+    // function to handle when all are selected
+    .on("check-all.bs.table", (e, rows) => {
+      for (row in rows) {
+        bootstrapTableList.push(rows[row].id)
+      }
+    })
+    // function to remove when all are selected
+    .on("uncheck-all.bs.table", (e, rows) => {
+      bootstrapTableList = []
+    })
+
+  // function to download dataset selected in table
+  $("#downloadTable").unbind("click").bind("click", (e) => {
+    // transform internal accession numbers to ncbi acceptable accesions
+    const acc = bootstrapTableList.map((uniqueAcc) => {
+      return uniqueAcc.split("_").splice(0,2).join("_")
+    })
+    multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
+  })
+  // button to color selected nodes by check boxes
+  $("#tableSubmit").unbind("click").bind("click", (e) => {
+    $("#reset-sliders").click()
+    colorNodes(g, graphics, bootstrapTableList, "0x3957ff")
+    // handles hidden buttons
+    showRerun.style.display = "block"
+    showGoback.style.display = "block"
+    showDownload.style.display = "block"
+    showTable.style.display = "block"
+    // sets listGiFilter to the selected nodes
+    listGiFilter = bootstrapTableList
+    renderer.rerender()
+  })
+
+  // function to create table
+  $("#tableShow").unbind("click").bind("click", (e) => {
+    $("#tableModal").modal()
+    makeTable(listGiFilter, g)
+  })
+  // function to close table
+  $("#cancelTable").unbind("click").bind("click", (e) => {
+    $("#tableModal").modal("toggle")
+  })
+
+  // popup button for download csv
+  // this only does single entry exports, for more exports table should be used
+  $(document).on("click", "#downloadCsv", () => {
+
+    const quickFixString = (divNameList) => {
+      let returnArray = []
+      for (i in divNameList) {
+        const divName = divNameList[i]
+        returnArray.push($(divName).text().replace(":", ","))
+      }
+      console.log(returnArray)
+      return returnArray
+    }
+    // execute the same replacement function for all this divs
+    const targetArray = quickFixString([
+      "#accessionPop",
+      "#speciesNamePop",
+      "#speciesNamePop",
+      "#percentagePop",
+      "#copyNumberPop",
+      "#cardPop",
+      "#cardGenePop",
+      "#cardGenbankPop",
+      "#cardAroPop",
+      "#cardCoveragePop",
+      "#cardIdPop",
+      "#cardRangePop",
+      "#resfinderPop",
+      "#resfinderGenePop",
+      "#resfinderGenbankPop",
+      "#resfinderCoveragePop",
+      "#resfinderIdPop",
+      "#resfinderRangePop",
+      "#pfPop",
+      "#pfGenePop",
+      "#pfGenbankPop",
+      "#pfCoveragePop",
+      "#pfIdentityPop",
+      "#pfRangePop"
+    ])
+    // then convert the resulting array to a csv file
+    arrayToCsv(targetArray)
+  })
 
   // resistance button control //
   $(document).on("click", "#resButton", function(event) {
+    // controls the look of buttons
+    $("#resButton").removeClass("btn-default").addClass("btn-primary")
+    $("#plasmidButton").removeClass("btn-primary").addClass("btn-default")
     if (clickedPopupButtonCard === true) {
       clickedPopupButtonCard = resGetter(clickedNode)
+      $("#pfTab").hide()
+    } else {
+      // when it is already queried and we are just cycling b/w the two divs
+      // (tabs) then just show and hide the respective divs
+      $("#resTab").show()
+      $("#pfTab").hide()
     }
   })
 
   $(document).on("click", "#plasmidButton", function(event) {
+    // controls the look of buttons
+    $("#plasmidButton").removeClass("btn-default").addClass("btn-primary")
+    $("#resButton").removeClass("btn-primary").addClass("btn-default")
     if (clickedPopupButtonFamily === true) {
       clickedPopupButtonFamily = plasmidFamilyGetter(clickedNode)
+      $("#resTab").hide()
+    } else {
+      // when it is already queried and we are just cycling b/w the two divs
+      // (tabs) then just show and hide the respective divs
+      $("#pfTab").show()
+      $("#resTab").hide()
     }
+  })
+
+  // control the alertClose button
+  $("#alertClose").click( () => {
+    $("#alertId").hide()  // hide this div
   })
 
   // this forces the entire script to run

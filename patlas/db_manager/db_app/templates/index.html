@@ -10,9 +10,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/nouislider/nouislider.css') }}">
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/vivagraph/dist/vivagraph.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='dependencies/wNumb.js') }}"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.js') }}"></script>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.css') }}">
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table-export.min.js') }}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='dependencies/bootstrap-table/tableExport.js') }}"></script>
 
     <!--bootstrap select-->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>
@@ -42,6 +48,8 @@
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node_removal_taxa.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/toggle_nodes.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node-positioning.js') }}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='js/node_handling/popupControls.js') }}"></script>
     <!--load reads-->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
     <!--input files handler script-->
@@ -60,6 +68,8 @@
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/sort_array_by_value.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/progressBarControl.js') }}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
 
 </head>
 
@@ -72,6 +82,50 @@
     <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
 </div>
 
+
+<!-- Modal for table-->
+<div id="tableModal" class="modal fade" data-backdrop="static" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" style="width: 80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Table for selected plasmids
+                    metadata</h4>
+            </div>
+            <div class="modal-body" id="modalTableBody">
+                <div id="toolbar">
+                    <button class="btn btn-default" id="downloadTable"
+                            type="button" data-toogle="tooptip"
+                            title="Download selection">
+                        <span class="glyphicon glyphicon-download-alt"></span>
+                    </button>
+                </div>
+                <table id="metadataTable"
+                       data-striped="true"
+                       data-search="true"
+                       data-show-toggle="true"
+                       data-show-columns="true"
+                       data-query-params="queryParams"
+                       data-pagination="true"
+                       data-height="550"
+                       data-show-export="true"
+                       data-click-to-select="true"
+                       data-toolbar="#toolbar">
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-default"
+                        data-dismiss="modal" id="tableSubmit">Submit
+                </button>
+                <button class="btn btn-danger" id="cancelTable">Close
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <!-- Modal for file loading-->
 <div id="fileModal" class="modal fade" role="dialog" tabindex="-1">
@@ -578,6 +632,11 @@
                             type="button" data-toogle="tooptip"
                             title="Download current selection" style="display: none">
                         <span class="glyphicon glyphicon-save"></span></button>
+                    <button class="btn btn-default disabled" id="tableShow"
+                            type="button" data-toogle="tooptip"
+                            title="Table with metadata" style="display:
+                            none">
+                        <span class="glyphicon glyphicon-list-alt"></span></button>
 
                     <!--<button class="btn btn-default" id="download_img"
                             type="button" data-toogle="tooptip"
@@ -626,13 +685,17 @@
             <div class="panel-heading">Color legend</div>
             <div class="panel-body">
                 <!--Populated by visualization_functions.js-->
-                <label id="taxa_label" style="display: none">Taxa filters</label>
+                <label id="taxa_label" style="display: none">Taxa</label>
                 <ul class="legend" id="colorLegendBox"></ul>
+                <label id="res_label" style="display: none">Resistances</label>
+                <ul class="legend" id="colorLegendBoxRes"></ul>
+                <label id="pf_label" style="display: none">Plasmid Families</label>
+                <ul class="legend" id="colorLegendBoxPf"></ul>
                 <!--Populated by visualization_functions.js-->
-                <label id="distance_label" style="display: none">Distance filters</label>
+                <label id="distance_label" style="display: none">Distances scale</label>
                 <div class="gradient" id="scaleLegend"></div>
                 <!--Populated by visualization_functions.js-->
-                <label id="read_label" style="display: none">Read filters</label>
+                <label id="read_label" style="display: none">Read scale</label>
                 <div class="gradient" id="readLegend"></div>
             </div>
         </div>

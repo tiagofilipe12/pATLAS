@@ -67,16 +67,16 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 
 // function to call requests on db
 
-const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, graphics) => {
-    if (listGiFilter.length > 0) {
-    let newList = []
+const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList) => {
+  if (listGiFilter.length > 0) {
+    // let newList = []
     let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
     // loops every Accession stored in listGiFilter on re_run button
     for (let i = 0; i < listGiFilter.length; i++) {
       promises.push(
         $.get("api/getspecies/", {"accession": listGiFilter[i]},
-          function (data, status) {
+          (data, status) => {
             // this request uses nested json object to access json entries
             // available in the database
 
@@ -106,7 +106,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
                 "significantLinks": "N/A"
               }
               //add node
-              newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback
+              reloadAccessionList, newListHashes = reAddNode(g, jsonObj, reloadAccessionList, newListHashes) //callback
               // function
             } else {  // add node for every accession that has links and that is
               // present in plasmid_db
@@ -121,7 +121,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
                 // TODO this is sketchy and should be fixed with JSON parsing from db
               }
               //add node
-              newList, newListHashes = reAddNode(g, jsonObj, newList, newListHashes) //callback function
+              reloadAccessionList, newListHashes = reAddNode(g, jsonObj, reloadAccessionList, newListHashes) //callback function
             }
           })
       )
@@ -137,7 +137,7 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
         console.log("Error! No query was made. Error message: ", error)
       })
   }
-  return listGiFilter
+  return listGiFilter, reloadAccessionList
 }
 
 // function that actually removes the nodes
