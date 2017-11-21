@@ -51,7 +51,7 @@ const pfRequest = (g, graphics, renderer, gene, currentColor) => {
 }
 
 const iterateSelectedArrays = (array, g, graphics, renderer) => {
-  let storeLis
+  let storeLis = ""
   for (let i in array) {
     if ({}.hasOwnProperty.call(array, i)) {
       // establish current color to use
@@ -79,6 +79,7 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
         })
     }
   }
+  console.log(storeLis)
   return storeLis
 }
 
@@ -95,6 +96,7 @@ const resSubmitFunction = (g, graphics, renderer) => {
   // remove first char from selected* arrays
   selectedCard = removeFirstCharFromArray(selectedCard)
   selectedResfinder = removeFirstCharFromArray(selectedResfinder)
+  console.log(selectedCard)
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
@@ -131,9 +133,9 @@ const resSubmitFunction = (g, graphics, renderer) => {
   // if legend is requested then execute this!
   // shows legend
   if (legendInst === true) {
-    document.getElementById("taxa_label").style.display = "block" // show label
-    $("#colorLegendBox").empty()
-    $("#colorLegendBox").append(
+    document.getElementById("res_label").style.display = "block" // show label
+    $("#colorLegendBoxRes").empty()
+    $("#colorLegendBoxRes").append(
       storeLis +
       "<li class='centeredList'><button class='jscolor btn btn-default'" +
       " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
@@ -146,7 +148,7 @@ const resSubmitFunction = (g, graphics, renderer) => {
 const pfSubmitFunction = (g, graphics, renderer) => {
   // starts legend variable
   let legendInst = false // by default legend is off
-  let storeLis  // initiates storeLis to store the legend entries and colors
+  let storeLis = ""  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const pfQuery = document.getElementById("p_Plasmidfinder").innerHTML
   let selectedPf = pfQuery.replace("Plasmidfinder:", "").split(",").filter(Boolean)
@@ -190,9 +192,9 @@ const pfSubmitFunction = (g, graphics, renderer) => {
   // if legend is requested then execute this!
   // shows legend
   if (legendInst === true) {
-    document.getElementById("taxa_label").style.display = "block" // show label
-    $("#colorLegendBox").empty()
-    $("#colorLegendBox").append(
+    document.getElementById("pf_label").style.display = "block" // show label
+    $("#colorLegendBoxPf").empty()
+    $("#colorLegendBoxPf").append(
       storeLis +
       "<li class='centeredList'><button class='jscolor btn btn-default'" +
       " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
