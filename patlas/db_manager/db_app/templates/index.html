@@ -458,6 +458,15 @@
 </div>
 
 <!--Alert message to check that some selection is made-->
+<div class="alert alert-warning alert-dismissable fade in" id="alertId_search"
+     style="display: none">
+    <button type="button" class="close" id="alertClose_search"
+            aria-hidden="true" data-hide="true">&times;</button>
+    <strong>Warning!</strong> Are you sure this search is valid? Make sure
+    the toggle on the left is properly set.
+</div>
+
+<!--Alert message to check that some selection is made-->
 <div class="alert alert-danger alert-dismissable fade in" id="alertId_node" style="display: none">
     <button type="button" class="close" id="alertClose_node" aria-hidden="true" data-hide="true">&times;</button>
     <strong>Warning!</strong> To enable filter dropdown options, disable "Node mode on" on the leftside switcher!
@@ -648,8 +657,10 @@
             <form class="navbar-form navbar-right">
                 <input checked data-toggle="toggle" type="checkbox"
                        data-onstyle="success" data-offstyle="default"
-                       data-on="Node mode on" data-off="Node mode off"
-                       title="Enable/Disable node selection mode" id="toggle-event">
+                       data-on="Plasmid name"
+                       data-off="Accession number"
+                       title="Switch between plasmid and accession search"
+                       id="toggle-event">
                 <div class="form-group" data-toggle="tooltip"
                      title="e.g 'NZ_CP012658.1'">
                     <input id="formValueId" type="text" class="form-control"
@@ -673,9 +684,9 @@
 <!-- Menu Toggle Script -->
 <script>
   $("#menu-toggle").click(function(e) {
-    e.preventDefault();
-    $("#wrapper").toggleClass("toggled");
-  });
+    e.preventDefault()
+    $("#wrapper").toggleClass("toggled")
+  })
 </script>
 
 <div id="couve-flor" >

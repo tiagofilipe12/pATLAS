@@ -31,6 +31,8 @@ let bootstrapTableList = []
 // level available. This needs to be stored here because there is no reason
 // to execute the getArray_taxa twice.
 const dict_genera = {}
+// buttonSubmit current node
+let currentQueryNode
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
@@ -208,9 +210,6 @@ const onLoad = () => {
     $("#toggle-event").change(function () {   // jquery seems not to support es6
       toggle_status = $(this).prop("checked")
       toggle_manager(toggle_status)
-      // TODO this should be reworked because it conflicts with
-      // popup_description highlight node. Maybe it can be this function can
-      // be combined with popup_description
     })
 
     //* *************//
@@ -219,43 +218,6 @@ const onLoad = () => {
 
     const events = Viva.Graph.webglInputEvents(graphics, g)
     store_nodes = []  // list used to store nodes
-    // changes the color of node and links (and respective linked nodes) of this node when clicked
-    events.dblClick( (node) => {
-      store_nodes.push(node.id)
-      let colorToUse
-      //console.log('Single click on node: ' + node.id)
-      const nodeUI = graphics.getNodeUI(node.id)
-      if (toggle_status === true) {   // if statement to check if toggle
-        // button is enabled
-        // statement when node and linked nodes are still in default color
-        if (nodeUI.color === nodeColor) {
-          colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
-        }
-        // statement when linked node is selected
-        else if (nodeUI.color === 0x7c3912) {
-          colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
-        }
-        // statement when node is shaded
-        else if (nodeUI.color === 0xcdc8b1) {
-          colorToUse = [0xc89933, 0x000000FF, 0x7c3912]
-        }
-        // statement do deselect node and linked nodes
-        else {
-          // resets the color of node and respective links (and linked nodes) if it was previously checked (on click)
-          colorToUse = [nodeColor, 0xb3b3b3ff, nodeColor]
-        }
-        nodeUI.color = colorToUse[0]
-        g.forEachLinkedNode(node.id, (linkedNode, link) => {
-          const linkUI = graphics.getLinkUI(link.id)
-          linkUI.color = colorToUse[1]
-          const linked_nodeUI = graphics.getNodeUI(linkedNode.id)
-          if (linked_nodeUI.color !== 0xc89933) {
-            linked_nodeUI.color = colorToUse[2]
-          }
-        })
-      }
-      renderer.rerender()
-    })
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
@@ -283,90 +245,13 @@ const onLoad = () => {
       domPos.x = (domPos.x + nodeUI_1.size) + 'px'
       domPos.y = (domPos.y) + 'px'
 
-      // call the requests
-      const requestPlasmidTable = (node, setupPopupDisplay) => {
-        // if statement to check if node is in database or is a new import
-        // from mapping
-        if (node.data.seq_length) {
-          $.get('api/getspecies/', {'accession': node.id}, (data, status) => {
-            // this request uses nested json object to access json entries
-            // available in the database
-            // if request return no speciesName or plasmidName
-            // sometimes plasmids have no descriptor for one of these or both
-            if (data.json_entry.name === null) {
-              speciesName = "N/A"
-            } else {
-              speciesName = data.json_entry.name.split("_").join(" ")
-            }
-            if (data.json_entry.plasmid_name === null) {
-              plasmidName = "N/A"
-            } else {
-              plasmidName = data.json_entry.plasmid_name
-            }
-            // check if data can be called as json object properly from db something like data.species or data.length
-            setupPopupDisplay(node, speciesName, plasmidName) //callback
-            // function for
-            // node displaying after fetching data from db
-          })
-        }
-
-
-        // exception when node has no length (used on new nodes?)
-        else {
-          speciesName = 'N/A'
-          plasmidName = 'N/A'
-          setupPopupDisplay(node, speciesName, plasmidName) //callback
-        }
-      }
-
-      const setupPopupDisplay = (node, speciesName, plasmidName) => {
-        // this sets the popup internal buttons to allow them to run,
-        // otherwise they won't run because its own function returns this
-        // variable to false, preveting the popup to expand with its
-        // respectiv functions
-        clickedPopupButtonCard = true
-        clickedPopupButtonRes = true
-        clickedPopupButtonFamily = true
-
-        // first needs to empty the popup in order to avoid having
-        // multiple entries from previous interactions
-        $("#popup_description").empty()
-        $("#popup_description").append(
-          "<button id='close' class='btn btn-default' type='button'>&times;</button>" +
-          "<button class='btn btn-default' id='downloadCsv'" +
-          "type='button' data-toogle='tooptip'" +
-          "title='Export as csv'>" +
-          "<span class='glyphicon glyphicon-save-file'></span>" +
-          "</button>" +
-          "<div>General sequence info" +
-          "<div id='accessionPop'>" +
-          node.data.sequence + "</div>" +
-          "<div id='speciesNamePop'><span style='color: #468499'>Species:" +
-          " </span>" + speciesName +
-          "</div>" + node.data.seq_length +
-          "<div id='plasmidNamePop'>" +
-          "<span style='color: #468499'>Plasmid: </span>" + plasmidName +
-          "</div><div id='percentagePop'>" +
-          "<span style='color: #468499'>Percentage:" +
-          " </span>" + node.data.percentage +
-          "</div><div id='copyNumberPop'>" +
-          "<span style='color: #468499'>Relative copy number: " +
-          "</span>" + node.data.copyNumber +
-          "</div>" +
-          // adds buttons for resistances and plasmid families
-          "<br />" +
-          "<div style='float: left;' class='btn btn-default'" +
-          " id='resButton'>" +
-          " Resistances" +
-          "</div>" +
-          "<div style='float: right;' class='btn btn-default'" +
-          " id='plasmidButton'>" +
-          "Plasmid families" +
-          "</div>" +
-          "</div>"
-        )
-        $("#popup_description").show()
-      }
+      // this sets the popup internal buttons to allow them to run,
+      // otherwise they won't run because its own function returns this
+      // variable to false, preveting the popup to expand with its
+      // respectiv functions
+      clickedPopupButtonCard = true
+      clickedPopupButtonRes = true
+      clickedPopupButtonFamily = true
       // requests table for sequences metadata
       requestPlasmidTable(node, setupPopupDisplay)
     })
@@ -384,8 +269,10 @@ const onLoad = () => {
 
     $(document).on("click", "#close", function() {
       $(this).parent().hide()
-      graphics.getNodeUI(clickedNode).color = nodeUI_1.backupColor
-      renderer.rerender()
+      if (window.nodeUI_1) {
+        graphics.getNodeUI(clickedNode).color = nodeUI_1.backupColor
+        renderer.rerender()
+      }
     })
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
@@ -588,25 +475,26 @@ const onLoad = () => {
     })
 
     // Form and button for search box
-    $("#submitButton").click(function (event) {
-      const query = $("#formValueId").val().replace(".", "_")
-      //console.log('search query: ' + query)
-      event.preventDefault()
-      g.forEachNode( (node) => {
-        const nodeUI = graphics.getNodeUI(node.id)
-        const sequence = node.data.sequence.split(">")[3].split("<")[0]
-        // console.log(sequence)
-        //nodeUI = graphics.getNodeUI(node.id)
-        const x = nodeUI.position.x,
-          y = nodeUI.position.y
-        if (sequence === query) {
-          // centers graph visualization in a given node, searching for gi
-          renderer.moveTo(x, y)
-        }
-      })
+    $("#submitButton").click( (event) => {
+      event.preventDefault()    // prevents page from reloading
+      if (toggle_status === false) {
+        const query = $("#formValueId").val().replace(".", "_")
+        currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
+          currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
+          clickedPopupButtonFamily, requestPlasmidTable)
+      } else {
+        // executed for plasmid search
+        toggleOnSearch(g, graphics, renderer,
+          currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
+          clickedPopupButtonFamily)
+          // then is here used to parse the results from async/await function
+          .then( (result) => {
+            currentQueryNode = result
+          })
+      }
     })
     // Button to clear the selected nodes by form
-    $("#clearButton").click(function (event) {
+    $("#clearButton").click( (event) => {
       document.getElementById("formValueId").value = ""
     })
 
@@ -1744,6 +1632,10 @@ const onLoad = () => {
   // control the alertClose button
   $("#alertClose").click( () => {
     $("#alertId").hide()  // hide this div
+  })
+
+  $("#alertClose_search").click( () => {
+    $("#alertId_search").hide()  // hide this div
   })
 
   // this forces the entire script to run
