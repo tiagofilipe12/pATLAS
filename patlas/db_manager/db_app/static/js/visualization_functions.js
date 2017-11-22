@@ -1547,7 +1547,7 @@ const onLoad = () => {
   // function to create table
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
-    makeTable(listGiFilter, g)
+    makeTable(areaSelection, listGiFilter, g, graphics)
   })
   // function to close table
   $("#cancelTable").unbind("click").bind("click", (e) => {
