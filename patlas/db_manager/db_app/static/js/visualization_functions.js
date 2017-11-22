@@ -481,7 +481,7 @@ const onLoad = () => {
         const query = $("#formValueId").val().replace(".", "_")
         currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-          clickedPopupButtonFamily)
+          clickedPopupButtonFamily, requestPlasmidTable)
       } else {
         // executed for plasmid search
         toggleOnSearch(g, graphics, renderer,

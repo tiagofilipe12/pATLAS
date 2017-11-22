@@ -52,7 +52,7 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
 // function that iterates all nodes and when it finds a match recenters the dom
 const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
                            clickedPopupButtonCard, clickedPopupButtonRes,
-                           clickedPopupButtonFamily) => {
+                           clickedPopupButtonFamily, requestPlasmidTable) => {
 
   const queriedNode = g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)
@@ -106,6 +106,6 @@ async function toggleOnSearch(g, graphics, renderer, currentQueryNode,
   const result = await $.get("api/getplasmidname/", {"plasmid_name": query})
   currentQueryNode = centerToggleQuery(g, graphics, renderer, result.plasmid_id, currentQueryNode,
     clickedPopupButtonCard, clickedPopupButtonRes,
-    clickedPopupButtonFamily)
+    clickedPopupButtonFamily, requestPlasmidTable)
   return currentQueryNode
 }
