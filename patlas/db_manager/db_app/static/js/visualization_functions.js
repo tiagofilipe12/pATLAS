@@ -475,8 +475,8 @@ const onLoad = () => {
     })
 
     // Form and button for search box
-    $("#submitButton").click(function (event) {
-      event.preventDefault()
+    $("#submitButton").click( (event) => {
+      event.preventDefault()    // prevents page from reloading
       if (toggle_status === false) {
         const query = $("#formValueId").val().replace(".", "_")
         currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
@@ -484,13 +484,17 @@ const onLoad = () => {
           clickedPopupButtonFamily)
       } else {
         // executed for plasmid search
-        currentQueryNode = toggleOnSearch(g, graphics, renderer,
+        toggleOnSearch(g, graphics, renderer,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
           clickedPopupButtonFamily)
+          // then is here used to parse the results from async/await function
+          .then( (result) => {
+            currentQueryNode = result
+          })
       }
     })
     // Button to clear the selected nodes by form
-    $("#clearButton").click(function (event) {
+    $("#clearButton").click( (event) => {
       document.getElementById("formValueId").value = ""
     })
 
@@ -1628,6 +1632,10 @@ const onLoad = () => {
   // control the alertClose button
   $("#alertClose").click( () => {
     $("#alertId").hide()  // hide this div
+  })
+
+  $("#alertClose_search").click( () => {
+    $("#alertId_search").hide()  // hide this div
   })
 
   // this forces the entire script to run

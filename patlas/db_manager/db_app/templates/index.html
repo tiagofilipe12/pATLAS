@@ -458,6 +458,15 @@
 </div>
 
 <!--Alert message to check that some selection is made-->
+<div class="alert alert-warning alert-dismissable fade in" id="alertId_search"
+     style="display: none">
+    <button type="button" class="close" id="alertClose_search"
+            aria-hidden="true" data-hide="true">&times;</button>
+    <strong>Warning!</strong> Are you sure this search is valid? Make sure
+    the toggle on the left is properly set.
+</div>
+
+<!--Alert message to check that some selection is made-->
 <div class="alert alert-danger alert-dismissable fade in" id="alertId_node" style="display: none">
     <button type="button" class="close" id="alertClose_node" aria-hidden="true" data-hide="true">&times;</button>
     <strong>Warning!</strong> To enable filter dropdown options, disable "Node mode on" on the leftside switcher!
@@ -675,9 +684,9 @@
 <!-- Menu Toggle Script -->
 <script>
   $("#menu-toggle").click(function(e) {
-    e.preventDefault();
-    $("#wrapper").toggleClass("toggled");
-  });
+    e.preventDefault()
+    $("#wrapper").toggleClass("toggled")
+  })
 </script>
 
 <div id="couve-flor" >

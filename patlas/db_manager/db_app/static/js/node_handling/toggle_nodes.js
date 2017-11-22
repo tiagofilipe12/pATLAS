@@ -53,18 +53,15 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
 const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
                            clickedPopupButtonCard, clickedPopupButtonRes,
                            clickedPopupButtonFamily) => {
-  g.forEachNode( (node) => {
-    console.log(currentQueryNode, node.id)
+
+  const queriedNode = g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)
-    const sequence = node.data.sequence.split(">")[3].split("<")[0]
-    // console.log(sequence)
-    //nodeUI = graphics.getNodeUI(node.id)
+    sequence = node.data.sequence.split(">")[3].split("<")[0]
     const x = nodeUI.position.x,
       y = nodeUI.position.y
     if (sequence === query) {
       // centers graph visualization in a given node, searching for gi
       renderer.moveTo(x, y)
-      nodeUI.backupColor = nodeUI.color
       nodeUI.color = 0x900C3F
       // this sets the popup internal buttons to allow them to run,
       // otherwise they won't run because its own function returns this
@@ -76,27 +73,39 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
       // requests table for sequences metadata
       requestPlasmidTable(node, setupPopupDisplay)
       // also needs to reset previous node to its original color
-      if (window.currentQueryNode) {
+      if (currentQueryNode !== undefined) {
         const previousNodeUI = graphics.getNodeUI(currentQueryNode)
-        previousNodeUI.color = previousNodeUI.backupColor
+        previousNodeUI.color = 0x666370   // default color
       }
       renderer.rerender()
+      return sequence // this just returns true if it enters this if statement
     }
   })
-  return query
+
+  if (queriedNode !== true) {
+    // if no query is returned then alert the user
+    $("#alertId_search").show()
+    window.setTimeout( () => { $("#alertId_search").hide() }, 5000)
+  }
+  // if queriedNode is true then it mean that a match was found, otherwise
+  // it will return undefined
+  // then if queriedNode is set return query node to store as previous
+  // highlighted node
+  // otherwise returns currentQueryNode when wrong queries are made
+  return (queriedNode === true) ? query : currentQueryNode
 }
 
 // function to search plasmidnames when toggle is on
-const toggleOnSearch = (g, graphics, renderer, currentQueryNode,
-                        clickedPopupButtonCard, clickedPopupButtonRes,
-                        clickedPopupButtonFamily) => {
+// async function returns a promise which results can then be parsed by .then()
+async function toggleOnSearch(g, graphics, renderer, currentQueryNode,
+                              clickedPopupButtonCard, clickedPopupButtonRes,
+                              clickedPopupButtonFamily)  {
   const query = $("#formValueId").val()
-  $.get("api/getplasmidname/", {"plasmid_name": query})
-    .then( (results) => {
-      const centerAccession = results.plasmid_id
-      centerToggleQuery(g, graphics, renderer, centerAccession, currentQueryNode,
-        clickedPopupButtonCard, clickedPopupButtonRes,
-        clickedPopupButtonFamily)
-    })
-  return query
+  // await allows to wait for the response from the query
+  // result is an accession get from db
+  const result = await $.get("api/getplasmidname/", {"plasmid_name": query})
+  currentQueryNode = centerToggleQuery(g, graphics, renderer, result.plasmid_id, currentQueryNode,
+    clickedPopupButtonCard, clickedPopupButtonRes,
+    clickedPopupButtonFamily)
+  return currentQueryNode
 }
