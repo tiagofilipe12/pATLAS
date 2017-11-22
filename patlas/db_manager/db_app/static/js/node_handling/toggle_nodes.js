@@ -56,7 +56,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
 
   const queriedNode = g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)
-    sequence = node.data.sequence.split(">")[3].split("<")[0]
+    const sequence = node.data.sequence.split(">")[3].split("<")[0]
     const x = nodeUI.position.x,
       y = nodeUI.position.y
     if (sequence === query) {
@@ -73,7 +73,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
       // requests table for sequences metadata
       requestPlasmidTable(node, setupPopupDisplay)
       // also needs to reset previous node to its original color
-      if (currentQueryNode !== undefined) {
+      if (typeof currentQueryNode !== "undefined") {
         const previousNodeUI = graphics.getNodeUI(currentQueryNode)
         previousNodeUI.color = 0x666370   // default color
       }
