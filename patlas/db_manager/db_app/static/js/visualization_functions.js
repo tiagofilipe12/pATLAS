@@ -1547,6 +1547,7 @@ const onLoad = () => {
   // function to create table
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
+    $("#metadataTable").bootstrapTable("destroy")
     makeTable(areaSelection, listGiFilter, g, graphics)
   })
   // function to close table
