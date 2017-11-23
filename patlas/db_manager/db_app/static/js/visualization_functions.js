@@ -139,11 +139,9 @@ const onLoad = () => {
 
     // variable used to control if div is shown or not
     let multiSelectOverlay = false
-
     // event for shift key down
     // shows overlay div and exectures startMultiSelect
     document.addEventListener("keydown", (e) => {
-      //console.log("keydown")
       if (e.which === 16 && multiSelectOverlay === false) { // shift key
         $(".graph-overlay").show()
         multiSelectOverlay = startMultiSelect(g, renderer, layout)
@@ -155,20 +153,18 @@ const onLoad = () => {
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         areaSelection = true
+        console.log(multiSelectOverlay)
       }
     })
     // event for shift key up
     // destroys overlay div and transformes multiSelectOverlay to false
     document.addEventListener("keyup", (e) => {
-      //console.log("keyup")
-      if (e.which === 16 && multiSelectOverlay) {
+      if (e.which === 16 && e.which === 0 && multiSelectOverlay) {
         $(".graph-overlay").hide()
         multiSelectOverlay.destroy()
         multiSelectOverlay = false
       }
     })
-
-    //startMultiSelect(g, renderer, layout)
 
     defaultZooming(layout, renderer)
 
