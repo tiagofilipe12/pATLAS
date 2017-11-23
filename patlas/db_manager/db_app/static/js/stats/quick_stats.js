@@ -5,17 +5,19 @@
 const arraytoHighcharts = (array) => {
   const report = {}
   const exportArray = []
-  categories = []
+  const categories = []
   // puts every unique entry in array into a unique key in object report
   array.forEach( (el) => {
     report[el] = report[el] + 1 || 1
   })
   for (const entry in report) {
-    exportArray.push({
-      name: entry,
-      y: report[entry]
-    })
-    categories.push(entry)
+    if ({}.hasOwnProperty.call(report, entry)) {
+      exportArray.push({
+        name: entry,
+        y: report[entry]
+      })
+      categories.push(entry)
+    }
   }
   // returns two arrays: exportArray with the data array and categories
   // array for x labels
@@ -242,7 +244,6 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
           // not in db
         }
       })
-      console.log(speciesList)
       // if (taxaType === "species") {
       const layout = layoutGet(taxaType)
       if (speciesList.length === tempList.length) { statsParser(speciesList, layout, taxaType, sortAlp, sortVal) }
