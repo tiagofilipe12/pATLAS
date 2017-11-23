@@ -205,6 +205,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
         $.get("api/getspecies/", {"accession": nodeId}, () => {
           // for each instance of item update progressBar
           progressBarControl(parseInt(item) + 1, tempList.length)
+
         })
       )
     }
@@ -214,32 +215,34 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   Promise.all(promises)
     .then( (results) => {
       results.map( (result) => {
-        if (taxaType === "species") {
-          const speciesName = (result.json_entry.name === null) ?
-            "unknown" : result.json_entry.name.split("_").join(" ")
-          // push to main list to control the final of the loop
-          speciesList.push(speciesName)
-        } else if (taxaType === "genus") {
-          const genusName = (result.json_entry.taxa === "unknown") ?
-            "unknown" : result.json_entry.taxa.split(",")[0].replace(/['[]/g, "")
-          // push to main list to control the final of the loop
-          speciesList.push(genusName)
-        } else if (taxaType === "family") {
-          const familyName = (result.json_entry.taxa === "unknown") ?
-            "unknown" : result.json_entry.taxa.split(",")[1].replace(/[']/g, "")
-          speciesList.push(familyName)
-        } else if (taxaType === "order") {
-          const orderName = (result.json_entry.taxa === "unknown") ?
-            "unknown" : result.json_entry.taxa.split(",")[2].replace(/['\]]/g, "")
-          speciesList.push(orderName)
+        // checks if plasmid is present in db
+        if (result.plasmid_id !== null) {
+          if (taxaType === "species") {
+            const speciesName = (result.json_entry.name === null) ? "unknown" : result.json_entry.name.split("_").join(" ")
+            // push to main list to control the final of the loop
+            speciesList.push(speciesName)
+          } else if (taxaType === "genus") {
+            const genusName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[0].replace(/['[]/g, "")
+            // push to main list to control the final of the loop
+            speciesList.push(genusName)
+          } else if (taxaType === "family") {
+            const familyName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[1].replace(/[']/g, "")
+            speciesList.push(familyName)
+          } else if (taxaType === "order") {
+            const orderName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[2].replace(/['\]]/g, "")
+            speciesList.push(orderName)
+          } else {
+            const speciesLength = (result.json_entry.length === null) ? "unknown" : result.json_entry.length
+            speciesList.push(speciesLength)
+            // assumes that it is length by default
+          }
         } else {
-          const speciesLength = (result.json_entry.length === null) ?
-            "unknown" : result.json_entry.length
-          speciesList.push(speciesLength)
-          // assumes that it is length by default
+          // this adds in the case of singletons
+          speciesList.push("singletons") // have no way to know since it is
+          // not in db
         }
       })
-
+      console.log(speciesList)
       // if (taxaType === "species") {
       const layout = layoutGet(taxaType)
       if (speciesList.length === tempList.length) { statsParser(speciesList, layout, taxaType, sortAlp, sortVal) }

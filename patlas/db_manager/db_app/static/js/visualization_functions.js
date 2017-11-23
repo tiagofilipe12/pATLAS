@@ -322,7 +322,7 @@ const onLoad = () => {
     })
 
     $("#resistanceStats").on("click", function (e) {
-      clickerButton = "resistance"
+      clickerButton = "resistances"
       setTimeout( () => {
         listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
