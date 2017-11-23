@@ -118,7 +118,10 @@ const onLoad = () => {
     })
 
     //* * END block #1 for node customization **//
-    const prerender = (devel === true || rerun === true) ? 500 : 0
+    // rerun precomputes 500
+    // const prerender = (devel === true || rerun === true) ? 500 : 0
+    // version that doesn't rerun
+    const prerender = (devel === true) ? 500 : 0
 
     renderer = Viva.Graph.View.renderer(g, {
       layout,
@@ -158,7 +161,7 @@ const onLoad = () => {
     // event for shift key up
     // destroys overlay div and transformes multiSelectOverlay to false
     document.addEventListener("keyup", (e) => {
-      if (e.which === 16 || e.which === 0 && multiSelectOverlay) {
+      if (e.which === 16 && e.which === 0 && multiSelectOverlay) {
         $(".graph-overlay").hide()
         multiSelectOverlay.destroy()
         multiSelectOverlay = false
@@ -322,14 +325,14 @@ const onLoad = () => {
     })
 
     $("#resistanceStats").on("click", function (e) {
-      clickerButton = "res"
+      clickerButton = "resistances"
       setTimeout( () => {
         listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
     })
 
     $("#pfamilyStats").on("click", function (e) {
-      clickerButton = "pf"
+      clickerButton = "plasmid families"
       setTimeout( () => {
         listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
@@ -343,73 +346,18 @@ const onLoad = () => {
       }, 500)
     })
 
-    // TODO get a way to sort the array generated inside getMetadata
     // sort by values
     $("#sortGraph").on("click", function (e) {
       const sortVal = true
-      let color
-      const layout = {
-        yaxis: {
-          title: "Number of selected plasmids"
-        },
-        xaxis: {
-          title: clickerButton,
-          tickangle: -45
-        },
-        title: `${clickerButton} in selection`,
-        margin: {
-          b: 200,
-          l: 100
-        }
-      }
-
-      if (clickerButton === "species") {
-        color = "#B71C1C"
-      } else if (clickerButton === "genus") {
-        color = "red"
-      } else if (clickerButton === "family") {
-        color = "#FF5722"
-      } else if (clickerButton === "order") {
-        color = "orange"
-      } else if (clickerButton === "length") {
-        color = "#2196F3"
-      }
-      // this makes it faster instead of querying everything again
-      if (listPlots) { statsParser(listPlots, layout, true, color, false, sortVal) }
+      const layout = layoutGet(clickerButton)
+      if (listPlots) { statsParser(listPlots, layout, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").on("click", function (e) {
       const sortAlp = true
-      let color
-      const layout = {
-        yaxis: {
-          title: "Number of selected plasmids"
-        },
-        xaxis: {
-          title: clickerButton,
-          tickangle: -45
-        },
-        title: `${clickerButton} in selection`,
-        margin: {
-          b: 200,
-          l: 100
-        }
-      }
-
-      if (clickerButton === "species") {
-        color = "#B71C1C"
-      } else if (clickerButton === "genus") {
-        color = "red"
-      } else if (clickerButton === "family") {
-        color = "#FF5722"
-      } else if (clickerButton === "order") {
-        color = "orange"
-      } else if (clickerButton === "length") {
-        color = "#2196F3"
-      }
-      // this makes it faster instead of querying everything again
-      if (listPlots) { statsParser(listPlots, layout, true, color, sortAlp, false) }
+      const layout = layoutGet(clickerButton)
+      if (listPlots) { statsParser(listPlots, layout, clickerButton, sortAlp, false) }
     })
 
     // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -443,12 +391,12 @@ const onLoad = () => {
     })
 
     $("#resPlot").on("click", function (e) {
-      clickerButton = "res"
+      clickerButton = "resistances"
       listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#pfPlot").on("click", function (e) {
-      clickerButton = "pf"
+      clickerButton = "plasmid families"
       listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
@@ -1292,6 +1240,7 @@ const onLoad = () => {
       console.log("rerun listGiFilter", listGiFilter)
       // resets areaSelection
       areaSelection = false
+      rerun = true
       //* * Loading Screen goes on **//
       // removes disabled from class in go_back button
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
@@ -1431,7 +1380,6 @@ const onLoad = () => {
       }
     } else {
       // storeMasterNode is empty in here
-      rerun = true
       console.log("listGiFilter before requestDB", listGiFilter)
       listGiFilter, reloadAccessionList = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList)
 
