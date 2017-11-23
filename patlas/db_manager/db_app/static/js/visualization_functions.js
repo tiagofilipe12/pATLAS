@@ -158,7 +158,7 @@ const onLoad = () => {
     // event for shift key up
     // destroys overlay div and transformes multiSelectOverlay to false
     document.addEventListener("keyup", (e) => {
-      if (e.which === 16 || e.which === 0 && multiSelectOverlay) {
+      if (e.which === 16 && e.which === 0 && multiSelectOverlay) {
         $(".graph-overlay").hide()
         multiSelectOverlay.destroy()
         multiSelectOverlay = false
