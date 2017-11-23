@@ -86,7 +86,6 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
   // waits for all promises before constructing full table
   Promise.all(promises)
     .then( (results) => {
-      console.log("tadam", results)
       // table is just returned in the end before that a json should be
       // constructed
       $("#metadataTable").bootstrapTable({
