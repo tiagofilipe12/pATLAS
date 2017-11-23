@@ -1,9 +1,32 @@
 //********//
-// PLOTLY //
+// PLOTS  //
 //********//
+
+const arraytoHighcharts = (array) => {
+  const report = {}
+  const exportArray = []
+  categories = []
+  // puts every unique entry in array into a unique key in object report
+  array.forEach( (el) => {
+    report[el] = report[el] + 1 || 1
+  })
+  console.log(report)
+  for (entry in report) {
+    console.log(entry, report[entry])
+    exportArray.push({
+      name: entry,
+      y: report[entry]
+    })
+    categories.push(entry)
+  }
+  return [exportArray, categories]
+}
+
 // function to parse stats //
 
-const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortVal) => {
+const statsParser = (masterObj, layout, taxaType, customColor, sortAlp, sortVal) => {
+
+  console.log(layout)
   $("#progressBar").hide()
   $("#progressDiv").hide()
   $("#chartContainer1").show()
@@ -11,23 +34,35 @@ const statsParser = (masterObj, layout, autobinxVar, customColor, sortAlp, sortV
   // parse the final array
   // here it assures that sorts are made just once
   const finalArray = (sortAlp === true) ? masterObj.sort() : (sortVal === true) ? arraytByValue(masterObj) : masterObj
-
+  console.log(finalArray)
+  const doubleArray = arraytoHighcharts(finalArray)
+  console.log(doubleArray)
   // by default species are executed when opening stats visualization
-  const data = [{
-    x: finalArray,
-    type: "histogram",
-    autobinx: autobinxVar,
-    xbins: {
-      start: Math.min(...finalArray),  //... spread operator allows to pass
-      // args in array to function
-      end: Math.max(...finalArray),
-      size: 10000
-    },
-    marker: {
-      color: customColor,
-    }
+  // const data = [{
+  //   x: finalArray,
+  //   type: "histogram",
+  //   autobinx: autobinxVar,
+  //   xbins: {
+  //     start: Math.min(...finalArray),  //... spread operator allows to pass
+  //     // args in array to function
+  //     end: Math.max(...finalArray),
+  //     size: 10000
+  //   },
+  //   marker: {
+  //     color: customColor,
+  //   }
+  // }]
+  // Plotly.newPlot("chartContainer1", data, layout)
+  layout.xAxis = { categories: doubleArray[1] }
+  layout.series = [{
+    type: "column",
+    data: doubleArray[0],
+    name: `${taxaType}`
   }]
-  Plotly.newPlot("chartContainer1", data, layout)
+
+  console.log(layout)
+
+  Highcharts.chart("chartContainer1", layout)
 }
 
 const resetProgressBar = () => {
@@ -225,97 +260,118 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
           // assumes that it is length by default
         }
       })
-      // execute some function
+
+      // function to make layout
+      const layoutGet = (taxaType) => {
+        return {
+          title: {
+            text: `${taxaType} in selection`
+          },
+          yAxis: {
+            title: {
+              text: "Number of selected plasmids"
+            }
+          }
+        }
+      }
+
       if (taxaType === "species") {
-        const layout = {
-          yaxis: {
-            title: "Number of selected plasmids"
-          },
-          xaxis: {
-            title: "species",
-            tickangle: -45
-          },
-          title: "species in selection",
-          margin: {
-            b: 200,
-            l: 100
-          }
-        }
+      // execute some function
+        // if (taxaType === "species") {
+      //   const layout = {
+      //     yaxis: {
+      //       title: "Number of selected plasmids"
+      //     },
+      //     xaxis: {
+      //       title: "species",
+      //       tickangle: -45
+      //     },
+      //     title: "species in selection",
+      //     margin: {
+      //       b: 200,
+      //       l: 100
+      //     }
+      //   }
         // assures that speciesList is fully generated before instanciating
         // plotly
-        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#B71C1C", sortAlp, sortVal) }
+        const layout = layoutGet(taxaType)
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, taxaType, "#B71C1C", sortAlp, sortVal) }
       } else if (taxaType === "genus") {
-        const layout = {
-          yaxis: {
-            title: "Number of selected plasmids"
-          },
-          xaxis: {
-            title: "genera",
-            tickangle: -45
-          },
-          title: "genera in selection",
-          margin: {
-            b: 200,
-            l: 100
-          }
-        }
+        // const layout = {
+        //   yaxis: {
+        //     title: "Number of selected plasmids"
+        //   },
+        //   xaxis: {
+        //     title: "genera",
+        //     tickangle: -45
+        //   },
+        //   title: "genera in selection",
+        //   margin: {
+        //     b: 200,
+        //     l: 100
+        //   }
+        // }
         // assures that speciesList is fully generated before instanciating
         // plotly
-        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "red", sortAlp, sortVal) }
+        const layout = layoutGet(taxaType)
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, taxaType, "red", sortAlp, sortVal) }
       } else if (taxaType === "family") {
-        const layout = {
-          yaxis: {
-            title: "Number of selected plasmids"
-          },
-          xaxis: {
-            title: "families",
-            tickangle: -45
-          },
-          title: "families in selection",
-          margin: {
-            b: 200,
-            l: 100
-          }
-        }
+        // const layout = {
+        //   yaxis: {
+        //     title: "Number of selected plasmids"
+        //   },
+        //   xaxis: {
+        //     title: "families",
+        //     tickangle: -45
+        //   },
+        //   title: "families in selection",
+        //   margin: {
+        //     b: 200,
+        //     l: 100
+        //   }
+        // }
         // assures that speciesList is fully generated before instanciating
         // plotly
-        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#FF5722", sortAlp, sortVal) }
+        const layout = layoutGet(taxaType)
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, taxaType, "#FF5722", sortAlp, sortVal) }
       } else if (taxaType === "order") {
-        const layout = {
-          yaxis: {
-            title: "Number of selected plasmids"
-          },
-          xaxis: {
-            title: "orders",
-            tickangle: -45
-          },
-          title: "orders in selection",
-          margin: {
-            b: 200,
-            l: 100
-          }
-        }
+        // const layout = {
+        //   yaxis: {
+        //     title: "Number of selected plasmids"
+        //   },
+        //   xaxis: {
+        //     title: "orders",
+        //     tickangle: -45
+        //   },
+        //   title: "orders in selection",
+        //   margin: {
+        //     b: 200,
+        //     l: 100
+        //   }
+        // }
         // assures that speciesList is fully generated before instanciating
         // plotly
-        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "orange", sortAlp, sortVal) }
+        const layout = layoutGet(taxaType)
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, taxaType, "orange", sortAlp, sortVal) }
       } else {
-        const layout = {
-          yaxis: {
-            title: "Number of selected plasmids"
-          },
-          xaxis: {
-            title: "length",
-            tickangle: -45
-          },
-          title: "lengths in selection",
-          margin: {
-            b: 200,
-            l: 100
-          }
-        }
+        // const layout = {
+        //   yaxis: {
+        //     title: "Number of selected plasmids"
+        //   },
+        //   xaxis: {
+        //     title: "length",
+        //     tickangle: -45
+        //   },
+        //   title: "lengths in selection",
+        //   margin: {
+        //     b: 200,
+        //     l: 100
+        //   }
+        // }
         // assures that speciesList is fully generated before instanciating
         // plotly
-        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, true, "#2196F3", sortAlp, sortVal) }
+        const layout = layoutGet(taxaType)
+        if (speciesList.length === tempList.length) { statsParser(speciesList, layout, taxaType, "#2196F3", sortAlp, sortVal) }
       }
     })
     .catch( (error) => {
@@ -330,7 +386,7 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
-    if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
+    if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
   const taxaList = (mode === "pf") ? getMetadataPF(tempListAccessions, mode, sortAlp, sortVal)
