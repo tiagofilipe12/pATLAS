@@ -322,14 +322,14 @@ const onLoad = () => {
     })
 
     $("#resistanceStats").on("click", function (e) {
-      clickerButton = "res"
+      clickerButton = "resistance"
       setTimeout( () => {
         listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
     })
 
     $("#pfamilyStats").on("click", function (e) {
-      clickerButton = "pf"
+      clickerButton = "plasmid families"
       setTimeout( () => {
         listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
@@ -343,73 +343,18 @@ const onLoad = () => {
       }, 500)
     })
 
-    // TODO get a way to sort the array generated inside getMetadata
     // sort by values
     $("#sortGraph").on("click", function (e) {
       const sortVal = true
-      let color
-      const layout = {
-        yaxis: {
-          title: "Number of selected plasmids"
-        },
-        xaxis: {
-          title: clickerButton,
-          tickangle: -45
-        },
-        title: `${clickerButton} in selection`,
-        margin: {
-          b: 200,
-          l: 100
-        }
-      }
-
-      if (clickerButton === "species") {
-        color = "#B71C1C"
-      } else if (clickerButton === "genus") {
-        color = "red"
-      } else if (clickerButton === "family") {
-        color = "#FF5722"
-      } else if (clickerButton === "order") {
-        color = "orange"
-      } else if (clickerButton === "length") {
-        color = "#2196F3"
-      }
-      // this makes it faster instead of querying everything again
-      if (listPlots) { statsParser(listPlots, layout, true, color, false, sortVal) }
+      const layout = layoutGet(clickerButton)
+      if (listPlots) { statsParser(listPlots, layout, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").on("click", function (e) {
       const sortAlp = true
-      let color
-      const layout = {
-        yaxis: {
-          title: "Number of selected plasmids"
-        },
-        xaxis: {
-          title: clickerButton,
-          tickangle: -45
-        },
-        title: `${clickerButton} in selection`,
-        margin: {
-          b: 200,
-          l: 100
-        }
-      }
-
-      if (clickerButton === "species") {
-        color = "#B71C1C"
-      } else if (clickerButton === "genus") {
-        color = "red"
-      } else if (clickerButton === "family") {
-        color = "#FF5722"
-      } else if (clickerButton === "order") {
-        color = "orange"
-      } else if (clickerButton === "length") {
-        color = "#2196F3"
-      }
-      // this makes it faster instead of querying everything again
-      if (listPlots) { statsParser(listPlots, layout, true, color, sortAlp, false) }
+      const layout = layoutGet(clickerButton)
+      if (listPlots) { statsParser(listPlots, layout, clickerButton, sortAlp, false) }
     })
 
     // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -443,12 +388,12 @@ const onLoad = () => {
     })
 
     $("#resPlot").on("click", function (e) {
-      clickerButton = "res"
+      clickerButton = "resistances"
       listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
     $("#pfPlot").on("click", function (e) {
-      clickerButton = "pf"
+      clickerButton = "plasmid families"
       listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
