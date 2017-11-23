@@ -118,7 +118,10 @@ const onLoad = () => {
     })
 
     //* * END block #1 for node customization **//
-    const prerender = (devel === true || rerun === true) ? 500 : 0
+    // rerun precomputes 500
+    // const prerender = (devel === true || rerun === true) ? 500 : 0
+    // version that doesn't rerun
+    const prerender = (devel === true) ? 500 : 0
 
     renderer = Viva.Graph.View.renderer(g, {
       layout,
@@ -1237,6 +1240,7 @@ const onLoad = () => {
       console.log("rerun listGiFilter", listGiFilter)
       // resets areaSelection
       areaSelection = false
+      rerun = true
       //* * Loading Screen goes on **//
       // removes disabled from class in go_back button
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
@@ -1376,7 +1380,6 @@ const onLoad = () => {
       }
     } else {
       // storeMasterNode is empty in here
-      rerun = true
       console.log("listGiFilter before requestDB", listGiFilter)
       listGiFilter, reloadAccessionList = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList)
 
