@@ -97,9 +97,9 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
 
 // function to search plasmidnames when toggle is on
 // async function returns a promise which results can then be parsed by .then()
-async function toggleOnSearch(g, graphics, renderer, currentQueryNode,
+const toggleOnSearch = async (g, graphics, renderer, currentQueryNode,
                               clickedPopupButtonCard, clickedPopupButtonRes,
-                              clickedPopupButtonFamily)  {
+                              clickedPopupButtonFamily) => {
   const query = $("#formValueId").val()
   // await allows to wait for the response from the query
   // result is an accession get from db

@@ -139,11 +139,9 @@ const onLoad = () => {
 
     // variable used to control if div is shown or not
     let multiSelectOverlay = false
-
     // event for shift key down
     // shows overlay div and exectures startMultiSelect
     document.addEventListener("keydown", (e) => {
-      //console.log("keydown")
       if (e.which === 16 && multiSelectOverlay === false) { // shift key
         $(".graph-overlay").show()
         multiSelectOverlay = startMultiSelect(g, renderer, layout)
@@ -160,15 +158,12 @@ const onLoad = () => {
     // event for shift key up
     // destroys overlay div and transformes multiSelectOverlay to false
     document.addEventListener("keyup", (e) => {
-      //console.log("keyup")
-      if (e.which === 16 && multiSelectOverlay) {
+      if (e.which === 16 || e.which === 0 && multiSelectOverlay) {
         $(".graph-overlay").hide()
         multiSelectOverlay.destroy()
         multiSelectOverlay = false
       }
     })
-
-    //startMultiSelect(g, renderer, layout)
 
     defaultZooming(layout, renderer)
 
@@ -784,7 +779,6 @@ const onLoad = () => {
         genus_query = document.getElementById("p_Genus").innerHTML,
         family_query = document.getElementById("p_Family").innerHTML,
         order_query = document.getElementById("p_Order").innerHTML
-      console.log(species_query)
       let selectedSpecies = species_query.replace("Species:", "").split(",").filter(Boolean),
         selectedGenus = genus_query.replace("Genus:", "").split(",").filter(Boolean),
         selectedFamily = family_query.replace("Family:", "").split(",").filter(Boolean),
@@ -1001,7 +995,6 @@ const onLoad = () => {
                 const currentColor = colorList[i].replace("#", "0x")
                 const tempArray = assocGenus[currentSelection[i]]
                 const style_color = "background-color:" + colorList[i]
-                console.log(currentColor, tempArray, style_color)
                 store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
                   style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
 
@@ -1300,7 +1293,6 @@ const onLoad = () => {
       // resets areaSelection
       areaSelection = false
       //* * Loading Screen goes on **//
-      //console.log("click", listGiFilter)
       // removes disabled from class in go_back button
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
@@ -1547,7 +1539,8 @@ const onLoad = () => {
   // function to create table
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
-    makeTable(listGiFilter, g)
+    $("#metadataTable").bootstrapTable("destroy")
+    makeTable(areaSelection, listGiFilter, g, graphics)
   })
   // function to close table
   $("#cancelTable").unbind("click").bind("click", (e) => {
@@ -1564,7 +1557,6 @@ const onLoad = () => {
         const divName = divNameList[i]
         returnArray.push($(divName).text().replace(":", ","))
       }
-      console.log(returnArray)
       return returnArray
     }
     // execute the same replacement function for all this divs

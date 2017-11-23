@@ -611,10 +611,6 @@
     background: #ccc;
 }
 
-#modalTableBody{
-    height: 600px;
-}
-
 #modalTableBody > .bootstrap-table > .fixed-table-toolbar > .columns > .btn{
     height: 34px;
 }

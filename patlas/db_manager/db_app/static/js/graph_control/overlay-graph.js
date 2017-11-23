@@ -86,7 +86,8 @@ const startMultiSelect = (graph, renderer, layout) => {
     const higlightIfInside = (node) => {
       const nodeUI = graphics.getNodeUI(node.id)
       if (isInside(node.id, topLeft, bottomRight)) {
-        nodeUI.color = 0xFFA500ff // dark red
+        nodeUI.backupColor = nodeUI.color
+        nodeUI.color = 0x23A900 // green
       } else {
         nodeUI.color = 0x666370 // default grey
       }
