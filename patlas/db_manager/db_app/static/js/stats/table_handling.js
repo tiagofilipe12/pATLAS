@@ -129,47 +129,48 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
     })
 }
 
-const parseReadObj = (readObjects) => {
+const parseReadObj = (readObjects, masterReadArray) => {
   const xCategories = []
-  const yCategories = []
   const positionsMap = []
   for (const i in readObjects) {
-    // x will contain file Ids
-    xCategories.push(i)
-    console.log(i, JSON.parse(readObjects[i]))
-    const fileEntries = JSON.parse(readObjects[i])
-    const fileIndex = Object.keys(readObjects).indexOf(i)
-    let plasmidIndex, coverageValue
-    // iterate through each file entries
-    for (const i2 in fileEntries) {
-      // checks if it is already in y labels (containing plasmid accessions
-      if (yCategories.indexOf(i2) < 0) {
-        yCategories.push(i2)
-        plasmidIndex = Object.keys(fileEntries).indexOf(i2)
-        coverageValue = Math.round(fileEntries[i2] * 100)
-      } else {
-        plasmidIndex = yCategories.indexOf(i2)
-        coverageValue = Math.round(fileEntries[i2] * 100)
+    if (readObjects.hasOwnProperty(i)) {
+      // x will contain file Ids
+      xCategories.push(i)
+      const fileEntries = JSON.parse(readObjects[i])
+      const fileIndex = Object.keys(readObjects).indexOf(i)
+      let plasmidIndex, coverageValue
+      for (const i2 in fileEntries) {
+        if (fileEntries.hasOwnProperty(i2) && fileEntries[i2] >= cutoffParser()) {
+          console.log("i2", i2)
+          // checks if it is already in y labels (containing plasmid accessions
+          if (masterReadArray.indexOf(i2) < 0) {
+            plasmidIndex = masterReadArray.indexOf(i2)
+            coverageValue = Math.round(fileEntries[i2] * 100)
+          } else {
+            console.log(i, i2, fileEntries[i2])
+            plasmidIndex = masterReadArray.indexOf(i2)
+            coverageValue = Math.round(fileEntries[i2] * 100)
+          }
+          console.log(i2, fileEntries[i2], [fileIndex, plasmidIndex, coverageValue])
+          positionsMap.push([fileIndex, plasmidIndex, coverageValue])
+        }
       }
-      console.log(i2, fileEntries[i2], [fileIndex, plasmidIndex, coverageValue])
-      positionsMap.push([fileIndex, plasmidIndex, coverageValue])
     }
   }
   //TODO return three arrays
-  return [xCategories, yCategories, positionsMap]
+  return [xCategories, positionsMap]
 }
 
-const heatmapMaker = (bootstrapTableList, readObjects) => {
-  console.log(bootstrapTableList, readObjects)
-  const tripleArray = parseReadObj(readObjects)
-  console.log(tripleArray)
+const heatmapMaker = (masterReadArray, readObjects) => {
+  console.log(masterReadArray, readObjects, masterReadArray.length)
+  const tripleArray = parseReadObj(readObjects, masterReadArray)
   Highcharts.chart('chartContainer2', {
 
     chart: {
       type: 'heatmap',
       marginTop: 50,
-      marginBottom: 80,
-      plotBorderWidth: 1
+      plotBorderWidth: 1,
+      height: masterReadArray.length * 20 // size is relative to array size
     },
 
 
@@ -178,11 +179,11 @@ const heatmapMaker = (bootstrapTableList, readObjects) => {
     },
 
     xAxis: {
-      categories: tripleArray[0]
+      categories: tripleArray[0],
     },
 
     yAxis: {
-      categories: tripleArray[1],
+      categories: masterReadArray,
       title: null
     },
 
@@ -198,7 +199,7 @@ const heatmapMaker = (bootstrapTableList, readObjects) => {
       margin: 0,
       verticalAlign: 'top',
       y: 25,
-      symbolHeight: 280
+      symbolHeight: 400
     },
 
     tooltip: {
@@ -213,7 +214,7 @@ const heatmapMaker = (bootstrapTableList, readObjects) => {
     series: [{
       name: 'Coverage percentage',
       borderWidth: 1,
-      data: tripleArray[2],
+      data: tripleArray[1],
       dataLabels: {
         enabled: true,
         color: '#000000'

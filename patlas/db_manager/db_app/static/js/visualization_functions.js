@@ -34,6 +34,8 @@ const dict_genera = {}
 // buttonSubmit current node
 let currentQueryNode
 
+const masterReadArray = []
+
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
   return $.getJSON("/taxa")
@@ -1007,7 +1009,7 @@ const onLoad = () => {
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer)
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray)
       }, 100)
 
       // }
@@ -1393,9 +1395,8 @@ const onLoad = () => {
   // control the infile input and related functions //
   //* ***********************************************//
 
-  handleFileSelect('infile', '#file_text', function (new_read_json) {
+  handleFileSelect('infile', '#file_text', (new_read_json) => {
     read_json = new_read_json //careful when redefining this because
-    // console.log(read_json)
     // read_json is a global variable
   })
 
@@ -1473,10 +1474,9 @@ const onLoad = () => {
   })
   // function to display heatmap dataset selected in table
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
-    console.log("clicked")
     // transform internal accession numbers to ncbi acceptable accesions
     if (read_json) {
-      heatmapMaker(bootstrapTableList, read_json)
+      heatmapMaker(masterReadArray, read_json)
     } // this just is executed when read_json is defined
   })
   // button to color selected nodes by check boxes
