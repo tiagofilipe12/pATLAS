@@ -95,7 +95,10 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
 const readColoring = (g, list_gi, graphics, renderer) => {
   const readMode = true
   //const readString = read_json.replace(/[{}" ]/g, "").split(",")
-  const readString = JSON.parse(read_json)
+  console.log(read_json)
+  const readString = JSON.parse(Object.values(read_json)[0]) //TODO for now
+  // reads the first
+  // entry
   let listGiFilter = []
   for (let string in readString) {
     const gi = string
