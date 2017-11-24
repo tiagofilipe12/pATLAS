@@ -99,31 +99,44 @@
                     metadata</h4>
             </div>
             <div class="modal-body table-responsive" id="modalTableBody">
-                <div id="toolbar">
-                    <button class="btn btn-default" id="downloadTable"
-                            type="button" data-toogle="tooptip"
-                            title="Download selection">
-                        <span class="glyphicon glyphicon-download-alt"></span>
-                    </button>
-                    <button class="btn btn-default" id="heatmapTable"
-                            type="button" data-toogle="tooptip"
-                            title="Heatmap visualization">
-                        <span class="glyphicon glyphicon-fire"></span>
-                    </button>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab"
+                                          href="#homeTable">Table
+                    </a></li>
+                    <li><a data-toggle="tab" href="#heatmap">Heatmap</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="homeTable" class="tab-pane fade in active">
+                        <div id="toolbar">
+                            <button class="btn btn-default" id="downloadTable"
+                                    type="button" data-toogle="tooptip"
+                                    title="Download selection">
+                                <span class="glyphicon glyphicon-download-alt"></span>
+                            </button>
+                            <button class="btn btn-default" id="heatmapTable"
+                                    type="button" data-toogle="tooptip"
+                                    title="Heatmap visualization">
+                                <span class="glyphicon glyphicon-fire"></span>
+                            </button>
+                        </div>
+                        <table class="table" id="metadataTable"
+                               data-striped="true"
+                               data-search="true"
+                               data-show-toggle="true"
+                               data-show-columns="true"
+                               data-query-params="queryParams"
+                               data-pagination="true"
+                               data-height="550"
+                               data-show-export="true"
+                               data-click-to-select="true"
+                               data-toolbar="#toolbar">
+                        </table>
+                    </div>
+                    <div id="heatmap" class="tab-pane fade">
+                        <h3>Menu 1</h3>
+                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
                 </div>
-                <table class="table" id="metadataTable"
-                       data-striped="true"
-                       data-search="true"
-                       data-show-toggle="true"
-                       data-show-columns="true"
-                       data-query-params="queryParams"
-                       data-pagination="true"
-                       data-height="550"
-                       data-show-export="true"
-                       data-click-to-select="true"
-                       data-toolbar="#toolbar">
-                </table>
-
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-default"

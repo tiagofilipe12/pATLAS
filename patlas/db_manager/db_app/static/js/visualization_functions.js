@@ -161,7 +161,7 @@ const onLoad = () => {
     // event for shift key up
     // destroys overlay div and transformes multiSelectOverlay to false
     document.addEventListener("keyup", (e) => {
-      if (e.which === 16 && e.which === 0 && multiSelectOverlay) {
+      if (e.which === 16 && multiSelectOverlay) {
         $(".graph-overlay").hide()
         multiSelectOverlay.destroy()
         multiSelectOverlay = false
@@ -1470,6 +1470,14 @@ const onLoad = () => {
     })
     multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
   })
+  // function to display heatmap dataset selected in table
+  $("#heatmapTable").unbind("click").bind("click", (e) => {
+    console.log("clicked")
+    // transform internal accession numbers to ncbi acceptable accesions
+    if (read_json) {
+      heatmapMaker(bootstrapTableList, read_json)
+    } // this just is executed when read_json is defined
+  })
   // button to color selected nodes by check boxes
   $("#tableSubmit").unbind("click").bind("click", (e) => {
     $("#reset-sliders").click()
@@ -1490,6 +1498,7 @@ const onLoad = () => {
     $("#metadataTable").bootstrapTable("destroy")
     makeTable(areaSelection, listGiFilter, g, graphics)
   })
+
   // function to close table
   $("#cancelTable").unbind("click").bind("click", (e) => {
     $("#tableModal").modal("toggle")
