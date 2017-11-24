@@ -10,7 +10,7 @@ const getTableWithAreaSelection = (g, graphics) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
-    if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
+    if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
   })
   return tempListAccessions
 }
