@@ -1395,6 +1395,7 @@ const onLoad = () => {
 
   handleFileSelect('infile', '#file_text', function (new_read_json) {
     read_json = new_read_json //careful when redefining this because
+    // console.log(read_json)
     // read_json is a global variable
   })
 
@@ -1471,7 +1472,7 @@ const onLoad = () => {
     multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
   })
   // function to display heatmap dataset selected in table
-  $("#heatmapTable").unbind("click").bind("click", (e) => {
+  $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
     console.log("clicked")
     // transform internal accession numbers to ncbi acceptable accesions
     if (read_json) {

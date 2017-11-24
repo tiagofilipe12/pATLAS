@@ -73,8 +73,10 @@
             src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/histogram-bellcurve.js"></script>
+    <script src="https://code.highcharts.com/modules/heatmap.js"></script>
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script src="http://code.highcharts.com/modules/offline-exporting.js"></script>
+
 
 </head>
 
@@ -103,7 +105,8 @@
                     <li class="active"><a data-toggle="tab"
                                           href="#homeTable">Table
                     </a></li>
-                    <li><a data-toggle="tab" href="#heatmap">Heatmap</a></li>
+                    <li id="heatmapButtonTab"
+                    ><a data-toggle="tab" href="#heatmapTab">Heatmap</a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="homeTable" class="tab-pane fade in active">
@@ -113,11 +116,12 @@
                                     title="Download selection">
                                 <span class="glyphicon glyphicon-download-alt"></span>
                             </button>
-                            <button class="btn btn-default" id="heatmapTable"
+                            <!--<button class="btn btn-default"
+                            id="heatmapTable"
                                     type="button" data-toogle="tooptip"
                                     title="Heatmap visualization">
                                 <span class="glyphicon glyphicon-fire"></span>
-                            </button>
+                            </button>-->
                         </div>
                         <table class="table" id="metadataTable"
                                data-striped="true"
@@ -132,9 +136,8 @@
                                data-toolbar="#toolbar">
                         </table>
                     </div>
-                    <div id="heatmap" class="tab-pane fade">
-                        <h3>Menu 1</h3>
-                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <div id="heatmapTab" class="tab-pane fade">
+                        <div id="chartContainer2"></div>
                     </div>
                 </div>
             </div>

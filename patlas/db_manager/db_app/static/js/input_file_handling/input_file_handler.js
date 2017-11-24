@@ -26,11 +26,13 @@ const handleFileSelect = (infileId, textId, callback) => {
 
         reader.onload = function (f) {
           arrayOfObj[fileName] = this.result
+          console.log(arrayOfObj[fileName])
         }
 
-        reader.readAsText(files[0])
+        reader.readAsText(file)
       }
     }
+    // console.log(arrayOfObj)
     callback(arrayOfObj)
   }, false)
 }
