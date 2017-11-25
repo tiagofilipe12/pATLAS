@@ -132,6 +132,7 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
 const parseReadObj = (readObjects, masterReadArray) => {
   const xCategories = []
   const positionsMap = []
+  const valuesArray = []
   for (const i in readObjects) {
     if (readObjects.hasOwnProperty(i)) {
       // x will contain file Ids
@@ -146,10 +147,12 @@ const parseReadObj = (readObjects, masterReadArray) => {
           if (masterReadArray.indexOf(i2) < 0) {
             plasmidIndex = masterReadArray.indexOf(i2)
             coverageValue = Math.round(fileEntries[i2] * 100)
+            valuesArray.push(Math.round(fileEntries[i2] * 100))
           } else {
             console.log(i, i2, fileEntries[i2])
             plasmidIndex = masterReadArray.indexOf(i2)
             coverageValue = Math.round(fileEntries[i2] * 100)
+            valuesArray.push(Math.round(fileEntries[i2] * 100))
           }
           console.log(i2, fileEntries[i2], [fileIndex, plasmidIndex, coverageValue])
           positionsMap.push([fileIndex, plasmidIndex, coverageValue])
@@ -158,24 +161,25 @@ const parseReadObj = (readObjects, masterReadArray) => {
     }
   }
   //TODO return three arrays
-  return [xCategories, positionsMap]
+  return [xCategories, positionsMap, valuesArray]
 }
 
 const heatmapMaker = (masterReadArray, readObjects) => {
-  console.log(masterReadArray, readObjects, masterReadArray.length)
   const tripleArray = parseReadObj(readObjects, masterReadArray)
-  Highcharts.chart('chartContainer2', {
+  console.log(Math.min.apply(null, tripleArray[2]), tripleArray[2])
+  Highcharts.chart("chartContainer2", {
 
     chart: {
-      type: 'heatmap',
+      type: "heatmap",
       marginTop: 50,
       plotBorderWidth: 1,
-      height: masterReadArray.length * 20 // size is relative to array size
+      height: masterReadArray.length * 20, // size is relative to array size
+      //width: masterReadArray.length * 20
     },
 
 
     title: {
-      text: 'Plasmid coverage in each set of reads'
+      text: "Plasmid coverage in each set of reads"
     },
 
     xAxis: {
@@ -188,36 +192,37 @@ const heatmapMaker = (masterReadArray, readObjects) => {
     },
 
     colorAxis: {
-      min: 0,
-      minColor: '#FFFFFF',
-      maxColor: Highcharts.getOptions().colors[0]
+      min: Math.min.apply(null, tripleArray[2]),  // sets min value for the
+      // min value in array of values in dataset
+      minColor: "#fcd6d6", //sets min value to light pink
+      maxColor: Highcharts.getOptions().colors[8]
     },
 
     legend: {
-      align: 'right',
-      layout: 'vertical',
+      align: "right",
+      layout: "vertical",
       margin: 0,
-      verticalAlign: 'top',
+      verticalAlign: "top",
       y: 25,
       symbolHeight: 400
     },
 
     tooltip: {
       formatter: function () {
-        return '<b>' + this.series.xAxis.categories[this.point.x] + '</b>' +
-          ' file' +
-          ' <br><b>' +
-          this.point.value + '</b> % coverage <br><b>' + this.series.yAxis.categories[this.point.y] + '</b>';
+        return "<b>" + this.series.xAxis.categories[this.point.x] + "</b>" +
+          " file" +
+          " <br><b>" +
+          this.point.value + "</b> % coverage <br><b>" + this.series.yAxis.categories[this.point.y] + "</b>";
       }
     },
 
     series: [{
-      name: 'Coverage percentage',
+      name: "Coverage percentage",
       borderWidth: 1,
       data: tripleArray[1],
       dataLabels: {
         enabled: true,
-        color: '#000000'
+        color: "#000000"
       }
     }]
 
