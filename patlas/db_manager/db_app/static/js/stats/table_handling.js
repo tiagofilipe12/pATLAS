@@ -173,8 +173,8 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       type: "heatmap",
       marginTop: 50,
       plotBorderWidth: 1,
-      height: masterReadArray.length * 20, // size is relative to array size
-      //width: masterReadArray.length * 20
+      height: masterReadArray.length * 25, // size is relative to array size
+      width: tripleArray[0].length * 200
     },
 
 
@@ -184,11 +184,14 @@ const heatmapMaker = (masterReadArray, readObjects) => {
 
     xAxis: {
       categories: tripleArray[0],
+      labels: {
+        rotation: -45
+      }
     },
 
     yAxis: {
       categories: masterReadArray,
-      title: null
+      title: null,
     },
 
     colorAxis: {
