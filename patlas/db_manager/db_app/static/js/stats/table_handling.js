@@ -174,7 +174,7 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       marginTop: 50,
       plotBorderWidth: 1,
       height: masterReadArray.length * 25, // size is relative to array size
-      width: tripleArray[0].length * 200
+      //width: tripleArray[0].length * 200
     },
 
 
