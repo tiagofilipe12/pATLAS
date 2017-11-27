@@ -5,9 +5,7 @@ const assembly = (listGi, assemblyFile, g, graphics, renderer, masterReadArray) 
   const firstObj = Object.keys(assemblyFile)[0] //TODO for now just accepts the
   // first
   // object
-  console.log(assemblyFile[firstObj])
   const assemblyJson = JSON.parse(assemblyFile[firstObj])
-  console.log(assemblyJson)
   // iterate through all entries in assembly file
   //TODO this is redundant with below but for now the below functin handles
   // just first instance
@@ -17,7 +15,6 @@ const assembly = (listGi, assemblyFile, g, graphics, renderer, masterReadArray) 
       // iterate each accession number
       for (const i2 in fileEntries) {
         if (fileEntries.hasOwnProperty(i2)) {
-          console.log(fileEntries[i2])
           // if not in masterReadArray then add it
           if (masterReadArray.indexOf(i2) < 0 && fileEntries[i2] >= cutoffParser()) {
             masterReadArray.push(i2)

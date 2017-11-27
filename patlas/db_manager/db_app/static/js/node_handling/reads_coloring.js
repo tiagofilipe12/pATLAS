@@ -103,7 +103,6 @@ const readColoring = (g, list_gi, graphics, renderer, masterReadArray) => {
         // iterate each accession number
       for (const i2 in fileEntries) {
         if (fileEntries.hasOwnProperty(i2)) {
-          console.log(fileEntries[i2])
           // if not in masterReadArray then add it
           if (masterReadArray.indexOf(i2) < 0 && fileEntries[i2] >= cutoffParser()) {
             masterReadArray.push(i2)

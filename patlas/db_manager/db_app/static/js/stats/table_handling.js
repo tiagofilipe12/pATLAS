@@ -27,7 +27,6 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
     if ({}.hasOwnProperty.call(listGiFilter, i)) {
       // gets info for every node and puts it in a line
       const accession = listGiFilter[i]
-      console.log(accession)
       if (g.getNode(accession)) { // TODO table doesn't handle what is not
         // in graph
         const nodeData = g.getNode(accession).data
@@ -147,19 +146,16 @@ const parseReadObj = (readObjects, masterReadArray) => {
       let plasmidIndex, coverageValue
       for (const i2 in fileEntries) {
         if (fileEntries.hasOwnProperty(i2) && fileEntries[i2] >= cutoffParser()) {
-          console.log("i2", i2)
           // checks if it is already in y labels (containing plasmid accessions
           if (masterReadArray.indexOf(i2) < 0) {
             plasmidIndex = masterReadArray.indexOf(i2)
             coverageValue = Math.round(fileEntries[i2] * 100)
             valuesArray.push(Math.round(fileEntries[i2] * 100))
           } else {
-            console.log(i, i2, fileEntries[i2])
             plasmidIndex = masterReadArray.indexOf(i2)
             coverageValue = Math.round(fileEntries[i2] * 100)
             valuesArray.push(Math.round(fileEntries[i2] * 100))
           }
-          console.log(i2, fileEntries[i2], [fileIndex, plasmidIndex, coverageValue])
           positionsMap.push([fileIndex, plasmidIndex, coverageValue])
         }
       }
@@ -170,18 +166,18 @@ const parseReadObj = (readObjects, masterReadArray) => {
 }
 
 
-const emptyChart = (container) => {
-  $(container).Highcharts().destroy()
-}
+// const emptyChart = (container) => {
+//   $(container).highcharts().destroy()
+// }
 
-const heatmapMaker = (masterReadArray, readObjects, heatmapChart) => {
-  if (heatmapChart === true) {
-    emptyChart("#chartContainer2")
-  }
+const heatmapMaker = (masterReadArray, readObjects) => {
+  // if (heatmapChart === true) {
+  //   emptyChart("#chartContainer2")
+  // }
   console.log("master", masterReadArray, readObjects)
   const tripleArray = parseReadObj(readObjects, masterReadArray)
   console.log(Math.min.apply(null, tripleArray[2]), tripleArray[2])
-  Highcharts.chart("chartContainer2", {
+  new Highcharts.chart("chartContainer2", {
 
     chart: {
       type: "heatmap",

@@ -36,7 +36,7 @@ let currentQueryNode
 
 let masterReadArray = []
 
-let heatmapChart = false
+let read_json, mash_json, assembly_json
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
@@ -1031,9 +1031,9 @@ const onLoad = () => {
     //* ************//
 
     $('#fileSubmit_mash').click(function (event) {
+      masterReadArray = []
       read_json = mash_json // conerts mash_json into read_json to overwrite
       // it and use the same function (readColoring)
-      console.log("mash")
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showtable, idsArrays)
       event.preventDefault()
@@ -1047,6 +1047,7 @@ const onLoad = () => {
       setTimeout(function () {
         $('#loading').hide()
       }, 100)
+
     })
 
     $('#cancel_infile_mash').click(function (event) {
@@ -1400,16 +1401,18 @@ const onLoad = () => {
   //* ***********************************************//
 
   handleFileSelect('infile', '#file_text', (new_read_json) => {
-    read_json = new_read_json //careful when redefining this because
-    // read_json is a global variable
+    read_json = new_read_json
+    // $("#infile").val("")
   })
 
   handleFileSelect('mashInfile', '#file_text_mash', function (new_mash_json) {
-    mash_json = new_mash_json //global
+    mash_json = new_mash_json
+    // $("#mashInfile").val("")
   })
 
   handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {
-    assembly_json = new_assembly_json   //global
+    assembly_json = new_assembly_json
+    // $("#assemblyfile").val("")
   })
 
   //* ****************************** *//
@@ -1476,16 +1479,26 @@ const onLoad = () => {
     })
     multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
   })
+
   // function to display heatmap dataset selected in table
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
     // transform internal accession numbers to ncbi acceptable accesions
-    if (typeof read_json !== "undefined") {
-      heatmapMaker(masterReadArray, read_json, heatmapChart)
+    if (read_json !== false) {
+      console.log("read", read_json)
+      heatmapMaker(masterReadArray, read_json)
+      mash_json = false
+      assembly_json = false
     } // this just is executed when read_json is defined
-    else if (typeof mash_json !== "undefined") {
-      heatmapMaker(masterReadArray, mash_json, heatmapChart)
-    } else if (assembly_json !== "undefined") {
-      heatmapMaker(masterReadArray, assembly_json, heatmapChart)
+    else if (mash_json !== false) {
+      console.log("mash")
+      heatmapMaker(masterReadArray, mash_json)
+      read_json = false
+      assembly_json = false
+    } else if (assembly_json !== false) {
+      console.log("assembly")
+      heatmapMaker(masterReadArray, assembly_json)
+      read_json = false
+      mash_json = false
     }
   })
   // button to color selected nodes by check boxes
@@ -1556,6 +1569,25 @@ const onLoad = () => {
     ])
     // then convert the resulting array to a csv file
     arrayToCsv(targetArray)
+  })
+
+  const emptyFiles = () => {
+    $("#infile").val("")
+    $("#mashInfile").val("")
+    $("#assemblyfile").val("")
+    read_json = false
+    mash_json = false
+    assembly_json = false
+  }
+
+  $("#uploadFile").click( (event) => {
+    emptyFiles()
+  })
+  $("#uploadFileMash").click( (event) => {
+    emptyFiles()
+  })
+  $("#uploadFileAssembly").click( (event) => {
+    emptyFiles()
   })
 
   // resistance button control //

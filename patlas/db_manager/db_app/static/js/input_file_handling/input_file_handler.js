@@ -9,9 +9,10 @@ const abortRead = (reader) => {
 // function to handle ONE file at a time (per button)
 // infile_id refers to the button id and text_id referes to the text form that reads the file
 const handleFileSelect = (infileId, textId, callback) => {
-  arrayOfObj = {}
   document.getElementById(infileId).addEventListener("change", function (e) {
+    let arrayOfObj = {}
     const files = e.target.files // FileList object
+    console.log("files", files)
     // append fle name to text fomr displaying current selection
     for (const file of files) {
       const fileName = file.name
@@ -31,6 +32,7 @@ const handleFileSelect = (infileId, textId, callback) => {
         reader.readAsText(file)
       }
     }
+    console.log("arrayObj", arrayOfObj)
     callback(arrayOfObj)
   }, false)
 }
