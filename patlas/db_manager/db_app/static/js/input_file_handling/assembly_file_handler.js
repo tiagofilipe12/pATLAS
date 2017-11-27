@@ -1,47 +1,34 @@
-const assembly = (listGi, assemblyJson, g, graphics, renderer) => {
+const assembly = (listGi, assemblyFile, g, graphics, renderer) => {
   //console.log(assembly_json)
   // removes everything within []
-  const assemblyString = assemblyJson.replace(/[{}"[ ]/g, "").split("],")
-  // this gets the contig name
-  const contigName = assemblyString[0].split(":")[0]
-  g.addNode(contigName, {sequence: "<font color='#468499'>seq_id: </font>"
-    + contigName, log_length: 10} )
-  // change the color of the input node
-  const nodeUI = graphics.getNodeUI(contigName)
-  nodeUI.color = 0xff2100
-  //console.log(contigName)
-  //console.log(assemblyString)
-  for (let string in assemblyString) {
-    //if (string === 0) {
-    //  const nodeEntry = assemblyString[string].split(':')[1]
-    //} else {
-    //  const nodeEntry = assemblyString[string]
-    //}
-    // redefinition of the above if statement
-    const nodeEntry = (string === 0) ?  assemblyString[string].split(":")[1]
-      : assemblyString[string]
-    let accession = nodeEntry.split("_").slice(0, 2).join("_")
-    const dist = nodeEntry.split(',')[1]
-    if (accession in listGi) {
-      g.addLink(contigName, accession, dist)
-    } else {
-      // links wont work because ncbi uses gis and not accessions
-      g.addNode(accession, {sequence: "<font color='#468499'>seq_id: </font><a " +
-      // accession has no version
-      "href='https://www.ncbi.nlm.nih.gov/nuccore/" + accession + "' target='_blank'>" + accession + '</a>',
-        log_length: 10
-        // percentage: "<font color='#468499'>percentage: </font>" + perc
-      })
-      g.addLink(contigName, accession, dist)
-      listGi.push(accession)
-    }
+  const readMode = true
+  const firstObj = Object.keys(assemblyFile)[0] //TODO for now just accepts the
+  // first
+  // object
+  console.log(assemblyFile[firstObj])
+  const assemblyJson = JSON.parse(assemblyFile[firstObj])
+  console.log(assemblyJson)
+  // iterate through all entries in assembly file
+  for (const i in assemblyJson) {
+    const gi = i
+    const perc = parseFloat(assemblyJson[i])
+    const newPerc = rangeConverter(perc, 0.9, 1, 0, 1)  //range now is
+    // limited to 0.9 the default cutoff set for mash dist
+    const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
+    const scale = chroma.scale(["lightsalmon", "maroon"])
+    palette(scale, 20, readMode)
+    node_iter(g, readColor, gi, graphics, perc)
+    listGiFilter.push(gi)
   }
   // control all related divs
   let showRerun = document.getElementById("Re_run")
   let showGoback = document.getElementById("go_back")
   let showDownload = document.getElementById("download_ds")
+  let showTable = document.getElementById("tableShow")
   showRerun.style.display = "block"
   showGoback.style.display = "block"
   showDownload.style.display = "block"
+  showTable.style.display = "block"
   renderer.run()
+  return listGiFilter
 }

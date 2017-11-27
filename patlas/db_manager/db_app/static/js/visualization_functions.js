@@ -1059,7 +1059,7 @@ const onLoad = () => {
         showGoback, showDownload, showTable, idsArrays)
       $('#loading').show()
       setTimeout(function () {
-        assembly(list_gi, assembly_json, g, graphics, renderer)
+        listGiFilter = assembly(list_gi, assembly_json, g, graphics, renderer)
       }, 100)
 
       // }
@@ -1406,6 +1406,7 @@ const onLoad = () => {
 
   handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {
     assembly_json = new_assembly_json   //global
+    console.log(assembly_json)
   })
 
   //* ****************************** *//
@@ -1497,6 +1498,7 @@ const onLoad = () => {
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
     $("#metadataTable").bootstrapTable("destroy")
+    console.log(listGiFilter)
     makeTable(areaSelection, listGiFilter, g, graphics)
   })
 

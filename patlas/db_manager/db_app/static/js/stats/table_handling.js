@@ -20,64 +20,69 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
   // redefines listGiFilter if area selection is used
   // IMPORTANT: in this case listGiFilter doesn't exit this function scope
   // which is the intended behavior
+  console.log(areaSelection)
   listGiFilter = (areaSelection === false) ? listGiFilter : getTableWithAreaSelection(g, graphics)
+  console.log(listGiFilter)
   for (const i in listGiFilter) {
     if ({}.hasOwnProperty.call(listGiFilter, i)) {
       // gets info for every node and puts it in a line
       const accession = listGiFilter[i]
-      const nodeData = g.getNode(accession).data
-      const seqPercentage = (nodeData.percentage) ? nodeData.percentage : "N/A" // this may be
-      // undefined
-      // depending if input file is provided or not
+      console.log(accession)
+      if (g.getNode(accession)) { // TODO table doesn't handle what is not
+        // in graph
+        const nodeData = g.getNode(accession).data
+        const seqPercentage = (nodeData.percentage) ? nodeData.percentage : "N/A" // this may be
+        // undefined
+        // depending if input file is provided or not
 
-      const seqLength = (nodeData.seq_length) ? nodeData.seq_length.split(">")[2] : "N/A"
-      // querying database is required before this
-      // promises.push(
-      const promiseGather = async () => {
-        // starts entry variable
-        const entry = {
-          "id": "",
-          "length": "",
-          "percentage": "",
-          "speciesName": "",
-          "plasmidName": "",
-          "resGenes": "",
-          "pfGenes": ""
-        }
-        // sequence of promises that are executed sequentially
-        await  $.get("api/getspecies/", {accession}, (data, status) => {
-          if (data.plasmid_id) {
-            const species = data.json_entry.name.split("_").join(" ")
-            const plasmid = data.json_entry.plasmid_name
-
-            // then add all to the object
-            entry.id = accession
-            entry.length = seqLength
-            entry.percentage = seqPercentage
-            entry.speciesName = species
-            entry.plasmidName = plasmid
+        const seqLength = (nodeData.seq_length) ? nodeData.seq_length.split(">")[2] : "N/A"
+        // querying database is required before this
+        // promises.push(
+        const promiseGather = async () => {
+          // starts entry variable
+          const entry = {
+            "id": "",
+            "length": "",
+            "percentage": "",
+            "speciesName": "",
+            "plasmidName": "",
+            "resGenes": "",
+            "pfGenes": ""
           }
-        })
+          // sequence of promises that are executed sequentially
+          await  $.get("api/getspecies/", {accession}, (data, status) => {
+            if (data.plasmid_id) {
+              const species = data.json_entry.name.split("_").join(" ")
+              const plasmid = data.json_entry.plasmid_name
 
-        await $.get("api/getresistances/", {accession}, (data, status) => {
-          const resistances = (data.plasmid_id) ? data.json_entry.gene :
-            "N/A"
+              // then add all to the object
+              entry.id = accession
+              entry.length = seqLength
+              entry.percentage = seqPercentage
+              entry.speciesName = species
+              entry.plasmidName = plasmid
+            }
+          })
+
+          await $.get("api/getresistances/", {accession}, (data, status) => {
+            const resistances = (data.plasmid_id) ? data.json_entry.gene : "N/A"
             // add to entry
             entry.resGenes = resistances
-        })
+          })
 
-        await $.get("api/getplasmidfinder/", {accession}, (data, status) => {
-          const plasmidfinder = (data.plasmid_id) ? data.json_entry.gene :
-          "N/A"
+          await $.get("api/getplasmidfinder/", {accession}, (data, status) => {
+            const plasmidfinder = (data.plasmid_id) ? data.json_entry.gene : "N/A"
             entry.pfGenes = plasmidfinder
-        })
-        // async function must return the desired entry to push to dataArray
-        // dataArray.push(entry)
-        // console.log(dataArray)
-        return entry // returns promise
+          })
+          // async function must return the desired entry to push to dataArray
+          // dataArray.push(entry)
+          // console.log(dataArray)
+          return entry // returns promise
+
+        }
+        // collect every promise for each accession number
+        promises.push(promiseGather())
       }
-      // collect every promise for each accession number
-      promises.push(promiseGather())
 
       // for every loop instance entries could be added to array, each entry
       // in dataArray should be a single row
