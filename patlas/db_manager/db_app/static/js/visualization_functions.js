@@ -34,7 +34,9 @@ const dict_genera = {}
 // buttonSubmit current node
 let currentQueryNode
 
-const masterReadArray = []
+let masterReadArray = []
+
+let heatmapChart = false
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
@@ -1004,6 +1006,7 @@ const onLoad = () => {
     //* ************//
 
     $('#fileSubmit').click(function (event) {
+      masterReadArray = []
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
       event.preventDefault()
@@ -1054,12 +1057,13 @@ const onLoad = () => {
     //* * Assembly **//
     //* ********* ***//
     $('#assemblySubmit').click(function (event) {
+      masterReadArray = []
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
       $('#loading').show()
       setTimeout(function () {
-        listGiFilter = assembly(list_gi, assembly_json, g, graphics, renderer)
+        listGiFilter = assembly(list_gi, assembly_json, g, graphics, renderer, masterReadArray)
       }, 100)
 
       // }
@@ -1406,7 +1410,6 @@ const onLoad = () => {
 
   handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {
     assembly_json = new_assembly_json   //global
-    console.log(assembly_json)
   })
 
   //* ****************************** *//
@@ -1476,9 +1479,14 @@ const onLoad = () => {
   // function to display heatmap dataset selected in table
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
     // transform internal accession numbers to ncbi acceptable accesions
-    if (read_json) {
-      heatmapMaker(masterReadArray, read_json)
+    if (typeof read_json !== "undefined") {
+      heatmapMaker(masterReadArray, read_json, heatmapChart)
     } // this just is executed when read_json is defined
+    else if (typeof mash_json !== "undefined") {
+      heatmapMaker(masterReadArray, mash_json, heatmapChart)
+    } else if (assembly_json !== "undefined") {
+      heatmapMaker(masterReadArray, assembly_json, heatmapChart)
+    }
   })
   // button to color selected nodes by check boxes
   $("#tableSubmit").unbind("click").bind("click", (e) => {

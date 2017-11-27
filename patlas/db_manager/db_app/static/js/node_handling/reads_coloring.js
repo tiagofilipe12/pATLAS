@@ -38,6 +38,7 @@ const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
     if (gi === nodeGI) {
       nodeUI.color = readColor
       nodeUI.backupColor = nodeUI.color
+      perc = parseFloat(perc)
       node.data["percentage"] =  perc.toFixed(2).toString()
       if (copyNumber) {
         node.data["copyNumber"] = copyNumber.toString()

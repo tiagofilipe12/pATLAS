@@ -169,7 +169,16 @@ const parseReadObj = (readObjects, masterReadArray) => {
   return [xCategories, positionsMap, valuesArray]
 }
 
-const heatmapMaker = (masterReadArray, readObjects) => {
+
+const emptyChart = (container) => {
+  $(container).Highcharts().destroy()
+}
+
+const heatmapMaker = (masterReadArray, readObjects, heatmapChart) => {
+  if (heatmapChart === true) {
+    emptyChart("#chartContainer2")
+  }
+  console.log("master", masterReadArray, readObjects)
   const tripleArray = parseReadObj(readObjects, masterReadArray)
   console.log(Math.min.apply(null, tripleArray[2]), tripleArray[2])
   Highcharts.chart("chartContainer2", {
