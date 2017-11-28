@@ -225,7 +225,6 @@ const onLoad = () => {
     //* * mouse click on nodes **//
     events.click( (node, e) => {
       // this resets previous selected node to previous color
-      console.log(clickerButton)
       if (clickedNode) {
         graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
       }
@@ -1662,14 +1661,19 @@ const onLoad = () => {
     // TODO needs to do the same for assembly_json and mash_json
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
-    readIndex = slideToRight(read_json, readIndex, g, list_gi, graphics, renderer)
+    const outArray = slideToRight(read_json, readIndex, g, list_gi, graphics, renderer)
+    readIndex = outArray[0]
+    listGiFilter = outArray[1]
+    console.log("list", listGiFilter)
   })
 
   $("#slideLeft").click( () => {
     // TODO needs to do the same for assembly_json and mash_json
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
-    readIndex = slideToLeft(read_json, readIndex, g, list_gi, graphics, renderer)
+    const outArray = slideToLeft(read_json, readIndex, g, list_gi, graphics, renderer)
+    readIndex = outArray[0]
+    listGiFilter = outArray[1]
   })
 
   // this forces the entire script to run

@@ -5,9 +5,9 @@ const slideToRight = (read_json, readIndex, g, list_gi, graphics, renderer) => {
     (readIndex !== Object.values(read_json).length - 1) ?
     readIndex += 1 : readIndex = 0
     const nextFile = JSON.parse(Object.values(read_json)[readIndex])
-    readColoring(g, list_gi, graphics, renderer, nextFile)
+    const listGiFilter = readColoring(g, list_gi, graphics, renderer, nextFile)
+    return [readIndex, listGiFilter]
   }
-  return readIndex
 }
 
 const slideToLeft = (read_json, readIndex, g, list_gi, graphics, renderer) => {
@@ -17,7 +17,7 @@ const slideToLeft = (read_json, readIndex, g, list_gi, graphics, renderer) => {
     (readIndex !== 0) ?
       readIndex -= 1 : readIndex = Object.values(read_json).length - 1
     const nextFile = JSON.parse(Object.values(read_json)[readIndex])
-    readColoring(g, list_gi, graphics, renderer, nextFile)
+    const listGiFilter = readColoring(g, list_gi, graphics, renderer, nextFile)
+    return [readIndex, listGiFilter]
   }
-  return readIndex
 }
