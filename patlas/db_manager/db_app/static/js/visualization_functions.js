@@ -1017,7 +1017,7 @@ const onLoad = () => {
       $("#loading").show()
       setTimeout( () => {
         // colors each node for first element of read_json
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray, readString)
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, readString)
         // iterate for all files and save to masterReadArray to use in heatmap
         for (const i in read_json) {
           if (read_json.hasOwnProperty(i)) {
@@ -1061,7 +1061,8 @@ const onLoad = () => {
       event.preventDefault()
       $("#loading").show()
       setTimeout( () => {
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray, read_json)
+        // TODO this read_json here must be a json object from 1 file
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, read_json)
       }, 100)
 
       // }
@@ -1658,12 +1659,16 @@ const onLoad = () => {
   */
   $("#slideRight").click( () => {
     // TODO needs to do the same for assembly_json and mash_json
-    readIndex = slideToRight(read_json, readIndex)
+    resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+      showGoback, showDownload, showTable, idsArrays)
+    readIndex = slideToRight(read_json, readIndex, g, list_gi, graphics, renderer)
   })
 
   $("#slideLeft").click( () => {
     // TODO needs to do the same for assembly_json and mash_json
-    readIndex = slideToLeft(read_json, readIndex)
+    resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+      showGoback, showDownload, showTable, idsArrays)
+    readIndex = slideToLeft(read_json, readIndex, g, list_gi, graphics, renderer)
   })
 
   // this forces the entire script to run

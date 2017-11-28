@@ -94,7 +94,8 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
 // single read displayer
 // This function colors each node present in input read json file
 
-const readColoring = (g, list_gi, graphics, renderer, masterReadArray, readString) => {
+const readColoring = (g, list_gi, graphics, renderer, readString) => {
+  console.log("ds", readString)
   const readMode = true
   let listGiFilter = []
   for (let string in readString) {
