@@ -1004,24 +1004,24 @@ const onLoad = () => {
     //* ***READS****//
     //* ************//
 
-    $('#fileSubmit').click(function (event) {
+    $("#fileSubmit").click( (event) => {
       masterReadArray = []
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
       event.preventDefault()
-      $('#loading').show()
-      setTimeout(function () {
+      $("#loading").show()
+      setTimeout( () => {
         list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray, read_json)
       }, 100)
 
       // }
       // used to hide when function is not executed properly
-      setTimeout(function () {
-        $('#loading').hide()
+      setTimeout( () => {
+        $("#loading").hide()
       }, 100)
     })
 
-    $('#cancel_infile').click(function (event) {
+    $("#cancel_infile").click( (event) => {
       abortRead(read_json)
     })
 
@@ -1029,51 +1029,51 @@ const onLoad = () => {
     //* ***MASH****//
     //* ************//
 
-    $('#fileSubmit_mash').click(function (event) {
+    $("#fileSubmit_mash").click( (event) => {
       masterReadArray = []
       read_json = mash_json // conerts mash_json into read_json to overwrite
       // it and use the same function (readColoring)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showtable, idsArrays)
       event.preventDefault()
-      $('#loading').show()
-      setTimeout(function () {
+      $("#loading").show()
+      setTimeout( () => {
         list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray, read_json)
       }, 100)
 
       // }
       // used to hide when function is not executed properly
-      setTimeout(function () {
-        $('#loading').hide()
+      setTimeout( () => {
+        $("#loading").hide()
       }, 100)
 
     })
 
-    $('#cancel_infile_mash').click(function (event) {
+    $("#cancel_infile_mash").click( (event) => {
       abortRead(mash_json)
     })
 
     //* ********* ***//
     //* * Assembly **//
     //* ********* ***//
-    $('#assemblySubmit').click(function (event) {
+    $("#assemblySubmit").click( (event) => {
       masterReadArray = []
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
-      $('#loading').show()
-      setTimeout(function () {
+      $("#loading").show()
+      setTimeout( () => {
         listGiFilter = assembly(list_gi, assembly_json, g, graphics, renderer, masterReadArray, listGiFilter)
       }, 100)
 
       // }
       // used to hide when function is not executed properly
-      setTimeout(function () {
-        $('#loading').hide()
+      setTimeout( () => {
+        $("#loading").hide()
       }, 100)
     })
 
-    $('#cancel_assembly').click(function (event) {
+    $("#cancel_assembly").click( (event) => {
       abortRead(assembly_json)
     })
 
