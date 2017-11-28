@@ -54,16 +54,30 @@ const assembly = (listGi, assemblyFile, g, graphics, renderer, masterReadArray, 
       })
     }
   }
-  //TODO this requires a legend
   // control all related divs
+
+  $("#assemblyLegend").empty()
+  $("#assemblyLegend").append(
+    "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
+    " style=\"background-color:#C70039\" ></button>&nbsp;contigs</li>",
+    "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
+    " style=\"background-color:#FF5733\" ></button>&nbsp;significant" +
+    " links</li>",
+    "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
+    " style=\"background-color:#666370\" ></button>&nbsp;others</li>"
+  )
+
   let showRerun = document.getElementById("Re_run")
   let showGoback = document.getElementById("go_back")
   let showDownload = document.getElementById("download_ds")
   let showTable = document.getElementById("tableShow")
+  let showLegend = document.getElementById("colorLegend")
   showRerun.style.display = "block"
   showGoback.style.display = "block"
   showDownload.style.display = "block"
   showTable.style.display = "block"
+  showLegend.style.display = "block"
+  $("#assemblyLabel").show()
   renderer.run()
   return listGiFilter
 }
