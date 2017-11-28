@@ -160,16 +160,9 @@ const parseReadObj = (readObjects, masterReadArray) => {
   return [xCategories, positionsMap, valuesArray]
 }
 
-
-// const emptyChart = (container) => {
-//   $(container).highcharts().destroy()
-// }
-
 const heatmapMaker = (masterReadArray, readObjects) => {
-  // if (heatmapChart === true) {
-  //   emptyChart("#chartContainer2")
-  // }
   const tripleArray = parseReadObj(readObjects, masterReadArray)
+  console.log(tripleArray)
   Highcharts.chart("chartContainer2", {
 
     chart: {
@@ -217,7 +210,7 @@ const heatmapMaker = (masterReadArray, readObjects) => {
     },
 
     tooltip: {
-      formatter: () => {
+      formatter: function () {
         return "<b>" + this.series.xAxis.categories[this.point.x] + "</b>" +
           " file" + " <br><b>" + this.point.value +
           "</b> % coverage <br><b>" +

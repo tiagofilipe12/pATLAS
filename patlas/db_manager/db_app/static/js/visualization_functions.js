@@ -225,6 +225,7 @@ const onLoad = () => {
     //* * mouse click on nodes **//
     events.click( (node, e) => {
       // this resets previous selected node to previous color
+      console.log(clickerButton)
       if (clickedNode) {
         graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
       }

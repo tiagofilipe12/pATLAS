@@ -197,12 +197,17 @@ const actual_removal = (g, graphics, onload) => {
   "<span class='glyphicon glyphicon-zoom-out'></span>\n" +
   "</button>\n" +
   "</div> \n" +
-  "\n" +
-  "<!-- End buttons -->\n" +
+  "<div class='btn-group'>" +
+  "<button id='slideLeft' class='zoom in btn btn-default' data-toggle='tooltip'" +
+  "title='Change file' type='button' disabled>" +
+  "<span class='glyphicon glyphicon-chevron-left'></span>" +
+  "</button><button id='slideRight' class='zoom out btn btn-default'" +
+  "data-toggle='tooltip' title='Change file'" +
+  "type='button' disabled>" +
+  "<span class='glyphicon glyphicon-chevron-right'></span></button></div>" +
   "</div>\n" +
   "<div id='popup_description' style='display: none'></div>"
 )
-
 
   // should be executed when listGiFilter is empty ... mainly for area selection
   const reGetListGi = (g, graphics) => {
