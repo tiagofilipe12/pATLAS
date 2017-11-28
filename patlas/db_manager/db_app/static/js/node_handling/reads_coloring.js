@@ -289,8 +289,24 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
     $("#readLegend").empty()
   }
   resetDisplayTaxaBox(idsArrays)
+  // hide and empty assembly related legend
   $("#assemblyLabel").hide()
   $("#assemblyLegend").empty()
+  // empty and hide legend for taxa
+  $("#taxa_label").hide()
+  $("#colorLegendBox").empty()
+  // empty and hide legend for resistances
+  $("#res_label").hide()
+  $("#colorLegendBoxRes").empty()
+  // empty and hide legend for plasmid families
+  $("#pf_label").hide()
+  $("#colorLegendBoxPf").empty()
+  // empty and hide distances legend
+  $("#distance_label").hide()
+  $("#scaleLegend").empty()
+  // empty and hide read legend
+  $("#read_label").hide()
+  $("#readLegend").empty()
 
   // resets dropdown selections
   $("#orderList").selectpicker("deselectAll")
