@@ -12,7 +12,6 @@ const handleFileSelect = (infileId, textId, callback) => {
   document.getElementById(infileId).addEventListener("change", function (e) {
     let arrayOfObj = {}
     const files = e.target.files // FileList object
-    console.log("files", files)
     // append fle name to text fomr displaying current selection
     for (const file of files) {
       const fileName = file.name
@@ -32,7 +31,6 @@ const handleFileSelect = (infileId, textId, callback) => {
         reader.readAsText(file)
       }
     }
-    console.log("arrayObj", arrayOfObj)
     callback(arrayOfObj)
   }, false)
 }

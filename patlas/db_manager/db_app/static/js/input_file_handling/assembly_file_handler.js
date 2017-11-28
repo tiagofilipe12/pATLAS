@@ -1,4 +1,4 @@
-const assembly = (listGi, assemblyFile, g, graphics, renderer, masterReadArray) => {
+const assembly = (listGi, assemblyFile, g, graphics, renderer, masterReadArray, listGiFilter) => {
   // removes everything within []
   const readMode = true
   const firstObj = Object.keys(assemblyFile)[0] //TODO for now just accepts the

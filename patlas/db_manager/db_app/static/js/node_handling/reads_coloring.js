@@ -94,7 +94,7 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
 // single read displayer
 // This function colors each node present in input read json file
 
-const readColoring = (g, list_gi, graphics, renderer, masterReadArray) => {
+const readColoring = (g, list_gi, graphics, renderer, masterReadArray, read_json) => {
   const readMode = true
   //const readString = read_json.replace(/[{}" ]/g, "").split(",")
   // iterate for all files and save to masterReadArray to use in heatmap

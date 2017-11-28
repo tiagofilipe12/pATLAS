@@ -1011,7 +1011,7 @@ const onLoad = () => {
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray)
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray, read_json)
       }, 100)
 
       // }
@@ -1038,7 +1038,7 @@ const onLoad = () => {
       event.preventDefault()
       $('#loading').show()
       setTimeout(function () {
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer)
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray, read_json)
       }, 100)
 
       // }
@@ -1063,7 +1063,7 @@ const onLoad = () => {
         showGoback, showDownload, showTable, idsArrays)
       $('#loading').show()
       setTimeout(function () {
-        listGiFilter = assembly(list_gi, assembly_json, g, graphics, renderer, masterReadArray)
+        listGiFilter = assembly(list_gi, assembly_json, g, graphics, renderer, masterReadArray, listGiFilter)
       }, 100)
 
       // }

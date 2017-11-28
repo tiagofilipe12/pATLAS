@@ -20,9 +20,7 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
   // redefines listGiFilter if area selection is used
   // IMPORTANT: in this case listGiFilter doesn't exit this function scope
   // which is the intended behavior
-  console.log(areaSelection)
   listGiFilter = (areaSelection === false) ? listGiFilter : getTableWithAreaSelection(g, graphics)
-  console.log(listGiFilter)
   for (const i in listGiFilter) {
     if ({}.hasOwnProperty.call(listGiFilter, i)) {
       // gets info for every node and puts it in a line
@@ -74,8 +72,6 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
             entry.pfGenes = plasmidfinder
           })
           // async function must return the desired entry to push to dataArray
-          // dataArray.push(entry)
-          // console.log(dataArray)
           return entry // returns promise
 
         }
@@ -173,11 +169,8 @@ const heatmapMaker = (masterReadArray, readObjects) => {
   // if (heatmapChart === true) {
   //   emptyChart("#chartContainer2")
   // }
-  console.log("master", masterReadArray, readObjects)
   const tripleArray = parseReadObj(readObjects, masterReadArray)
-  console.log(tripleArray)
-  console.log(Math.min.apply(null, tripleArray[2]), tripleArray[2])
-  new Highcharts.chart("chartContainer2", {
+  Highcharts.chart("chartContainer2", {
 
     chart: {
       type: "heatmap",
@@ -224,11 +217,11 @@ const heatmapMaker = (masterReadArray, readObjects) => {
     },
 
     tooltip: {
-      formatter: function () {
+      formatter: () => {
         return "<b>" + this.series.xAxis.categories[this.point.x] + "</b>" +
-          " file" +
-          " <br><b>" +
-          this.point.value + "</b> % coverage <br><b>" + this.series.yAxis.categories[this.point.y] + "</b>";
+          " file" + " <br><b>" + this.point.value +
+          "</b> % coverage <br><b>" +
+          this.series.yAxis.categories[this.point.y] + "</b>"
       }
     },
 
