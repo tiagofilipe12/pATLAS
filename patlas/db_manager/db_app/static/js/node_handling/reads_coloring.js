@@ -94,32 +94,11 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
 // single read displayer
 // This function colors each node present in input read json file
 
-const readColoring = (g, list_gi, graphics, renderer, masterReadArray, read_json) => {
+const readColoring = (g, list_gi, graphics, renderer, masterReadArray, readString) => {
   const readMode = true
-  //const readString = read_json.replace(/[{}" ]/g, "").split(",")
-  // iterate for all files and save to masterReadArray to use in heatmap
-  for (const i in read_json) {
-    if (read_json.hasOwnProperty(i)) {
-      const fileEntries = JSON.parse(read_json[i])
-        // iterate each accession number
-      for (const i2 in fileEntries) {
-        if (fileEntries.hasOwnProperty(i2)) {
-          // if not in masterReadArray then add it
-          if (masterReadArray.indexOf(i2) < 0 && fileEntries[i2] >= cutoffParser()) {
-            masterReadArray.push(i2)
-          }
-        }
-      }
-    }
-  }
-  // TODO for now it just gets the first read file
-  const readString = JSON.parse(Object.values(read_json)[0]) //TODO for now
-  // reads the first
-  // entry
   let listGiFilter = []
   for (let string in readString) {
     const gi = string
-    //listGiFilter.push(gi)
     const perc = readString[string]
 
     // adds node if it doesn't have links

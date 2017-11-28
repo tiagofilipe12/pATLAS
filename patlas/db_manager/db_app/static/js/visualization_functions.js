@@ -38,6 +38,8 @@ let masterReadArray = []
 
 let read_json, mash_json, assembly_json
 
+let readIndex = -1
+
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
   return $.getJSON("/taxa")
@@ -1006,12 +1008,31 @@ const onLoad = () => {
 
     $("#fileSubmit").click( (event) => {
       masterReadArray = []
+      const readString = JSON.parse(Object.values(read_json)[0])
+      // readIndex will be used by slider buttons
+      readIndex += 1
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
       event.preventDefault()
       $("#loading").show()
       setTimeout( () => {
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray, read_json)
+        // colors each node for first element of read_json
+        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, masterReadArray, readString)
+        // iterate for all files and save to masterReadArray to use in heatmap
+        for (const i in read_json) {
+          if (read_json.hasOwnProperty(i)) {
+            const fileEntries = JSON.parse(read_json[i])
+            // iterate each accession number
+            for (const i2 in fileEntries) {
+              if (fileEntries.hasOwnProperty(i2)) {
+                // if not in masterReadArray then add it
+                if (masterReadArray.indexOf(i2) < 0 && fileEntries[i2] >= cutoffParser()) {
+                  masterReadArray.push(i2)
+                }
+              }
+            }
+          }
+        }
       }, 100)
 
       // }
@@ -1630,15 +1651,19 @@ const onLoad = () => {
   $("#alertClose_search").click( () => {
     $("#alertId_search").hide()  // hide this div
   })
-  // control the visualization of multiple files for read mode
+
+  /** control the visualization of multiple files for read mode
+  The default idea is that the first file in this read_json object is the
+   one to be loaded when uploading then everything else should use cycler
+  */
   $("#slideRight").click( () => {
     // TODO needs to do the same for assembly_json and mash_json
-    slideToRight(read_json)
+    readIndex = slideToRight(read_json, readIndex)
   })
 
   $("#slideLeft").click( () => {
     // TODO needs to do the same for assembly_json and mash_json
-    slideToLeft(read_json)
+    readIndex = slideToLeft(read_json, readIndex)
   })
 
   // this forces the entire script to run
