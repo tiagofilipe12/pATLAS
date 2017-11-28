@@ -39,7 +39,6 @@
 #buttonStuff{
   position: fixed;
   bottom: 2%;
-  width: 170px;
   left: 50%;
   transform: translateX(-46%);
 }

@@ -1019,6 +1019,8 @@ const onLoad = () => {
       setTimeout( () => {
         $("#loading").hide()
       }, 100)
+      $("#slideRight").prop("disabled", false)
+      $("#slideLeft").prop("disabled", false)
     })
 
     $("#cancel_infile").click( (event) => {
@@ -1627,6 +1629,16 @@ const onLoad = () => {
 
   $("#alertClose_search").click( () => {
     $("#alertId_search").hide()  // hide this div
+  })
+  // control the visualization of multiple files for read mode
+  $("#slideRight").click( () => {
+    // TODO needs to do the same for assembly_json and mash_json
+    slideToRight(read_json)
+  })
+
+  $("#slideLeft").click( () => {
+    // TODO needs to do the same for assembly_json and mash_json
+    slideToLeft(read_json)
   })
 
   // this forces the entire script to run
