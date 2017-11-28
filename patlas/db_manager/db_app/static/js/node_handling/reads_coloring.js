@@ -8,6 +8,7 @@ const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
   return y
 }
 
+// TODO this three functions could be merged
 // function to get value from cutoffValue
 const cutoffParser = () => {
   return ($("#cutoffValue").val() !== "") ? parseFloat($("#cutoffValue").val()) : 0.6

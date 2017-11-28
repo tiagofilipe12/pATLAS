@@ -150,18 +150,17 @@ const parseReadObj = (readObjects, masterReadArray) => {
           if (masterReadArray.indexOf(i2) < 0) {
             plasmidIndex = masterReadArray.indexOf(i2)
             coverageValue = Math.round(fileEntries[i2] * 100)
-            valuesArray.push(Math.round(fileEntries[i2] * 100))
+            valuesArray.push(coverageValue)
           } else {
             plasmidIndex = masterReadArray.indexOf(i2)
             coverageValue = Math.round(fileEntries[i2] * 100)
-            valuesArray.push(Math.round(fileEntries[i2] * 100))
+            valuesArray.push(coverageValue)
           }
           positionsMap.push([fileIndex, plasmidIndex, coverageValue])
         }
       }
     }
   }
-  //TODO return three arrays
   return [xCategories, positionsMap, valuesArray]
 }
 
@@ -176,6 +175,7 @@ const heatmapMaker = (masterReadArray, readObjects) => {
   // }
   console.log("master", masterReadArray, readObjects)
   const tripleArray = parseReadObj(readObjects, masterReadArray)
+  console.log(tripleArray)
   console.log(Math.min.apply(null, tripleArray[2]), tripleArray[2])
   new Highcharts.chart("chartContainer2", {
 
@@ -212,6 +212,9 @@ const heatmapMaker = (masterReadArray, readObjects) => {
     },
 
     legend: {
+      title: {
+        text: "Percentage (%)"
+      },
       align: "right",
       layout: "vertical",
       margin: 0,

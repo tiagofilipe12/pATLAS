@@ -116,7 +116,6 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
-      //console.log("node", node)
       nodeSize = minNodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })

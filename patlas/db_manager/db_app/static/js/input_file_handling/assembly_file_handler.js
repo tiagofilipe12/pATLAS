@@ -1,42 +1,60 @@
 const assembly = (listGi, assemblyFile, g, graphics, renderer, masterReadArray) => {
-  //console.log(assembly_json)
   // removes everything within []
   const readMode = true
   const firstObj = Object.keys(assemblyFile)[0] //TODO for now just accepts the
-  // first
-  // object
+  // first object
   const assemblyJson = JSON.parse(assemblyFile[firstObj])
   // iterate through all entries in assembly file
-  //TODO this is redundant with below but for now the below functin handles
+  //TODO this is redundant with below but for now the below function handles
   // just first instance
   for (const i in assemblyFile) {
     if (assemblyFile.hasOwnProperty(i)) {
+      const controlArray = []
       const fileEntries = JSON.parse(assemblyFile[i])
+      // for each file adds a node for each file
+      g.addNode(i, {
+        sequence: "<span style='color:#468499'>Accession:" +
+        " </span>" + i,
+        //species:"<font color='#468499'>Species:
+        // </font>" + species,
+        seq_length: "<span" +
+        " style='color:#468499'>Sequence length:" +
+        " </span>" + "N/A",
+        log_length: 10
+      })
+      const nodeUI = graphics.getNodeUI(i)
+      nodeUI.backupColor = nodeUI.color
+      nodeUI.color = 0xC70039
       // iterate each accession number
       for (const i2 in fileEntries) {
         if (fileEntries.hasOwnProperty(i2)) {
           // if not in masterReadArray then add it
-          if (masterReadArray.indexOf(i2) < 0 && fileEntries[i2] >= cutoffParser()) {
+          if (masterReadArray.indexOf(i2) < 0 && fileEntries[i2] >= 0.9) {
+            // TODO hardcoded to 0.9 but it should use something like
+            // cutOffParser()
             masterReadArray.push(i2)
+            controlArray.push(i2)
           }
         }
       }
+      // for each file iterate through all nodes
+      g.forEachNode( (node) => {
+        if (controlArray.indexOf(node.id) > -1) {
+          g.addLink(i, node.id, (JSON.parse(assemblyFile[i])[node.id]))
+          // add percentage information to node
+          node.data["percentage"] = (JSON.parse(assemblyFile[i])[node.id])
+            .toFixed(2).toString()
+          // change the color of linked nodes
+          const nodeUI2 = graphics.getNodeUI(node.id)
+          nodeUI2.backupColor = nodeUI.color
+          nodeUI2.color = 0xFF5733
+          // add to listGiFilter
+          listGiFilter.push(node.id)
+        }
+      })
     }
   }
-
-  for (const i in assemblyJson) {
-    if (assemblyJson.hasOwnProperty(i)) {
-      const gi = i
-      const perc = parseFloat(assemblyJson[i])
-      const newPerc = rangeConverter(perc, 0.9, 1, 0, 1)  //range now is
-      // limited to 0.9 the default cutoff set for mash dist
-      const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
-      const scale = chroma.scale(["lightsalmon", "maroon"])
-      palette(scale, 20, readMode)
-      node_iter(g, readColor, gi, graphics, perc)
-      listGiFilter.push(gi)
-    }
-  }
+  //TODO this requires a legend
   // control all related divs
   let showRerun = document.getElementById("Re_run")
   let showGoback = document.getElementById("go_back")
