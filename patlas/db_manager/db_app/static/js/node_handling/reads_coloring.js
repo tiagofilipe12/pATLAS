@@ -184,8 +184,7 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
   showTable.style.display = "block"
   renderer.rerender()
   $("#loading").hide()
-  // TODO this return must be checked ... because something will not work
-  return list_gi, listGiFilter
+  return [list_gi, listGiFilter]
 }
 
 

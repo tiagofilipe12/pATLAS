@@ -9,7 +9,7 @@ const slideToRight = (read_json, readIndex, g, list_gi, graphics, renderer) => {
     return [readIndex, listGiFilter]
   }
 }
-
+// function to slide to left
 const slideToLeft = (read_json, readIndex, g, list_gi, graphics, renderer) => {
   if (readIndex < Object.values(read_json).length || readIndex > 0) {
     // if readIndex is 0 then it should get the max value possible to allow

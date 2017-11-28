@@ -1017,7 +1017,9 @@ const onLoad = () => {
       $("#loading").show()
       setTimeout( () => {
         // colors each node for first element of read_json
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, readString)
+        const outLists = readColoring(g, list_gi, graphics, renderer, readString)
+        list_gi  = outLists[0]
+        listGiFilter = outLists[1]
         // iterate for all files and save to masterReadArray to use in heatmap
         for (const i in read_json) {
           if (read_json.hasOwnProperty(i)) {
@@ -1663,8 +1665,8 @@ const onLoad = () => {
       showGoback, showDownload, showTable, idsArrays)
     const outArray = slideToRight(read_json, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
-    listGiFilter = outArray[1]
-    console.log("list", listGiFilter)
+    listGiFilter = outArray[1][1]
+    list_gi = outArray[1][0]
   })
 
   $("#slideLeft").click( () => {
@@ -1673,7 +1675,8 @@ const onLoad = () => {
       showGoback, showDownload, showTable, idsArrays)
     const outArray = slideToLeft(read_json, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
-    listGiFilter = outArray[1]
+    listGiFilter = outArray[1][1]
+    list_gi = outArray[1][0]
   })
 
   // this forces the entire script to run
