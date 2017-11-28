@@ -289,6 +289,8 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
     $("#readLegend").empty()
   }
   resetDisplayTaxaBox(idsArrays)
+  $("#assemblyLabel").hide()
+  $("#assemblyLegend").empty()
 
   // resets dropdown selections
   $("#orderList").selectpicker("deselectAll")

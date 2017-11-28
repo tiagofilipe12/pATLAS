@@ -1,12 +1,5 @@
 const assembly = (listGi, assemblyFile, g, graphics, renderer, masterReadArray, listGiFilter) => {
-  // removes everything within []
-  const readMode = true
-  const firstObj = Object.keys(assemblyFile)[0] //TODO for now just accepts the
-  // first object
-  const assemblyJson = JSON.parse(assemblyFile[firstObj])
   // iterate through all entries in assembly file
-  //TODO this is redundant with below but for now the below function handles
-  // just first instance
   for (const i in assemblyFile) {
     if (assemblyFile.hasOwnProperty(i)) {
       const controlArray = []
