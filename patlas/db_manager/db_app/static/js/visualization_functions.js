@@ -1009,6 +1009,8 @@ const onLoad = () => {
     $("#fileSubmit").click( (event) => {
       masterReadArray = []
       const readString = JSON.parse(Object.values(read_json)[0])
+      $("#fileNameDiv").html(Object.keys(read_json)[0])
+      $("#fileNameDiv").show()
       // readIndex will be used by slider buttons
       readIndex += 1
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
@@ -1064,7 +1066,9 @@ const onLoad = () => {
       $("#loading").show()
       setTimeout( () => {
         // TODO this read_json here must be a json object from 1 file
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer, read_json)
+        outputList = readColoring(g, list_gi, graphics, renderer, read_json)
+        list_gi = outputList[0]
+        listGiFilter = outputList[1]
       }, 100)
 
       // }
@@ -1667,6 +1671,7 @@ const onLoad = () => {
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
     list_gi = outArray[1][0]
+
   })
 
   $("#slideLeft").click( () => {

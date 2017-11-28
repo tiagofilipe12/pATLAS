@@ -617,3 +617,10 @@
 #modalTableBody > .tab-content > .tab-pane > .bootstrap-table > .fixed-table-toolbar > .columns > .btn{
     height: 34px;
 }
+
+#fileNameDiv{
+    margin-top: 5px;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
+}

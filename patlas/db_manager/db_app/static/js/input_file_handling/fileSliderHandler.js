@@ -4,6 +4,8 @@ const slideToRight = (read_json, readIndex, g, list_gi, graphics, renderer) => {
     // if readIndex is max value already then return to 0 to allow cycling
     (readIndex !== Object.values(read_json).length - 1) ?
     readIndex += 1 : readIndex = 0
+    // change div containing naming of the file
+    $("#fileNameDiv").html(Object.keys(read_json)[readIndex])
     const nextFile = JSON.parse(Object.values(read_json)[readIndex])
     const listGiFilter = readColoring(g, list_gi, graphics, renderer, nextFile)
     return [readIndex, listGiFilter]
@@ -16,6 +18,8 @@ const slideToLeft = (read_json, readIndex, g, list_gi, graphics, renderer) => {
     // cycling
     (readIndex !== 0) ?
       readIndex -= 1 : readIndex = Object.values(read_json).length - 1
+    // change div containing naming of the file
+    $("#fileNameDiv").html(Object.keys(read_json)[readIndex])
     const nextFile = JSON.parse(Object.values(read_json)[readIndex])
     const listGiFilter = readColoring(g, list_gi, graphics, renderer, nextFile)
     return [readIndex, listGiFilter]
