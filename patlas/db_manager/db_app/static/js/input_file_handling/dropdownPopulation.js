@@ -193,7 +193,6 @@ const pfSubmitFunction = (g, graphics, renderer) => {
   // shows legend
   Promise.all(promises)
     .then( () => {
-      console.log(storeLis)
       if (legendInst === true) {
         $("#pf_label").show()
         $("#colorLegendBoxPf").empty()

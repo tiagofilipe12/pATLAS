@@ -162,7 +162,6 @@ const parseReadObj = (readObjects, masterReadArray) => {
 
 const heatmapMaker = (masterReadArray, readObjects) => {
   const tripleArray = parseReadObj(readObjects, masterReadArray)
-  console.log(tripleArray)
   Highcharts.chart("chartContainer2", {
 
     chart: {
