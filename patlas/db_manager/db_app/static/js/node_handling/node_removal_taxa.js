@@ -68,7 +68,8 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 // function to call requests on db
 
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
-                     reloadAccessionList, renderer, list_gi, readString) => {
+                     reloadAccessionList, renderer, list_gi, readString,
+                     assemblyJson) => {
   if (listGiFilter.length > 0) {
     let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
@@ -134,6 +135,10 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
         renderGraph(graphics)
         if (readString !== false) {
           readColoring(g, list_gi, graphics, renderer, readString)
+        } else if (assemblyJson !== false) {
+          masterReadArray = [] //needs to reset this array for the assembly
+          // function to be successful
+          listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
         } else if ($("#p_Card").html() !== "Card:" ||
           $("#p_Resfinder").html() !== "Resfinder:") {
           $("#resSubmit").click()
@@ -186,6 +191,8 @@ const actual_removal = (g, graphics, onload) => {
     "<!--Populated by visualization_functions.js-->\n" +
     "<label id='read_label' style='display: none'>Read filters</label>\n" +
     "<div class='gradient' id='readLegend'></div>\n" +
+    "<label id='assemblyLabel' style='display: none'>Assembly</label>" +
+    "<div class='legend' id='assemblyLegend'></div>" +
     "</div>\n" +
     "</div>\n" +
     "</div>\n" +

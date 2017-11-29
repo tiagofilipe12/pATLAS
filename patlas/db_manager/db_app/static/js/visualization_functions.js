@@ -1090,7 +1090,7 @@ const onLoad = () => {
         showGoback, showDownload, showTable, idsArrays)
       $("#loading").show()
       // setTimeout( () => {
-        listGiFilter = assembly(list_gi, assembly_json, g, graphics, masterReadArray, listGiFilter)
+      listGiFilter = assembly(list_gi, assembly_json, g, graphics, masterReadArray, listGiFilter)
       // }, 100)
       setTimeout( () => {
         renderer.rerender()
@@ -1421,12 +1421,14 @@ const onLoad = () => {
         $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
         $("#fileNameDiv").show()
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
-          graphics, reloadAccessionList, renderer, list_gi, readReload)
+          graphics, reloadAccessionList, renderer, list_gi, readReload,
+          assembly_json)
         // TODO do something similar to assembly
       } else {
         // used when no reads are used to filter
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
-          graphics, reloadAccessionList, renderer, list_gi, false)
+          graphics, reloadAccessionList, renderer, list_gi, false,
+          assembly_json)
       }
       listGiFilter = requestDBList[0] // list with the nodes used to filter
       reloadAccessionList = requestDBList[1] //list stores all nodes present
