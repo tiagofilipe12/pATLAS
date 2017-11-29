@@ -128,7 +128,8 @@ const onLoad = () => {
     // rerun precomputes 500
     // const prerender = (devel === true || rerun === true) ? 500 : 0
     // version that doesn't rerun
-    const prerender = (devel === true) ? 500 : 0
+    // console.log("prerender", parseInt(Math.log(listGiFilter.length)))
+    const prerender = (devel === true) ? 500 : parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
 
     renderer = Viva.Graph.View.renderer(g, {
       layout,
