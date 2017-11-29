@@ -36,7 +36,7 @@ let currentQueryNode
 
 let masterReadArray = []
 
-let read_json, mash_json, assembly_json
+let readFilejson, mash_json, assembly_json
 
 let readIndex = -1
 
@@ -62,6 +62,9 @@ let reloadAccessionList = []
 let sliderMinMax = [] // initiates an array for min and max slider entries
 // and stores it for reloading instances of onload()
 let list_gi = []
+// define render on the scope of onload in order to be used by buttons
+// outside renderGraph
+let renderer
 
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
@@ -93,9 +96,6 @@ const onLoad = () => {
     gravity: -1.2,
     theta: 1
   })
-  // define render on the scope of onload in order to be used by buttons
-  // outside renderGraph
-  let renderer
   // buttons that are able to hide
   let showRerun = document.getElementById("Re_run"),
     showGoback = document.getElementById("go_back"),
@@ -1007,25 +1007,25 @@ const onLoad = () => {
     //* ************//
 
     $("#fileSubmit").click( (event) => {
+      event.preventDefault()
       masterReadArray = []
-      const readString = JSON.parse(Object.values(read_json)[0])
-      $("#fileNameDiv").html(Object.keys(read_json)[0])
+      const readString = JSON.parse(Object.values(readFilejson)[0])
+      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
       $("#fileNameDiv").show()
       // readIndex will be used by slider buttons
       readIndex += 1
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
-      event.preventDefault()
       $("#loading").show()
       setTimeout( () => {
-        // colors each node for first element of read_json
+        // colors each node for first element of readFilejson
         const outLists = readColoring(g, list_gi, graphics, renderer, readString)
         list_gi  = outLists[0]
         listGiFilter = outLists[1]
         // iterate for all files and save to masterReadArray to use in heatmap
-        for (const i in read_json) {
-          if (read_json.hasOwnProperty(i)) {
-            const fileEntries = JSON.parse(read_json[i])
+        for (const i in readFilejson) {
+          if (readFilejson.hasOwnProperty(i)) {
+            const fileEntries = JSON.parse(readFilejson[i])
             // iterate each accession number
             for (const i2 in fileEntries) {
               if (fileEntries.hasOwnProperty(i2)) {
@@ -1049,7 +1049,7 @@ const onLoad = () => {
     })
 
     $("#cancel_infile").click( (event) => {
-      abortRead(read_json)
+      abortRead(readFilejson)
     })
 
     //* ************//
@@ -1058,15 +1058,15 @@ const onLoad = () => {
 
     $("#fileSubmit_mash").click( (event) => {
       masterReadArray = []
-      read_json = mash_json // conerts mash_json into read_json to overwrite
+      readFilejson = mash_json // conerts mash_json into readFilejson to overwrite
       // it and use the same function (readColoring)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showtable, idsArrays)
       event.preventDefault()
       $("#loading").show()
       setTimeout( () => {
-        // TODO this read_json here must be a json object from 1 file
-        outputList = readColoring(g, list_gi, graphics, renderer, read_json)
+        // TODO this readFilejson here must be a json object from 1 file
+        outputList = readColoring(g, list_gi, graphics, renderer, readFilejson)
         list_gi = outputList[0]
         listGiFilter = outputList[1]
       }, 100)
@@ -1416,12 +1416,21 @@ const onLoad = () => {
       }
     } else {
       // storeMasterNode is empty in here
-      console.log("listGiFilter before requestDB", listGiFilter)
-      listGiFilter, reloadAccessionList = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList)
-
+      console.log(renderer)
+      const readReload = JSON.parse(Object.values(readFilejson)[readIndex])
+      $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
+      $("#fileNameDiv").show()
+      requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
+        graphics, reloadAccessionList, readReload, renderer, list_gi)
+      listGiFilter = requestDBList[0] // list with the nodes used to filter
+      reloadAccessionList = requestDBList[1] //list stores all nodes present
       // this list_gi isn't the same as the initial but has information on
       // all the nodes that were used in filters
-      // TODO masterNode needs to be used to re-center the graph
+      // wait a while before showing the colors
+      setTimeout( () => {
+        renderer.rerender()
+      }, 100)
+
     }
   }
 
@@ -1430,7 +1439,7 @@ const onLoad = () => {
   //* ***********************************************//
 
   handleFileSelect('infile', '#file_text', (new_read_json) => {
-    read_json = new_read_json
+    readFilejson = new_read_json
     // $("#infile").val("")
   })
 
@@ -1512,21 +1521,21 @@ const onLoad = () => {
   // function to display heatmap dataset selected in table
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
     // transform internal accession numbers to ncbi acceptable accesions
-    if (read_json !== false) {
-      console.log("read", read_json)
-      heatmapMaker(masterReadArray, read_json)
+    if (readFilejson !== false) {
+      console.log("read", readFilejson)
+      heatmapMaker(masterReadArray, readFilejson)
       mash_json = false
       assembly_json = false
-    } // this just is executed when read_json is defined
+    } // this just is executed when readFilejson is defined
     else if (mash_json !== false) {
       console.log("mash")
       heatmapMaker(masterReadArray, mash_json)
-      read_json = false
+      readFilejson = false
       assembly_json = false
     } else if (assembly_json !== false) {
       console.log("assembly")
       heatmapMaker(masterReadArray, assembly_json)
-      read_json = false
+      readFilejson = false
       mash_json = false
     }
   })
@@ -1604,7 +1613,7 @@ const onLoad = () => {
     $("#infile").val("")
     $("#mashInfile").val("")
     $("#assemblyfile").val("")
-    read_json = false
+    readFilejson = false
     mash_json = false
     assembly_json = false
   }
@@ -1660,14 +1669,14 @@ const onLoad = () => {
   })
 
   /** control the visualization of multiple files for read mode
-  The default idea is that the first file in this read_json object is the
+  The default idea is that the first file in this readFilejson object is the
    one to be loaded when uploading then everything else should use cycler
   */
   $("#slideRight").click( () => {
     // TODO needs to do the same for assembly_json and mash_json
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
-    const outArray = slideToRight(read_json, readIndex, g, list_gi, graphics, renderer)
+    const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
     list_gi = outArray[1][0]
@@ -1678,7 +1687,7 @@ const onLoad = () => {
     // TODO needs to do the same for assembly_json and mash_json
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
-    const outArray = slideToLeft(read_json, readIndex, g, list_gi, graphics, renderer)
+    const outArray = slideToLeft(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
     list_gi = outArray[1][0]

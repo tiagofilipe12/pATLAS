@@ -17,10 +17,10 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   if (newList.indexOf(sequence) < 0) {
     //console.log("sequence", sequence)
     g.addNode(sequence, {
-      sequence: "<font color='#468499'>Accession:" +
-      " </font><a" +
+      sequence: "<span style='color:#468499'>Accession:" +
+      " </span><a" +
       " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-      seq_length: "<font color='#468499'>Sequence length: </font>" + ((length !== "N/A") ? length : "N/A"),
+      seq_length: "<span style='color:#468499'>Sequence length: </span>" + ((length !== "N/A") ? length : "N/A"),
       log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
     newList.push(sequence)  //adds to list everytime a new node is added here
@@ -43,12 +43,12 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       if (newList.indexOf(linkAccession) < 0) {
         //console.log(linkAccession)
         g.addNode(linkAccession, {
-          sequence: "<font color='#468499'>Accession:" +
-          " </font><a" +
+          sequence: "<span style='color:#468499'>Accession:" +
+          " </span><a" +
           " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
-          seq_length: "<font" +
-          " color='#468499'>Sequence length:" +
-          " </font>" + linkLength,
+          seq_length: "<span" +
+          " style='color:#468499'>Sequence length:" +
+          " </span>" + linkLength,
           log_length: Math.log(parseInt(linkLength))
         })
         newList.push(linkAccession) //adds to list every time a node is
@@ -62,12 +62,13 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   }
   //storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
   //  sequence, counter)
-  return newList, newListHashes
+  return [newList, newListHashes]
 }
 
 // function to call requests on db
 
-const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList) => {
+const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
+                     reloadAccessionList, readString, renderer, list_gi) => {
   if (listGiFilter.length > 0) {
     // let newList = []
     let promises = []   //an array to store all the requests as promises
@@ -106,11 +107,12 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
                 "significantLinks": "N/A"
               }
               //add node
-              reloadAccessionList, newListHashes = reAddNode(g, jsonObj, reloadAccessionList, newListHashes) //callback
-              // function
+              reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+              reloadAccessionList = reAddNodeList[0]
+              newListHashes = reAddNodeList[1]
+
             } else {  // add node for every accession that has links and that is
               // present in plasmid_db
-              //console.log("teste", data.json_entry.significantLinks.split(','))
               const jsonObj = {
                 "plasmidAccession": data.plasmid_id,
                 "plasmidLenght": data.json_entry.length,
@@ -121,7 +123,9 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
                 // TODO this is sketchy and should be fixed with JSON parsing from db
               }
               //add node
-              reloadAccessionList, newListHashes = reAddNode(g, jsonObj, reloadAccessionList, newListHashes) //callback function
+              reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+              reloadAccessionList = reAddNodeList[0]
+              newListHashes = reAddNodeList[1]
             }
           })
       )
@@ -129,23 +133,24 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
     // promise that waits for all the requests and nodes to be added to
     // vivagraph.... and only then precompute the graph.
     Promise.all(promises)
-      .then((results) => {
-        renderGraph(graphics) //TODO storeMasterNode maybe can be passed to this
-        // function
+      .then( () => {
+        renderGraph(graphics)
+        readColoring(g, list_gi, graphics, renderer, readString)
       })
-      .catch((error) => {
+      .then(
+        renderer.rerender()
+      )
+      .catch( (error) => {
         console.log("Error! No query was made. Error message: ", error)
       })
   }
-  return listGiFilter, reloadAccessionList
+  return [listGiFilter, reloadAccessionList]
 }
 
 // function that actually removes the nodes
 const actual_removal = (g, graphics, onload) => {
   // removes all nodes from g using the same layout
-  //console.log(listGiFilter)
   firstInstace = false
-
   // change play button in order to be properly set to pause
   $("#couve-flor").empty()
   // TODO check if this can be cleaner... removing vivagraph canvas?
@@ -155,59 +160,60 @@ const actual_removal = (g, graphics, onload) => {
     "<div class='panel panel-default' >\n" +
     "<div class='panel-heading'>Color legend</div>\n" +
     "<div class='panel-body'>\n" +
-  "<!--Populated by visualization_functions.js-->\n" +
-  "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
-  "<ul class='legend' id='colorLegendBox'></ul>\n" +
-  "<!--Populated by visualization_functions.js-->\n" +
-  "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
-  "<div class='gradient' id='scaleLegend'></div>\n" +
-  "<!--Populated by visualization_functions.js-->\n" +
-  "<label id='read_label' style='display: none'>Read filters</label>\n" +
-  "<div class='gradient' id='readLegend'></div>\n" +
-  "</div>\n" +
-  "</div>\n" +
-  "</div>\n" +
-  "\n" +
-  "<div id='buttonStuff'>\n" +
-  "<div class='btn-group'>\n" +
-  "\n" +
-  "<!-- Buttons that overlay the graph and interact with it -->\n" +
-  "<button id='playpauseButton' data-toggle='tooltip' \n" +
-  "        title='Play/Pause' type='button' \n" +
-  "        class='btn btn-success'>\n" +
-  "<span class='glyphicon glyphicon-play'></span>\n" +
-  "</button>\n" +
-  "\n" +
-  "<button class='btn btn-primary' href='#' data-toggle='modal' " +
-  "        data-backdrop='static' title='Quick stats' " +
-  "        data-target='#modalPlot' id='refreshButton'>" +
-  "<span class='glyphicon glyphicon-stats'></span>\n" +
-  "</button>\n" +
-  "</div>\n" +
-  "<!--zoom buttons-->\n" +
-  "<div class='btn-group'>\n" +
-  "<button id='zoom_in' class='zoom in btn btn-default'\n" +
-  "        data-toggle='tooltip' title='Zoom in' \n" +
-  "        type='button'>\n" +
-  "<span class='glyphicon glyphicon-zoom-in'></span>\n" +
-  "</button>\n" +
-  "<button id='zoom_out' class='zoom out btn btn-default'\n" +
-  "        data-toggle='tooltip' title='Zoom out' \n" +
-  "        type='button'>\n" +
-  "<span class='glyphicon glyphicon-zoom-out'></span>\n" +
-  "</button>\n" +
-  "</div> \n" +
-  "<div class='btn-group'>" +
-  "<button id='slideLeft' class='zoom in btn btn-default' data-toggle='tooltip'" +
-  "title='Change file' type='button' disabled>" +
-  "<span class='glyphicon glyphicon-chevron-left'></span>" +
-  "</button><button id='slideRight' class='zoom out btn btn-default'" +
-  "data-toggle='tooltip' title='Change file'" +
-  "type='button' disabled>" +
-  "<span class='glyphicon glyphicon-chevron-right'></span></button></div>" +
-  "<div id='fileNameDiv'></div>" +
-  "</div>\n" +
-  "<div id='popup_description' style='display: none'></div>"
+    "<!--Populated by visualization_functions.js-->\n" +
+    "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
+    "<ul class='legend' id='colorLegendBox'></ul>\n" +
+    "<!--Populated by visualization_functions.js-->\n" +
+    "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
+    "<div class='gradient' id='scaleLegend'></div>\n" +
+    "<!--Populated by visualization_functions.js-->\n" +
+    "<label id='read_label' style='display: none'>Read filters</label>\n" +
+    "<div class='gradient' id='readLegend'></div>\n" +
+    "</div>\n" +
+    "</div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div id='buttonStuff'>\n" +
+    "<div class='btn-group'>\n" +
+    "\n" +
+    "<!-- Buttons that overlay the graph and interact with it -->\n" +
+    "<button id='playpauseButton' data-toggle='tooltip' \n" +
+    "        title='Play/Pause' type='button' \n" +
+    "        class='btn btn-success'>\n" +
+    "<span class='glyphicon glyphicon-play'></span>\n" +
+    "</button>\n" +
+    "\n" +
+    "<button class='btn btn-primary' href='#' data-toggle='modal' " +
+    "        data-backdrop='static' title='Quick stats' " +
+    "        data-target='#modalPlot' id='refreshButton'>" +
+    "<span class='glyphicon glyphicon-stats'></span>\n" +
+    "</button>\n" +
+    "</div>\n" +
+    "<!--zoom buttons-->\n" +
+    "<div class='btn-group'>\n" +
+    "<button id='zoom_in' class='zoom in btn btn-default'\n" +
+    "        data-toggle='tooltip' title='Zoom in' \n" +
+    "        type='button'>\n" +
+    "<span class='glyphicon glyphicon-zoom-in'></span>\n" +
+    "</button>\n" +
+    "<button id='zoom_out' class='zoom out btn btn-default'\n" +
+    "        data-toggle='tooltip' title='Zoom out' \n" +
+    "        type='button'>\n" +
+    "<span class='glyphicon glyphicon-zoom-out'></span>\n" +
+    "</button>\n" +
+    "</div> \n" +
+    "<div class='btn-group'>" +
+    "<button id='slideLeft' class='zoom in btn btn-default' data-toggle='tooltip'" +
+    "title='Change file' type='button' disabled>" +
+    "<span class='glyphicon glyphicon-chevron-left'></span>" +
+    "</button><button id='slideRight' class='zoom out btn btn-default'" +
+    "data-toggle='tooltip' title='Change file'" +
+    "type='button' disabled>" +
+    "<span class='glyphicon glyphicon-chevron-right'></span></button>" +
+    "</div>" +
+    "<div id='fileNameDiv'></div>" +
+    "</div>\n" +
+    "<div id='popup_description' style='display: none'></div>"
 )
 
   // should be executed when listGiFilter is empty ... mainly for area selection
