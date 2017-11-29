@@ -36,7 +36,9 @@ let currentQueryNode
 
 let masterReadArray = []
 
-let readFilejson, mash_json, assembly_json
+let readFilejson = false
+let mash_json = false
+let assembly_json = false
 
 let readIndex = -1
 
@@ -131,7 +133,7 @@ const onLoad = () => {
     renderer = Viva.Graph.View.renderer(g, {
       layout,
       graphics,
-      container: document.getElementById('couve-flor'),
+      container: document.getElementById("couve-flor"),
       prerender,
       preserveDrawingBuffer: true
     })
@@ -1267,6 +1269,9 @@ const onLoad = () => {
     $("#reset-sliders").click(function (event) {
       listGiFilter = [] //resets listGiFilter
       areaSelection = false
+      readFilejson = false // makes file selection empty again
+      assembly_json = false
+      mash_json = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
@@ -1416,12 +1421,17 @@ const onLoad = () => {
       }
     } else {
       // storeMasterNode is empty in here
-      console.log(renderer)
-      const readReload = JSON.parse(Object.values(readFilejson)[readIndex])
-      $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
-      $("#fileNameDiv").show()
-      requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
-        graphics, reloadAccessionList, readReload, renderer, list_gi)
+      if (readFilejson !== false) {
+        const readReload = JSON.parse(Object.values(readFilejson)[readIndex])
+        $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
+        $("#fileNameDiv").show()
+        requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
+          graphics, reloadAccessionList, renderer, list_gi, readReload)
+      } else {
+        // used when no reads are used to filter
+        requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
+          graphics, reloadAccessionList, renderer, list_gi, false)
+      }
       listGiFilter = requestDBList[0] // list with the nodes used to filter
       reloadAccessionList = requestDBList[1] //list stores all nodes present
       // this list_gi isn't the same as the initial but has information on
@@ -1430,7 +1440,6 @@ const onLoad = () => {
       setTimeout( () => {
         renderer.rerender()
       }, 100)
-
     }
   }
 

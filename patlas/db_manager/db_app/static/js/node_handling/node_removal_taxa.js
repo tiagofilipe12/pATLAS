@@ -68,9 +68,8 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 // function to call requests on db
 
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
-                     reloadAccessionList, readString, renderer, list_gi) => {
+                     reloadAccessionList, renderer, list_gi, readString) => {
   if (listGiFilter.length > 0) {
-    // let newList = []
     let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
     // loops every Accession stored in listGiFilter on re_run button
@@ -93,8 +92,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
             } else {
               plasmidName = data.json_entry.plasmid_name
             }
-            //console.log(data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(','))
-
             // if accession is not present in the database because singletons
             // are not stored in database
             if (data.json_entry.significantLinks === null) {
@@ -135,11 +132,14 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
     Promise.all(promises)
       .then( () => {
         renderGraph(graphics)
-        readColoring(g, list_gi, graphics, renderer, readString)
+        if(readString !== false) {
+          readColoring(g, list_gi, graphics, renderer, readString)
+        } else {
+          $("#taxaModalSubmit").click() // simulates the click of the button
+          // which checks the divs that contain the species, color the as if
+          // the button was clicked and makes the legend
+        }
       })
-      .then(
-        renderer.rerender()
-      )
       .catch( (error) => {
         console.log("Error! No query was made. Error message: ", error)
       })
