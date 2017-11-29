@@ -1,4 +1,4 @@
-const assembly = (listGi, assemblyFile, g, graphics, renderer, masterReadArray, listGiFilter) => {
+const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilter) => {
   // iterate through all entries in assembly file
   for (const i in assemblyFile) {
     if (assemblyFile.hasOwnProperty(i)) {
@@ -71,6 +71,6 @@ const assembly = (listGi, assemblyFile, g, graphics, renderer, masterReadArray, 
   showTable.style.display = "block"
   showLegend.style.display = "block"
   $("#assemblyLabel").show()
-  renderer.run()
+  // renderer.run()
   return listGiFilter
 }

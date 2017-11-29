@@ -1089,8 +1089,11 @@ const onLoad = () => {
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
       $("#loading").show()
+      // setTimeout( () => {
+        listGiFilter = assembly(list_gi, assembly_json, g, graphics, masterReadArray, listGiFilter)
+      // }, 100)
       setTimeout( () => {
-        listGiFilter = assembly(list_gi, assembly_json, g, graphics, renderer, masterReadArray, listGiFilter)
+        renderer.rerender()
       }, 100)
 
       // }
