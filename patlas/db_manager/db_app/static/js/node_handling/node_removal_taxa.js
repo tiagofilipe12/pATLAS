@@ -132,12 +132,26 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
     Promise.all(promises)
       .then( () => {
         renderGraph(graphics)
-        if(readString !== false) {
+        if (readString !== false) {
           readColoring(g, list_gi, graphics, renderer, readString)
-        } else {
-          $("#taxaModalSubmit").click() // simulates the click of the button
+        } else if ($("#p_Card").html() !== "Card:" ||
+          $("#p_Resfinder").html() !== "Resfinder:") {
+          $("#resSubmit").click()
+        } else if ($("#p_Plasmidfinder").html() !== "Plasmidfinder:") {
+          $("#pfSubmit").click()
+        } else if ($("#p_Species").html() !== "Species:" ||
+          $("#p_Genus").html() !== "Genus:" ||
+          $("#p_Family").html() !== "Family:" ||
+          $("#p_Order").html() !== "Order:") {
+          // simulates the click of the button
           // which checks the divs that contain the species, color the as if
-          // the button was clicked and makes the legend
+          // the button was clicked and makes the legends
+          $("#taxaModalSubmit").click()
+        } else {
+          for (accession of listGiFilter) {
+            colorNodes(g, graphics, accession, 0x23A900) //green color for
+            // area selection
+          }
         }
       })
       .catch( (error) => {
@@ -221,7 +235,7 @@ const actual_removal = (g, graphics, onload) => {
     let tempListAccessions = []
     g.forEachNode( (node) => {
       const currentNodeUI = graphics.getNodeUI(node.id)
-      if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
+      if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
     })
     return tempListAccessions
   }
@@ -234,7 +248,6 @@ const actual_removal = (g, graphics, onload) => {
 // a function to display the loader mask
 const show_div = (callback) => {
   $("#loading").show()
-  //console.log('showing loader')
   // if callback exist execute it
   callback && callback()
 }

@@ -265,7 +265,7 @@ const onLoad = () => {
     renderer.rerender()
 
     //* * Loading Screen goes off **//
-    $('#loading').hide()
+    $("#loading").hide()
     $("#couve-flor").css("visibility", "visible")
 
     //* **************//
@@ -610,7 +610,6 @@ const onLoad = () => {
       }
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
-      console.log("ressubmit")
       event.preventDefault()
       // TODO reset nodes before adding new colors
       // same should be done for taxa filters submit button
@@ -780,11 +779,6 @@ const onLoad = () => {
         Alert = false
       }
 
-      // control button to close div
-      $("#alertCloseNCBI").click( () => {
-        $("#alertNCBI").hide()  // hide this div
-      })
-
       // auto hide after 5 seconds without closing the div
       window.setTimeout( () => { $("#alertId").hide() }, 5000)
 
@@ -848,8 +842,8 @@ const onLoad = () => {
           const tempArray = assocOrderGenus[currentSelectionOrder[i]]
           for (const sp in tempArray) {
             taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-              .then(results => {
-                results.map(request => {
+              .then( (results) => {
+                results.map( (request) => {
                   listGiFilter.push(request.plasmid_id)
                 })
               })
@@ -862,8 +856,8 @@ const onLoad = () => {
           const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
           for (const sp in tempArray) {
             taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-              .then(results => {
-                results.map(request => {
+              .then( (results) => {
+                results.map( (request) => {
                   listGiFilter.push(request.plasmid_id)
                 })
               })
@@ -876,8 +870,8 @@ const onLoad = () => {
           const tempArray = assocGenus[currentSelectionGenus[i]]
           for (const sp in tempArray) {
             taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-              .then(results => {
-                results.map(request => {
+              .then( (results) => {
+                results.map( (request) => {
                   listGiFilter.push(request.plasmid_id)
                 })
               })
@@ -888,8 +882,8 @@ const onLoad = () => {
         let currentSelectionSpecies = alertArrays.species
         for (const i in currentSelectionSpecies) {
           taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor, reloadAccessionList)//, changed_nodes)
-            .then(results => {
-              results.map(request => {
+            .then( (results) => {
+              results.map( (request) => {
                 listGiFilter.push(request.plasmid_id)
               })
             })
@@ -918,8 +912,8 @@ const onLoad = () => {
                 // executres node function for family and orders
                 for (const sp in tempArray) {
                   taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                    .then(results => {
-                      results.map(request => {
+                    .then( (results) => {
+                      results.map( (request) => {
                         listGiFilter.push(request.plasmid_id)
                       })
                     })
@@ -937,8 +931,8 @@ const onLoad = () => {
                 // executres node function for family
                 for (const sp in tempArray) {
                   taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                    .then(results => {
-                      results.map(request => {
+                    .then( (results) => {
+                      results.map( (request) => {
                         listGiFilter.push(request.plasmid_id)
                       })
                     })
@@ -957,7 +951,7 @@ const onLoad = () => {
                 // respective nodes
                 for (const sp in tempArray) {
                   taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                    .then(results => {
+                    .then( (results) => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
                       })
@@ -975,7 +969,7 @@ const onLoad = () => {
                 // requests taxa associated accession from db and colors
                 // respective nodes
                 taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)//, changed_nodes)
-                  .then(results => {
+                  .then( (results) => {
                     results.map(request => {
                       listGiFilter.push(request.plasmid_id)
                     })
@@ -1278,7 +1272,6 @@ const onLoad = () => {
     })
     // runs the re run operation for the selected species
     $("#Re_run").click(function (event) {
-      console.log("rerun listGiFilter", listGiFilter)
       // resets areaSelection
       areaSelection = false
       rerun = true
@@ -1363,7 +1356,6 @@ const onLoad = () => {
             const log_length = Math.log(parseInt(seqLength))
             list_lengths.push(seqLength)
             list_gi.push(sequence)
-            //console.log(array, sequence, seqLength, log_length)
 
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
@@ -1404,12 +1396,10 @@ const onLoad = () => {
           const queue = async.queue(addAllNodes, 10)
 
           queue.drain = () => {
-            //console.log("finished")
             // after getting all nodes, setup another concurrency for all links
             const queue2 = async.queue(addAllLinks, 10)
 
             queue2.drain = () => {
-              //console.log("finished 2")
               renderGraph(graphics)
             }
             // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
@@ -1421,12 +1411,14 @@ const onLoad = () => {
       }
     } else {
       // storeMasterNode is empty in here
+      // TODO mash_json can reuse the if statement below... needs testing
       if (readFilejson !== false) {
         const readReload = JSON.parse(Object.values(readFilejson)[readIndex])
         $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
         $("#fileNameDiv").show()
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, readReload)
+        // TODO do something similar to assembly
       } else {
         // used when no reads are used to filter
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
@@ -1531,18 +1523,15 @@ const onLoad = () => {
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
     // transform internal accession numbers to ncbi acceptable accesions
     if (readFilejson !== false) {
-      console.log("read", readFilejson)
       heatmapMaker(masterReadArray, readFilejson)
       mash_json = false
       assembly_json = false
     } // this just is executed when readFilejson is defined
     else if (mash_json !== false) {
-      console.log("mash")
       heatmapMaker(masterReadArray, mash_json)
       readFilejson = false
       assembly_json = false
     } else if (assembly_json !== false) {
-      console.log("assembly")
       heatmapMaker(masterReadArray, assembly_json)
       readFilejson = false
       mash_json = false
@@ -1675,6 +1664,10 @@ const onLoad = () => {
 
   $("#alertClose_search").click( () => {
     $("#alertId_search").hide()  // hide this div
+  })
+
+  $("#alertCloseNCBI").click( () => {
+    $("#alertNCBI").hide()  // hide this div
   })
 
   /** control the visualization of multiple files for read mode
