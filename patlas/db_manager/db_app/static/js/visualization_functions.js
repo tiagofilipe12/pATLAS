@@ -1110,33 +1110,33 @@ const onLoad = () => {
     //* *********************//
     //* * Distances filter **//
     //* *********************//
-    $('#distancesSubmit').click(function (event) {
+    $("#distancesSubmit").click(function (event) {
       event.preventDefault()
-      $('#loading').show()
-      $('#scaleLegend').empty()
+      $("#loading").show()
+      $("#scaleLegend").empty()
       setTimeout(function () {
         link_coloring(g, graphics, renderer)
       }, 100)
       const readMode = false
       color_legend(readMode)
-      //document.getElementById('reset-links').disabled = ''
+      //document.getElementById("reset-links").disabled = ""
     })
 
-    $('#reset-links').click(function (event) {
+    $("#reset-links").click(function (event) {
       event.preventDefault()
-      document.getElementById('distance_label').style.display = 'none' // hide label
-      if ($('#colorLegendBox').html() === '') {
-        $('#scaleLegend').empty()
-        //showLegend = document.getElementById('colorLegend') // global
+      document.getElementById("distance_label").style.display = "none" // hide label
+      if ($("#colorLegendBox").html() === "") {
+        $("#scaleLegend").empty()
+        //showLegend = document.getElementById("colorLegend") // global
         // variable to be reset by the button reset-filters
-        showLegend.style.display = 'none'
+        showLegend.style.display = "none"
       } else {
-        $('#scaleLegend').empty()
+        $("#scaleLegend").empty()
       }
       setTimeout(function () {
         reset_link_color(g, graphics, renderer)
       }, 100)
-      //document.getElementById('reset-links').disabled = 'disabled'
+      //document.getElementById("reset-links").disabled = "disabled"
     })
 
     //* ********************//

@@ -139,6 +139,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           masterReadArray = [] //needs to reset this array for the assembly
           // function to be successful
           listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
+          // TODO add support for mash_json (maybe it can use readString?
         } else if ($("#p_Card").html() !== "Card:" ||
           $("#p_Resfinder").html() !== "Resfinder:") {
           $("#resSubmit").click()
