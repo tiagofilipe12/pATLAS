@@ -205,6 +205,7 @@ const actual_removal = (g, graphics, onload) => {
   "data-toggle='tooltip' title='Change file'" +
   "type='button' disabled>" +
   "<span class='glyphicon glyphicon-chevron-right'></span></button></div>" +
+  "<div id='fileNameDiv'></div>" +
   "</div>\n" +
   "<div id='popup_description' style='display: none'></div>"
 )
