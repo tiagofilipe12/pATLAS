@@ -177,6 +177,10 @@ const actual_removal = (g, graphics, onload) => {
     "<!--Populated by visualization_functions.js-->\n" +
     "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
     "<ul class='legend' id='colorLegendBox'></ul>\n" +
+    "<label id='res_label' style='display: none'>Resistances</label>" +
+    "<ul class='legend' id='colorLegendBoxRes'></ul>" +
+    "<label id='pf_label' style='display: none'>Plasmid Families</label>" +
+    "<ul class='legend' id='colorLegendBoxPf'></ul>" +
     "<!--Populated by visualization_functions.js-->\n" +
     "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
     "<div class='gradient' id='scaleLegend'></div>\n" +

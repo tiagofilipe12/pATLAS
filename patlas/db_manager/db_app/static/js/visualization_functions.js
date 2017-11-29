@@ -1555,8 +1555,9 @@ const onLoad = () => {
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
     $("#metadataTable").bootstrapTable("destroy")
-    console.log(listGiFilter)
     makeTable(areaSelection, listGiFilter, g, graphics)
+    $("#homeTable").addClass("active")
+    $("#heatmapButtonTab").removeAttr("disabled")
   })
 
   // function to close table
