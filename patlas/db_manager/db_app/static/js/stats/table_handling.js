@@ -172,7 +172,6 @@ const heatmapMaker = (masterReadArray, readObjects) => {
   // clear heatmap div
   $("#chartContainer2").empty()
   const tripleArray = parseReadObj(readObjects, masterReadArray)
-  console.log(masterReadArray)
   Highcharts.chart("chartContainer2", {
     chart: {
       type: "heatmap",

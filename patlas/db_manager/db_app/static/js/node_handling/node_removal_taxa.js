@@ -96,7 +96,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
             // if accession is not present in the database because singletons
             // are not stored in database
             if (data.json_entry.significantLinks === null) {
-              console.log("debug", listGiFilter[i])
+              // console.log("debug", listGiFilter[i])
               const jsonObj = {
                 "plasmidAccession": listGiFilter[i],
                 "plasmidLenght": "N/A",
@@ -154,7 +154,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           // the button was clicked and makes the legends
           $("#taxaModalSubmit").click()
         } else {
-          console.log("test", listGiFilter)
           colorNodes(g, graphics, listGiFilter, 0x23A900) //green color for
           // area selection
         }
