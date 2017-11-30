@@ -51,7 +51,7 @@ const downloadSeqByColor = (g, graphics) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
-    if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id.split("_").splice(0,2).join("_")) }
+    if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id.split("_").splice(0,2).join("_")) }
   })
   // function that handles if multiple outputs or a single output is generated
   downloadTypeHandler(tempListAccessions)
