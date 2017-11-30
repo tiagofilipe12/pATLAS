@@ -120,7 +120,6 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
-      console.log(node)
       nodeSize = minNodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
@@ -165,6 +164,9 @@ const onLoad = () => {
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         areaSelection = true
+        listGiFilter = [] //if selection is made listGiFilter should be empty
+        resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+          showGoback, showDownload, showTable, idsArrays)
       }
     })
     // event for shift key up
@@ -1295,6 +1297,8 @@ const onLoad = () => {
       // resets areaSelection
       areaSelection = false
       rerun = true
+      reloadAccessionList = []  // needs to be killed every instance in
+      // order for reload to allow reloading again
       //* * Loading Screen goes on **//
       // removes disabled from class in go_back button
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
@@ -1441,6 +1445,7 @@ const onLoad = () => {
         // TODO do something similar to assembly
       } else {
         // used when no reads are used to filter
+        console.log(reloadAccessionList, listGiFilter)
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, false,
           assembly_json)

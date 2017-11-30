@@ -249,21 +249,21 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
   // then deals with legend, and buttons associated with filters
   if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
     showLegend.style.display = "none"
-    showRerun.style.display = "none"
-    showGoback.style.display = "none"
+    // showRerun.style.display = "none"
+    // showGoback.style.display = "none"
     //document.getElementById("go_back").className += " disabled"
-    showDownload.style.display = "none"
-    showTable.style.display = "none"
+    // showDownload.style.display = "none"
+    // showTable.style.display = "none"
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   } else {
     $("#colorLegendBox").empty()
     document.getElementById("taxa_label").style.display = "none" // hide label
-    showRerun.style.display = "none"
-    showGoback.style.display = "none"
+    // showRerun.style.display = "none"
+    // showGoback.style.display = "none"
     //document.getElementById("go_back").className += " disabled"
-    showDownload.style.display = "none"
-    showTable.style.display = "none"
+    // showDownload.style.display = "none"
+    // showTable.style.display = "none"
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   }

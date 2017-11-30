@@ -13,6 +13,8 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
+  // console.log(length)
+  // console.log(newList.length)
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
     //console.log("sequence", sequence)
@@ -70,6 +72,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, list_gi, readString,
                      assemblyJson) => {
+  // reloadAccessionList = []
   if (listGiFilter.length > 0) {
     let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
