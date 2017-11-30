@@ -88,6 +88,11 @@
   z-index: 99;
   text-align: center;
 }
+
+/*#tableModal {*/
+    /*z-index: 98;*/
+/*}*/
+
 #loading-image {
   position: fixed;
   top: 50%;
@@ -96,6 +101,7 @@
   display: block;
   transform: translate(-50%, -50%);
 }
+
 #loading-image-alt{
   display: none;
   position: absolute;

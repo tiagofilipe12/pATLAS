@@ -124,8 +124,13 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
           visible: false
         }],
         // data is an array of rows
-        data: results
+        data: results,
+        // formatLoadingMessage: function () {
+        //   return "<img src=\"{{ url_for('static'," +
+        //     " filename='images/loading.gif') }}'\" />"
+        // }
       })
+      $("#loading").hide()
     })
 }
 

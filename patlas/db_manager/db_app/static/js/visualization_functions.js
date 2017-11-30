@@ -1580,7 +1580,9 @@ const onLoad = () => {
     $("#tableModal").modal()
     $("#metadataTable").bootstrapTable("destroy")
     $(".nav-tabs a[href='#homeTable']").tab("show")
-    makeTable(areaSelection, listGiFilter, g, graphics)
+    show_div(
+      makeTable(areaSelection, listGiFilter, g, graphics)
+    )
   })
 
   // function to close table
@@ -1699,7 +1701,6 @@ const onLoad = () => {
    one to be loaded when uploading then everything else should use cycler
   */
   $("#slideRight").click( () => {
-    // TODO needs to do the same for assembly_json and mash_json
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
     console.log(readFilejson)
@@ -1711,7 +1712,6 @@ const onLoad = () => {
   })
 
   $("#slideLeft").click( () => {
-    // TODO needs to do the same for assembly_json and mash_json
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
     const outArray = slideToLeft(readFilejson, readIndex, g, list_gi, graphics, renderer)
