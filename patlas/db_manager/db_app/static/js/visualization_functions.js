@@ -1012,7 +1012,9 @@ const onLoad = () => {
           for (const i2 in fileEntries) {
             if (fileEntries.hasOwnProperty(i2)) {
               // if not in masterReadArray then add it
-              if (returnArray.indexOf(i2) < 0 && fileEntries[i2] >= cutoffParser()) {
+              const percValue = (typeof(fileEntries[i2]) === "number") ?
+                fileEntries[i2] : parseFloat(fileEntries[i2][0])
+              if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParser()) {
                 returnArray.push(i2)
               }
             }
@@ -1544,14 +1546,15 @@ const onLoad = () => {
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
     // transform internal accession numbers to ncbi acceptable accesions
     if (readFilejson !== false) {
+      console.log("heatmap", readFilejson)
       heatmapMaker(masterReadArray, readFilejson)
       mash_json = false
       assembly_json = false
-    } // this just is executed when readFilejson is defined
-    else if (mash_json !== false) {
-      heatmapMaker(masterReadArray, mash_json)
-      readFilejson = false
-      assembly_json = false
+    // }
+    // else if (mash_json !== false) {
+    //   heatmapMaker(masterReadArray, mash_json)
+    //   readFilejson = false
+    //   assembly_json = false
     } else if (assembly_json !== false) {
       heatmapMaker(masterReadArray, assembly_json)
       readFilejson = false

@@ -134,6 +134,7 @@ const parseReadObj = (readObjects, masterReadArray) => {
   const positionsMap = []
   const valuesArray = []
   for (const i in readObjects) {
+    // iterate each file
     if (readObjects.hasOwnProperty(i)) {
       // x will contain file Ids
       xCategories.push(i)
@@ -141,18 +142,25 @@ const parseReadObj = (readObjects, masterReadArray) => {
       const fileIndex = Object.keys(readObjects).indexOf(i)
       let plasmidIndex, coverageValue
       for (const i2 in fileEntries) {
-        if (fileEntries.hasOwnProperty(i2) && fileEntries[i2] >= cutoffParser()) {
-          // checks if it is already in y labels (containing plasmid accessions
-          if (masterReadArray.indexOf(i2) < 0) {
-            plasmidIndex = masterReadArray.indexOf(i2)
-            coverageValue = Math.round(fileEntries[i2] * 100)
-            valuesArray.push(coverageValue)
-          } else {
-            plasmidIndex = masterReadArray.indexOf(i2)
-            coverageValue = Math.round(fileEntries[i2] * 100)
-            valuesArray.push(coverageValue)
+        // iterate each entry in each json file
+        if (fileEntries.hasOwnProperty(i2)) {
+          // checks if percentage is a string or an array because it can be
+          // both depending if it is an import from mapping or mash respectively
+          const percValue = (typeof(fileEntries[i2]) === "number") ?
+            fileEntries[i2] : parseFloat(fileEntries[i2][0])
+          if (percValue >= cutoffParser()) {
+            // checks if it is already in y labels (containing plasmid accessions
+            if (masterReadArray.indexOf(i2) < 0) {
+              plasmidIndex = masterReadArray.indexOf(i2)
+              coverageValue = Math.round(percValue * 100)
+              valuesArray.push(coverageValue)
+            } else {
+              plasmidIndex = masterReadArray.indexOf(i2)
+              coverageValue = Math.round(percValue * 100)
+              valuesArray.push(coverageValue)
+            }
+            positionsMap.push([fileIndex, plasmidIndex, coverageValue])
           }
-          positionsMap.push([fileIndex, plasmidIndex, coverageValue])
         }
       }
     }
@@ -161,9 +169,11 @@ const parseReadObj = (readObjects, masterReadArray) => {
 }
 
 const heatmapMaker = (masterReadArray, readObjects) => {
+  // clear heatmap div
+  $("#chartContainer2").empty()
   const tripleArray = parseReadObj(readObjects, masterReadArray)
+  console.log(masterReadArray)
   Highcharts.chart("chartContainer2", {
-
     chart: {
       type: "heatmap",
       marginTop: 50,
@@ -171,31 +181,25 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       height: masterReadArray.length * 25, // size is relative to array size
       //width: tripleArray[0].length * 200
     },
-
-
     title: {
       text: "Plasmid coverage in each set of reads"
     },
-
     xAxis: {
       categories: tripleArray[0],
       labels: {
         rotation: -45
       }
     },
-
     yAxis: {
       categories: masterReadArray,
       title: null,
     },
-
     colorAxis: {
       min: Math.min.apply(null, tripleArray[2]),  // sets min value for the
       // min value in array of values in dataset
       minColor: "#fcd6d6", //sets min value to light pink
       maxColor: Highcharts.getOptions().colors[8]
     },
-
     legend: {
       title: {
         text: "Percentage (%)"
@@ -207,7 +211,6 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       y: 25,
       symbolHeight: 400
     },
-
     tooltip: {
       formatter: function () {
         return "<b>" + this.series.xAxis.categories[this.point.x] + "</b>" +
@@ -216,7 +219,6 @@ const heatmapMaker = (masterReadArray, readObjects) => {
           this.series.yAxis.categories[this.point.y] + "</b>"
       }
     },
-
     series: [{
       name: "Coverage percentage",
       borderWidth: 1,
@@ -226,7 +228,6 @@ const heatmapMaker = (masterReadArray, readObjects) => {
         color: "#000000"
       }
     }]
-
   })
   $("#chartContainer2").show()
 }
