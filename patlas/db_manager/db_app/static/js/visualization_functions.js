@@ -120,6 +120,7 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
+      // console.log(node)
       nodeSize = minNodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
@@ -426,7 +427,7 @@ const onLoad = () => {
     })
 
     // Form and button for search box
-    $("#submitButton").click( (event) => {
+    $("#submitButton").unbind("click").bind("click", (event) => {
       event.preventDefault()    // prevents page from reloading
       if (toggle_status === false) {
         const query = $("#formValueId").val().replace(".", "_")
@@ -1432,7 +1433,6 @@ const onLoad = () => {
       }
     } else {
       // storeMasterNode is empty in here
-      // TODO mash_json can reuse the if statement below... needs testing
       if (readFilejson !== false) {
         const readReload = JSON.parse(Object.values(readFilejson)[readIndex])
         $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
