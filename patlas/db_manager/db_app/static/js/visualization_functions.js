@@ -1002,10 +1002,30 @@ const onLoad = () => {
     //* ************//
     //* ***READS****//
     //* ************//
+    const pushToMasterReadArray = (readFilejson) => {
+      const returnArray = []
+      // iterate for all files and save to masterReadArray to use in heatmap
+      for (const i in readFilejson) {
+        if (readFilejson.hasOwnProperty(i)) {
+          const fileEntries = JSON.parse(readFilejson[i])
+          // iterate each accession number
+          for (const i2 in fileEntries) {
+            if (fileEntries.hasOwnProperty(i2)) {
+              // if not in masterReadArray then add it
+              if (returnArray.indexOf(i2) < 0 && fileEntries[i2] >= cutoffParser()) {
+                returnArray.push(i2)
+              }
+            }
+          }
+        }
+      }
+      return returnArray
+    }
 
     $("#fileSubmit").click( (event) => {
       event.preventDefault()
       masterReadArray = []
+      // feeds the first file
       const readString = JSON.parse(Object.values(readFilejson)[0])
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
       $("#fileNameDiv").show()
@@ -1019,21 +1039,7 @@ const onLoad = () => {
         const outLists = readColoring(g, list_gi, graphics, renderer, readString)
         list_gi  = outLists[0]
         listGiFilter = outLists[1]
-        // iterate for all files and save to masterReadArray to use in heatmap
-        for (const i in readFilejson) {
-          if (readFilejson.hasOwnProperty(i)) {
-            const fileEntries = JSON.parse(readFilejson[i])
-            // iterate each accession number
-            for (const i2 in fileEntries) {
-              if (fileEntries.hasOwnProperty(i2)) {
-                // if not in masterReadArray then add it
-                if (masterReadArray.indexOf(i2) < 0 && fileEntries[i2] >= cutoffParser()) {
-                  masterReadArray.push(i2)
-                }
-              }
-            }
-          }
-        }
+        masterReadArray = pushToMasterReadArray(readFilejson)
       }, 100)
 
       // }
@@ -1055,17 +1061,23 @@ const onLoad = () => {
 
     $("#fileSubmit_mash").click( (event) => {
       masterReadArray = []
-      readFilejson = mash_json // conerts mash_json into readFilejson to overwrite
+      readFilejson = mash_json // converts mash_json into readFilejson to
+      readString = JSON.parse(Object.values(readFilejson)[0])
+      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+      $("#fileNameDiv").show()
+      // readIndex will be used by slider buttons
+      readIndex += 1
       // it and use the same function (readColoring)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, showtable, idsArrays)
+        showGoback, showDownload, showTable, idsArrays)
       event.preventDefault()
       $("#loading").show()
       setTimeout( () => {
         // TODO this readFilejson here must be a json object from 1 file
-        outputList = readColoring(g, list_gi, graphics, renderer, readFilejson)
+        const outputList = readColoring(g, list_gi, graphics, renderer, readString)
         list_gi = outputList[0]
         listGiFilter = outputList[1]
+        masterReadArray = pushToMasterReadArray(readFilejson)
       }, 100)
 
       // }
@@ -1073,6 +1085,8 @@ const onLoad = () => {
       setTimeout( () => {
         $("#loading").hide()
       }, 100)
+      $("#slideRight").prop("disabled", false)
+      $("#slideLeft").prop("disabled", false)
 
     })
 
@@ -1094,6 +1108,7 @@ const onLoad = () => {
       // }, 100)
       setTimeout( () => {
         renderer.rerender()
+        // TODO raise a warning for users to press play if they want
       }, 100)
 
       // }
@@ -1685,6 +1700,7 @@ const onLoad = () => {
     // TODO needs to do the same for assembly_json and mash_json
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
+    console.log(readFilejson)
     const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
