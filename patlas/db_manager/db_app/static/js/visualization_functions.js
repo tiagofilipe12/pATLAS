@@ -1579,9 +1579,8 @@ const onLoad = () => {
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
     $("#metadataTable").bootstrapTable("destroy")
+    $(".nav-tabs a[href='#homeTable']").tab("show")
     makeTable(areaSelection, listGiFilter, g, graphics)
-    $("#homeTable").addClass("active")
-    $("#heatmapButtonTab").removeAttr("disabled")
   })
 
   // function to close table
@@ -1729,5 +1728,4 @@ const onLoad = () => {
   Mousetrap.bind("shift+ctrl+space", () => {
     initCallback(g, layout, devel)
   })
-
 } // closes onload
