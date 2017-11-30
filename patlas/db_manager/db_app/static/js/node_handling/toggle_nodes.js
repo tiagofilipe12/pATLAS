@@ -62,6 +62,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
     if (sequence === query) {
       // centers graph visualization in a given node, searching for gi
       renderer.moveTo(x, y)
+      nodeUI.backupColor = nodeUI.color
       nodeUI.color = 0x900C3F
       // this sets the popup internal buttons to allow them to run,
       // otherwise they won't run because its own function returns this
@@ -75,7 +76,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
       // also needs to reset previous node to its original color
       if (typeof currentQueryNode !== "undefined") {
         const previousNodeUI = graphics.getNodeUI(currentQueryNode)
-        previousNodeUI.color = 0x666370   // default color
+        previousNodeUI.color = previousNodeUI.backupColor   // default color
       }
       renderer.rerender()
       return sequence // this just returns true if it enters this if statement

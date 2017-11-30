@@ -2,10 +2,10 @@
 // screen. Let's zoom out to fit it into the view:
 
 const defaultZooming = (layout,renderer) => {
-  var graphRect = layout.getGraphRect()
-  var graphSize = Math.min(graphRect.x2 - graphRect.x1, graphRect.y2 - graphRect.y1)
-  var screenSize = Math.min(document.body.clientWidth, document.body.clientHeight)
-  var desiredScale = screenSize / graphSize
+  const graphRect = layout.getGraphRect()
+  const graphSize = Math.min(graphRect.x2 - graphRect.x1, graphRect.y2 - graphRect.y1)
+  const screenSize = Math.min(document.body.clientWidth, document.body.clientHeight)
+  const desiredScale = screenSize / graphSize
 
   const zoomOut = (desiredScale, currentScale) => {
     // zoom API in vivagraph 0.5.x is silly. There is no way to pass transform

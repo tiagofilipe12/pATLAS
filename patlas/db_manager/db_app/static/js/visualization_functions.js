@@ -120,7 +120,7 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
-      // console.log(node)
+      console.log(node)
       nodeSize = minNodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
@@ -276,10 +276,8 @@ const onLoad = () => {
 
     $(document).on("click", "#close", function() {
       $(this).parent().hide()
-      if (window.nodeUI_1) {
-        graphics.getNodeUI(clickedNode).color = nodeUI_1.backupColor
-        renderer.rerender()
-      }
+      graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
+      renderer.rerender()
     })
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
