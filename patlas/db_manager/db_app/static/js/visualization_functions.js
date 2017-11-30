@@ -1514,7 +1514,9 @@ const onLoad = () => {
   // function to add accession to bootstrapTableList in order to use in
   // downloadTable function or in submitTable button
   $("#metadataTable").on("check.bs.table", (e, row) => {
-    bootstrapTableList.push(row.id)
+    if (bootstrapTableList.indexOf(row.id) < 0) {
+      bootstrapTableList.push(row.id)
+    }
   })
   // function to remove accession from bootstrapTableList in order to use in
   // downloadTable function or in submitTable button
@@ -1528,7 +1530,9 @@ const onLoad = () => {
     // function to handle when all are selected
     .on("check-all.bs.table", (e, rows) => {
       for (row in rows) {
-        bootstrapTableList.push(rows[row].id)
+        if (bootstrapTableList.indexOf(rows[row]) < 0) {
+          bootstrapTableList.push(rows[row].id)
+        }
       }
     })
     // function to remove when all are selected
@@ -1542,6 +1546,7 @@ const onLoad = () => {
     const acc = bootstrapTableList.map((uniqueAcc) => {
       return uniqueAcc.split("_").splice(0,2).join("_")
     })
+    console.log(bootstrapTableList, acc)
     multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
   })
 
