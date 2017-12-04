@@ -359,14 +359,14 @@ const onLoad = () => {
     // sort by values
     $("#sortGraph").on("click", function (e) {
       const sortVal = true
-      const layout = layoutGet(clickerButton)
+      const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
       if (listPlots) { statsParser(listPlots, layout, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").on("click", function (e) {
       const sortAlp = true
-      const layout = layoutGet(clickerButton)
+      const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
       if (listPlots) { statsParser(listPlots, layout, clickerButton, sortAlp, false) }
     })
 

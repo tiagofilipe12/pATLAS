@@ -53,7 +53,8 @@ const statsParser = (masterObj, layout, taxaType, sortAlp, sortVal) => {
   layout.series = [{
     type: "column",
     data: doubleArray[0],
-    name: `${taxaType}`,
+    name: "# of plasmids",
+    showInLegend: false,
     color: colorsPlot[taxaType.replace(" ", "")]
   }]
 
@@ -69,13 +70,13 @@ const resetProgressBar = () => {
 }
 
 // function to make layout
-const layoutGet = (taxaType) => {
+const layoutGet = (taxaType, length) => {
   return {
     chart: {
       zoomType: "x"
     },
     title: {
-      text: `${taxaType} in selection`
+      text: `${length} ${taxaType} in selection`
     },
     yAxis: {
       title: {
@@ -95,7 +96,6 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
 
   for (const item in tempList) {
     if ({}.hasOwnProperty.call(tempList, item)) {
-
       const nodeId = tempList[item]
       promises.push(
         $.get("api/getplasmidfinder/", {"accession": nodeId}, () => {
@@ -130,7 +130,7 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
       })
       // EXECUTE STATS
       if (PFList.length === counter) {
-        const layout = layoutGet(taxaType)
+        const layout = layoutGet(taxaType, [...new Set(PFList)].length)
         statsParser(PFList, layout, taxaType, sortAlp, sortVal)
       }
     })
@@ -181,7 +181,7 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
       })
       // EXECUTE STATS
       if (resList.length === counter) {
-        const layout = layoutGet(taxaType)
+        const layout = layoutGet(taxaType, [...new Set(resList)].length)
         statsParser(resList, layout, taxaType, sortAlp, sortVal)
       }
     })
@@ -245,7 +245,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
         }
       })
       // if (taxaType === "species") {
-      const layout = layoutGet(taxaType)
+      const layout = layoutGet(taxaType, [...new Set(speciesList)].length)
       if (speciesList.length === tempList.length) { statsParser(speciesList, layout, taxaType, sortAlp, sortVal) }
     })
     .catch( (error) => {
