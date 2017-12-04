@@ -155,7 +155,7 @@
 /* customizes taxa filters buttons*/
 
 #modal-body-file{
-  height: 180px;
+  height: 190px;
   overflow: auto;
 }
 
@@ -180,14 +180,14 @@
     *overflow: hidden;
 }
 
-#label_file {
+.label_file {
     display: block;
     padding-left: 15px;
     text-indent: -15px;
     padding-top: 2%;
     padding-bottom: 1%;
 }
-#check_file {
+.check_file {
     width: 15px;
     height: 15px;
     padding: 0;
@@ -196,7 +196,7 @@
     *overflow: hidden;
 }
 
-#uploadFile, #uploadFileCheck{
+.uploadFile, .uploadFileCheck{
   margin-left: 1%;
   margin-right: 1%;
 }
