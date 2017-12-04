@@ -251,8 +251,8 @@ const onLoad = () => {
 
       // And ask graphics to transform it to DOM coordinates:
       graphics.transformGraphToClientCoordinates(domPos)
-      domPos.x = (domPos.x + nodeUI_1.size) + 'px'
-      domPos.y = (domPos.y) + 'px'
+      domPos.x = (domPos.x + nodeUI_1.size) + "px"
+      domPos.y = (domPos.y) + "px"
 
       // this sets the popup internal buttons to allow them to run,
       // otherwise they won't run because its own function returns this
@@ -278,7 +278,9 @@ const onLoad = () => {
 
     $(document).on("click", "#close", function() {
       $(this).parent().hide()
-      graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
+      if (clickedNode) {
+        graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
+      }
       renderer.rerender()
     })
 
@@ -292,8 +294,6 @@ const onLoad = () => {
     // second before executing repetitivePlotFunction's
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
-      console.log("listgifilter refreshbutton", listGiFilter)
-      console.log("reloadaccessionlist", reloadAccessionList)
       listGiFilter = (reloadAccessionList.length !== 0) ?
         // reduces listGiFilter to reloadAccessionList
         listGiFilter.filter((n) => reloadAccessionList.includes(n)) :
@@ -413,15 +413,15 @@ const onLoad = () => {
 
     // Buttons to control force play/pause using bootstrap navigation bar
     paused = true
-    $('#playpauseButton').on('click', function (e) {
-      $('#playpauseButton').empty()
+    $("#playpauseButton").on("click", function (e) {
+      $("#playpauseButton").empty()
       if (paused === true) {
         renderer.resume()
-        $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
+        $("#playpauseButton").append("<span class='glyphicon glyphicon-pause'></span>")
         paused = false
       } else {
         renderer.pause()
-        $('#playpauseButton').append('<span class="glyphicon glyphicon-play"></span>')
+        $("#playpauseButton").append("<span class='glyphicon glyphicon-play'></span>")
         paused = true
       }
     })
@@ -431,6 +431,7 @@ const onLoad = () => {
       event.preventDefault()    // prevents page from reloading
       if (toggle_status === false) {
         const query = $("#formValueId").val().replace(".", "_")
+
         currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
           clickedPopupButtonFamily, requestPlasmidTable)
@@ -444,6 +445,14 @@ const onLoad = () => {
             currentQueryNode = result
           })
       }
+      clickedNode = currentQueryNode
+      // this sets the popup internal buttons to allow them to run,
+      // otherwise they won't run because its own function returns this
+      // variable to false, preveting the popup to expand with its
+      // respectiv functions
+      clickedPopupButtonCard = true
+      clickedPopupButtonRes = true
+      clickedPopupButtonFamily = true
     })
     // Button to clear the selected nodes by form
     $("#clearButton").click( (event) => {
@@ -1663,6 +1672,7 @@ const onLoad = () => {
   // resistance button control //
   $(document).on("click", "#resButton", function(event) {
     // controls the look of buttons
+    console.log("test")
     $("#resButton").removeClass("btn-default").addClass("btn-primary")
     $("#plasmidButton").removeClass("btn-primary").addClass("btn-default")
     if (clickedPopupButtonCard === true) {

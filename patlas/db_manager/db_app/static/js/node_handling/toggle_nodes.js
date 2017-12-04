@@ -66,8 +66,8 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
       nodeUI.color = 0x900C3F
       // this sets the popup internal buttons to allow them to run,
       // otherwise they won't run because its own function returns this
-      // variable to false, preveting the popup to expand with its
-      // respectiv functions
+      // variable to false, preventing the popup to expand with its
+      // respective functions
       clickedPopupButtonCard = true
       clickedPopupButtonRes = true
       clickedPopupButtonFamily = true
