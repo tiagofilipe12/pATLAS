@@ -32,7 +32,7 @@ let bootstrapTableList = []
 // to execute the getArray_taxa twice.
 const dict_genera = {}
 // buttonSubmit current node
-let currentQueryNode
+let currentQueryNode = false
 
 let masterReadArray = []
 
@@ -278,8 +278,9 @@ const onLoad = () => {
 
     $(document).on("click", "#close", function() {
       $(this).parent().hide()
-      if (clickedNode) {
-        graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
+      if (currentQueryNode) {
+        graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
+        currentQueryNode = false
       }
       renderer.rerender()
     })
@@ -448,8 +449,8 @@ const onLoad = () => {
       clickedNode = currentQueryNode
       // this sets the popup internal buttons to allow them to run,
       // otherwise they won't run because its own function returns this
-      // variable to false, preveting the popup to expand with its
-      // respectiv functions
+      // variable to false, preventing the popup to expand with its
+      // respective functions
       clickedPopupButtonCard = true
       clickedPopupButtonRes = true
       clickedPopupButtonFamily = true
@@ -1297,6 +1298,7 @@ const onLoad = () => {
       readFilejson = false // makes file selection empty again
       assembly_json = false
       mash_json = false
+      currentQueryNode = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)

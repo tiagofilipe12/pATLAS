@@ -272,8 +272,8 @@ const node_color_reset = (graphics, g, nodeColor, renderer) => {
     const nodeUI = graphics.getNodeUI(node.id)
     // reset all nodes before changing colors because of the second instance of filters
     if (nodeUI.color !== nodeColor) {
-      nodeUI.color = nodeColor
       nodeUI.backupColor = nodeUI.color
+      nodeUI.color = nodeColor
     }
   })
   renderer.rerender()

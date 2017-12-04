@@ -74,7 +74,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
       // requests table for sequences metadata
       requestPlasmidTable(node, setupPopupDisplay)
       // also needs to reset previous node to its original color
-      if (typeof currentQueryNode !== "undefined") {
+      if (currentQueryNode !== false) {
         const previousNodeUI = graphics.getNodeUI(currentQueryNode)
         previousNodeUI.color = previousNodeUI.backupColor   // default color
       }
