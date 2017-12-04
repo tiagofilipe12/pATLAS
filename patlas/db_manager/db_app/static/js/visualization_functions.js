@@ -11,10 +11,6 @@ let first_click_menu = true
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
 
-// this variable is used to store the clicked node to use in resistance and
-// plasmid buttons
-let clickedNode = false
-
 // starts a global instance for checking if button was clicked before
 let clickedPopupButtonRes = false
 let clickedPopupButtonCard = false
@@ -231,11 +227,11 @@ const onLoad = () => {
     //* * mouse click on nodes **//
     events.click( (node, e) => {
       // this resets previous selected node to previous color
-      if (clickedNode) {
-        graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
+      if (currentQueryNode) {
+        graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
       }
       // then starts making new changes to the newly geerated node
-      clickedNode = node.id
+      currentQueryNode = node.id
       nodeUI_1 = graphics.getNodeUI(node.id)
       const domPos = {
         x: nodeUI_1.position.x,
@@ -278,10 +274,10 @@ const onLoad = () => {
 
     $(document).on("click", "#close", function() {
       $(this).parent().hide()
-      if (currentQueryNode) {
+      if (currentQueryNode !== false) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
-        currentQueryNode = false
       }
+      currentQueryNode = false
       renderer.rerender()
     })
 
@@ -446,7 +442,6 @@ const onLoad = () => {
             currentQueryNode = result
           })
       }
-      clickedNode = currentQueryNode
       // this sets the popup internal buttons to allow them to run,
       // otherwise they won't run because its own function returns this
       // variable to false, preventing the popup to expand with its
@@ -1674,11 +1669,10 @@ const onLoad = () => {
   // resistance button control //
   $(document).on("click", "#resButton", function(event) {
     // controls the look of buttons
-    console.log("test")
     $("#resButton").removeClass("btn-default").addClass("btn-primary")
     $("#plasmidButton").removeClass("btn-primary").addClass("btn-default")
     if (clickedPopupButtonCard === true) {
-      clickedPopupButtonCard = resGetter(clickedNode)
+      clickedPopupButtonCard = resGetter(currentQueryNode)
       $("#pfTab").hide()
     } else {
       // when it is already queried and we are just cycling b/w the two divs
@@ -1693,7 +1687,7 @@ const onLoad = () => {
     $("#plasmidButton").removeClass("btn-default").addClass("btn-primary")
     $("#resButton").removeClass("btn-primary").addClass("btn-default")
     if (clickedPopupButtonFamily === true) {
-      clickedPopupButtonFamily = plasmidFamilyGetter(clickedNode)
+      clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
       $("#resTab").hide()
     } else {
       // when it is already queried and we are just cycling b/w the two divs
