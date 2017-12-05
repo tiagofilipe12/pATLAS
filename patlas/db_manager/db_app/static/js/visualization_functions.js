@@ -1379,64 +1379,100 @@ const onLoad = () => {
         // file for loading the graph.
         getArray.done(function (json) {
 
-          const addAllNodes = (array, callback) => {
-            counter++
-            const sequence = array.id
-            const seqLength = array.length
-            const log_length = Math.log(parseInt(seqLength))
-            list_lengths.push(seqLength)
-            list_gi.push(sequence)
+          const addAllNodes = (json) => {
+            return new Promise((resolve, reject) => {
+              for (const i in json) {
+                const array = json[i]
+                counter++
+                const sequence = array.id
+                const seqLength = array.length
+                const log_length = Math.log(parseInt(seqLength))
+                list_lengths.push(seqLength)
+                list_gi.push(sequence)
 
-            if (list.indexOf(sequence) < 0) {
-              g.addNode(sequence, {
-                sequence: "<span style='color:#468499'>Accession:" +
-                " </span><a" +
-                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                seq_length: "<span" +
-                " style='color:#468499'>Sequence length:" +
-                " </span>" + seqLength,
-                log_length: log_length
-              })
-              layout.setNodePosition(sequence, array.position.x, array.position.y)
-              list.push(sequence)
-            }
-            callback()
+                if (list.indexOf(sequence) < 0) {
+                  g.addNode(sequence, {
+                    sequence: "<span style='color:#468499'>Accession:" +
+                    " </span><a" +
+                    " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                    seq_length: "<span" +
+                    " style='color:#468499'>Sequence length:" +
+                    " </span>" + seqLength,
+                    log_length: log_length
+                  })
+                  list.push(sequence)
+                  layout.setNodePosition(sequence, array.position.x, array.position.y)
+                } else {
+                  reject(`node wasn't added: ${sequence}`)
+                }
+                if (i + 1 === json.length) {
+                  resolve("sucessfully added all nodes")
+                }
+              }
+            })
           }
 
-          const addAllLinks = (array, callback) => {
-            const sequence = array.parentId   // stores sequences
-            const reference = array.childId  // stores references
-            const distance = array.distance   // stores distances
-            if (array.childId !== "") {
-              // here it adds only unique links because filtered.json file
-              // just stores unique links
-              g.addLink(sequence, reference, distance)
-            } else {
-              console.log("empty array: ", array.childId , sequence)
-            }
-            callback()
+          const addAllLinks = (json) => {
+            return new Promise((resolve, reject) => {
+              for (const i in json) {
+                const array = json[i]
+                const sequence = array.parentId   // stores sequences
+                const reference = array.childId  // stores references
+                const distance = array.distance   // stores distances
+                if (reference !== "") {
+                  // here it adds only unique links because filtered.json file
+                  // just stores unique links
+                  g.addLink(sequence, reference, distance)
+                } else {
+                  // if there is no reference associated with sequence then
+                  // there are no links
+                  // TODO this will break if singletons are added
+                  // console.log("empty array: ", array.childId, sequence)
+                  reject(new Error(`link wasn't added: ${array.childId} -> ${sequence}`))
+                }
+                if (i + 1 === json.lenght) {
+                  resolve("sucessefully added all links")
+                }
+              }
+            })
           }
+
+          addAllNodes(json.nodes)
+            .then(addAllLinks(json.links))
+            .then(renderGraph(graphics))
+            .catch((err) => {
+              console.log(err)
+            })
 
           // setup concurrency
-          /* TODO I think this implementation is not limiting the number of
-           nodes and links being added simultaneously but it assures that
-            the code is run in a certain order.
-            I.e. first all nodes are added, then all links are added and
-             only then renderGraph is executed */
-          const queue = async.queue(addAllNodes, 10)
-
-          queue.drain = () => {
-            // after getting all nodes, setup another concurrency for all links
-            const queue2 = async.queue(addAllLinks, 10)
-
-            queue2.drain = () => {
-              renderGraph(graphics)
-            }
-            // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
-            queue2.push(json.links)
-          }
-          // attempting to queue json.nodes which are basically the nodes I want to add first to the graph
-          queue.push(json.nodes)
+          //   /* TODO I think this implementation is not limiting the number of
+          //    nodes and links being added simultaneously but it assures that
+          //     the code is run in a certain order.
+          //     I.e. first all nodes are added, then all links are added and
+          //      only then renderGraph is executed */
+          //   const queue = async.queue( (node, callback) =>  {
+          //     console.log(node)
+          //     addAllNodes(node)
+          //     callback()
+          //   }, 2)
+          //
+          //   queue.drain = () => {
+          //     // after getting all nodes, setup another concurrency for all links
+          //     const queue2 = async.queue( (link, cb) => {
+          //       console.log(link)
+          //       addAllLinks(link)
+          //       cb()
+          //     }, 2)
+          //
+          //     queue2.drain = () => {
+          //       renderGraph(graphics)
+          //     }
+          //     // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
+          //     queue2.push(json.links)
+          //   }
+          //   // attempting to queue json.nodes which are basically the nodes I want to add first to the graph
+          //   queue.push(json.nodes)
+          // })
         })
       }
     } else {
