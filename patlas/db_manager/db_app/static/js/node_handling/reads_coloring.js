@@ -8,6 +8,7 @@ const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
   return y
 }
 
+// TODO this three functions could be merged
 // function to get value from cutoffValue
 const cutoffParser = () => {
   return ($("#cutoffValue").val() !== "") ? parseFloat($("#cutoffValue").val()) : 0.6
@@ -38,6 +39,7 @@ const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
     if (gi === nodeGI) {
       nodeUI.color = readColor
       nodeUI.backupColor = nodeUI.color
+      perc = parseFloat(perc)
       node.data["percentage"] =  perc.toFixed(2).toString()
       if (copyNumber) {
         node.data["copyNumber"] = copyNumber.toString()
@@ -92,20 +94,17 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
 // single read displayer
 // This function colors each node present in input read json file
 
-const readColoring = (g, list_gi, graphics, renderer) => {
+const readColoring = (g, list_gi, graphics, renderer, readString) => {
   const readMode = true
-  //const readString = read_json.replace(/[{}" ]/g, "").split(",")
-  const readString = JSON.parse(read_json)
   let listGiFilter = []
   for (let string in readString) {
     const gi = string
-    //listGiFilter.push(gi)
     const perc = readString[string]
 
     // adds node if it doesn't have links
     if (list_gi.indexOf(gi) <= -1) {
       g.addNode(gi, {
-        sequence: "<font color='#468499'>Accession: </font><a " +
+        sequence: "<span style='color:#468499'>Accession: </span><a " +
         "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split("_").slice(0, 2).join("_") + "' target='_blank'>" + gi + "</a>",
         log_length: 10
         // percentage: "<font color='#468499'>percentage: </font>" + perc
@@ -185,7 +184,7 @@ const readColoring = (g, list_gi, graphics, renderer) => {
   showTable.style.display = "block"
   renderer.rerender()
   $("#loading").hide()
-  return list_gi, listGiFilter
+  return [list_gi, listGiFilter]
 }
 
 
@@ -250,25 +249,43 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
   // then deals with legend, and buttons associated with filters
   if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
     showLegend.style.display = "none"
-    showRerun.style.display = "none"
-    showGoback.style.display = "none"
+    // showRerun.style.display = "none"
+    // showGoback.style.display = "none"
     //document.getElementById("go_back").className += " disabled"
-    showDownload.style.display = "none"
-    showTable.style.display = "none"
+    // showDownload.style.display = "none"
+    // showTable.style.display = "none"
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   } else {
     $("#colorLegendBox").empty()
     document.getElementById("taxa_label").style.display = "none" // hide label
-    showRerun.style.display = "none"
-    showGoback.style.display = "none"
+    // showRerun.style.display = "none"
+    // showGoback.style.display = "none"
     //document.getElementById("go_back").className += " disabled"
-    showDownload.style.display = "none"
-    showTable.style.display = "none"
+    // showDownload.style.display = "none"
+    // showTable.style.display = "none"
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   }
   resetDisplayTaxaBox(idsArrays)
+  // hide and empty assembly related legend
+  $("#assemblyLabel").hide()
+  $("#assemblyLegend").empty()
+  // empty and hide legend for taxa
+  $("#taxa_label").hide()
+  $("#colorLegendBox").empty()
+  // empty and hide legend for resistances
+  $("#res_label").hide()
+  $("#colorLegendBoxRes").empty()
+  // empty and hide legend for plasmid families
+  $("#pf_label").hide()
+  $("#colorLegendBoxPf").empty()
+  // empty and hide distances legend
+  $("#distance_label").hide()
+  $("#scaleLegend").empty()
+  // empty and hide read legend
+  $("#read_label").hide()
+  $("#readLegend").empty()
 
   // resets dropdown selections
   $("#orderList").selectpicker("deselectAll")

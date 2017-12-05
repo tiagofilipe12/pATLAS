@@ -11,9 +11,9 @@ function WebglCircle (size, color) {
 }
 // Next comes the hard part - implementation of API for custom shader
 // program, used by webgl renderer:
-function buildCircleNodeShader () {
+const buildCircleNodeShader = () => {
     // For each primitive we need 4 attributes: x, y, color and size.
-  var ATTRIBUTES_PER_PRIMITIVE = 4,
+  let ATTRIBUTES_PER_PRIMITIVE = 4,
     nodesFS = [
       'precision mediump float;',
       'varying vec4 color;',

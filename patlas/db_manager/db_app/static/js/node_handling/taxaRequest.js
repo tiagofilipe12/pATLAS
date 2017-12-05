@@ -4,8 +4,8 @@ const colorNodes = (g, graphics, accessionRequested, currentColor) => {
     const nodeUI = graphics.getNodeUI(node.id)
 
     if (accessionRequested.indexOf(node.id) > -1) {
-      nodeUI.color = currentColor
       nodeUI.backupColor = nodeUI.color
+      nodeUI.color = currentColor
       // changed_nodes.push(node.id)
     }
   })

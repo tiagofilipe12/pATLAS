@@ -13,14 +13,16 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
+  // console.log(length)
+  // console.log(newList.length)
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
     //console.log("sequence", sequence)
     g.addNode(sequence, {
-      sequence: "<font color='#468499'>Accession:" +
-      " </font><a" +
+      sequence: "<span style='color:#468499'>Accession:" +
+      " </span><a" +
       " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-      seq_length: "<font color='#468499'>Sequence length: </font>" + ((length !== "N/A") ? length : "N/A"),
+      seq_length: "<span style='color:#468499'>Sequence length: </span>" + ((length !== "N/A") ? length : "N/A"),
       log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
     newList.push(sequence)  //adds to list everytime a new node is added here
@@ -43,12 +45,12 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       if (newList.indexOf(linkAccession) < 0) {
         //console.log(linkAccession)
         g.addNode(linkAccession, {
-          sequence: "<font color='#468499'>Accession:" +
-          " </font><a" +
+          sequence: "<span style='color:#468499'>Accession:" +
+          " </span><a" +
           " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
-          seq_length: "<font" +
-          " color='#468499'>Sequence length:" +
-          " </font>" + linkLength,
+          seq_length: "<span" +
+          " style='color:#468499'>Sequence length:" +
+          " </span>" + linkLength,
           log_length: Math.log(parseInt(linkLength))
         })
         newList.push(linkAccession) //adds to list every time a node is
@@ -62,14 +64,16 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   }
   //storeMasterNode = storeRecenterDom(storeMasterNode, linksArray,
   //  sequence, counter)
-  return newList, newListHashes
+  return [newList, newListHashes]
 }
 
 // function to call requests on db
 
-const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList) => {
+const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
+                     reloadAccessionList, renderer, list_gi, readString,
+                     assemblyJson) => {
+  // reloadAccessionList = []
   if (listGiFilter.length > 0) {
-    // let newList = []
     let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
     // loops every Accession stored in listGiFilter on re_run button
@@ -92,12 +96,10 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
             } else {
               plasmidName = data.json_entry.plasmid_name
             }
-            //console.log(data.json_entry.significantLinks.replace(/['u\[\] ]/g,'').split(','))
-
             // if accession is not present in the database because singletons
             // are not stored in database
             if (data.json_entry.significantLinks === null) {
-              console.log("debug", listGiFilter[i])
+              // console.log("debug", listGiFilter[i])
               const jsonObj = {
                 "plasmidAccession": listGiFilter[i],
                 "plasmidLenght": "N/A",
@@ -106,11 +108,12 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
                 "significantLinks": "N/A"
               }
               //add node
-              reloadAccessionList, newListHashes = reAddNode(g, jsonObj, reloadAccessionList, newListHashes) //callback
-              // function
+              reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+              reloadAccessionList = reAddNodeList[0]
+              newListHashes = reAddNodeList[1]
+
             } else {  // add node for every accession that has links and that is
               // present in plasmid_db
-              //console.log("teste", data.json_entry.significantLinks.split(','))
               const jsonObj = {
                 "plasmidAccession": data.plasmid_id,
                 "plasmidLenght": data.json_entry.length,
@@ -121,7 +124,9 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
                 // TODO this is sketchy and should be fixed with JSON parsing from db
               }
               //add node
-              reloadAccessionList, newListHashes = reAddNode(g, jsonObj, reloadAccessionList, newListHashes) //callback function
+              reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+              reloadAccessionList = reAddNodeList[0]
+              newListHashes = reAddNodeList[1]
             }
           })
       )
@@ -129,23 +134,44 @@ const requesterDB = (g, listGiFilter, counter, storeMasterNode, renderGraph, gra
     // promise that waits for all the requests and nodes to be added to
     // vivagraph.... and only then precompute the graph.
     Promise.all(promises)
-      .then((results) => {
-        renderGraph(graphics) //TODO storeMasterNode maybe can be passed to this
-        // function
+      .then( () => {
+        renderGraph(graphics)
+        if (readString !== false) {
+          readColoring(g, list_gi, graphics, renderer, readString)
+        } else if (assemblyJson !== false) {
+          masterReadArray = [] //needs to reset this array for the assembly
+          // function to be successful
+          listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
+          // TODO add support for mash_json (maybe it can use readString?
+        } else if ($("#p_Card").html() !== "Card:" ||
+          $("#p_Resfinder").html() !== "Resfinder:") {
+          $("#resSubmit").click()
+        } else if ($("#p_Plasmidfinder").html() !== "Plasmidfinder:") {
+          $("#pfSubmit").click()
+        } else if ($("#p_Species").html() !== "Species:" ||
+          $("#p_Genus").html() !== "Genus:" ||
+          $("#p_Family").html() !== "Family:" ||
+          $("#p_Order").html() !== "Order:") {
+          // simulates the click of the button
+          // which checks the divs that contain the species, color the as if
+          // the button was clicked and makes the legends
+          $("#taxaModalSubmit").click()
+        } else {
+          colorNodes(g, graphics, listGiFilter, 0x23A900) //green color for
+          // area selection
+        }
       })
-      .catch((error) => {
+      .catch( (error) => {
         console.log("Error! No query was made. Error message: ", error)
       })
   }
-  return listGiFilter, reloadAccessionList
+  return [listGiFilter, reloadAccessionList]
 }
 
 // function that actually removes the nodes
 const actual_removal = (g, graphics, onload) => {
   // removes all nodes from g using the same layout
-  //console.log(listGiFilter)
   firstInstace = false
-
   // change play button in order to be properly set to pause
   $("#couve-flor").empty()
   // TODO check if this can be cleaner... removing vivagraph canvas?
@@ -155,61 +181,74 @@ const actual_removal = (g, graphics, onload) => {
     "<div class='panel panel-default' >\n" +
     "<div class='panel-heading'>Color legend</div>\n" +
     "<div class='panel-body'>\n" +
-  "<!--Populated by visualization_functions.js-->\n" +
-  "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
-  "<ul class='legend' id='colorLegendBox'></ul>\n" +
-  "<!--Populated by visualization_functions.js-->\n" +
-  "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
-  "<div class='gradient' id='scaleLegend'></div>\n" +
-  "<!--Populated by visualization_functions.js-->\n" +
-  "<label id='read_label' style='display: none'>Read filters</label>\n" +
-  "<div class='gradient' id='readLegend'></div>\n" +
-  "</div>\n" +
-  "</div>\n" +
-  "</div>\n" +
-  "\n" +
-  "<div id='buttonStuff'>\n" +
-  "<div class='btn-group'>\n" +
-  "\n" +
-  "<!-- Buttons that overlay the graph and interact with it -->\n" +
-  "<button id='playpauseButton' data-toggle='tooltip' \n" +
-  "        title='Play/Pause' type='button' \n" +
-  "        class='btn btn-success'>\n" +
-  "<span class='glyphicon glyphicon-play'></span>\n" +
-  "</button>\n" +
-  "\n" +
-  "<button class='btn btn-primary' href='#' data-toggle='modal' " +
-  "        data-backdrop='static' title='Quick stats' " +
-  "        data-target='#modalPlot' id='refreshButton'>" +
-  "<span class='glyphicon glyphicon-stats'></span>\n" +
-  "</button>\n" +
-  "</div>\n" +
-  "<!--zoom buttons-->\n" +
-  "<div class='btn-group'>\n" +
-  "<button id='zoom_in' class='zoom in btn btn-default'\n" +
-  "        data-toggle='tooltip' title='Zoom in' \n" +
-  "        type='button'>\n" +
-  "<span class='glyphicon glyphicon-zoom-in'></span>\n" +
-  "</button>\n" +
-  "<button id='zoom_out' class='zoom out btn btn-default'\n" +
-  "        data-toggle='tooltip' title='Zoom out' \n" +
-  "        type='button'>\n" +
-  "<span class='glyphicon glyphicon-zoom-out'></span>\n" +
-  "</button>\n" +
-  "</div> \n" +
-  "\n" +
-  "<!-- End buttons -->\n" +
-  "</div>\n" +
-  "<div id='popup_description' style='display: none'></div>"
+    "<!--Populated by visualization_functions.js-->\n" +
+    "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
+    "<ul class='legend' id='colorLegendBox'></ul>\n" +
+    "<label id='res_label' style='display: none'>Resistances</label>" +
+    "<ul class='legend' id='colorLegendBoxRes'></ul>" +
+    "<label id='pf_label' style='display: none'>Plasmid Families</label>" +
+    "<ul class='legend' id='colorLegendBoxPf'></ul>" +
+    "<!--Populated by visualization_functions.js-->\n" +
+    "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
+    "<div class='gradient' id='scaleLegend'></div>\n" +
+    "<!--Populated by visualization_functions.js-->\n" +
+    "<label id='read_label' style='display: none'>Read filters</label>\n" +
+    "<div class='gradient' id='readLegend'></div>\n" +
+    "<label id='assemblyLabel' style='display: none'>Assembly</label>" +
+    "<div class='legend' id='assemblyLegend'></div>" +
+    "</div>\n" +
+    "</div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div id='buttonStuff'>\n" +
+    "<div class='btn-group'>\n" +
+    "\n" +
+    "<!-- Buttons that overlay the graph and interact with it -->\n" +
+    "<button id='playpauseButton' data-toggle='tooltip' \n" +
+    "        title='Play/Pause' type='button' \n" +
+    "        class='btn btn-success'>\n" +
+    "<span class='glyphicon glyphicon-play'></span>\n" +
+    "</button>\n" +
+    "\n" +
+    "<button class='btn btn-primary' href='#' data-toggle='modal' " +
+    "        data-backdrop='static' title='Quick stats' " +
+    "        data-target='#modalPlot' id='refreshButton'>" +
+    "<span class='glyphicon glyphicon-stats'></span>\n" +
+    "</button>\n" +
+    "</div>\n" +
+    "<!--zoom buttons-->\n" +
+    "<div class='btn-group'>\n" +
+    "<button id='zoom_in' class='zoom in btn btn-default'\n" +
+    "        data-toggle='tooltip' title='Zoom in' \n" +
+    "        type='button'>\n" +
+    "<span class='glyphicon glyphicon-zoom-in'></span>\n" +
+    "</button>\n" +
+    "<button id='zoom_out' class='zoom out btn btn-default'\n" +
+    "        data-toggle='tooltip' title='Zoom out' \n" +
+    "        type='button'>\n" +
+    "<span class='glyphicon glyphicon-zoom-out'></span>\n" +
+    "</button>\n" +
+    "</div> \n" +
+    "<div class='btn-group'>" +
+    "<button id='slideLeft' class='zoom in btn btn-default' data-toggle='tooltip'" +
+    "title='Change file' type='button' disabled>" +
+    "<span class='glyphicon glyphicon-chevron-left'></span>" +
+    "</button><button id='slideRight' class='zoom out btn btn-default'" +
+    "data-toggle='tooltip' title='Change file'" +
+    "type='button' disabled>" +
+    "<span class='glyphicon glyphicon-chevron-right'></span></button>" +
+    "</div>" +
+    "<div id='fileNameDiv'></div>" +
+    "</div>\n" +
+    "<div id='popup_description' style='display: none'></div>"
 )
-
 
   // should be executed when listGiFilter is empty ... mainly for area selection
   const reGetListGi = (g, graphics) => {
     let tempListAccessions = []
     g.forEachNode( (node) => {
       const currentNodeUI = graphics.getNodeUI(node.id)
-      if (currentNodeUI.color === 0xFFA500ff) { tempListAccessions.push(node.id) }
+      if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
     })
     return tempListAccessions
   }
@@ -222,7 +261,6 @@ const actual_removal = (g, graphics, onload) => {
 // a function to display the loader mask
 const show_div = (callback) => {
   $("#loading").show()
-  //console.log('showing loader')
   // if callback exist execute it
   callback && callback()
 }
@@ -234,8 +272,8 @@ const node_color_reset = (graphics, g, nodeColor, renderer) => {
     const nodeUI = graphics.getNodeUI(node.id)
     // reset all nodes before changing colors because of the second instance of filters
     if (nodeUI.color !== nodeColor) {
-      nodeUI.color = nodeColor
       nodeUI.backupColor = nodeUI.color
+      nodeUI.color = nodeColor
     }
   })
   renderer.rerender()

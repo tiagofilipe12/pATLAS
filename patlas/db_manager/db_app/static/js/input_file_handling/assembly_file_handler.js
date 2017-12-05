@@ -1,47 +1,76 @@
-const assembly = (listGi, assemblyJson, g, graphics, renderer) => {
-  //console.log(assembly_json)
-  // removes everything within []
-  const assemblyString = assemblyJson.replace(/[{}"[ ]/g, "").split("],")
-  // this gets the contig name
-  const contigName = assemblyString[0].split(":")[0]
-  g.addNode(contigName, {sequence: "<font color='#468499'>seq_id: </font>"
-    + contigName, log_length: 10} )
-  // change the color of the input node
-  const nodeUI = graphics.getNodeUI(contigName)
-  nodeUI.color = 0xff2100
-  //console.log(contigName)
-  //console.log(assemblyString)
-  for (let string in assemblyString) {
-    //if (string === 0) {
-    //  const nodeEntry = assemblyString[string].split(':')[1]
-    //} else {
-    //  const nodeEntry = assemblyString[string]
-    //}
-    // redefinition of the above if statement
-    const nodeEntry = (string === 0) ?  assemblyString[string].split(":")[1]
-      : assemblyString[string]
-    let accession = nodeEntry.split("_").slice(0, 2).join("_")
-    const dist = nodeEntry.split(',')[1]
-    if (accession in listGi) {
-      g.addLink(contigName, accession, dist)
-    } else {
-      // links wont work because ncbi uses gis and not accessions
-      g.addNode(accession, {sequence: "<font color='#468499'>seq_id: </font><a " +
-      // accession has no version
-      "href='https://www.ncbi.nlm.nih.gov/nuccore/" + accession + "' target='_blank'>" + accession + '</a>',
+const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilter) => {
+  // iterate through all entries in assembly file
+  for (const i in assemblyFile) {
+    if (assemblyFile.hasOwnProperty(i)) {
+      const controlArray = []
+      const fileEntries = JSON.parse(assemblyFile[i])
+      // for each file adds a node for each file
+      g.addNode(i, {
+        sequence: "<span style='color:#468499'>Accession:" +
+        " </span>" + i,
+        //species:"<font color='#468499'>Species:
+        // </font>" + species,
+        seq_length: "<span" +
+        " style='color:#468499'>Sequence length:" +
+        " </span>" + "N/A",
         log_length: 10
-        // percentage: "<font color='#468499'>percentage: </font>" + perc
       })
-      g.addLink(contigName, accession, dist)
-      listGi.push(accession)
+      const nodeUI = graphics.getNodeUI(i)
+      nodeUI.backupColor = nodeUI.color
+      nodeUI.color = 0xC70039
+      // iterate each accession number
+      for (const i2 in fileEntries) {
+        if (fileEntries.hasOwnProperty(i2)) {
+          // if not in masterReadArray then add it
+          if (masterReadArray.indexOf(i2) < 0 && fileEntries[i2] >= 0.9) {
+            // TODO hardcoded to 0.9 but it should use something like
+            // cutOffParser()
+            masterReadArray.push(i2)
+            controlArray.push(i2)
+          }
+        }
+      }
+      // for each file iterate through all nodes
+      g.forEachNode( (node) => {
+        if (controlArray.indexOf(node.id) > -1) {
+          g.addLink(i, node.id, (JSON.parse(assemblyFile[i])[node.id]))
+          // add percentage information to node
+          node.data["percentage"] = (JSON.parse(assemblyFile[i])[node.id])
+            .toFixed(2).toString()
+          // change the color of linked nodes
+          const nodeUI2 = graphics.getNodeUI(node.id)
+          nodeUI2.backupColor = nodeUI.color
+          nodeUI2.color = 0xFF5733
+          // add to listGiFilter
+          listGiFilter.push(node.id)
+        }
+      })
     }
   }
   // control all related divs
+
+  $("#assemblyLegend").empty()
+  $("#assemblyLegend").append(
+    "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
+    " style=\"background-color:#C70039\" ></button>&nbsp;contigs</li>",
+    "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
+    " style=\"background-color:#FF5733\" ></button>&nbsp;significant" +
+    " links</li>",
+    "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
+    " style=\"background-color:#666370\" ></button>&nbsp;others</li>"
+  )
+
   let showRerun = document.getElementById("Re_run")
   let showGoback = document.getElementById("go_back")
   let showDownload = document.getElementById("download_ds")
+  let showTable = document.getElementById("tableShow")
+  let showLegend = document.getElementById("colorLegend")
   showRerun.style.display = "block"
   showGoback.style.display = "block"
   showDownload.style.display = "block"
-  renderer.run()
+  showTable.style.display = "block"
+  showLegend.style.display = "block"
+  $("#assemblyLabel").show()
+  // renderer.run()
+  return listGiFilter
 }

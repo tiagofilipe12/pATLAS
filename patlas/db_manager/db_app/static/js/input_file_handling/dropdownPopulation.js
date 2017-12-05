@@ -88,6 +88,7 @@ const resSubmitFunction = (g, graphics, renderer) => {
   // remove first char from selected* arrays
   selectedCard = removeFirstCharFromArray(selectedCard)
   selectedResfinder = removeFirstCharFromArray(selectedResfinder)
+  const promises = []
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
@@ -109,12 +110,14 @@ const resSubmitFunction = (g, graphics, renderer) => {
     for (let i in mergedSelectedArray) {
       if ({}.hasOwnProperty.call(mergedSelectedArray, i)) {
         const gene = mergedSelectedArray[i]
+        promises.push(
         resRequest(g, graphics, renderer, gene, currentColor)
           .then( (results) => {
             results.map( (request) => {
               listGiFilter.push(request.plasmid_id)
             })
           })
+        )
       }
     }
   } else {
@@ -123,15 +126,18 @@ const resSubmitFunction = (g, graphics, renderer) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  if (legendInst === true) {
-    document.getElementById("res_label").style.display = "block" // show label
-    $("#colorLegendBoxRes").empty()
-    $("#colorLegendBoxRes").append(
-      storeLis +
-      "<li class='centeredList'><button class='jscolor btn btn-default'" +
-      " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
-    )
-  }
+  Promise.all(promises)
+    .then( () => {
+      if (legendInst === true) {
+        $("#res_label").show()
+        $("#colorLegendBoxRes").empty()
+        $("#colorLegendBoxRes").append(
+          storeLis +
+          "<li class='centeredList'><button class='jscolor btn btn-default'" +
+          " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
+        )
+      }
+    })
   return legendInst
 }
 
@@ -146,6 +152,7 @@ const pfSubmitFunction = (g, graphics, renderer) => {
   // remove first char from selected* arrays
   // selectedPf = removeFirstCharFromArray(selectedPf)
   // check if arrays are empty
+  const promises = []
   if (selectedPf.length !== 0) {
     // if only card has selected entries
     for (let i in selectedPf) {
@@ -167,12 +174,14 @@ const pfSubmitFunction = (g, graphics, renderer) => {
             "</li>"
         }
         // after setting the legend make the actual request
-        pfRequest(g, graphics, renderer, gene, currentColor)
+        promises.push(
+          pfRequest(g, graphics, renderer, gene, currentColor)
           .then( (results) => {
             results.map( (request) => {
               listGiFilter.push(request.plasmid_id)
             })
           })
+        )
       }
     }
     legendInst = true
@@ -182,14 +191,17 @@ const pfSubmitFunction = (g, graphics, renderer) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  if (legendInst === true) {
-    document.getElementById("pf_label").style.display = "block" // show label
-    $("#colorLegendBoxPf").empty()
-    $("#colorLegendBoxPf").append(
-      storeLis +
-      "<li class='centeredList'><button class='jscolor btn btn-default'" +
-      " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
-    )
-  }
+  Promise.all(promises)
+    .then( () => {
+      if (legendInst === true) {
+        $("#pf_label").show()
+        $("#colorLegendBoxPf").empty()
+        $("#colorLegendBoxPf").append(
+          storeLis +
+          "<li class='centeredList'><button class='jscolor btn btn-default'" +
+          " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
+        )
+      }
+    })
   return legendInst
 }

@@ -43,6 +43,7 @@
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/alternative_loading.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/resetDisplayTaxaBox.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/taxaRequest.js') }}"></script>
+    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/fileSliderHandler.js') }}"></script>
     <!--custom js-->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/custom_colors.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/circle_nodes.js') }}"></script>
@@ -73,8 +74,10 @@
             src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/histogram-bellcurve.js"></script>
+    <script src="https://code.highcharts.com/modules/heatmap.js"></script>
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script src="http://code.highcharts.com/modules/offline-exporting.js"></script>
+
 
 </head>
 
@@ -99,26 +102,39 @@
                     metadata</h4>
             </div>
             <div class="modal-body table-responsive" id="modalTableBody">
-                <div id="toolbar">
-                    <button class="btn btn-default" id="downloadTable"
-                            type="button" data-toogle="tooptip"
-                            title="Download selection">
-                        <span class="glyphicon glyphicon-download-alt"></span>
-                    </button>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab"
+                                          href="#homeTable">Table
+                    </a></li>
+                    <li id="heatmapButtonTab" disabled
+                    ><a data-toggle="tab" href="#heatmapTab">Heatmap</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="homeTable" class="tab-pane fade in active">
+                        <div id="toolbar">
+                            <button class="btn btn-default" id="downloadTable"
+                                    type="button" data-toogle="tooptip"
+                                    title="Download selection">
+                                <span class="glyphicon glyphicon-download-alt"></span>
+                            </button>
+                        </div>
+                        <table class="table" id="metadataTable"
+                               data-striped="true"
+                               data-search="true"
+                               data-show-toggle="true"
+                               data-show-columns="true"
+                               data-query-params="queryParams"
+                               data-pagination="true"
+                               data-height="550"
+                               data-show-export="true"
+                               data-click-to-select="true"
+                               data-toolbar="#toolbar">
+                        </table>
+                    </div>
+                    <div id="heatmapTab" class="tab-pane fade">
+                        <div id="chartContainer2"></div>
+                    </div>
                 </div>
-                <table class="table" id="metadataTable"
-                       data-striped="true"
-                       data-search="true"
-                       data-show-toggle="true"
-                       data-show-columns="true"
-                       data-query-params="queryParams"
-                       data-pagination="true"
-                       data-height="550"
-                       data-show-export="true"
-                       data-click-to-select="true"
-                       data-toolbar="#toolbar">
-                </table>
-
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-default"
@@ -143,22 +159,24 @@
                 <h4 class="modal-title">Select input file (mapping results)</h4>
             </div>
             <div class="modal-body" id="modal-body-file">
-                <div class="row" id="uploadFile">
+                <div class="row uploadFile" id="uploadFile">
                     <div class="input-group col-md-12">
                         <label class="input-group-btn">
                     <span class="btn btn-info btn-file" id="span_1stFile">
-                      Upload file&hellip;<input id="infile" type="file" name="file" style="display: none;">
+                      Upload file&hellip;<input id="infile" type="file"
+                                                name="file" style="display:
+                                                none;" multiple>
                     </span>
                         </label>
                         <input type="text" class="form-control" id="file_text" readonly autocomplete="off">
                     </div>
                 </div>
                 <!--checkbox-->
-                <div class="row" id="uploadFileCheck">
+                <div class="row uploadFileCheck" id="uploadFileCheck">
                     <form>
                         <div>
-                            <label id="label_file">
-                                <input type="checkbox" id="check_file"
+                            <label class="label_file">
+                                <input type="checkbox" class="check_file"
                                        autocomplete="off"/> Check for pairwise comparison mode
                             </label>
                         </div>
@@ -194,14 +212,14 @@
                 <h4 class="modal-title">Select input file (mash results)</h4>
             </div>
             <div class="modal-body" id="modal-body-mash">
-                <div class="row" id="uploadFile">
+                <div class="row uploadFile" id="uploadFileMash">
                     <div class="input-group col-md-12">
                         <label class="input-group-btn">
-                    <span class="btn btn-info btn-file" id="span_1stFile">
+                    <span class="btn btn-info btn-file" id="span_1stFileMash">
                       Upload file&hellip;<input id="mashInfile"
                                                 type="file"
                                                 name="file"
-                                                style="display: none;">
+                                                style="display: none;" multiple>
                     </span>
                         </label>
                         <input type="text" class="form-control" id="file_text_mash"
@@ -210,17 +228,18 @@
                     </div>
                 </div>
                 <!--checkbox-->
-                <div class="row" id="uploadFileCheck">
+                <div class="row uploadFileCheck" id="uploadFileCheckMash">
                     <form>
                         <div>
-                            <label id="label_mash">
-                                <input type="checkbox" id="check_file_mash"
+                            <label class="label_file">
+                                <input type="checkbox" class="check_file"
                                        autocomplete="off"/> Check for pairwise comparison mode
                             </label>
                         </div>
                     </form>
                     <div>
-                        <div class="form-group" id="cutoffFileCheck">Provide a
+                        <div class="form-group"
+                             id="cutoffFileCheckMash">Provide a
                             value for the minimum identity to display. Tip: must be between 0
                             and 1.
                             <input id="cutoffValueMash" type="text" class="form-control"
@@ -257,12 +276,15 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Select input file (sequence import)</h4>
             </div>
-            <div class="modal-body" id="modal-body-file">
-                <div class="row" id="uploadFile">
+            <div class="modal-body" id="modal-body-fileAssembly">
+                <div class="row uploadFile" id="uploadFileAssembly">
                     <div class="input-group col-md-12">
                         <label class="input-group-btn">
-                    <span class="btn btn-info btn-file" id="span_1stFile">
-                      Upload file&hellip;<input id="assemblyfile" type="file" name="file" style="display: none;">
+                    <span class="btn btn-info btn-file"
+                          id="span_1stFileAssembly">
+                      Upload file&hellip;<input id="assemblyfile" type="file"
+                                                name="file" style="display: none;"
+                                                multiple>
                     </span>
                         </label>
                         <input type="text" class="form-control" id="assembly_text" readonly autocomplete="off">
@@ -713,6 +735,8 @@
                 <!--Populated by visualization_functions.js-->
                 <label id="read_label" style="display: none">Read scale</label>
                 <div class="gradient" id="readLegend"></div>
+                <label id="assemblyLabel" style="display: none">Assembly</label>
+                <div class="legend" id="assemblyLegend"></div>
             </div>
         </div>
     </div>
@@ -747,6 +771,20 @@
                 <span class="glyphicon glyphicon-zoom-out"></span>
             </button>
         </div>
+        <!-- slider buttons -->
+        <div class="btn-group">
+            <button id="slideLeft" class="btn btn-default"
+                    data-toggle="tooltip" title="Change file"
+                    type="button" disabled>
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+            <button id="slideRight" class="btn btn-default"
+                    data-toggle="tooltip" title="Change file"
+                    type="button" disabled>
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+        <div id="fileNameDiv"></div>
 
         <!-- End buttons -->
     </div>

@@ -11,10 +11,6 @@ let first_click_menu = true
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
 
-// this variable is used to store the clicked node to use in resistance and
-// plasmid buttons
-let clickedNode = false
-
 // starts a global instance for checking if button was clicked before
 let clickedPopupButtonRes = false
 let clickedPopupButtonCard = false
@@ -32,7 +28,15 @@ let bootstrapTableList = []
 // to execute the getArray_taxa twice.
 const dict_genera = {}
 // buttonSubmit current node
-let currentQueryNode
+let currentQueryNode = false
+
+let masterReadArray = []
+
+let readFilejson = false
+let mash_json = false
+let assembly_json = false
+
+let readIndex = -1
 
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
@@ -56,6 +60,9 @@ let reloadAccessionList = []
 let sliderMinMax = [] // initiates an array for min and max slider entries
 // and stores it for reloading instances of onload()
 let list_gi = []
+// define render on the scope of onload in order to be used by buttons
+// outside renderGraph
+let renderer
 
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
@@ -87,9 +94,6 @@ const onLoad = () => {
     gravity: -1.2,
     theta: 1
   })
-  // define render on the scope of onload in order to be used by buttons
-  // outside renderGraph
-  let renderer
   // buttons that are able to hide
   let showRerun = document.getElementById("Re_run"),
     showGoback = document.getElementById("go_back"),
@@ -112,7 +116,6 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
-      //console.log("node", node)
       nodeSize = minNodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
@@ -121,12 +124,13 @@ const onLoad = () => {
     // rerun precomputes 500
     // const prerender = (devel === true || rerun === true) ? 500 : 0
     // version that doesn't rerun
-    const prerender = (devel === true) ? 500 : 0
+    // console.log("prerender", parseInt(Math.log(listGiFilter.length)))
+    const prerender = (devel === true) ? 500 : parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
 
     renderer = Viva.Graph.View.renderer(g, {
       layout,
       graphics,
-      container: document.getElementById('couve-flor'),
+      container: document.getElementById("couve-flor"),
       prerender,
       preserveDrawingBuffer: true
     })
@@ -156,12 +160,15 @@ const onLoad = () => {
         showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         areaSelection = true
+        listGiFilter = [] //if selection is made listGiFilter should be empty
+        resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+          showGoback, showDownload, showTable, idsArrays)
       }
     })
     // event for shift key up
     // destroys overlay div and transformes multiSelectOverlay to false
     document.addEventListener("keyup", (e) => {
-      if (e.which === 16 && e.which === 0 && multiSelectOverlay) {
+      if (e.which === 16 && multiSelectOverlay) {
         $(".graph-overlay").hide()
         multiSelectOverlay.destroy()
         multiSelectOverlay = false
@@ -220,11 +227,11 @@ const onLoad = () => {
     //* * mouse click on nodes **//
     events.click( (node, e) => {
       // this resets previous selected node to previous color
-      if (clickedNode) {
-        graphics.getNodeUI(clickedNode).color = graphics.getNodeUI(clickedNode).backupColor
+      if (currentQueryNode) {
+        graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
       }
       // then starts making new changes to the newly geerated node
-      clickedNode = node.id
+      currentQueryNode = node.id
       nodeUI_1 = graphics.getNodeUI(node.id)
       const domPos = {
         x: nodeUI_1.position.x,
@@ -240,8 +247,8 @@ const onLoad = () => {
 
       // And ask graphics to transform it to DOM coordinates:
       graphics.transformGraphToClientCoordinates(domPos)
-      domPos.x = (domPos.x + nodeUI_1.size) + 'px'
-      domPos.y = (domPos.y) + 'px'
+      domPos.x = (domPos.x + nodeUI_1.size) + "px"
+      domPos.y = (domPos.y) + "px"
 
       // this sets the popup internal buttons to allow them to run,
       // otherwise they won't run because its own function returns this
@@ -258,7 +265,7 @@ const onLoad = () => {
     renderer.rerender()
 
     //* * Loading Screen goes off **//
-    $('#loading').hide()
+    $("#loading").hide()
     $("#couve-flor").css("visibility", "visible")
 
     //* **************//
@@ -267,10 +274,11 @@ const onLoad = () => {
 
     $(document).on("click", "#close", function() {
       $(this).parent().hide()
-      if (window.nodeUI_1) {
-        graphics.getNodeUI(clickedNode).color = nodeUI_1.backupColor
-        renderer.rerender()
+      if (currentQueryNode !== false) {
+        graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
       }
+      currentQueryNode = false
+      renderer.rerender()
     })
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
@@ -283,8 +291,6 @@ const onLoad = () => {
     // second before executing repetitivePlotFunction's
     $("#refreshButton").on("click", function (e) {
       clickerButton = "species"
-      console.log("listgifilter refreshbutton", listGiFilter)
-      console.log("reloadaccessionlist", reloadAccessionList)
       listGiFilter = (reloadAccessionList.length !== 0) ?
         // reduces listGiFilter to reloadAccessionList
         listGiFilter.filter((n) => reloadAccessionList.includes(n)) :
@@ -349,14 +355,14 @@ const onLoad = () => {
     // sort by values
     $("#sortGraph").on("click", function (e) {
       const sortVal = true
-      const layout = layoutGet(clickerButton)
+      const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
       if (listPlots) { statsParser(listPlots, layout, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").on("click", function (e) {
       const sortAlp = true
-      const layout = layoutGet(clickerButton)
+      const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
       if (listPlots) { statsParser(listPlots, layout, clickerButton, sortAlp, false) }
     })
 
@@ -404,24 +410,25 @@ const onLoad = () => {
 
     // Buttons to control force play/pause using bootstrap navigation bar
     paused = true
-    $('#playpauseButton').on('click', function (e) {
-      $('#playpauseButton').empty()
+    $("#playpauseButton").on("click", function (e) {
+      $("#playpauseButton").empty()
       if (paused === true) {
         renderer.resume()
-        $('#playpauseButton').append('<span class="glyphicon glyphicon-pause"></span>')
+        $("#playpauseButton").append("<span class='glyphicon glyphicon-pause'></span>")
         paused = false
       } else {
         renderer.pause()
-        $('#playpauseButton').append('<span class="glyphicon glyphicon-play"></span>')
+        $("#playpauseButton").append("<span class='glyphicon glyphicon-play'></span>")
         paused = true
       }
     })
 
     // Form and button for search box
-    $("#submitButton").click( (event) => {
+    $("#submitButton").unbind("click").bind("click", (event) => {
       event.preventDefault()    // prevents page from reloading
       if (toggle_status === false) {
         const query = $("#formValueId").val().replace(".", "_")
+
         currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
           clickedPopupButtonFamily, requestPlasmidTable)
@@ -435,6 +442,13 @@ const onLoad = () => {
             currentQueryNode = result
           })
       }
+      // this sets the popup internal buttons to allow them to run,
+      // otherwise they won't run because its own function returns this
+      // variable to false, preventing the popup to expand with its
+      // respective functions
+      clickedPopupButtonCard = true
+      clickedPopupButtonRes = true
+      clickedPopupButtonFamily = true
     })
     // Button to clear the selected nodes by form
     $("#clearButton").click( (event) => {
@@ -603,7 +617,6 @@ const onLoad = () => {
       }
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
-      console.log("ressubmit")
       event.preventDefault()
       // TODO reset nodes before adding new colors
       // same should be done for taxa filters submit button
@@ -773,11 +786,6 @@ const onLoad = () => {
         Alert = false
       }
 
-      // control button to close div
-      $("#alertCloseNCBI").click( () => {
-        $("#alertNCBI").hide()  // hide this div
-      })
-
       // auto hide after 5 seconds without closing the div
       window.setTimeout( () => { $("#alertId").hide() }, 5000)
 
@@ -841,8 +849,8 @@ const onLoad = () => {
           const tempArray = assocOrderGenus[currentSelectionOrder[i]]
           for (const sp in tempArray) {
             taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-              .then(results => {
-                results.map(request => {
+              .then( (results) => {
+                results.map( (request) => {
                   listGiFilter.push(request.plasmid_id)
                 })
               })
@@ -855,8 +863,8 @@ const onLoad = () => {
           const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
           for (const sp in tempArray) {
             taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-              .then(results => {
-                results.map(request => {
+              .then( (results) => {
+                results.map( (request) => {
                   listGiFilter.push(request.plasmid_id)
                 })
               })
@@ -869,8 +877,8 @@ const onLoad = () => {
           const tempArray = assocGenus[currentSelectionGenus[i]]
           for (const sp in tempArray) {
             taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-              .then(results => {
-                results.map(request => {
+              .then( (results) => {
+                results.map( (request) => {
                   listGiFilter.push(request.plasmid_id)
                 })
               })
@@ -881,8 +889,8 @@ const onLoad = () => {
         let currentSelectionSpecies = alertArrays.species
         for (const i in currentSelectionSpecies) {
           taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor, reloadAccessionList)//, changed_nodes)
-            .then(results => {
-              results.map(request => {
+            .then( (results) => {
+              results.map( (request) => {
                 listGiFilter.push(request.plasmid_id)
               })
             })
@@ -911,8 +919,8 @@ const onLoad = () => {
                 // executres node function for family and orders
                 for (const sp in tempArray) {
                   taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                    .then(results => {
-                      results.map(request => {
+                    .then( (results) => {
+                      results.map( (request) => {
                         listGiFilter.push(request.plasmid_id)
                       })
                     })
@@ -930,8 +938,8 @@ const onLoad = () => {
                 // executres node function for family
                 for (const sp in tempArray) {
                   taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                    .then(results => {
-                      results.map(request => {
+                    .then( (results) => {
+                      results.map( (request) => {
                         listGiFilter.push(request.plasmid_id)
                       })
                     })
@@ -950,7 +958,7 @@ const onLoad = () => {
                 // respective nodes
                 for (const sp in tempArray) {
                   taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                    .then(results => {
+                    .then( (results) => {
                       results.map(request => {
                         listGiFilter.push(request.plasmid_id)
                       })
@@ -968,7 +976,7 @@ const onLoad = () => {
                 // requests taxa associated accession from db and colors
                 // respective nodes
                 taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)//, changed_nodes)
-                  .then(results => {
+                  .then( (results) => {
                     results.map(request => {
                       listGiFilter.push(request.plasmid_id)
                     })
@@ -1000,107 +1008,158 @@ const onLoad = () => {
     //* ************//
     //* ***READS****//
     //* ************//
+    const pushToMasterReadArray = (readFilejson) => {
+      const returnArray = []
+      // iterate for all files and save to masterReadArray to use in heatmap
+      for (const i in readFilejson) {
+        if (readFilejson.hasOwnProperty(i)) {
+          const fileEntries = JSON.parse(readFilejson[i])
+          // iterate each accession number
+          for (const i2 in fileEntries) {
+            if (fileEntries.hasOwnProperty(i2)) {
+              // if not in masterReadArray then add it
+              const percValue = (typeof(fileEntries[i2]) === "number") ?
+                fileEntries[i2] : parseFloat(fileEntries[i2][0])
+              if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParser()) {
+                returnArray.push(i2)
+              }
+            }
+          }
+        }
+      }
+      return returnArray
+    }
 
-    $('#fileSubmit').click(function (event) {
+    $("#fileSubmit").click( (event) => {
+      event.preventDefault()
+      masterReadArray = []
+      // feeds the first file
+      const readString = JSON.parse(Object.values(readFilejson)[0])
+      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+      $("#fileNameDiv").show()
+      // readIndex will be used by slider buttons
+      readIndex += 1
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
-      event.preventDefault()
-      $('#loading').show()
-      setTimeout(function () {
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer)
+      $("#loading").show()
+      setTimeout( () => {
+        // colors each node for first element of readFilejson
+        const outLists = readColoring(g, list_gi, graphics, renderer, readString)
+        list_gi  = outLists[0]
+        listGiFilter = outLists[1]
+        masterReadArray = pushToMasterReadArray(readFilejson)
       }, 100)
 
       // }
       // used to hide when function is not executed properly
-      setTimeout(function () {
-        $('#loading').hide()
+      setTimeout( () => {
+        $("#loading").hide()
       }, 100)
+      $("#slideRight").prop("disabled", false)
+      $("#slideLeft").prop("disabled", false)
     })
 
-    $('#cancel_infile').click(function (event) {
-      abortRead(read_json)
+    $("#cancel_infile").click( (event) => {
+      abortRead(readFilejson)
     })
 
     //* ************//
     //* ***MASH****//
     //* ************//
 
-    $('#fileSubmit_mash').click(function (event) {
-      read_json = mash_json // conerts mash_json into read_json to overwrite
+    $("#fileSubmit_mash").click( (event) => {
+      masterReadArray = []
+      readFilejson = mash_json // converts mash_json into readFilejson to
+      readString = JSON.parse(Object.values(readFilejson)[0])
+      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+      $("#fileNameDiv").show()
+      // readIndex will be used by slider buttons
+      readIndex += 1
       // it and use the same function (readColoring)
-      console.log("mash")
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, showtable, idsArrays)
+        showGoback, showDownload, showTable, idsArrays)
       event.preventDefault()
-      $('#loading').show()
-      setTimeout(function () {
-        list_gi, listGiFilter = readColoring(g, list_gi, graphics, renderer)
+      $("#loading").show()
+      setTimeout( () => {
+        // TODO this readFilejson here must be a json object from 1 file
+        const outputList = readColoring(g, list_gi, graphics, renderer, readString)
+        list_gi = outputList[0]
+        listGiFilter = outputList[1]
+        masterReadArray = pushToMasterReadArray(readFilejson)
       }, 100)
 
       // }
       // used to hide when function is not executed properly
-      setTimeout(function () {
-        $('#loading').hide()
+      setTimeout( () => {
+        $("#loading").hide()
       }, 100)
+      $("#slideRight").prop("disabled", false)
+      $("#slideLeft").prop("disabled", false)
+
     })
 
-    $('#cancel_infile_mash').click(function (event) {
+    $("#cancel_infile_mash").click( (event) => {
       abortRead(mash_json)
     })
 
     //* ********* ***//
     //* * Assembly **//
     //* ********* ***//
-    $('#assemblySubmit').click(function (event) {
+    $("#assemblySubmit").click( (event) => {
+      masterReadArray = []
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
-      $('#loading').show()
-      setTimeout(function () {
-        assembly(list_gi, assembly_json, g, graphics, renderer)
+      $("#loading").show()
+      // setTimeout( () => {
+      listGiFilter = assembly(list_gi, assembly_json, g, graphics, masterReadArray, listGiFilter)
+      // }, 100)
+      setTimeout( () => {
+        renderer.rerender()
+        // TODO raise a warning for users to press play if they want
       }, 100)
 
       // }
       // used to hide when function is not executed properly
-      setTimeout(function () {
-        $('#loading').hide()
+      setTimeout( () => {
+        $("#loading").hide()
       }, 100)
     })
 
-    $('#cancel_assembly').click(function (event) {
+    $("#cancel_assembly").click( (event) => {
       abortRead(assembly_json)
     })
 
     //* *********************//
     //* * Distances filter **//
     //* *********************//
-    $('#distancesSubmit').click(function (event) {
+    $("#distancesSubmit").click(function (event) {
       event.preventDefault()
-      $('#loading').show()
-      $('#scaleLegend').empty()
+      $("#loading").show()
+      $("#scaleLegend").empty()
       setTimeout(function () {
         link_coloring(g, graphics, renderer)
       }, 100)
       const readMode = false
       color_legend(readMode)
-      //document.getElementById('reset-links').disabled = ''
+      //document.getElementById("reset-links").disabled = ""
     })
 
-    $('#reset-links').click(function (event) {
+    $("#reset-links").click(function (event) {
       event.preventDefault()
-      document.getElementById('distance_label').style.display = 'none' // hide label
-      if ($('#colorLegendBox').html() === '') {
-        $('#scaleLegend').empty()
-        //showLegend = document.getElementById('colorLegend') // global
+      document.getElementById("distance_label").style.display = "none" // hide label
+      if ($("#colorLegendBox").html() === "") {
+        $("#scaleLegend").empty()
+        //showLegend = document.getElementById("colorLegend") // global
         // variable to be reset by the button reset-filters
-        showLegend.style.display = 'none'
+        showLegend.style.display = "none"
       } else {
-        $('#scaleLegend').empty()
+        $("#scaleLegend").empty()
       }
       setTimeout(function () {
         reset_link_color(g, graphics, renderer)
       }, 100)
-      //document.getElementById('reset-links').disabled = 'disabled'
+      //document.getElementById("reset-links").disabled = "disabled"
     })
 
     //* ********************//
@@ -1231,16 +1290,21 @@ const onLoad = () => {
     $("#reset-sliders").click(function (event) {
       listGiFilter = [] //resets listGiFilter
       areaSelection = false
+      readFilejson = false // makes file selection empty again
+      assembly_json = false
+      mash_json = false
+      currentQueryNode = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
         showGoback, showDownload, showTable, idsArrays)
     })
     // runs the re run operation for the selected species
     $("#Re_run").click(function (event) {
-      console.log("rerun listGiFilter", listGiFilter)
       // resets areaSelection
       areaSelection = false
       rerun = true
+      reloadAccessionList = []  // needs to be killed every instance in
+      // order for reload to allow reloading again
       //* * Loading Screen goes on **//
       // removes disabled from class in go_back button
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
@@ -1322,7 +1386,6 @@ const onLoad = () => {
             const log_length = Math.log(parseInt(seqLength))
             list_lengths.push(seqLength)
             list_gi.push(sequence)
-            //console.log(array, sequence, seqLength, log_length)
 
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
@@ -1363,12 +1426,10 @@ const onLoad = () => {
           const queue = async.queue(addAllNodes, 10)
 
           queue.drain = () => {
-            //console.log("finished")
             // after getting all nodes, setup another concurrency for all links
             const queue2 = async.queue(addAllLinks, 10)
 
             queue2.drain = () => {
-              //console.log("finished 2")
               renderGraph(graphics)
             }
             // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
@@ -1380,12 +1441,29 @@ const onLoad = () => {
       }
     } else {
       // storeMasterNode is empty in here
-      console.log("listGiFilter before requestDB", listGiFilter)
-      listGiFilter, reloadAccessionList = requesterDB(g, listGiFilter, counter, storeMasterNode, renderGraph, graphics, reloadAccessionList)
-
+      if (readFilejson !== false) {
+        const readReload = JSON.parse(Object.values(readFilejson)[readIndex])
+        $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
+        $("#fileNameDiv").show()
+        requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
+          graphics, reloadAccessionList, renderer, list_gi, readReload,
+          assembly_json)
+        // TODO do something similar to assembly
+      } else {
+        // used when no reads are used to filter
+        console.log(reloadAccessionList, listGiFilter)
+        requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
+          graphics, reloadAccessionList, renderer, list_gi, false,
+          assembly_json)
+      }
+      listGiFilter = requestDBList[0] // list with the nodes used to filter
+      reloadAccessionList = requestDBList[1] //list stores all nodes present
       // this list_gi isn't the same as the initial but has information on
       // all the nodes that were used in filters
-      // TODO masterNode needs to be used to re-center the graph
+      // wait a while before showing the colors
+      setTimeout( () => {
+        renderer.rerender()
+      }, 100)
     }
   }
 
@@ -1393,17 +1471,19 @@ const onLoad = () => {
   // control the infile input and related functions //
   //* ***********************************************//
 
-  handleFileSelect('infile', '#file_text', function (new_read_json) {
-    read_json = new_read_json //careful when redefining this because
-    // read_json is a global variable
+  handleFileSelect('infile', '#file_text', (new_read_json) => {
+    readFilejson = new_read_json
+    // $("#infile").val("")
   })
 
   handleFileSelect('mashInfile', '#file_text_mash', function (new_mash_json) {
-    mash_json = new_mash_json //global
+    mash_json = new_mash_json
+    // $("#mashInfile").val("")
   })
 
   handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {
-    assembly_json = new_assembly_json   //global
+    assembly_json = new_assembly_json
+    // $("#assemblyfile").val("")
   })
 
   //* ****************************** *//
@@ -1440,7 +1520,9 @@ const onLoad = () => {
   // function to add accession to bootstrapTableList in order to use in
   // downloadTable function or in submitTable button
   $("#metadataTable").on("check.bs.table", (e, row) => {
-    bootstrapTableList.push(row.id)
+    if (bootstrapTableList.indexOf(row.id) < 0) {
+      bootstrapTableList.push(row.id)
+    }
   })
   // function to remove accession from bootstrapTableList in order to use in
   // downloadTable function or in submitTable button
@@ -1454,7 +1536,9 @@ const onLoad = () => {
     // function to handle when all are selected
     .on("check-all.bs.table", (e, rows) => {
       for (row in rows) {
-        bootstrapTableList.push(rows[row].id)
+        if (bootstrapTableList.indexOf(rows[row]) < 0) {
+          bootstrapTableList.push(rows[row].id)
+        }
       }
     })
     // function to remove when all are selected
@@ -1468,7 +1552,28 @@ const onLoad = () => {
     const acc = bootstrapTableList.map((uniqueAcc) => {
       return uniqueAcc.split("_").splice(0,2).join("_")
     })
+    console.log(bootstrapTableList, acc)
     multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
+  })
+
+  // function to display heatmap dataset selected in table
+  $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
+    // transform internal accession numbers to ncbi acceptable accesions
+    if (readFilejson !== false) {
+      console.log("heatmap", readFilejson)
+      heatmapMaker(masterReadArray, readFilejson)
+      mash_json = false
+      assembly_json = false
+    // }
+    // else if (mash_json !== false) {
+    //   heatmapMaker(masterReadArray, mash_json)
+    //   readFilejson = false
+    //   assembly_json = false
+    } else if (assembly_json !== false) {
+      heatmapMaker(masterReadArray, assembly_json)
+      readFilejson = false
+      mash_json = false
+    }
   })
   // button to color selected nodes by check boxes
   $("#tableSubmit").unbind("click").bind("click", (e) => {
@@ -1488,8 +1593,12 @@ const onLoad = () => {
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
     $("#metadataTable").bootstrapTable("destroy")
-    makeTable(areaSelection, listGiFilter, g, graphics)
+    $(".nav-tabs a[href='#homeTable']").tab("show")
+    show_div(
+      makeTable(areaSelection, listGiFilter, g, graphics)
+    )
   })
+
   // function to close table
   $("#cancelTable").unbind("click").bind("click", (e) => {
     $("#tableModal").modal("toggle")
@@ -1538,13 +1647,32 @@ const onLoad = () => {
     arrayToCsv(targetArray)
   })
 
+  const emptyFiles = () => {
+    $("#infile").val("")
+    $("#mashInfile").val("")
+    $("#assemblyfile").val("")
+    readFilejson = false
+    mash_json = false
+    assembly_json = false
+  }
+
+  $("#uploadFile").click( (event) => {
+    emptyFiles()
+  })
+  $("#uploadFileMash").click( (event) => {
+    emptyFiles()
+  })
+  $("#uploadFileAssembly").click( (event) => {
+    emptyFiles()
+  })
+
   // resistance button control //
   $(document).on("click", "#resButton", function(event) {
     // controls the look of buttons
     $("#resButton").removeClass("btn-default").addClass("btn-primary")
     $("#plasmidButton").removeClass("btn-primary").addClass("btn-default")
     if (clickedPopupButtonCard === true) {
-      clickedPopupButtonCard = resGetter(clickedNode)
+      clickedPopupButtonCard = resGetter(currentQueryNode)
       $("#pfTab").hide()
     } else {
       // when it is already queried and we are just cycling b/w the two divs
@@ -1559,7 +1687,7 @@ const onLoad = () => {
     $("#plasmidButton").removeClass("btn-default").addClass("btn-primary")
     $("#resButton").removeClass("btn-primary").addClass("btn-default")
     if (clickedPopupButtonFamily === true) {
-      clickedPopupButtonFamily = plasmidFamilyGetter(clickedNode)
+      clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
       $("#resTab").hide()
     } else {
       // when it is already queried and we are just cycling b/w the two divs
@@ -1578,6 +1706,34 @@ const onLoad = () => {
     $("#alertId_search").hide()  // hide this div
   })
 
+  $("#alertCloseNCBI").click( () => {
+    $("#alertNCBI").hide()  // hide this div
+  })
+
+  /** control the visualization of multiple files for read mode
+  The default idea is that the first file in this readFilejson object is the
+   one to be loaded when uploading then everything else should use cycler
+  */
+  $("#slideRight").click( () => {
+    resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+      showGoback, showDownload, showTable, idsArrays)
+    console.log(readFilejson)
+    const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
+    readIndex = outArray[0]
+    listGiFilter = outArray[1][1]
+    list_gi = outArray[1][0]
+
+  })
+
+  $("#slideLeft").click( () => {
+    resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
+      showGoback, showDownload, showTable, idsArrays)
+    const outArray = slideToLeft(readFilejson, readIndex, g, list_gi, graphics, renderer)
+    readIndex = outArray[0]
+    listGiFilter = outArray[1][1]
+    list_gi = outArray[1][0]
+  })
+
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph
@@ -1586,5 +1742,4 @@ const onLoad = () => {
   Mousetrap.bind("shift+ctrl+space", () => {
     initCallback(g, layout, devel)
   })
-
 } // closes onload

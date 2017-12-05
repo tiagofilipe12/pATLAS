@@ -39,7 +39,6 @@
 #buttonStuff{
   position: fixed;
   bottom: 2%;
-  width: 170px;
   left: 50%;
   transform: translateX(-46%);
 }
@@ -89,6 +88,11 @@
   z-index: 99;
   text-align: center;
 }
+
+/*#tableModal {*/
+    /*z-index: 98;*/
+/*}*/
+
 #loading-image {
   position: fixed;
   top: 50%;
@@ -97,6 +101,7 @@
   display: block;
   transform: translate(-50%, -50%);
 }
+
 #loading-image-alt{
   display: none;
   position: absolute;
@@ -150,7 +155,7 @@
 /* customizes taxa filters buttons*/
 
 #modal-body-file{
-  height: 180px;
+  height: 190px;
   overflow: auto;
 }
 
@@ -175,14 +180,14 @@
     *overflow: hidden;
 }
 
-#label_file {
+.label_file {
     display: block;
     padding-left: 15px;
     text-indent: -15px;
     padding-top: 2%;
     padding-bottom: 1%;
 }
-#check_file {
+.check_file {
     width: 15px;
     height: 15px;
     padding: 0;
@@ -191,7 +196,7 @@
     *overflow: hidden;
 }
 
-#uploadFile, #uploadFileCheck{
+.uploadFile, .uploadFileCheck{
   margin-left: 1%;
   margin-right: 1%;
 }
@@ -568,6 +573,10 @@
     height: 95%;
 }
 
+#chartContainer2{
+    width: 100%;
+}
+
 #progressBar{
     /*display: inline-block;*/
     background-color: grey;
@@ -611,6 +620,13 @@
     background: #ccc;
 }
 
-#modalTableBody > .bootstrap-table > .fixed-table-toolbar > .columns > .btn{
+#modalTableBody > .tab-content > .tab-pane > .bootstrap-table > .fixed-table-toolbar > .columns > .btn{
     height: 34px;
+}
+
+#fileNameDiv{
+    margin-top: 5px;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
 }
