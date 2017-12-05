@@ -1,5 +1,5 @@
 // if this is a developer session please enable the below line of code
-const devel = false
+const devel = true
 
 // boolean that controls the prerender function if rerun
 // is activated
@@ -76,7 +76,7 @@ const onLoad = () => {
   // Sets parameters to be passed to WebglCircle in order to change
   // node shape, setting color and size.
   const nodeColor = 0x666370 // hex rrggbb
-  const minNodeSize = 2 // a value that assures that the node is
+  const minNodeSize = 4 // a value that assures that the node is
   // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
@@ -89,15 +89,15 @@ const onLoad = () => {
   const layout = Viva.Graph.Layout.forceDirected(g, {
     springLength: 100,
     springCoeff: 0.0001,
-    dragCoeff: 0.0001, // sets how fast nodes will separate from origin,
+    dragCoeff: 0.001, // sets how fast nodes will separate from origin,
     // the higher the value the slower
-    gravity: -1.2,
+    gravity: -10,
     theta: 1,
     // This is the main part of this example. We are telling force directed
     // layout, that we want to change length of each physical spring
     // by overriding `springTransform` method:
     springTransform: function (link, spring) {
-      spring.length = 100 * (1 - link.data.distance)
+      spring.length = 100 * Math.log10(1 - link.data.distance) + 100
     }
   })
   // buttons that are able to hide
