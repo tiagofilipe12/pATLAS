@@ -732,6 +732,10 @@ const onLoad = () => {
     // perform actions when submit button is clicked.
 
     $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
+      // clear legend from reads
+      $("#readString").empty()
+      $("#readLegend").empty()
+      $("#read_label").hide()
       event.preventDefault()
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
@@ -1148,19 +1152,34 @@ const onLoad = () => {
 
     $("#reset-links").click(function (event) {
       event.preventDefault()
-      document.getElementById("distance_label").style.display = "none" // hide label
-      if ($("#colorLegendBox").html() === "") {
-        $("#scaleLegend").empty()
-        //showLegend = document.getElementById("colorLegend") // global
-        // variable to be reset by the button reset-filters
-        showLegend.style.display = "none"
-      } else {
-        $("#scaleLegend").empty()
+      const arrayOfDivs = [
+        $("#colorLegendBox").html(),
+        $("#colorLegendBoxRes").html(),
+        $("#colorLegendBoxPf").html(),
+        $("#readLegend").html(),
+        $("#assemblyLegend").html(),
+
+      ]
+      let divCounter = 0
+      for (const div of arrayOfDivs) {
+        if (div === "") {
+          divCounter += 1
+          if (divCounter === 5) {
+            // $("#scaleLegend").empty()
+            // $("#scaleString").empty()
+            // $("#distance_label").hide()
+            showLegend.style.display = "none"
+
+            //document.getElementById("reset-links").disabled = "disabled"
+          }
+        }
       }
+      $("#scaleLegend").empty()
+      $("#scaleString").empty()
+      $("#distance_label").hide()
       setTimeout(function () {
         reset_link_color(g, graphics, renderer)
       }, 100)
-      //document.getElementById("reset-links").disabled = "disabled"
     })
 
     //* ********************//

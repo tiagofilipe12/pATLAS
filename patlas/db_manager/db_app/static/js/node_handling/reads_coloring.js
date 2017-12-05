@@ -59,35 +59,24 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
   // enters this statement for coloring the links and not the nodes
   if (readMode !== true) {
     $("#scaleLegend").empty()
+    $("#scaleString").empty()
     // this loop should be reversed since the higher values will have a lighter color
     for (let i = tmpArray.length - 1; i >= 0; i--) {
       const color_element = scale(i / x).hex()
-      $('#scaleLegend').append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
+      $('#scaleLegend').append('<span class="grad-step"' +
+        ' style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
-    $("#scaleLegend").append('<div class="header_taxa" id="min">0.1</div>')
-    $("#scaleLegend").append('<div class="header_taxa" id="med">0.05</div>')
-    $("#scaleLegend").append('<div class="header_taxa" id="max">0</div>')
+    $("#scaleString").append('<div class="min">0.1</div>')
+    $("#scaleString").append('<div class="med">0.05</div>')
+    $("#scaleString").append('<div class="max">0</div>')
     document.getElementById("distance_label").style.display = "block" // show label
   } else { // here enters for coloring the reads
     $("#readLegend").empty()
+    $("#readString").empty()
     for (let i = 0; i < tmpArray.length; i++) {
       const color_element = scale(i / x).hex()
       $("#readLegend").append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
     }
-    // min value is the one fetched from the input form or by default 0.6
-    // values are fixed to two decimal
-    const minValue = parseFloat(
-      ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
-    ).toFixed(2)
-    // mean value is the sum of the min value plus the range between the min
-    // and max values divided by two
-    const meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
-    $("#readLegend").append('<div class="header_taxa" id="min">' +
-      minValue.toString() + '</div>')
-    $("#readLegend").append('<div class="header_taxa" id="med">' +
-      meanValue.toFixed(2).toString() + '</div>')
-    $("#readLegend").append('<div class="header_taxa" id="max">1</div>')
-    document.getElementById("read_label").style.display = "block" // show label
   }
 }
 
@@ -116,7 +105,7 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
       const identity = parseFloat(perc[0])
       const copyNumber = perc[1]
       // TODO add functionality to the code below
-      if (document.getElementById("check_file_mash").checked) {
+      if (document.getElementsByClassName("check_file_mash").checked) {
         if (identity >= 0.5) {
           // perc values had to be normalized to the percentage value between 0
           // and 1
@@ -131,20 +120,20 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           listGiFilter.push(gi)
         }
         const scale = chroma.scale(["blue", "#eacc00", "maroon"])
-        palette(scale, 20, readMode)
+        palette(scale, 10, readMode)
       } else {
         if (identity >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
           const newPerc = rangeConverter(identity, cutoffParserMash(), 1, 0, 1)
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
           const scale = chroma.scale(["lightsalmon", "maroon"])
-          palette(scale, 20, readMode)
+          palette(scale, 10, readMode)
           node_iter(g, readColor, gi, graphics, identity, copyNumber)
           listGiFilter.push(gi)
         }
       }
       // otherwise just runs read mode
     } else {
-      if (document.getElementById("check_file").checked) {
+      if (document.getElementsByClassName("check_file").checked) {
         if (perc >= 0.5) {
           // perc values had to be normalized to the percentage value between 0
           // and 1
@@ -159,19 +148,33 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           listGiFilter.push(gi)
         }
         const scale = chroma.scale(["blue", "#eacc00", "maroon"])
-        palette(scale, 20, readMode)
+        palette(scale, 10, readMode)
       } else {
         if (perc >= cutoffParser()) {
           const newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
           const scale = chroma.scale(["lightsalmon", "maroon"])
-          palette(scale, 20, readMode)
+          palette(scale, 10, readMode)
           node_iter(g, readColor, gi, graphics, perc)
           listGiFilter.push(gi)
         }
       }
     }
   }
+  // min value is the one fetched from the input form or by default 0.6
+  // values are fixed to two decimal
+  const minValue = parseFloat(
+    ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
+  ).toFixed(2)
+  // mean value is the sum of the min value plus the range between the min
+  // and max values divided by two
+  const meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
+  $("#readString").append('<div class="min">' +
+    minValue.toString() + '</div>')
+  $("#readString").append('<div class="med">' +
+    meanValue.toFixed(2).toString() + '</div>')
+  $("#readString").append('<div class="max">1</div>')
+  document.getElementById("read_label").style.display = "block" // show label
   // control all related divs
   // TODO this code is duplicated, should be fixed
   let showRerun = document.getElementById("Re_run")
@@ -238,7 +241,7 @@ const color_legend = (readMode) => {
     " scheme") {
     scale = chroma.scale(["#4D0E1C", "#E87833"])
   }
-  palette(scale, 20, readMode)
+  palette(scale, 10, readMode)
 }
 
 // Clear nodes function for reset-sliders button
@@ -282,8 +285,8 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
   $("#pf_label").hide()
   $("#colorLegendBoxPf").empty()
   // empty and hide distances legend
-  $("#distance_label").hide()
-  $("#scaleLegend").empty()
+  // $("#distance_label").hide()
+  // $("#scaleLegend").empty()
   // empty and hide read legend
   $("#read_label").hide()
   $("#readLegend").empty()

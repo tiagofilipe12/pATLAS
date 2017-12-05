@@ -390,34 +390,43 @@
 }
 .grad-step {
     display: inline-block;
-    height: 20px;
+    min-width: 10px;
+    height: 15px;
 }
 
-#min {
+.min {
+    display: inline-block;
     margin: 1%;
-    position: absolute;
-    left: 10%;
+    position: relative;
+    width: 30%;
+    /*left: 1px;*/
     font-size: 11px;
 }
 
-#med {
+.med {
+    display: inline-block;
     margin: 1%;
-    position: absolute;
-    right: 25%;
-    left: 25%;
+    position: relative;
+    /*right: 25%;*/
+    /*left: 25%;*/
+    text-align: center;
+    width: 30%;
     text-align: center;
     font-size: 11px;
 }
 
-#max {
+.max {
+    display: inline-block;
     margin: 1%;
-    position: absolute;
-    right: 10%;
+    position: relative;
+    text-align: right;
+    /*right: 10%;*/
+    width: 30%;
     font-size: 11px;
 }
 
 #read_label{
-    margin-top:20px;
+    margin-top: 10px;
 }
 
 /*!
