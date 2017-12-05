@@ -48,15 +48,59 @@ const statsParser = (masterObj, layout, taxaType, sortAlp, sortVal) => {
   const doubleArray = arraytoHighcharts(finalArray)
 
   // categories have to be added to the xAxis labels
-  layout.xAxis = { categories: doubleArray[1] }
-  // then add the series to the graph itself
-  layout.series = [{
-    type: "column",
-    data: doubleArray[0],
-    name: "# of plasmids",
-    showInLegend: false,
-    color: colorsPlot[taxaType.replace(" ", "")]
-  }]
+  if (taxaType !== "length") {
+    layout.xAxis = {categories: doubleArray[1]}
+    // then add the series to the graph itself
+    layout.series = [{
+      type: "column",
+      data: doubleArray[0],
+      name: "# of plasmids",
+      showInLegend: false,
+      color: colorsPlot[taxaType.replace(" ", "")]
+    }]
+    // enable sort buttons again
+    $("#sortGraph").removeAttr("disabled")
+    $("#sortGraphAlp").removeAttr("disabled")
+  } else {
+    //converts every element in finalArray to float and then sorts it
+    const histoArray = finalArray.map( (e) => { return parseFloat(e) }).sort()
+    layout.xAxis = [{
+      labels: { enabled: false},
+      title: { text: null},
+      opposite: true
+    }, {
+     title: { text: "Sequence size (histogram)"},
+     // opposite: true
+    }]
+    layout.yAxis = [{
+      title: { text: "Sequence size (scatter)"},
+      opposite: true
+    }, {
+      title: { text: "Number of plasmids (histogram)"},
+      // opposite: true
+    }]
+    layout.series = [{
+      type: "histogram",
+      // data: finalArray,
+      name: "# of plasmids",
+      xAxis: 1,
+      yAxis: 1,
+      baseSeries: 1,
+      // showInLegend: false,
+      color: colorsPlot[taxaType.replace(" ", "")],
+      zIndex: -1
+    }, {
+      name: "Data",
+      type: "scatter",
+      data: histoArray,
+      marker: {
+        radius: 3
+      }
+    }]
+    // disable sort buttons
+    $("#sortGraph").attr("disabled", true)
+    $("#sortGraphAlp").attr("disabled", true)
+  }
 
   Highcharts.chart("chartContainer1", layout)
 }
