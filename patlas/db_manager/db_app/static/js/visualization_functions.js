@@ -87,12 +87,18 @@ const onLoad = () => {
   const g = Viva.Graph.graph()
   // define layout
   const layout = Viva.Graph.Layout.forceDirected(g, {
-    springLength: 30,
+    springLength: 10,
     springCoeff: 0.0001,
     dragCoeff: 0.0001, // sets how fast nodes will separate from origin,
     // the higher the value the slower
-    gravity: -1.2,
-    theta: 1
+    gravity: -10,
+    theta: 1,
+    // This is the main part of this example. We are telling force directed
+    // layout, that we want to change length of each physical spring
+    // by overriding `springTransform` method:
+    springTransform: function (link, spring) {
+      spring.length = 10 * (10 - link.data.distance)
+    }
   })
   // buttons that are able to hide
   let showRerun = document.getElementById("Re_run"),
@@ -106,7 +112,6 @@ const onLoad = () => {
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
   const renderGraph = (graphics) => {
-    //console.log("entered renderGraph")
     //const graphics = Viva.Graph.View.webglGraphics()
     //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
@@ -124,7 +129,6 @@ const onLoad = () => {
     // rerun precomputes 500
     // const prerender = (devel === true || rerun === true) ? 500 : 0
     // version that doesn't rerun
-    // console.log("prerender", parseInt(Math.log(listGiFilter.length)))
     const prerender = (devel === true) ? 500 : parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
 
     renderer = Viva.Graph.View.renderer(g, {
@@ -730,9 +734,6 @@ const onLoad = () => {
     $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
       // changed nodes is reset every instance of taxaModalSubmit button
-      // let changed_nodes = []
-
-      // console.log("listGiFilter taxamodalsubmit", listGiFilter, dict_genera)
       listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
       // now processes the current selection
@@ -1318,7 +1319,6 @@ const onLoad = () => {
 
     // returns to the initial tree by reloading the page
     $("#go_back").click(function (event) {
-      //console.log("returning to main")
       window.location.reload()   // a temporary fix to go back to full dataset
     })
   } // closes renderGraph
@@ -1358,12 +1358,9 @@ const onLoad = () => {
 
               // loops between all arrays of array pairing sequence and distances
               for (let i = 0; i < dict_dist.length; i++) {
-                //console.log(dict_dist[i], Object.keys(dict_dist[i])[0])
-                //const pairs = dict_dist[i]
                 const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
-                //console.log(Object.values(dict_dist[i])[0].distance)
                 const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
-                g.addLink(sequence, reference, distance)
+                g.addLink(sequence, reference, { distance })
               }
             }
             // checks if the node is the one with most links and stores it in
@@ -1422,12 +1419,11 @@ const onLoad = () => {
                 if (reference !== "") {
                   // here it adds only unique links because filtered.json file
                   // just stores unique links
-                  g.addLink(sequence, reference, distance)
+                  g.addLink(sequence, reference, { distance })
                 } else {
                   // if there is no reference associated with sequence then
                   // there are no links
                   // TODO this will break if singletons are added
-                  // console.log("empty array: ", array.childId, sequence)
                   reject(new Error(`link wasn't added: ${array.childId} -> ${sequence}`))
                 }
                 if (i + 1 === json.lenght) {
@@ -1445,7 +1441,7 @@ const onLoad = () => {
             })
 
           // setup concurrency
-          //   /* TODO I think this implementation is not limiting the number of
+          //   /* I think this implementation is not limiting the number of
           //    nodes and links being added simultaneously but it assures that
           //     the code is run in a certain order.
           //     I.e. first all nodes are added, then all links are added and
@@ -1487,7 +1483,6 @@ const onLoad = () => {
         // TODO do something similar to assembly
       } else {
         // used when no reads are used to filter
-        console.log(reloadAccessionList, listGiFilter)
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, false,
           assembly_json)
@@ -1538,7 +1533,6 @@ const onLoad = () => {
 
   // download button //
   $("#download_ds").unbind("click").bind("click", (e) => {
-    //console.log(areaSelection)
     // for now this is just taking what have been changed by taxa coloring
     if (areaSelection === true) {
       // downloads if area selection is triggered
@@ -1588,7 +1582,6 @@ const onLoad = () => {
     const acc = bootstrapTableList.map((uniqueAcc) => {
       return uniqueAcc.split("_").splice(0,2).join("_")
     })
-    console.log(bootstrapTableList, acc)
     multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
   })
 
@@ -1596,7 +1589,6 @@ const onLoad = () => {
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
     // transform internal accession numbers to ncbi acceptable accesions
     if (readFilejson !== false) {
-      console.log("heatmap", readFilejson)
       heatmapMaker(masterReadArray, readFilejson)
       mash_json = false
       assembly_json = false
@@ -1753,7 +1745,6 @@ const onLoad = () => {
   $("#slideRight").click( () => {
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
-    console.log(readFilejson)
     const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]

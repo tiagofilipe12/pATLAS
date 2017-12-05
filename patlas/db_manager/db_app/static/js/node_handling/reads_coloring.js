@@ -194,9 +194,10 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
 
 const link_coloring = (g, graphics, renderer) => {
   g.forEachLink( (link) => {
-    const dist = link.data * 10
+    const dist = link.data.distance * 10
     const linkUI = graphics.getLinkUI(link.id)
     let linkColor
+    // the lower the value the more intense the color is
     if (document.getElementById("colorForm").value === "Green color scheme" || document.getElementById("colorForm").value === "") {
       linkColor = chroma.mix("#65B661", "#CAE368", dist).hex().replace("#", "0x") + "FF"
     } else if (document.getElementById("colorForm").value === "Blue color" +
