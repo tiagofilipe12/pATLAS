@@ -185,8 +185,6 @@ const onLoad = () => {
     // this is used to skip if it is a re-run button execution
     if (storeMasterNode.length > 0) {
       recenterDOM(renderer, layout, storeMasterNode)
-    } else {
-      console.log("stored node is empty", storeMasterNode)
     }
 
     //* ************//
@@ -1330,9 +1328,9 @@ const onLoad = () => {
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      show_div(
+      showDiv(
         // removes nodes
-        actual_removal(g, graphics, onload)
+        actualRemoval(g, graphics, onload)
       )
     })
 
@@ -1458,36 +1456,6 @@ const onLoad = () => {
             .catch((err) => {
               console.log(err)
             })
-
-          // setup concurrency
-          //   /* I think this implementation is not limiting the number of
-          //    nodes and links being added simultaneously but it assures that
-          //     the code is run in a certain order.
-          //     I.e. first all nodes are added, then all links are added and
-          //      only then renderGraph is executed */
-          //   const queue = async.queue( (node, callback) =>  {
-          //     console.log(node)
-          //     addAllNodes(node)
-          //     callback()
-          //   }, 2)
-          //
-          //   queue.drain = () => {
-          //     // after getting all nodes, setup another concurrency for all links
-          //     const queue2 = async.queue( (link, cb) => {
-          //       console.log(link)
-          //       addAllLinks(link)
-          //       cb()
-          //     }, 2)
-          //
-          //     queue2.drain = () => {
-          //       renderGraph(graphics)
-          //     }
-          //     // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
-          //     queue2.push(json.links)
-          //   }
-          //   // attempting to queue json.nodes which are basically the nodes I want to add first to the graph
-          //   queue.push(json.nodes)
-          // })
         })
       }
     } else {
@@ -1641,7 +1609,7 @@ const onLoad = () => {
     $("#tableModal").modal()
     $("#metadataTable").bootstrapTable("destroy")
     $(".nav-tabs a[href='#homeTable']").tab("show")
-    show_div(
+    showDiv(
       makeTable(areaSelection, listGiFilter, g, graphics)
     )
   })

@@ -2,7 +2,7 @@
 const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
   const currentHash = makeHash(sequence, linkAccession)
   if (newListHashes.indexOf(currentHash) < 0) {
-    g.addLink(sequence, linkAccession, linkDistance)
+    g.addLink(sequence, linkAccession, { distance: linkDistance })
     newListHashes.push(currentHash)
   }
   return newListHashes
@@ -13,11 +13,8 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
-  // console.log(length)
-  // console.log(newList.length)
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
-    //console.log("sequence", sequence)
     g.addNode(sequence, {
       sequence: "<span style='color:#468499'>Accession:" +
       " </span><a" +
@@ -31,7 +28,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
     const eachArray = linksArray.split("},")
-    //console.log("testing", eachArray)
     for (let i = 0; i < eachArray.length; i++) {
       // this constructs a sorted array
       // TODO try to make this array ordered in the database using MASHix.py
@@ -43,7 +39,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       // TODO make requests to get metadata to render the node
       // if node doesn't exist yet, add it and add the links
       if (newList.indexOf(linkAccession) < 0) {
-        //console.log(linkAccession)
         g.addNode(linkAccession, {
           sequence: "<span style='color:#468499'>Accession:" +
           " </span><a" +
@@ -72,7 +67,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, list_gi, readString,
                      assemblyJson) => {
-  // reloadAccessionList = []
   if (listGiFilter.length > 0) {
     let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
@@ -99,7 +93,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
             // if accession is not present in the database because singletons
             // are not stored in database
             if (data.json_entry.significantLinks === null) {
-              // console.log("debug", listGiFilter[i])
               const jsonObj = {
                 "plasmidAccession": listGiFilter[i],
                 "plasmidLenght": "N/A",
@@ -121,7 +114,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                 "plasmidName": plasmidName,
                 // this splits the string into an array with each entry
                 "significantLinks": data.json_entry.significantLinks//.split("],")
-                // TODO this is sketchy and should be fixed with JSON parsing from db
               }
               //add node
               reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
@@ -169,7 +161,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
 }
 
 // function that actually removes the nodes
-const actual_removal = (g, graphics, onload) => {
+const actualRemoval = (g, graphics, onload) => {
   // removes all nodes from g using the same layout
   firstInstace = false
   // change play button in order to be properly set to pause
@@ -191,9 +183,11 @@ const actual_removal = (g, graphics, onload) => {
     "<!--Populated by visualization_functions.js-->\n" +
     "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
     "<div class='gradient' id='scaleLegend'></div>\n" +
+    "<div id='scaleString'></div>" +
     "<!--Populated by visualization_functions.js-->\n" +
     "<label id='read_label' style='display: none'>Read filters</label>\n" +
     "<div class='gradient' id='readLegend'></div>\n" +
+    "<div id='readString'></div>" +
     "<label id='assemblyLabel' style='display: none'>Assembly</label>" +
     "<div class='legend' id='assemblyLegend'></div>" +
     "</div>\n" +
@@ -241,7 +235,7 @@ const actual_removal = (g, graphics, onload) => {
     "<div id='fileNameDiv'></div>" +
     "</div>\n" +
     "<div id='popup_description' style='display: none'></div>"
-)
+  )
 
   // should be executed when listGiFilter is empty ... mainly for area selection
   const reGetListGi = (g, graphics) => {
@@ -253,13 +247,12 @@ const actual_removal = (g, graphics, onload) => {
     return tempListAccessions
   }
   listGiFilter = (listGiFilter.length === 0) ? reGetListGi(g, graphics) : listGiFilter
-
   onload()
   // TODO maybe add some nicer loading screen
 }
 
 // a function to display the loader mask
-const show_div = (callback) => {
+const showDiv = (callback) => {
   $("#loading").show()
   // if callback exist execute it
   callback && callback()
