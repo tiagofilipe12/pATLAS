@@ -228,6 +228,8 @@ const onLoad = () => {
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
+      // $("#resTab").hide()
+      // $("#pfTab").hide()
       // this resets previous selected node to previous color
       if (currentQueryNode) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
@@ -273,12 +275,18 @@ const onLoad = () => {
     //* **************//
     //* ** BUTTONS ***//
     //* **************//
+    // $("#closePop").on('click', () => {
+    $("#closePop").unbind("click").bind("click", () => { //TODO ISSUE
+      // $("#resTab").hide()
+      // $("#pfTab").hide()
+      $("#popup_description").hide()
 
-    $(document).on("click", "#close", function() {
-      $(this).parent().hide()
+      console.log(currentQueryNode, graphics.getNodeUI(currentQueryNode))
       if (currentQueryNode !== false) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
-      }
+      } //else {
+        //graphics.getNodeUI(currentQueryNode).color = 0x666370
+      //}
       currentQueryNode = false
       renderer.rerender()
     })
@@ -1621,7 +1629,8 @@ const onLoad = () => {
 
   // popup button for download csv
   // this only does single entry exports, for more exports table should be used
-  $(document).on("click", "#downloadCsv", () => {
+  $("#downloadCsv").unbind("click").bind("click", () => {
+  // $(document).on("click", "#downloadCsv", () => {
 
     const quickFixString = (divNameList) => {
       let returnArray = []
@@ -1634,7 +1643,6 @@ const onLoad = () => {
     // execute the same replacement function for all this divs
     const targetArray = quickFixString([
       "#accessionPop",
-      "#speciesNamePop",
       "#speciesNamePop",
       "#percentagePop",
       "#copyNumberPop",
@@ -1682,34 +1690,37 @@ const onLoad = () => {
   })
 
   // resistance button control //
-  $(document).on("click", "#resButton", function(event) {
-    // controls the look of buttons
-    $("#resButton").removeClass("btn-default").addClass("btn-primary")
-    $("#plasmidButton").removeClass("btn-primary").addClass("btn-default")
-    if (clickedPopupButtonCard === true) {
-      clickedPopupButtonCard = resGetter(currentQueryNode)
-      $("#pfTab").hide()
-    } else {
-      // when it is already queried and we are just cycling b/w the two divs
-      // (tabs) then just show and hide the respective divs
-      $("#resTab").show()
-      $("#pfTab").hide()
-    }
+  $("#resButton").unbind("click").bind("click", () => {
+    console.log("res")
+    console.log($("#resTab"))
+    // $("#resTab").show()
+    // if (clickedPopupButtonCard === true) {
+    // $("#pfTab").hide()
+    // $("#popupTabs").show()
+    // clickedPopupButtonCard = resGetter(currentQueryNode)
+    // $("#pfTab").empty()
+    // } else {
+    // when it is already queried and we are just cycling b/w the two divs
+    // (tabs) then just show and hide the respective divs
+    // $("#resTab").show()
+
+    // }
   })
 
-  $(document).on("click", "#plasmidButton", function(event) {
-    // controls the look of buttons
-    $("#plasmidButton").removeClass("btn-default").addClass("btn-primary")
-    $("#resButton").removeClass("btn-primary").addClass("btn-default")
-    if (clickedPopupButtonFamily === true) {
-      clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
-      $("#resTab").hide()
-    } else {
-      // when it is already queried and we are just cycling b/w the two divs
-      // (tabs) then just show and hide the respective divs
-      $("#pfTab").show()
-      $("#resTab").hide()
-    }
+  $("#plasmidButton").unbind("click").bind("click", () => {
+    console.log("pfasdjds")
+    // $("#pfTab").show()
+    // if (clickedPopupButtonFamily === true) {
+    // $("#popupTabs").show()
+    // $("#resTab").hide()
+    // clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
+    // $("#resTab").empty()
+    // } else {
+    // when it is already queried and we are just cycling b/w the two divs
+    // (tabs) then just show and hide the respective divs
+    // $("#pfTab").show()
+
+    // }
   })
 
   // control the alertClose button

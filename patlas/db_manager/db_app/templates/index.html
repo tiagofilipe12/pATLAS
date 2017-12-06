@@ -790,8 +790,113 @@
 
         <!-- End buttons -->
     </div>
-    <div id="popup_description" style="display: none"></div>
+    <div id="popup_description" style="display: none">
+        <button id='closePop' class='close' type='button'>&times;</button>
+        <button class='btn btn-default' id='downloadCsv'
+                type='button' data-toogle='tooptip'
+                title='Export as csv'>
+            <span class='glyphicon glyphicon-save-file'></span>
+        </button>
+        <div>General sequence info
+            <div id='accessionPop'></div>
+            <div id='speciesNamePop'><span style='color: #468499'>Species:</span>
+                <span id='speciesNamePopSpan'></span>
+            </div>
+            <div id='lengthPop'></div>
+            <div id='plasmidNamePop'>
+                <span style='color: #468499'>Plasmid: </span>
+                <span id="plasmidNamePopSpan"></span>
+            </div>
+            <div id='percentagePop'><span style='color: #468499'>Percentage:</span>
+                <span id="percentagePopSpan"></span>
+            </div>
+            <div id='copyNumberPop'><span style='color: #468499'>Relative copy number:</span>
+                <span id="copyNumberPopSpan"></span>
+            </div>
+            <br />
+        </div>
+        <!--<div class="table-responsive">-->
+        <ul class="nav nav-tabs">
+            <li id="resButton">
+                <a data-toggle="tab" href="#resTab">Resistances</a>
+            </li>
+            <li id="plasmidButton">
+                <a data-toggle="tab" href="#pfTab">Plasmid finder</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="popupTabs">
+            <div id='pfTab' class="tab-pane fade">
+                <!--<div style='border-top: 3px solid #4588ba; position: relative; top: 40px; margin-bottom: 40px;'>-->
+                <!--</div>-->
+                <div id='pfPop'>PlasmidFinder database</div>
+                <div id='pfGenePop'>
+                    <span style='color: #468499'>Gene name: </span>
+                </div>
+                <div id='pfGenbankPop'>
+                    <span style='color: #468499'>Genbank Accession: </span>
+                </div>
+                <div>Matching resistance genes information</div>
+                <div id='pfCoveragePop'>
+                    <span style='color: #468499'>Coverage: </span>
+                </div>
+                <div id='pfIdentityPop'>
+                    <span style='color: #468499'>Identity: </span>
+                </div>
+                <div id='pfRangePop'>
+                    <span style='color: #468499'>Range in plasmid: </span>
+                </div>
+            </div>
+            <div id='resTab' class="tab-pane fade">
+                <!--<div style='border-top: 3px solid #4588ba; position: relative; -->
+                <!--top: 40px; margin-bottom: 40px;'>                -->
+                <!--</div>-->
+                <div id='cardPop'>Card database</div>
+                <div id='cardGenePop'>
+                    <span style='color: #468499'>Gene name: </span>
+                </div>
+                <div id='cardGenbankPop'>
+                    <span style='color: #468499'>Genbank accession: </span>
+                </div>
+                <div id='cardAroPop'>
+                    <span style='color: #468499'>ARO accessions: </span>
+                </div>
+                <div>Matching resistance genes information</div>
+                <div id='cardCoveragePop'>
+                    <span style='color: #468499'>Coverage: </span>
+                </div>
+                <div id='cardIdPop'>
+                    <span style='color: #468499'>Identity: </span>
+                </div>
+                <div id='cardRangePop'>
+                    <span style='color: #468499'>Range in plasmid: </span>
+                </div>
+                <div style='border-top: 3px solid #4588ba; position: relative;
+            top: 40px; margin-bottom: 40px;'>
+                </div>
+                <div id='resfinderPop'>ResFinder database
+                </div>
+                <div id='resfinderGenePop'>
+                    <span style='color: #468499'>Gene name: </span>
+                </div>
+                <div id='resfinderGenbankPop'>
+                    <span style='color: #468499'>Genbank accession: </span>
+                </div>
+                <div>Matching resistance genes information</div>
+                <div id='resfinderCoveragePop'>
+                    <span style='color: #468499'>Coverage: </span>
+                </div>
+                <div id='resfinderIdPop'>
+                    <span style='color: #468499'>Identity: </span>
+                </div>
+                <div id='resfinderRangePop'>
+                    <span style='color: #468499'>Range in plasmid: </span>
+                </div>
+            </div>
+        </div>
+        <!--</div>-->
+    </div>
 </div>
+
 <div class="graph-overlay"></div>
 <span style="color: white; margin: 10px;">Use mouse to draw rectangle and select nodes</span>
 

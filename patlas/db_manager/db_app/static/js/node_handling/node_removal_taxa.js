@@ -234,7 +234,37 @@ const actualRemoval = (g, graphics, onload) => {
     "</div>" +
     "<div id='fileNameDiv'></div>" +
     "</div>\n" +
-    "<div id='popup_description' style='display: none'></div>"
+    "<div id='popup_description' style='display: none'>" +
+    "<button id='closePop' class='close' type='button'>&times;</button>" +
+    "<button class='btn btn-default' id='downloadCsv'" +
+    "type='button' data-toogle='tooptip'" +
+    "title='Export as csv'>" +
+    "<span class='glyphicon glyphicon-save-file'></span>" +
+    "</button>" +
+    "<div>General sequence info" +
+    "<div id='accessionPop'></div>" +
+    "<div id='speciesNamePop'><span style='color: #468499'>Species:</span>" +
+    "<span id='speciesNamePopSpan'></span>" +
+    "</div>" +
+    "<div id='lengthPop'></div>" +
+    "<div id='plasmidNamePop'>" +
+    "<span style='color: #468499'>Plasmid: </span>" +
+    "<span id='plasmidNamePopSpan'></span>" +
+    "</div>" +
+    "<div id='percentagePop'><span style='color: #468499'>Percentage:</span>" +
+    "<span id='percentagePopSpan'></span>" +
+    "</div>" +
+    "<div id='copyNumberPop'><span style='color: #468499'>Relative copy" +
+    " number:</span>" +
+    "<span id='copyNumberPopSpan'></span>" +
+    "</div>" +
+    "<br />" +
+    "<div style='float: left;' class='btn btn-default' id='resButton'>" +
+    "Resistances" +
+    "</div>" +
+    "<div style='float: right;' class='btn btn-default'" +
+    "id='plasmidButton'>Plasmid families" +
+    "</div></div></div>"
   )
 
   // should be executed when listGiFilter is empty ... mainly for area selection
