@@ -619,7 +619,7 @@
 }
 
 #popup_description {
-    width: 25%;
+    max-width: 25%;
     max-height: 60%;
     padding: 10px 30px 10px 30px;
     border: 1px solid grey;

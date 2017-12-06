@@ -1697,7 +1697,7 @@ const onLoad = () => {
     // if (clickedPopupButtonCard === true) {
     // $("#pfTab").hide()
     // $("#popupTabs").show()
-    // clickedPopupButtonCard = resGetter(currentQueryNode)
+    clickedPopupButtonCard = resGetter(currentQueryNode)
     // $("#pfTab").empty()
     // } else {
     // when it is already queried and we are just cycling b/w the two divs
@@ -1713,7 +1713,7 @@ const onLoad = () => {
     // if (clickedPopupButtonFamily === true) {
     // $("#popupTabs").show()
     // $("#resTab").hide()
-    // clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
+    clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
     // $("#resTab").empty()
     // } else {
     // when it is already queried and we are just cycling b/w the two divs
