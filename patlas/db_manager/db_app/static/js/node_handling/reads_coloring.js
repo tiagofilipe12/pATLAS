@@ -242,7 +242,6 @@ const color_legend = (readMode) => {
     (document.getElementById("colorForm").value === "Blue color scheme") ?
       chroma.scale(["#025D8C", "#73C2FF"]) :
       chroma.scale(["#4D0E1C", "#E87833"])
-  console.log(scale)
   palette(scale, 10, readMode)
 }
 
