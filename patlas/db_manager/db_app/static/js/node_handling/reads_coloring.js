@@ -55,7 +55,7 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
   // be reset by the button reset-filters
   showLegend.style.display = "block"
   const tmpArray = new Array(x)// create an empty array with length x
-  style_width = 100 / x
+  const style_width = 100 / x
   // enters this statement for coloring the links and not the nodes
   if (readMode !== true) {
     $("#scaleLegend").empty()
@@ -63,19 +63,21 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
     // this loop should be reversed since the higher values will have a lighter color
     for (let i = tmpArray.length - 1; i >= 0; i--) {
       const color_element = scale(i / x).hex()
-      $('#scaleLegend').append('<span class="grad-step"' +
-        ' style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
+      $("#scaleLegend").append("<span class='grad-step'" +
+        " style='background-color:" + color_element + "; width:" +
+        style_width + "%'></span>")
     }
-    $("#scaleString").append('<div class="min">0.1</div>')
-    $("#scaleString").append('<div class="med">0.05</div>')
-    $("#scaleString").append('<div class="max">0</div>')
+    $("#scaleString").append("<div class='min'>0.1</div>")
+    $("#scaleString").append("<div class='med'>0.05</div>")
+    $("#scaleString").append("<div class='max'>0</div>")
     document.getElementById("distance_label").style.display = "block" // show label
   } else { // here enters for coloring the reads
     $("#readLegend").empty()
     $("#readString").empty()
     for (let i = 0; i < tmpArray.length; i++) {
       const color_element = scale(i / x).hex()
-      $("#readLegend").append('<span class="grad-step" style="background-color:' + color_element + '; width:' + style_width + '%"></span>')
+      $("#readLegend").append("<span class='grad-step' style='background-color:"
+         + color_element + "; width:" + style_width + "%'></span>")
     }
   }
 }
@@ -169,11 +171,11 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
   // mean value is the sum of the min value plus the range between the min
   // and max values divided by two
   const meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
-  $("#readString").append('<div class="min">' +
-    minValue.toString() + '</div>')
-  $("#readString").append('<div class="med">' +
-    meanValue.toFixed(2).toString() + '</div>')
-  $("#readString").append('<div class="max">1</div>')
+  $("#readString").append("<div class='min'>" +
+    minValue.toString() + "</div>")
+  $("#readString").append("<div class='med'>" +
+    meanValue.toFixed(2).toString() + "</div>")
+  $("#readString").append("<div class='max'>1</div>")
   document.getElementById("read_label").style.display = "block" // show label
   // control all related divs
   // TODO this code is duplicated, should be fixed
@@ -231,16 +233,16 @@ const reset_link_color = (g, graphics, renderer) => {
 
 // *** color scale legend *** //
 // for distances
+
 const color_legend = (readMode) => {
-  if (document.getElementById("colorForm").value === "Green color scheme" || document.getElementById("colorForm").value === "") {
-    scale = chroma.scale(["#65B661", "#CAE368"])
-  } else if (document.getElementById("colorForm").value === "Blue color" +
-    " scheme") {
-    scale = chroma.scale(["#025D8C", "#73C2FF"])
-  } else if (document.getElementById("colorForm").value === "Red color" +
-    " scheme") {
-    scale = chroma.scale(["#4D0E1C", "#E87833"])
-  }
+  const scale = (document.getElementById("colorForm").value === "Green" +
+    " color scheme") ? chroma.scale(["#65B661", "#CAE368"]) :
+    (document.getElementById("colorForm").value === "") ?
+    chroma.scale(["#65B661", "#CAE368"]) :
+    (document.getElementById("colorForm").value === "Blue color scheme") ?
+      chroma.scale(["#025D8C", "#73C2FF"]) :
+      chroma.scale(["#4D0E1C", "#E87833"])
+  console.log(scale)
   palette(scale, 10, readMode)
 }
 
