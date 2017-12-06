@@ -33,7 +33,7 @@ const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilt
       // for each file iterate through all nodes
       g.forEachNode( (node) => {
         if (controlArray.indexOf(node.id) > -1) {
-          g.addLink(i, node.id, (JSON.parse(assemblyFile[i])[node.id]))
+          g.addLink(i, node.id, {distance: JSON.parse(assemblyFile[i])[node.id]})
           // add percentage information to node
           node.data["percentage"] = (JSON.parse(assemblyFile[i])[node.id])
             .toFixed(2).toString()
