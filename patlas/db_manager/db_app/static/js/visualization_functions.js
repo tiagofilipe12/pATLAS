@@ -228,8 +228,10 @@ const onLoad = () => {
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
-      // $("#resTab").hide()
-      // $("#pfTab").hide()
+      $("#resTab").removeClass("active")
+      $("#resButton").removeClass("active")
+      $("#pfTab").removeClass("active")
+      $("#plasmidButton").removeClass("active")
       // this resets previous selected node to previous color
       if (currentQueryNode) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
@@ -277,11 +279,12 @@ const onLoad = () => {
     //* **************//
     // $("#closePop").on('click', () => {
     $("#closePop").unbind("click").bind("click", () => { //TODO ISSUE
-      // $("#resTab").hide()
-      // $("#pfTab").hide()
+      $("#resTab").removeClass("active")
+      $("#resButton").removeClass("active")
+      $("#pfTab").removeClass("active")
+      $("#plasmidButton").removeClass("active")
       $("#popup_description").hide()
 
-      console.log(currentQueryNode, graphics.getNodeUI(currentQueryNode))
       if (currentQueryNode !== false) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
       } //else {
@@ -435,6 +438,10 @@ const onLoad = () => {
 
     // Form and button for search box
     $("#submitButton").unbind("click").bind("click", (event) => {
+      $("#resTab").removeClass("active")
+      $("#resButton").removeClass("active")
+      $("#pfTab").removeClass("active")
+      $("#plasmidButton").removeClass("active")
       event.preventDefault()    // prevents page from reloading
       if (toggle_status === false) {
         const query = $("#formValueId").val().replace(".", "_")
@@ -1691,8 +1698,6 @@ const onLoad = () => {
 
   // resistance button control //
   $("#resButton").unbind("click").bind("click", () => {
-    console.log("res")
-    console.log($("#resTab"))
     // $("#resTab").show()
     // if (clickedPopupButtonCard === true) {
     // $("#pfTab").hide()
@@ -1708,7 +1713,6 @@ const onLoad = () => {
   })
 
   $("#plasmidButton").unbind("click").bind("click", () => {
-    console.log("pfasdjds")
     // $("#pfTab").show()
     // if (clickedPopupButtonFamily === true) {
     // $("#popupTabs").show()

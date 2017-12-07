@@ -23,7 +23,6 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
                           queryArrayResfinderGenes, queryArrayResfinderAccession,
                           queryArrayResfinderCoverage, queryArrayResfinderIdentity,
                           queryArrayResfinderRange) => {
-  console.log(queryArrayCardGenes.toString())
   $("#cardGenePopSpan").html(queryArrayCardGenes.toString().replace(/["]+/g, ""))
   $("#cardGenbankPopSpan").html(queryArrayCardAccession.toString())
   $("#cardAroPopSpan").html(queryArrayCardARO.toString())
