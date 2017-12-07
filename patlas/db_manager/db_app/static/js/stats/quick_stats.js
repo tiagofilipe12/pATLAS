@@ -26,7 +26,7 @@ const arraytoHighcharts = (array) => {
 
 // function to parse stats //
 
-const statsParser = (masterObj, layout, taxaType, sortAlp, sortVal) => {
+const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
   // controls progress bar div
   $("#progressBar").hide()
   $("#progressDiv").hide()
@@ -66,6 +66,7 @@ const statsParser = (masterObj, layout, taxaType, sortAlp, sortVal) => {
     const histoArray = finalArray.map( (e) => { return parseFloat(e) }).sort()
     layout.xAxis = [{
       labels: { enabled: false},
+      categories: accessionResultsList,
       title: { text: null},
       opposite: true
     }, {
@@ -79,10 +80,23 @@ const statsParser = (masterObj, layout, taxaType, sortAlp, sortVal) => {
       title: { text: "Number of plasmids (histogram)"},
       // opposite: true
     }]
+    // tooltip that enables different tooltips on each series
+    // series.name is here used to return different tooltips for each
+    layout.tooltip = {
+      formatter: function() {
+        console.log(this.series.name)
+        if (this.series.name === "Individual plasmids") {
+          return "<b>Accession no.: </b>" +
+            this.x + "<br><b>Size (bp): </b>" + this.y
+        } else {
+          return "<br><b>No. of plasmids: </b>" + this.y
+        }
+      }
+    }
     layout.series = [{
       type: "histogram",
       // data: finalArray,
-      name: "# of plasmids",
+      name: "Distribution by length",
       xAxis: 1,
       yAxis: 1,
       baseSeries: 1,
@@ -90,7 +104,7 @@ const statsParser = (masterObj, layout, taxaType, sortAlp, sortVal) => {
       color: colorsPlot[taxaType.replace(" ", "")],
       zIndex: -1
     }, {
-      name: "Data",
+      name: "Individual plasmids",
       type: "scatter",
       data: histoArray,
       marker: {
@@ -260,6 +274,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // render the graph
   Promise.all(promises)
     .then( (results) => {
+      accessionResultsList = []
       results.map( (result) => {
         // checks if plasmid is present in db
         if (result.plasmid_id !== null) {
@@ -280,6 +295,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
           } else {
             const speciesLength = (result.json_entry.length === null) ? "unknown" : result.json_entry.length
             speciesList.push(speciesLength)
+            accessionResultsList.push(result.plasmid_id)
             // assumes that it is length by default
           }
         } else {
@@ -290,7 +306,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
       })
       // if (taxaType === "species") {
       const layout = layoutGet(taxaType, [...new Set(speciesList)].length)
-      if (speciesList.length === tempList.length) { statsParser(speciesList, layout, taxaType, sortAlp, sortVal) }
+      if (speciesList.length === tempList.length) { statsParser(accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal) }
     })
     .catch( (error) => {
       console.log("Error: ", error)
