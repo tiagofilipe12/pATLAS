@@ -32,7 +32,7 @@ const getPositions = (g, layout) => {
       masterJSON.links.push({
         "parentId": link.fromId,
         "childId": link.toId,
-        "distance": link.data
+        "distance": link.data.distance
       })
       hashStore.push(currentHash)
     }
