@@ -241,7 +241,10 @@ const actualRemoval = (g, graphics, onload) => {
     "title='Export as csv'>" +
     "<span class='glyphicon glyphicon-save-file'></span>" +
     "</button>" +
-    "<div>General sequence info" +
+    "<div class=\"popupHeaders\">General sequence info</div>" +
+    "<div style='border-top: 3px solid #4588ba; position: relative;" +
+    "top: 10px; margin-bottom: 10px;'>" +
+    "</div>" +
     "<div id='accessionPop'></div>" +
     "<div id='speciesNamePop'><span style='color: #468499'>Species:</span>" +
     "<span id='speciesNamePopSpan'></span>" +
@@ -259,8 +262,8 @@ const actualRemoval = (g, graphics, onload) => {
     "<span id='copyNumberPopSpan'></span>" +
     "</div>" +
     "<br />" +
-    "</div>" +
-    "<ul class='nav nav-tabs'>" +
+    // "</div>" +
+    "<ul class='nav nav-tabs' style=\"display: flex; justify-content: center;\">" +
     "<li id='resButton'>" +
     "<a data-toggle='tab' href='#resTab'>Resistances</a>" +
     "</li>" +
@@ -270,10 +273,10 @@ const actualRemoval = (g, graphics, onload) => {
     "</ul>" +
     "<div class='tab-content' id='popupTabs'>" +
     "<div id='pfTab' class='tab-pane fade'>" +
+    "<div id='pfPop' class=\"popupHeaders\">PlasmidFinder database</div>" +
     "<div style='border-top: 3px solid #4588ba; position: relative;" +
-    "top: 40px; margin-bottom: 40px;'>" +
+    "top: 10px; margin-bottom: 10px;'>" +
     "</div>" +
-    "<div id='pfPop'>PlasmidFinder database</div>" +
     "<div id='pfGenePop'>" +
     "<span style='color: #468499'>Gene name: </span>" +
     "<span id='pfGenePopSpan'></span>" +
@@ -297,10 +300,10 @@ const actualRemoval = (g, graphics, onload) => {
     "</div>" +
     "</div>" +
     "<div id='resTab' class='tab-pane fade'>" +
+    "<div id='cardPop' class=\"popupHeaders\">CARD database</div>" +
     "<div style='border-top: 3px solid #4588ba; position: relative;" +
-    "top: 40px; margin-bottom: 40px;'>" +
+    "top: 10px; margin-bottom: 10px;'>" +
     "</div>" +
-    "<div id='cardPop'>Card database</div>" +
     "<div id='cardGenePop'>" +
     "<span style='color: #468499'>Gene name: </span>" +
     "<span id='cardGenePopSpan'></span>" +
@@ -326,10 +329,10 @@ const actualRemoval = (g, graphics, onload) => {
     "<span style='color: #468499'>Range in plasmid: </span>" +
     "<span id='cardRangePopSpan'></span>" +
     "</div>" +
+    "<div id='resfinderPop' class=\"popupHeaders\">ResFinder database" +
     "<div style='border-top: 3px solid #4588ba; position: relative;" +
-    "top: 40px; margin-bottom: 40px;'>" +
+    "top: 10px; margin-bottom: 10px;'>" +
     "</div>" +
-    "<div id='resfinderPop'>ResFinder database" +
     "</div>" +
     "<div id='resfinderGenePop'>" +
     "<span style='color: #468499'>Gene name: </span>" +

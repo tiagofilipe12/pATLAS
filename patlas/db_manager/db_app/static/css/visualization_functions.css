@@ -652,3 +652,10 @@
     background: rgba(255, 255, 255, 0.8);
     display: none;
 }
+
+.popupHeaders{
+    font-size: 16px;
+    margin-top:10px;
+    color: #4588ba;
+    font-weight: bold;
+}
