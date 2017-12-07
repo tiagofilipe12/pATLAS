@@ -64,9 +64,22 @@ let list_gi = []
 // outside renderGraph
 let renderer
 
+const onLoadWelcome = (callback) => {
+  // forces welcomeModal to be the first thing the user sees when the page
+  // is loaded
+  $("#welcomeModal").modal("show")
+  //then onLoad is run as a callback
+  // for modal to show before page potential page freeze I made it wait half
+  // a second before starting the load
+  setTimeout( () => {
+    callback()
+  }, 500)
+}
+
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
 const onLoad = () => {
+
   // store the node with more links
   let storeMasterNode = []    //cleared every instance of onload
   // start array that controls taxa filters

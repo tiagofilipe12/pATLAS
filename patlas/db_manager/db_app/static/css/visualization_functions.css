@@ -1,3 +1,12 @@
+#welcomeDialog *{
+    background-color: #514F52;
+    color: white;
+}
+
+.mainText{
+    margin-top: 30px;
+    font-size: 18px;
+}
 
 /*fixes navigation bar to top of the page*/
 .navbar.navbar-default{

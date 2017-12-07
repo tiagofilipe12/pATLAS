@@ -81,7 +81,7 @@
 
 </head>
 
-<body onload="onLoad()">
+<body onload="onLoadWelcome(onLoad)">
 <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/nouislider/nouislider.js') }}"></script>
 
 <div id="loading">
@@ -90,6 +90,60 @@
     <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
 </div>
 
+
+<!-- welcome modal -->
+<div class="modal fade" id="welcomeModal" data-backdrop="static"
+     role="dialog" tabindex="-1">
+    <div class="modal-dialog" id="welcomeDialog" style="width: 80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     alt="pATLAS" style="width:30%;height:auto; display:block;
+                     margin:auto;"/>
+            </div>
+            <div class="modal-body">
+                <h1>Welcome to Plasmid Atlas</h1>
+                <p class="mainText">Plasmid Atlas is a web interface that allow
+                    users to
+                    browse plasmid sequences available in NCBI refseq
+                    database. Here you can obtain metadata related with
+                    plasmid sequences available, such as species in which
+                    they were described, antibiotic resistance information
+                    and much more.</p>
+                <p class="mainText">Documentation is still scarce and we are
+                    working to bring you a better experience. For now, you can
+                    refer to our
+                    <a href="https://tiagofilipe12.gitbooks.io/patlas/content/"
+                       target="_blank" style="color:#6292A9;">gitbook page</a>
+                    and
+                    <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
+                        <img src="{{ url_for('static', filename='images/Lobby.png') }}"
+                             alt="gitter" style="width: auto; height: auto"/>
+                    </a>.
+                </p>
+                <p class="mainText"><b>Disclaimer:</b> This is an experimental
+                    version
+                    and if
+                    you
+                    find any bugs please report them in order to let us
+                    bring you a better experience. You can report in
+                    <a href="https://github.com/tiagofilipe12/pATLAS/issues"
+                       target="_blank" style="color:#6292A9;">pATlAS github</a>
+                    or
+                    <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
+                        <img src="{{ url_for('static', filename='images/Lobby.png') }}"
+                             alt="gitter" style="width: auto; height: auto"/>
+                    </a>.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="close" class="btn btn-default"
+                        data-dismiss="modal" id="welcomeDismiss">Dismiss
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal for table-->
 <div id="tableModal" class="modal fade" data-backdrop="static" role="dialog"
