@@ -84,7 +84,6 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     // series.name is here used to return different tooltips for each
     layout.tooltip = {
       formatter: function() {
-        console.log(this.series.name)
         if (this.series.name === "Individual plasmids") {
           return "<b>Accession no.: </b>" +
             this.x + "<br><b>Size (bp): </b>" + this.y
@@ -189,7 +188,7 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
       // EXECUTE STATS
       if (PFList.length === counter) {
         const layout = layoutGet(taxaType, [...new Set(PFList)].length)
-        statsParser(PFList, layout, taxaType, sortAlp, sortVal)
+        statsParser(false, PFList, layout, taxaType, sortAlp, sortVal)
       }
     })
 
@@ -240,7 +239,7 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
       // EXECUTE STATS
       if (resList.length === counter) {
         const layout = layoutGet(taxaType, [...new Set(resList)].length)
-        statsParser(resList, layout, taxaType, sortAlp, sortVal)
+        statsParser(false, resList, layout, taxaType, sortAlp, sortVal)
       }
     })
 
