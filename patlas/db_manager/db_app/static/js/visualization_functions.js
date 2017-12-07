@@ -1360,7 +1360,7 @@ const onLoad = () => {
       document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       showDiv(
         // removes nodes
-        actualRemoval(g, graphics, onload)
+        actualRemoval(g, graphics, onLoad)
       )
     })
 
