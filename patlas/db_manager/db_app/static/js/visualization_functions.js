@@ -154,6 +154,8 @@ const onLoad = () => {
     // shows overlay div and exectures startMultiSelect
     document.addEventListener("keydown", (e) => {
       if (e.which === 16 && multiSelectOverlay === false) { // shift key
+        // should close popup open so it doesn't get into listGiFilter
+        $("#closePop").click()
         $(".graph-overlay").show()
         multiSelectOverlay = startMultiSelect(g, renderer, layout)
         showRerun.style.display = "block"
