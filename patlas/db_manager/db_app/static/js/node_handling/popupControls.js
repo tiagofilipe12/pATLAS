@@ -1,6 +1,7 @@
 const arrayToCsv = (array) => {
   // should parse an array with key: value, e.g. [
   let csvContent = "data:text/csv;charset=utf-8,"
+  console.log(array)
   array.forEach( (entry) => {
     // each array will correspond to a row
     csvContent += entry + "\n"

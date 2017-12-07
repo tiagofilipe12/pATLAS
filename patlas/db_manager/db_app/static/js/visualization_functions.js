@@ -1643,7 +1643,7 @@ const onLoad = () => {
       let returnArray = []
       for (i in divNameList) {
         const divName = divNameList[i]
-        returnArray.push($(divName).text().replace(":", ","))
+        returnArray.push($(divName).text().replace(":", ",").trim())
       }
       return returnArray
     }
@@ -1651,6 +1651,8 @@ const onLoad = () => {
     const targetArray = quickFixString([
       "#accessionPop",
       "#speciesNamePop",
+      "#lengthPop",
+      "#plasmidNamePop",
       "#percentagePop",
       "#copyNumberPop",
       "#cardPop",
