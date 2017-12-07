@@ -25,7 +25,6 @@ const arraytoHighcharts = (array) => {
 }
 
 // function to parse stats //
-
 const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
   // controls progress bar div
   $("#progressBar").hide()
@@ -88,18 +87,17 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
           return "<b>Accession no.: </b>" +
             this.x + "<br><b>Size (bp): </b>" + this.y
         } else {
-          return "<br><b>No. of plasmids: </b>" + this.y
+          return "<b>No. of plasmids: </b>" + this.y + "<br><b>Range: </b>" +
+            Math.floor(this.x + 1) + " - " + Math.floor(this.point.x2)
         }
       }
     }
     layout.series = [{
       type: "histogram",
-      // data: finalArray,
       name: "Distribution by length",
       xAxis: 1,
       yAxis: 1,
       baseSeries: 1,
-      // showInLegend: false,
       color: colorsPlot[taxaType.replace(" ", "")],
       zIndex: -1
     }, {
