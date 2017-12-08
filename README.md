@@ -8,6 +8,8 @@
 
 # Summary
 
+[![Join the chat at https://gitter.im/plasmidATLAS/Lobby](https://badges.gitter.im/plasmidATLAS/Lobby.svg)](https://gitter.im/plasmidATLAS/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Description
 
 pATLAS is a program to browse plasmids database and identify plasmids present
