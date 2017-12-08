@@ -9,6 +9,7 @@ const colorNodes = (g, graphics, accessionRequested, currentColor) => {
       // changed_nodes.push(node.id)
     }
   })
+  renderer.rerender()
 }
 
 /////////// IMPORTANT ///////////

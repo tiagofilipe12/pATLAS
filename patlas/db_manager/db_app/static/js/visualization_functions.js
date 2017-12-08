@@ -1489,10 +1489,10 @@ const onLoad = () => {
           addAllNodes(json.nodes)
             .then(addAllLinks(json.links))
             .then(renderGraph(graphics))
-            .then( () => {
-              $("#loading").hide()
-              $("#couve-flor").css("visibility", "visible")
-            })
+            // .then( () => {
+            //   $("#loading").hide()
+            //   $("#couve-flor").css("visibility", "visible")
+            // })
             .catch((err) => {
               console.log(err)
             })
