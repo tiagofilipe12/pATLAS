@@ -149,7 +149,8 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           // the button was clicked and makes the legends
           $("#taxaModalSubmit").click()
         } else {
-          colorNodes(g, graphics, listGiFilter, 0x23A900) //green color for
+          colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
+          // color for
           // area selection
         }
       })

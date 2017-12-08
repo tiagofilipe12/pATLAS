@@ -1637,7 +1637,7 @@ const onLoad = () => {
   // button to color selected nodes by check boxes
   $("#tableSubmit").unbind("click").bind("click", (e) => {
     $("#reset-sliders").click()
-    colorNodes(g, graphics, bootstrapTableList, "0x3957ff")
+    colorNodes(g, graphics, renderer, bootstrapTableList, "0x3957ff")
     // handles hidden buttons
     showRerun.style.display = "block"
     showGoback.style.display = "block"

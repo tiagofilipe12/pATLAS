@@ -2,14 +2,12 @@ const toggle_manager = (toggle_status) => {
   // if node mode on disable dropdown and retrieve an alert whenever the dropdown is clicked in this instance
   if (toggle_status === true) {
     document.getElementById("toggle-event").className += " disabled"
-    $(".dropdown-toggle").attr("data-toggle", "")
     $("#formValueId").attr("placeholder", "Search plasmid name")
   }
   // if node mode is off enables dropdown
   else {
     document.getElementById("toggle-event").className =
       document.getElementById("toggle-event").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-    $(".dropdown-toggle").attr("data-toggle", "dropdown")
     $("#formValueId").attr("placeholder", "Search accession number")
   }
 }
