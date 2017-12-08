@@ -33,8 +33,8 @@ let currentQueryNode = false
 let masterReadArray = []
 
 let readFilejson = false
-let mash_json = false
-let assembly_json = false
+let mashJson = false
+let assemblyJson = false
 
 let readIndex = -1
 
@@ -64,9 +64,22 @@ let list_gi = []
 // outside renderGraph
 let renderer
 
+const onLoadWelcome = (callback) => {
+  // forces welcomeModal to be the first thing the user sees when the page
+  // is loaded
+  $("#welcomeModal").modal("show")
+  //then onLoad is run as a callback
+  // for modal to show before page potential page freeze I made it wait half
+  // a second before starting the load
+  setTimeout( () => {
+    callback()
+  }, 500)
+}
+
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
 const onLoad = () => {
+
   // store the node with more links
   let storeMasterNode = []    //cleared every instance of onload
   // start array that controls taxa filters
@@ -76,7 +89,7 @@ const onLoad = () => {
   // Sets parameters to be passed to WebglCircle in order to change
   // node shape, setting color and size.
   const nodeColor = 0x666370 // hex rrggbb
-  const minNodeSize = 2 // a value that assures that the node is
+  const minNodeSize = 4 // a value that assures that the node is
   // displayed without increasing the size of big nodes too much
 
   let list = []   // list to store references already ploted as nodes
@@ -87,12 +100,18 @@ const onLoad = () => {
   const g = Viva.Graph.graph()
   // define layout
   const layout = Viva.Graph.Layout.forceDirected(g, {
-    springLength: 30,
+    springLength: 100,
     springCoeff: 0.0001,
-    dragCoeff: 0.0001, // sets how fast nodes will separate from origin,
+    dragCoeff: 0.001, // sets how fast nodes will separate from origin,
     // the higher the value the slower
-    gravity: -1.2,
-    theta: 1
+    gravity: -10,
+    theta: 1,
+    // This is the main part of this example. We are telling force directed
+    // layout, that we want to change length of each physical spring
+    // by overriding `springTransform` method:
+    springTransform: function (link, spring) {
+      spring.length = 100 * Math.log10(1 - link.data.distance) + 100
+    }
   })
   // buttons that are able to hide
   let showRerun = document.getElementById("Re_run"),
@@ -106,7 +125,6 @@ const onLoad = () => {
   //* Starts graphics renderer *//
   // TODO without precompute we can easily pass parameters to renderGraph like links distances
   const renderGraph = (graphics) => {
-    //console.log("entered renderGraph")
     //const graphics = Viva.Graph.View.webglGraphics()
     //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
@@ -124,7 +142,6 @@ const onLoad = () => {
     // rerun precomputes 500
     // const prerender = (devel === true || rerun === true) ? 500 : 0
     // version that doesn't rerun
-    // console.log("prerender", parseInt(Math.log(listGiFilter.length)))
     const prerender = (devel === true) ? 500 : parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
 
     renderer = Viva.Graph.View.renderer(g, {
@@ -150,6 +167,8 @@ const onLoad = () => {
     // shows overlay div and exectures startMultiSelect
     document.addEventListener("keydown", (e) => {
       if (e.which === 16 && multiSelectOverlay === false) { // shift key
+        // should close popup open so it doesn't get into listGiFilter
+        $("#closePop").click()
         $(".graph-overlay").show()
         multiSelectOverlay = startMultiSelect(g, renderer, layout)
         showRerun.style.display = "block"
@@ -181,8 +200,6 @@ const onLoad = () => {
     // this is used to skip if it is a re-run button execution
     if (storeMasterNode.length > 0) {
       recenterDOM(renderer, layout, storeMasterNode)
-    } else {
-      console.log("stored node is empty", storeMasterNode)
     }
 
     //* ************//
@@ -226,6 +243,10 @@ const onLoad = () => {
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
+      $("#resTab").removeClass("active")
+      $("#resButton").removeClass("active")
+      $("#pfTab").removeClass("active")
+      $("#plasmidButton").removeClass("active")
       // this resets previous selected node to previous color
       if (currentQueryNode) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
@@ -271,12 +292,19 @@ const onLoad = () => {
     //* **************//
     //* ** BUTTONS ***//
     //* **************//
+    // $("#closePop").on('click', () => {
+    $("#closePop").unbind("click").bind("click", () => { //TODO ISSUE
+      $("#resTab").removeClass("active")
+      $("#resButton").removeClass("active")
+      $("#pfTab").removeClass("active")
+      $("#plasmidButton").removeClass("active")
+      $("#popup_description").hide()
 
-    $(document).on("click", "#close", function() {
-      $(this).parent().hide()
       if (currentQueryNode !== false) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
-      }
+      } //else {
+        //graphics.getNodeUI(currentQueryNode).color = 0x666370
+      //}
       currentQueryNode = false
       renderer.rerender()
     })
@@ -425,6 +453,10 @@ const onLoad = () => {
 
     // Form and button for search box
     $("#submitButton").unbind("click").bind("click", (event) => {
+      $("#resTab").removeClass("active")
+      $("#resButton").removeClass("active")
+      $("#pfTab").removeClass("active")
+      $("#plasmidButton").removeClass("active")
       event.preventDefault()    // prevents page from reloading
       if (toggle_status === false) {
         const query = $("#formValueId").val().replace(".", "_")
@@ -728,11 +760,12 @@ const onLoad = () => {
     // perform actions when submit button is clicked.
 
     $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
+      // clear legend from reads
+      $("#readString").empty()
+      $("#readLegend").empty()
+      $("#read_label").hide()
       event.preventDefault()
       // changed nodes is reset every instance of taxaModalSubmit button
-      // let changed_nodes = []
-
-      // console.log("listGiFilter taxamodalsubmit", listGiFilter, dict_genera)
       listGiFilter = []   // makes listGiFilter an empty array
       noLegend = false // sets legend to hidden state by default
       // now processes the current selection
@@ -1069,7 +1102,7 @@ const onLoad = () => {
 
     $("#fileSubmit_mash").click( (event) => {
       masterReadArray = []
-      readFilejson = mash_json // converts mash_json into readFilejson to
+      readFilejson = mashJson // converts mash_json into readFilejson to
       readString = JSON.parse(Object.values(readFilejson)[0])
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
       $("#fileNameDiv").show()
@@ -1099,7 +1132,7 @@ const onLoad = () => {
     })
 
     $("#cancel_infile_mash").click( (event) => {
-      abortRead(mash_json)
+      abortRead(mashJson)
     })
 
     //* ********* ***//
@@ -1112,7 +1145,7 @@ const onLoad = () => {
         showGoback, showDownload, showTable, idsArrays)
       $("#loading").show()
       // setTimeout( () => {
-      listGiFilter = assembly(list_gi, assembly_json, g, graphics, masterReadArray, listGiFilter)
+      listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
       // }, 100)
       setTimeout( () => {
         renderer.rerender()
@@ -1127,7 +1160,7 @@ const onLoad = () => {
     })
 
     $("#cancel_assembly").click( (event) => {
-      abortRead(assembly_json)
+      abortRead(assemblyJson)
     })
 
     //* *********************//
@@ -1147,19 +1180,34 @@ const onLoad = () => {
 
     $("#reset-links").click(function (event) {
       event.preventDefault()
-      document.getElementById("distance_label").style.display = "none" // hide label
-      if ($("#colorLegendBox").html() === "") {
-        $("#scaleLegend").empty()
-        //showLegend = document.getElementById("colorLegend") // global
-        // variable to be reset by the button reset-filters
-        showLegend.style.display = "none"
-      } else {
-        $("#scaleLegend").empty()
+      const arrayOfDivs = [
+        $("#colorLegendBox").html(),
+        $("#colorLegendBoxRes").html(),
+        $("#colorLegendBoxPf").html(),
+        $("#readLegend").html(),
+        $("#assemblyLegend").html(),
+
+      ]
+      let divCounter = 0
+      for (const div of arrayOfDivs) {
+        if (div === "") {
+          divCounter += 1
+          if (divCounter === 5) {
+            // $("#scaleLegend").empty()
+            // $("#scaleString").empty()
+            // $("#distance_label").hide()
+            showLegend.style.display = "none"
+
+            //document.getElementById("reset-links").disabled = "disabled"
+          }
+        }
       }
+      $("#scaleLegend").empty()
+      $("#scaleString").empty()
+      $("#distance_label").hide()
       setTimeout(function () {
         reset_link_color(g, graphics, renderer)
       }, 100)
-      //document.getElementById("reset-links").disabled = "disabled"
     })
 
     //* ********************//
@@ -1291,8 +1339,8 @@ const onLoad = () => {
       listGiFilter = [] //resets listGiFilter
       areaSelection = false
       readFilejson = false // makes file selection empty again
-      assembly_json = false
-      mash_json = false
+      assemblyJson = false
+      mashJson = false
       currentQueryNode = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
@@ -1310,15 +1358,14 @@ const onLoad = () => {
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      show_div(
+      showDiv(
         // removes nodes
-        actual_removal(g, graphics, onload)
+        actualRemoval(g, graphics, onLoad)
       )
     })
 
     // returns to the initial tree by reloading the page
     $("#go_back").click(function (event) {
-      //console.log("returning to main")
       window.location.reload()   // a temporary fix to go back to full dataset
     })
   } // closes renderGraph
@@ -1358,12 +1405,9 @@ const onLoad = () => {
 
               // loops between all arrays of array pairing sequence and distances
               for (let i = 0; i < dict_dist.length; i++) {
-                //console.log(dict_dist[i], Object.keys(dict_dist[i])[0])
-                //const pairs = dict_dist[i]
                 const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
-                //console.log(Object.values(dict_dist[i])[0].distance)
                 const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
-                g.addLink(sequence, reference, distance)
+                g.addLink(sequence, reference, { distance })
               }
             }
             // checks if the node is the one with most links and stores it in
@@ -1379,64 +1423,69 @@ const onLoad = () => {
         // file for loading the graph.
         getArray.done(function (json) {
 
-          const addAllNodes = (array, callback) => {
-            counter++
-            const sequence = array.id
-            const seqLength = array.length
-            const log_length = Math.log(parseInt(seqLength))
-            list_lengths.push(seqLength)
-            list_gi.push(sequence)
+          const addAllNodes = (json) => {
+            return new Promise((resolve, reject) => {
+              for (const i in json) {
+                const array = json[i]
+                counter++
+                const sequence = array.id
+                const seqLength = array.length
+                const log_length = Math.log(parseInt(seqLength))
+                list_lengths.push(seqLength)
+                list_gi.push(sequence)
 
-            if (list.indexOf(sequence) < 0) {
-              g.addNode(sequence, {
-                sequence: "<span style='color:#468499'>Accession:" +
-                " </span><a" +
-                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                seq_length: "<span" +
-                " style='color:#468499'>Sequence length:" +
-                " </span>" + seqLength,
-                log_length: log_length
-              })
-              layout.setNodePosition(sequence, array.position.x, array.position.y)
-              list.push(sequence)
-            }
-            callback()
+                if (list.indexOf(sequence) < 0) {
+                  g.addNode(sequence, {
+                    sequence: "<span style='color:#468499'>Accession:" +
+                    " </span><a" +
+                    " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                    seq_length: "<span" +
+                    " style='color:#468499'>Sequence length:" +
+                    " </span>" + seqLength,
+                    log_length: log_length
+                  })
+                  list.push(sequence)
+                  layout.setNodePosition(sequence, array.position.x, array.position.y)
+                } else {
+                  reject(`node wasn't added: ${sequence}`)
+                }
+                if (i + 1 === json.length) {
+                  resolve("sucessfully added all nodes")
+                }
+              }
+            })
           }
 
-          const addAllLinks = (array, callback) => {
-            const sequence = array.parentId   // stores sequences
-            const reference = array.childId  // stores references
-            const distance = array.distance   // stores distances
-            if (array.childId !== "") {
-              // here it adds only unique links because filtered.json file
-              // just stores unique links
-              g.addLink(sequence, reference, distance)
-            } else {
-              console.log("empty array: ", array.childId , sequence)
-            }
-            callback()
+          const addAllLinks = (json) => {
+            return new Promise((resolve, reject) => {
+              for (const i in json) {
+                const array = json[i]
+                const sequence = array.parentId   // stores sequences
+                const reference = array.childId  // stores references
+                const distance = array.distance   // stores distances
+                if (reference !== "") {
+                  // here it adds only unique links because filtered.json file
+                  // just stores unique links
+                  g.addLink(sequence, reference, { distance })
+                } else {
+                  // if there is no reference associated with sequence then
+                  // there are no links
+                  // TODO this will break if singletons are added
+                  reject(new Error(`link wasn't added: ${array.childId} -> ${sequence}`))
+                }
+                if (i + 1 === json.lenght) {
+                  resolve("sucessefully added all links")
+                }
+              }
+            })
           }
 
-          // setup concurrency
-          /* TODO I think this implementation is not limiting the number of
-           nodes and links being added simultaneously but it assures that
-            the code is run in a certain order.
-            I.e. first all nodes are added, then all links are added and
-             only then renderGraph is executed */
-          const queue = async.queue(addAllNodes, 10)
-
-          queue.drain = () => {
-            // after getting all nodes, setup another concurrency for all links
-            const queue2 = async.queue(addAllLinks, 10)
-
-            queue2.drain = () => {
-              renderGraph(graphics)
-            }
-            // attempting to queue json.links, which are the links to be added to the graph AFTER adding the nodes to the graph
-            queue2.push(json.links)
-          }
-          // attempting to queue json.nodes which are basically the nodes I want to add first to the graph
-          queue.push(json.nodes)
+          addAllNodes(json.nodes)
+            .then(addAllLinks(json.links))
+            .then(renderGraph(graphics))
+            .catch((err) => {
+              console.log(err)
+            })
         })
       }
     } else {
@@ -1447,14 +1496,13 @@ const onLoad = () => {
         $("#fileNameDiv").show()
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, readReload,
-          assembly_json)
+          assemblyJson)
         // TODO do something similar to assembly
       } else {
         // used when no reads are used to filter
-        console.log(reloadAccessionList, listGiFilter)
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, false,
-          assembly_json)
+          assemblyJson)
       }
       listGiFilter = requestDBList[0] // list with the nodes used to filter
       reloadAccessionList = requestDBList[1] //list stores all nodes present
@@ -1471,18 +1519,18 @@ const onLoad = () => {
   // control the infile input and related functions //
   //* ***********************************************//
 
-  handleFileSelect('infile', '#file_text', (new_read_json) => {
-    readFilejson = new_read_json
+  handleFileSelect('infile', '#file_text', (newReadJson) => {
+    readFilejson = newReadJson
     // $("#infile").val("")
   })
 
-  handleFileSelect('mashInfile', '#file_text_mash', function (new_mash_json) {
-    mash_json = new_mash_json
+  handleFileSelect('mashInfile', '#file_text_mash', function (newMashJson) {
+    mashJson = newMashJson
     // $("#mashInfile").val("")
   })
 
-  handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {
-    assembly_json = new_assembly_json
+  handleFileSelect('assemblyfile', '#assembly_text', function (newAssemblyJson) {
+    assemblyJson = newAssemblyJson
     // $("#assemblyfile").val("")
   })
 
@@ -1502,7 +1550,6 @@ const onLoad = () => {
 
   // download button //
   $("#download_ds").unbind("click").bind("click", (e) => {
-    //console.log(areaSelection)
     // for now this is just taking what have been changed by taxa coloring
     if (areaSelection === true) {
       // downloads if area selection is triggered
@@ -1552,7 +1599,6 @@ const onLoad = () => {
     const acc = bootstrapTableList.map((uniqueAcc) => {
       return uniqueAcc.split("_").splice(0,2).join("_")
     })
-    console.log(bootstrapTableList, acc)
     multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
   })
 
@@ -1560,17 +1606,16 @@ const onLoad = () => {
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
     // transform internal accession numbers to ncbi acceptable accesions
     if (readFilejson !== false) {
-      console.log("heatmap", readFilejson)
       heatmapMaker(masterReadArray, readFilejson)
       mash_json = false
-      assembly_json = false
+      assemblyJson = false
     // }
     // else if (mash_json !== false) {
     //   heatmapMaker(masterReadArray, mash_json)
     //   readFilejson = false
     //   assembly_json = false
-    } else if (assembly_json !== false) {
-      heatmapMaker(masterReadArray, assembly_json)
+    } else if (assemblyJson !== false) {
+      heatmapMaker(masterReadArray, assemblyJson)
       readFilejson = false
       mash_json = false
     }
@@ -1594,7 +1639,7 @@ const onLoad = () => {
     $("#tableModal").modal()
     $("#metadataTable").bootstrapTable("destroy")
     $(".nav-tabs a[href='#homeTable']").tab("show")
-    show_div(
+    showDiv(
       makeTable(areaSelection, listGiFilter, g, graphics)
     )
   })
@@ -1606,13 +1651,14 @@ const onLoad = () => {
 
   // popup button for download csv
   // this only does single entry exports, for more exports table should be used
-  $(document).on("click", "#downloadCsv", () => {
+  $("#downloadCsv").unbind("click").bind("click", () => {
+  // $(document).on("click", "#downloadCsv", () => {
 
     const quickFixString = (divNameList) => {
       let returnArray = []
       for (i in divNameList) {
         const divName = divNameList[i]
-        returnArray.push($(divName).text().replace(":", ","))
+        returnArray.push($(divName).text().replace(":", ",").trim())
       }
       return returnArray
     }
@@ -1620,7 +1666,8 @@ const onLoad = () => {
     const targetArray = quickFixString([
       "#accessionPop",
       "#speciesNamePop",
-      "#speciesNamePop",
+      "#lengthPop",
+      "#plasmidNamePop",
       "#percentagePop",
       "#copyNumberPop",
       "#cardPop",
@@ -1653,7 +1700,7 @@ const onLoad = () => {
     $("#assemblyfile").val("")
     readFilejson = false
     mash_json = false
-    assembly_json = false
+    assemblyJson = false
   }
 
   $("#uploadFile").click( (event) => {
@@ -1667,34 +1714,34 @@ const onLoad = () => {
   })
 
   // resistance button control //
-  $(document).on("click", "#resButton", function(event) {
-    // controls the look of buttons
-    $("#resButton").removeClass("btn-default").addClass("btn-primary")
-    $("#plasmidButton").removeClass("btn-primary").addClass("btn-default")
-    if (clickedPopupButtonCard === true) {
-      clickedPopupButtonCard = resGetter(currentQueryNode)
-      $("#pfTab").hide()
-    } else {
-      // when it is already queried and we are just cycling b/w the two divs
-      // (tabs) then just show and hide the respective divs
-      $("#resTab").show()
-      $("#pfTab").hide()
-    }
+  $("#resButton").unbind("click").bind("click", () => {
+    // $("#resTab").show()
+    // if (clickedPopupButtonCard === true) {
+    // $("#pfTab").hide()
+    // $("#popupTabs").show()
+    clickedPopupButtonCard = resGetter(currentQueryNode)
+    // $("#pfTab").empty()
+    // } else {
+    // when it is already queried and we are just cycling b/w the two divs
+    // (tabs) then just show and hide the respective divs
+    // $("#resTab").show()
+
+    // }
   })
 
-  $(document).on("click", "#plasmidButton", function(event) {
-    // controls the look of buttons
-    $("#plasmidButton").removeClass("btn-default").addClass("btn-primary")
-    $("#resButton").removeClass("btn-primary").addClass("btn-default")
-    if (clickedPopupButtonFamily === true) {
-      clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
-      $("#resTab").hide()
-    } else {
-      // when it is already queried and we are just cycling b/w the two divs
-      // (tabs) then just show and hide the respective divs
-      $("#pfTab").show()
-      $("#resTab").hide()
-    }
+  $("#plasmidButton").unbind("click").bind("click", () => {
+    // $("#pfTab").show()
+    // if (clickedPopupButtonFamily === true) {
+    // $("#popupTabs").show()
+    // $("#resTab").hide()
+    clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
+    // $("#resTab").empty()
+    // } else {
+    // when it is already queried and we are just cycling b/w the two divs
+    // (tabs) then just show and hide the respective divs
+    // $("#pfTab").show()
+
+    // }
   })
 
   // control the alertClose button
@@ -1717,7 +1764,6 @@ const onLoad = () => {
   $("#slideRight").click( () => {
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
-    console.log(readFilejson)
     const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]

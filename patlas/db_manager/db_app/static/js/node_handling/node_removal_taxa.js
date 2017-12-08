@@ -2,7 +2,7 @@
 const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
   const currentHash = makeHash(sequence, linkAccession)
   if (newListHashes.indexOf(currentHash) < 0) {
-    g.addLink(sequence, linkAccession, linkDistance)
+    g.addLink(sequence, linkAccession, { distance: linkDistance })
     newListHashes.push(currentHash)
   }
   return newListHashes
@@ -13,11 +13,8 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
-  // console.log(length)
-  // console.log(newList.length)
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
-    //console.log("sequence", sequence)
     g.addNode(sequence, {
       sequence: "<span style='color:#468499'>Accession:" +
       " </span><a" +
@@ -31,7 +28,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   // loops between all arrays of array pairing sequence and distances
   if (linksArray !== "N/A") {
     const eachArray = linksArray.split("},")
-    //console.log("testing", eachArray)
     for (let i = 0; i < eachArray.length; i++) {
       // this constructs a sorted array
       // TODO try to make this array ordered in the database using MASHix.py
@@ -43,7 +39,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       // TODO make requests to get metadata to render the node
       // if node doesn't exist yet, add it and add the links
       if (newList.indexOf(linkAccession) < 0) {
-        //console.log(linkAccession)
         g.addNode(linkAccession, {
           sequence: "<span style='color:#468499'>Accession:" +
           " </span><a" +
@@ -72,7 +67,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, list_gi, readString,
                      assemblyJson) => {
-  // reloadAccessionList = []
   if (listGiFilter.length > 0) {
     let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
@@ -99,7 +93,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
             // if accession is not present in the database because singletons
             // are not stored in database
             if (data.json_entry.significantLinks === null) {
-              // console.log("debug", listGiFilter[i])
               const jsonObj = {
                 "plasmidAccession": listGiFilter[i],
                 "plasmidLenght": "N/A",
@@ -121,7 +114,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                 "plasmidName": plasmidName,
                 // this splits the string into an array with each entry
                 "significantLinks": data.json_entry.significantLinks//.split("],")
-                // TODO this is sketchy and should be fixed with JSON parsing from db
               }
               //add node
               reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
@@ -169,7 +161,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
 }
 
 // function that actually removes the nodes
-const actual_removal = (g, graphics, onload) => {
+const actualRemoval = (g, graphics, onload) => {
   // removes all nodes from g using the same layout
   firstInstace = false
   // change play button in order to be properly set to pause
@@ -191,9 +183,11 @@ const actual_removal = (g, graphics, onload) => {
     "<!--Populated by visualization_functions.js-->\n" +
     "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
     "<div class='gradient' id='scaleLegend'></div>\n" +
+    "<div id='scaleString'></div>" +
     "<!--Populated by visualization_functions.js-->\n" +
     "<label id='read_label' style='display: none'>Read filters</label>\n" +
     "<div class='gradient' id='readLegend'></div>\n" +
+    "<div id='readString'></div>" +
     "<label id='assemblyLabel' style='display: none'>Assembly</label>" +
     "<div class='legend' id='assemblyLegend'></div>" +
     "</div>\n" +
@@ -240,8 +234,128 @@ const actual_removal = (g, graphics, onload) => {
     "</div>" +
     "<div id='fileNameDiv'></div>" +
     "</div>\n" +
-    "<div id='popup_description' style='display: none'></div>"
-)
+    "<div id='popup_description' style='display: none'>" +
+    "<button id='closePop' class='close' type='button'>&times;</button>" +
+    "<button class='btn btn-default' id='downloadCsv'" +
+    "type='button' data-toogle='tooptip'" +
+    "title='Export as csv'>" +
+    "<span class='glyphicon glyphicon-save-file'></span>" +
+    "</button>" +
+    "<div class=\"popupHeaders\">General sequence info</div>" +
+    "<div style='border-top: 3px solid #4588ba; position: relative;" +
+    "top: 10px; margin-bottom: 10px;'>" +
+    "</div>" +
+    "<div id='accessionPop'></div>" +
+    "<div id='speciesNamePop'><span style='color: #468499'>Species:</span>" +
+    "<span id='speciesNamePopSpan'></span>" +
+    "</div>" +
+    "<div id='lengthPop'></div>" +
+    "<div id='plasmidNamePop'>" +
+    "<span style='color: #468499'>Plasmid: </span>" +
+    "<span id='plasmidNamePopSpan'></span>" +
+    "</div>" +
+    "<div id='percentagePop'><span style='color: #468499'>Percentage:</span>" +
+    "<span id='percentagePopSpan'></span>" +
+    "</div>" +
+    "<div id='copyNumberPop'><span style='color: #468499'>Relative copy" +
+    " number:</span>" +
+    "<span id='copyNumberPopSpan'></span>" +
+    "</div>" +
+    "<br />" +
+    // "</div>" +
+    "<ul class='nav nav-tabs' style=\"display: flex; justify-content: center;\">" +
+    "<li id='resButton'>" +
+    "<a data-toggle='tab' href='#resTab'>Resistances</a>" +
+    "</li>" +
+    "<li id='plasmidButton'>" +
+    "<a data-toggle='tab' href='#pfTab'>Plasmid finder</a>" +
+    "</li>" +
+    "</ul>" +
+    "<div class='tab-content' id='popupTabs'>" +
+    "<div id='pfTab' class='tab-pane fade'>" +
+    "<div id='pfPop' class=\"popupHeaders\">PlasmidFinder database</div>" +
+    "<div style='border-top: 3px solid #4588ba; position: relative;" +
+    "top: 10px; margin-bottom: 10px;'>" +
+    "</div>" +
+    "<div id='pfGenePop'>" +
+    "<span style='color: #468499'>Gene name: </span>" +
+    "<span id='pfGenePopSpan'></span>" +
+    "</div>" +
+    "<div id='pfGenbankPop'>" +
+    "<span style='color: #468499'>Genbank Accession: </span>" +
+    "<span id='pfGenbankPopSpan'></span>" +
+    "</div>" +
+    "<div>Matching resistance genes information</div>" +
+    "<div id='pfCoveragePop'>" +
+    "<span style='color: #468499'>Coverage: </span>" +
+    "<span id='pfCoveragePopSpan'></span>" +
+    "</div>" +
+    "<div id='pfIdentityPop'>" +
+    "<span style='color: #468499'>Identity: </span>" +
+    "<span id='pfIdentityPopSpan'></span>" +
+    "</div>" +
+    "<div id='pfRangePop'>" +
+    "<span style='color: #468499'>Range in plasmid: </span>" +
+    "<span id='pfRangePopSpan'></span>" +
+    "</div>" +
+    "</div>" +
+    "<div id='resTab' class='tab-pane fade'>" +
+    "<div id='cardPop' class=\"popupHeaders\">CARD database</div>" +
+    "<div style='border-top: 3px solid #4588ba; position: relative;" +
+    "top: 10px; margin-bottom: 10px;'>" +
+    "</div>" +
+    "<div id='cardGenePop'>" +
+    "<span style='color: #468499'>Gene name: </span>" +
+    "<span id='cardGenePopSpan'></span>" +
+    "</div>" +
+    "<div id='cardGenbankPop'>" +
+    "<span style='color: #468499'>Genbank accession: </span>" +
+    "<span id='cardGenbankPopSpan'></span>" +
+    "</div>" +
+    "<div id='cardAroPop'>" +
+    "<span style='color: #468499'>ARO accessions: </span>" +
+    "<span id='cardAroPopSpan'></span>" +
+    "</div>" +
+    "<div>Matching resistance genes information</div>" +
+    "<div id='cardCoveragePop'>" +
+    "<span style='color: #468499'>Coverage: </span>" +
+    "<span id='cardCoveragePopSpan'></span>" +
+    "</div>" +
+    "<div id='cardIdPop'>" +
+    "<span style='color: #468499'>Identity: </span>" +
+    "<span id='cardIdPopSpan'></span>" +
+    "</div>" +
+    "<div id='cardRangePop'>" +
+    "<span style='color: #468499'>Range in plasmid: </span>" +
+    "<span id='cardRangePopSpan'></span>" +
+    "</div>" +
+    "<div id='resfinderPop' class=\"popupHeaders\">ResFinder database" +
+    "<div style='border-top: 3px solid #4588ba; position: relative;" +
+    "top: 10px; margin-bottom: 10px;'>" +
+    "</div>" +
+    "</div>" +
+    "<div id='resfinderGenePop'>" +
+    "<span style='color: #468499'>Gene name: </span>" +
+    "<span id='resfinderGenePopSpan'></span>" +
+    "</div>" +
+    "<div id='resfinderGenbankPop'>" +
+    "<span style='color: #468499'>Genbank accession: </span>" +
+    "<span id='resfinderGenbankPopSpan'></span>" +
+    "</div>" +
+    "<div>Matching resistance genes information</div>" +
+    "<div id='resfinderCoveragePop'>" +
+    "<span style='color: #468499'>Coverage: </span>" +
+    "<span id='resfinderCoveragePopSpan'></span>" +
+    "</div>" +
+    "<div id='resfinderIdPop'>" +
+    "<span style='color: #468499'>Identity: </span>" +
+    "<span id='resfinderIdPopSpan'></span>" +
+    "</div>" +
+    "<div id='resfinderRangePop'>" +
+    "<span style='color: #468499'>Range in plasmid: </span>" +
+    "<span id='resfinderRangePopSpan'></span>" +
+    "</div></div></div></div></div>"
+  )
 
   // should be executed when listGiFilter is empty ... mainly for area selection
   const reGetListGi = (g, graphics) => {
@@ -253,13 +367,12 @@ const actual_removal = (g, graphics, onload) => {
     return tempListAccessions
   }
   listGiFilter = (listGiFilter.length === 0) ? reGetListGi(g, graphics) : listGiFilter
-
   onload()
   // TODO maybe add some nicer loading screen
 }
 
 // a function to display the loader mask
-const show_div = (callback) => {
+const showDiv = (callback) => {
   $("#loading").show()
   // if callback exist execute it
   callback && callback()

@@ -17,40 +17,12 @@ const arrayToCsv = (array) => {
 const setupPopupDisplay = (node, speciesName, plasmidName) => {
   // first needs to empty the popup in order to avoid having
   // multiple entries from previous interactions
-  $("#popup_description").empty()
-  $("#popup_description").append(
-    "<button id='close' class='btn btn-default' type='button'>&times;</button>" +
-    "<button class='btn btn-default' id='downloadCsv'" +
-    "type='button' data-toogle='tooptip'" +
-    "title='Export as csv'>" +
-    "<span class='glyphicon glyphicon-save-file'></span>" +
-    "</button>" +
-    "<div>General sequence info" +
-    "<div id='accessionPop'>" +
-    node.data.sequence + "</div>" +
-    "<div id='speciesNamePop'><span style='color: #468499'>Species:" +
-    " </span>" + speciesName +
-    "</div>" + node.data.seq_length +
-    "<div id='plasmidNamePop'>" +
-    "<span style='color: #468499'>Plasmid: </span>" + plasmidName +
-    "</div><div id='percentagePop'>" +
-    "<span style='color: #468499'>Percentage:" +
-    " </span>" + node.data.percentage +
-    "</div><div id='copyNumberPop'>" +
-    "<span style='color: #468499'>Relative copy number: " +
-    "</span>" + node.data.copyNumber +
-    "</div>" +
-    // adds buttons for resistances and plasmid families
-    "<br />" +
-    "<div style='float: left;' class='btn btn-default'" +
-    " id='resButton'>" +
-    " Resistances" +
-    "</div>" +
-    "<div style='float: right;' class='btn btn-default'" +
-    " id='plasmidButton'>" +
-    "Plasmid families" +
-    "</div>" +
-    "</div>"
-  )
+  $("#accessionPop").html(node.data.sequence)
+  $("#speciesNamePopSpan").html(speciesName)
+  $("#lengthPop").html(node.data.seq_length)
+  $("#plasmidNamePopSpan").html(plasmidName)
+  $("#percentagePopSpan").html(node.data.percentage)
+  $("#copyNumberPopSpan").html(node.data.copyNumber)
+
   $("#popup_description").show()
 }

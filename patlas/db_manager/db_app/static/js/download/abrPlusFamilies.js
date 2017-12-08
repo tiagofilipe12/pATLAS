@@ -23,56 +23,18 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
                           queryArrayResfinderGenes, queryArrayResfinderAccession,
                           queryArrayResfinderCoverage, queryArrayResfinderIdentity,
                           queryArrayResfinderRange) => {
-  $("#popup_description").append(
-    "<div id='resTab'>" +
-    "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
-    " 40px; margin-bottom: 40px;'></div>" +
-    "<div id='cardPop'>Card database</div>" +
-    "<div id='cardGenePop'>" +
-    // replace " by nothing because sometimes gene names get " for no
-    // apparent reasion
-    "<span style='color: #468499'>Gene name: </span>" + queryArrayCardGenes.toString().replace(/["]+/g, "") +
-    "</div>" +
-    "<div id='cardGenbankPop'>" +
-    "<span style='color: #468499'>Genbank accession: </span>" + queryArrayCardAccession.toString() +
-    "</div>" +
-    "<div id='cardAroPop'>" +
-    "<span style='color: #468499'>ARO accessions: </span>" + queryArrayCardARO.toString() +
-    "</div>" +
-    "<div>Matching resistance genes information</div>" +
-    "<div id='cardCoveragePop'>" +
-    "<span style='color: #468499'>Coverage: </span>" + queryArrayCardCoverage.toString() +
-    "</div>" +
-    "<div id='cardIdPop'>" +
-    "<span style='color: #468499'>Identity: </span>" + queryArrayCardIdentity.toString() +
-    "</div>" +
-    "<div id='cardRangePop'>" +
-    "<span style='color: #468499'>Range in plasmid: </span>" + queryArrayCardRange.toString() +
-    "</div>" +
-    "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
-    " 40px; margin-bottom: 40px;'>" +
-    "</div>" +
-    "<div id='resfinderPop'>ResFinder database" +
-    "</div>" +
-    "<div id='resfinderGenePop'>" +
-    // replace " by nothing because sometimes gene names get " for no
-    // apparent reasion
-    "<span style='color: #468499'>Gene name: </span>" + queryArrayResfinderGenes.toString().replace(/["]+/g, "") +
-    "</div>" +
-    "<div id='resfinderGenbankPop'>" +
-    "<span style='color: #468499'>Genbank accession: </span>" + queryArrayResfinderAccession.toString() +
-    "</div>" +
-    "<div>Matching resistance genees information</div>" +
-    "<div id='resfinderCoveragePop'>" +
-    "<span style='color: #468499'>Coverage: </span>" + queryArrayResfinderCoverage.toString() +
-    "</div>" +
-    "<div id='resfinderIdPop'>" +
-    "<span style='color: #468499'>Identity: </span>" + queryArrayResfinderIdentity.toString() +
-    "</div>" +
-    "<div id='resfinderRangePop'>" +
-    "<span style='color: #468499'>Range in plasmid: </span>" + queryArrayResfinderRange.toString() +
-    "</div></div>"
-  )
+  $("#cardGenePopSpan").html(queryArrayCardGenes.toString().replace(/["]+/g, ""))
+  $("#cardGenbankPopSpan").html(queryArrayCardAccession.toString())
+  $("#cardAroPopSpan").html(queryArrayCardARO.toString())
+  $("#cardCoveragePopSpan").html(queryArrayCardCoverage.toString())
+  $("#cardIdPopSpan").html(queryArrayCardIdentity.toString())
+  $("#cardRangePopSpan").html(queryArrayCardRange.toString())
+
+  $("#resfinderGenePopSpan").html(queryArrayResfinderGenes.toString().replace(/["]+/g, ""))
+  $("#resfinderGenbankPopSpan").html(queryArrayResfinderAccession.toString())
+  $("#resfinderCoveragePopSpan").html(queryArrayResfinderCoverage.toString())
+  $("#resfinderIdPopSpan").html(queryArrayResfinderIdentity.toString())
+  $("#resfinderRangePopSpan").html(queryArrayResfinderRange.toString())
 }
 
 // this function is intended to use in single query instances such as
@@ -171,27 +133,12 @@ const resGetter = (nodeId) => {
 const pfPopupPopulate = (queryArrayPFGenes, queryArrayPFAccession,
                          queryArrayPFCoverage, queryArrayPFIdentity,
                          queryArrayPFRange) => {
-  $("#popup_description").append(
-    "<div id='pfTab'>" +
-    "<div style='border-top: 3px solid #4588ba; position: relative; top:" +
-    " 40px; margin-bottom: 40px;'>" +
-    "</div>" +
-    "<div id='pfPop'>PlasmidFinder database</div>" +
-    "<div id='pfGenePop'>" +
-    // replace " by nothing because sometimes gene names get " for no
-    // apparent reasion
-    "<span style='color: #468499'>Gene name: </span>" + queryArrayPFGenes.toString().replace(/["]+/g, "") +
-    "</div><div id='pfGenbankPop'>" +
-    "<span style='color: #468499'>Genbank Accession: </span>" + queryArrayPFAccession.toString() +
-    "</div><div>Matching resistance genes information</div>" +
-    "<div id='pfCoveragePop'>" +
-    "<span style='color: #468499'>Coverage: </span>" + queryArrayPFCoverage.toString() +
-    "</div><div id='pfIdentityPop'>" +
-    "<span style='color: #468499'>Identity: </span>" + queryArrayPFIdentity.toString() +
-    "</div><div id='pfRangePop'>" +
-    "<span style='color: #468499'>Range in plasmid: </span>" + queryArrayPFRange.toString() +
-    "</div></div>"
-  )
+
+  $("#pfGenePopSpan").html(queryArrayPFGenes.toString().replace(/["]+/g, ""))
+  $("#pfGenbankPopSpan").html(queryArrayPFAccession.toString())
+  $("#pfCoveragePopSpan").html(queryArrayPFCoverage.toString())
+  $("#pfIdentityPopSpan").html(queryArrayPFIdentity.toString())
+  $("#pfRangePopSpan").html(queryArrayPFRange.toString())
 }
 
 const plasmidFamilyGetter = (nodeId) => {

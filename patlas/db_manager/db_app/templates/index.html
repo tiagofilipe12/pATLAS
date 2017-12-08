@@ -36,7 +36,7 @@
     <!--chroma to generate colors for reads-->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/chroma/chroma.min.js') }}"></script>
 
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/async.min.js') }}"></script>
+    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/async.min.js') }}"></script>-->
 
     <!-- main js script -->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/visualization_functions.js') }}"></script>
@@ -81,7 +81,7 @@
 
 </head>
 
-<body onload="onLoad()">
+<body onload="onLoadWelcome(onLoad)">
 <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/nouislider/nouislider.js') }}"></script>
 
 <div id="loading">
@@ -90,6 +90,60 @@
     <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
 </div>
 
+
+<!-- welcome modal -->
+<div class="modal fade" id="welcomeModal" data-backdrop="static"
+     role="dialog" tabindex="-1">
+    <div class="modal-dialog" id="welcomeDialog" style="width: 80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     alt="pATLAS" style="width:30%;height:auto; display:block;
+                     margin:auto;"/>
+            </div>
+            <div class="modal-body">
+                <h1>Welcome to Plasmid Atlas</h1>
+                <p class="mainText">Plasmid Atlas is a web interface that allow
+                    users to
+                    browse plasmid sequences available in NCBI refseq
+                    database. Here you can obtain metadata related with
+                    plasmid sequences available, such as species in which
+                    they were described, antibiotic resistance information
+                    and much more.</p>
+                <p class="mainText">Documentation is still scarce and we are
+                    working to bring you a better experience. For now, you can
+                    refer to our
+                    <a href="https://tiagofilipe12.gitbooks.io/patlas/content/"
+                       target="_blank" style="color:#6292A9;">gitbook page</a>
+                    and
+                    <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
+                        <img src="{{ url_for('static', filename='images/Lobby.png') }}"
+                             alt="gitter" style="width: auto; height: auto"/>
+                    </a>.
+                </p>
+                <p class="mainText"><b>Disclaimer:</b> This is an experimental
+                    version
+                    and if
+                    you
+                    find any bugs please report them in order to let us
+                    bring you a better experience. You can report in
+                    <a href="https://github.com/tiagofilipe12/pATLAS/issues"
+                       target="_blank" style="color:#6292A9;">pATlAS github</a>
+                    or
+                    <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
+                        <img src="{{ url_for('static', filename='images/Lobby.png') }}"
+                             alt="gitter" style="width: auto; height: auto"/>
+                    </a>.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="close" class="btn btn-default"
+                        data-dismiss="modal" id="welcomeDismiss">Dismiss
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal for table-->
 <div id="tableModal" class="modal fade" data-backdrop="static" role="dialog"
@@ -232,7 +286,7 @@
                     <form>
                         <div>
                             <label class="label_file">
-                                <input type="checkbox" class="check_file"
+                                <input type="checkbox" class="check_file_mash"
                                        autocomplete="off"/> Check for pairwise comparison mode
                             </label>
                         </div>
@@ -732,9 +786,11 @@
                 <!--Populated by visualization_functions.js-->
                 <label id="distance_label" style="display: none">Distances scale</label>
                 <div class="gradient" id="scaleLegend"></div>
+                <div id="scaleString"></div>
                 <!--Populated by visualization_functions.js-->
                 <label id="read_label" style="display: none">Read scale</label>
                 <div class="gradient" id="readLegend"></div>
+                <div id="readString"></div>
                 <label id="assemblyLabel" style="display: none">Assembly</label>
                 <div class="legend" id="assemblyLegend"></div>
             </div>
@@ -788,8 +844,113 @@
 
         <!-- End buttons -->
     </div>
-    <div id="popup_description" style="display: none"></div>
+    <div id="popup_description" style="display: none">
+        <button id='closePop' class='close' type='button'>&times;</button>
+        <button class='btn btn-default' id='downloadCsv'
+                type='button' data-toogle='tooptip'
+                title='Export as csv'>
+            <span class='glyphicon glyphicon-save-file'></span>
+        </button>
+        <div class="popupHeaders">General sequence info</div>
+        <div style='border-top: 3px solid #4588ba; position: relative;
+                top: 10px; margin-bottom: 10px;'>
+        </div>
+        <div id='accessionPop'></div>
+        <div id='speciesNamePop'><span style='color: #468499'>Species:</span><span id='speciesNamePopSpan'></span>
+        </div>
+        <div id='lengthPop'></div>
+        <div id='plasmidNamePop'>
+            <span style='color: #468499'>Plasmid: </span><span id="plasmidNamePopSpan"></span>
+        </div>
+        <div id='percentagePop'><span style='color: #468499'>Percentage:</span><span id="percentagePopSpan"></span>
+        </div>
+        <div id='copyNumberPop'><span style='color: #468499'>Relative copy number:</span><span id="copyNumberPopSpan"></span>
+        </div>
+        <br />
+
+        <!--<div class="table-responsive">-->
+        <ul class="nav nav-tabs" style="display: flex; justify-content: center;">
+            <li id="resButton">
+                <a data-toggle="tab" href="#resTab">Resistances</a>
+            </li>
+            <li id="plasmidButton">
+                <a data-toggle="tab" href="#pfTab">Plasmid finder</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="popupTabs">
+            <div id='pfTab' class="tab-pane fade">
+                <div id='pfPop' class="popupHeaders">PlasmidFinder database</div>
+                <div style='border-top: 3px solid #4588ba; position: relative;
+                top: 10px; margin-bottom: 10px;'>
+                </div>
+                <div id='pfGenePop'>
+                    <span style='color: #468499'>Gene name: </span><span id='pfGenePopSpan'></span>
+                </div>
+                <div id='pfGenbankPop'>
+                    <span style='color: #468499'>Genbank Accession: </span><span id='pfGenbankPopSpan'></span>
+                </div>
+                <div>Matching resistance genes information</div>
+                <div id='pfCoveragePop'>
+                    <span style='color: #468499'>Coverage: </span><span id='pfCoveragePopSpan'></span>
+                </div>
+                <div id='pfIdentityPop'>
+                    <span style='color: #468499'>Identity: </span><span id='pfIdentityPopSpan'></span>
+                </div>
+                <div id='pfRangePop'>
+                    <span style='color: #468499'>Range in plasmid: </span><span id='pfRangePopSpan'></span>
+                </div>
+            </div>
+            <div id='resTab' class="tab-pane fade">
+                <div id='cardPop' class="popupHeaders">CARD database</div>
+                <div style='border-top: 3px solid #4588ba; position: relative;
+                top: 10px; margin-bottom: 10px;'>
+                </div>
+                <div id='cardGenePop'>
+                    <span style='color: #468499'>Gene name: </span><span id='cardGenePopSpan'></span>
+                </div>
+                <div id='cardGenbankPop'>
+                    <span style='color: #468499'>Genbank accession: </span><span id='cardGenbankPopSpan'></span>
+                </div>
+                <div id='cardAroPop'>
+                    <span style='color: #468499'>ARO accessions: </span><span id='cardAroPopSpan'></span>
+                </div>
+                <div>Matching resistance genes information</div>
+                <div id='cardCoveragePop'>
+                    <span style='color: #468499'>Coverage: </span><span id='cardCoveragePopSpan'></span>
+                </div>
+                <div id='cardIdPop'>
+                    <span style='color: #468499'>Identity: </span><span id='cardIdPopSpan'></span>
+                </div>
+                <div id='cardRangePop'>
+                    <span style='color: #468499'>Range in plasmid: </span><span id='cardRangePopSpan'></span>
+                </div>
+                <div id='resfinderPop' class="popupHeaders">ResFinder database
+                </div>
+                <div style='border-top: 3px solid #4588ba; position: relative;
+            top: 10px; margin-bottom: 10px;'>
+                </div>
+                <div id='resfinderGenePop'>
+                    <span style='color: #468499'>Gene name: </span><span id='resfinderGenePopSpan'></span>
+                </div>
+                <div id='resfinderGenbankPop'>
+                    <span style='color: #468499'>Genbank accession: </span><span id='resfinderGenbankPopSpan'></span>
+                </div>
+                <div>Matching resistance genes information</div>
+                <div id='resfinderCoveragePop'>
+                    <span style='color: #468499'>Coverage: </span><span id='resfinderCoveragePopSpan'></span>
+                </div>
+                <div id='resfinderIdPop'>
+                    <span style='color: #468499'>Identity: </span><span id='resfinderIdPopSpan'></span>
+                </div>
+                <div id='resfinderRangePop'>
+                    <span style='color: #468499'>Range in plasmid: </span><span id='resfinderRangePopSpan'></span>
+                </div>
+            </div>
+        </div>
+        <!--</div>-->
+    </div>
 </div>
+
 <div class="graph-overlay"></div>
 <span style="color: white; margin: 10px;">Use mouse to draw rectangle and select nodes</span>
 
