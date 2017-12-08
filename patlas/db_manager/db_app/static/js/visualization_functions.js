@@ -33,8 +33,8 @@ let currentQueryNode = false
 let masterReadArray = []
 
 let readFilejson = false
-let mash_json = false
-let assembly_json = false
+let mashJson = false
+let assemblyJson = false
 
 let readIndex = -1
 
@@ -1102,7 +1102,7 @@ const onLoad = () => {
 
     $("#fileSubmit_mash").click( (event) => {
       masterReadArray = []
-      readFilejson = mash_json // converts mash_json into readFilejson to
+      readFilejson = mashJson // converts mash_json into readFilejson to
       readString = JSON.parse(Object.values(readFilejson)[0])
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
       $("#fileNameDiv").show()
@@ -1132,7 +1132,7 @@ const onLoad = () => {
     })
 
     $("#cancel_infile_mash").click( (event) => {
-      abortRead(mash_json)
+      abortRead(mashJson)
     })
 
     //* ********* ***//
@@ -1145,7 +1145,7 @@ const onLoad = () => {
         showGoback, showDownload, showTable, idsArrays)
       $("#loading").show()
       // setTimeout( () => {
-      listGiFilter = assembly(list_gi, assembly_json, g, graphics, masterReadArray, listGiFilter)
+      listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
       // }, 100)
       setTimeout( () => {
         renderer.rerender()
@@ -1160,7 +1160,7 @@ const onLoad = () => {
     })
 
     $("#cancel_assembly").click( (event) => {
-      abortRead(assembly_json)
+      abortRead(assemblyJson)
     })
 
     //* *********************//
@@ -1339,8 +1339,8 @@ const onLoad = () => {
       listGiFilter = [] //resets listGiFilter
       areaSelection = false
       readFilejson = false // makes file selection empty again
-      assembly_json = false
-      mash_json = false
+      assemblyJson = false
+      mashJson = false
       currentQueryNode = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
@@ -1496,13 +1496,13 @@ const onLoad = () => {
         $("#fileNameDiv").show()
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, readReload,
-          assembly_json)
+          assemblyJson)
         // TODO do something similar to assembly
       } else {
         // used when no reads are used to filter
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, false,
-          assembly_json)
+          assemblyJson)
       }
       listGiFilter = requestDBList[0] // list with the nodes used to filter
       reloadAccessionList = requestDBList[1] //list stores all nodes present
@@ -1519,18 +1519,18 @@ const onLoad = () => {
   // control the infile input and related functions //
   //* ***********************************************//
 
-  handleFileSelect('infile', '#file_text', (new_read_json) => {
-    readFilejson = new_read_json
+  handleFileSelect('infile', '#file_text', (newReadJson) => {
+    readFilejson = newReadJson
     // $("#infile").val("")
   })
 
-  handleFileSelect('mashInfile', '#file_text_mash', function (new_mash_json) {
-    mash_json = new_mash_json
+  handleFileSelect('mashInfile', '#file_text_mash', function (newMashJson) {
+    mashJson = newMashJson
     // $("#mashInfile").val("")
   })
 
-  handleFileSelect('assemblyfile', '#assembly_text', function (new_assembly_json) {
-    assembly_json = new_assembly_json
+  handleFileSelect('assemblyfile', '#assembly_text', function (newAssemblyJson) {
+    assemblyJson = newAssemblyJson
     // $("#assemblyfile").val("")
   })
 
@@ -1608,14 +1608,14 @@ const onLoad = () => {
     if (readFilejson !== false) {
       heatmapMaker(masterReadArray, readFilejson)
       mash_json = false
-      assembly_json = false
+      assemblyJson = false
     // }
     // else if (mash_json !== false) {
     //   heatmapMaker(masterReadArray, mash_json)
     //   readFilejson = false
     //   assembly_json = false
-    } else if (assembly_json !== false) {
-      heatmapMaker(masterReadArray, assembly_json)
+    } else if (assemblyJson !== false) {
+      heatmapMaker(masterReadArray, assemblyJson)
       readFilejson = false
       mash_json = false
     }
@@ -1700,7 +1700,7 @@ const onLoad = () => {
     $("#assemblyfile").val("")
     readFilejson = false
     mash_json = false
-    assembly_json = false
+    assemblyJson = false
   }
 
   $("#uploadFile").click( (event) => {

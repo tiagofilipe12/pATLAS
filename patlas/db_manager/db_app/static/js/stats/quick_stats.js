@@ -271,7 +271,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // render the graph
   Promise.all(promises)
     .then( (results) => {
-      accessionResultsList = []
+      const accessionResultsList = []
       results.map( (result) => {
         // checks if plasmid is present in db
         if (result.plasmid_id !== null) {
