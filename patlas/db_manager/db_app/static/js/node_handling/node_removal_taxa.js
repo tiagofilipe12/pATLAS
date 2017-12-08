@@ -377,11 +377,9 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
 // a function to display the loader mask
 const showDiv = () => {
   return new Promise( (resolve) => {
-    // $("#loading").show()
     resolve($("#loading").show())
   })
 }
-
 // function to reset node colors
 const node_color_reset = (graphics, g, nodeColor, renderer) => {
   document.getElementById('taxa_label').style.display = 'none' // hide label

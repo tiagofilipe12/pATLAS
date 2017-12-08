@@ -1359,7 +1359,9 @@ const onLoad = () => {
       document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       showDiv().then( () => {
         // removes nodes
-        actualRemoval(g, graphics, onLoad, false)
+        setTimeout( () => {
+          actualRemoval(g, graphics, onLoad, false)
+        }, 100)
       })
     })
 
@@ -1372,7 +1374,9 @@ const onLoad = () => {
       list_lengths = []
       showDiv().then( () => {
         // removes nodes and forces adding same nodes
-        actualRemoval(g, graphics, onLoad, true)
+        setTimeout( () => {
+          actualRemoval (g, graphics, onLoad, true)
+        }, 100)
       })
     })
   } // closes renderGraph
