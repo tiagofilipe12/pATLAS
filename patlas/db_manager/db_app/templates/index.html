@@ -103,14 +103,15 @@
             </div>
             <div class="modal-body">
                 <h1>Welcome to Plasmid Atlas</h1>
-                <p class="mainText">Plasmid Atlas is a web interface that allow
+                <p class="mainText">Plasmid Atlas is a web interface that allows
                     users to
-                    browse plasmid sequences available in NCBI refseq
-                    database. Here you can obtain metadata related with
-                    plasmid sequences available, such as species in which
+                    browse plasmid sequences available in the NCBI refseq
+                    database. Here you can obtain metadata related with the
+                    available
+                    plasmid sequences, such as species in which
                     they were described, antibiotic resistance information
                     and much more.</p>
-                <p class="mainText">Documentation is still scarce and we are
+                <p class="mainText">Documentation is still scarce but we are
                     working to bring you a better experience. For now, you can
                     refer to our
                     <a href="https://tiagofilipe12.gitbooks.io/patlas/content/"
@@ -128,7 +129,7 @@
                     find any bugs please report them in order to let us
                     bring you a better experience. You can report in
                     <a href="https://github.com/tiagofilipe12/pATLAS/issues"
-                       target="_blank" style="color:#6292A9;">pATlAS github</a>
+                       target="_blank" style="color:#6292A9;">pATLAS github</a>
                     or
                     <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
                         <img src="{{ url_for('static', filename='images/Lobby.png') }}"
@@ -145,6 +146,7 @@
             <div class="modal-footer">
                 <button type="close" class="btn btn-default"
                         data-dismiss="modal" id="welcomeDismiss">Dismiss
+                </button>
             </div>
         </div>
     </div>
@@ -714,7 +716,7 @@
 
                 <!--<form class="navbar-form navbar-left">-->
                 <div class="btn-group">
-                    <button class="btn btn-default disabled" id="go_back"
+                    <button class="btn btn-default" id="go_back"
                             type="button" data-toogle="tooptip"
                             title="Return to full tree view" style="display: none">
                         <span class="glyphicon glyphicon-home"></span></button>
@@ -723,11 +725,11 @@
                             title="Apply filters" style="display: none">
                         <span class="glyphicon glyphicon-filter"></span></button>
                     <!--for now this button is disabled since it does not have funcitonality-->
-                    <button class="btn btn-default disabled" id="download_ds"
+                    <button class="btn btn-default" id="download_ds"
                             type="button" data-toogle="tooptip"
                             title="Download current selection" style="display: none">
                         <span class="glyphicon glyphicon-save"></span></button>
-                    <button class="btn btn-default disabled" id="tableShow"
+                    <button class="btn btn-default" id="tableShow"
                             type="button" data-toogle="tooptip"
                             title="Table with metadata" style="display:
                             none">
@@ -775,7 +777,7 @@
   })
 </script>
 
-<div id="couve-flor" >
+<div id="couve-flor">
     <!--hidden div for color legend-->
     <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">
         <div class="panel panel-default" >

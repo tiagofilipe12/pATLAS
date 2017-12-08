@@ -156,6 +156,9 @@ const onLoad = () => {
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
+    //* * Loading Screen goes off **//
+    $("#loading").hide()
+    $("#couve-flor").css("visibility", "visible")
 
     /*******************/
     /* MULTI-SELECTION */
@@ -282,12 +285,7 @@ const onLoad = () => {
       requestPlasmidTable(node, setupPopupDisplay)
     })
 
-    //* * mouse hovering block end **//
-    renderer.rerender()
-
-    //* * Loading Screen goes off **//
-    $("#loading").hide()
-    $("#couve-flor").css("visibility", "visible")
+    // renderer.rerender()
 
     //* **************//
     //* ** BUTTONS ***//
@@ -1347,9 +1345,10 @@ const onLoad = () => {
         showGoback, showDownload, showTable, idsArrays)
     })
     // runs the re run operation for the selected species
-    $("#Re_run").click(function (event) {
+    $("#Re_run").unbind("click").bind("click", () => {
       // resets areaSelection
       areaSelection = false
+      firstInstace = false
       rerun = true
       reloadAccessionList = []  // needs to be killed every instance in
       // order for reload to allow reloading again
@@ -1358,15 +1357,23 @@ const onLoad = () => {
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      showDiv(
+      showDiv().then( () => {
         // removes nodes
-        actualRemoval(g, graphics, onLoad)
-      )
+        actualRemoval(g, graphics, onLoad, false)
+      })
     })
 
     // returns to the initial tree by reloading the page
-    $("#go_back").click(function (event) {
-      window.location.reload()   // a temporary fix to go back to full dataset
+    $("#go_back").unbind("click").bind("click", () => {
+      // window.location.reload()   // a temporary fix to go back to full dataset
+      firstInstace = true
+      list = []
+      list_gi = []
+      list_lengths = []
+      showDiv().then( () => {
+        // removes nodes and forces adding same nodes
+        actualRemoval(g, graphics, onLoad, true)
+      })
     })
   } // closes renderGraph
   //}) //end of getArray
@@ -1422,7 +1429,6 @@ const onLoad = () => {
         // this is a more efficient implementation which takes a different
         // file for loading the graph.
         getArray.done(function (json) {
-
           const addAllNodes = (json) => {
             return new Promise((resolve, reject) => {
               for (const i in json) {
@@ -1483,6 +1489,10 @@ const onLoad = () => {
           addAllNodes(json.nodes)
             .then(addAllLinks(json.links))
             .then(renderGraph(graphics))
+            .then( () => {
+              $("#loading").hide()
+              $("#couve-flor").css("visibility", "visible")
+            })
             .catch((err) => {
               console.log(err)
             })
