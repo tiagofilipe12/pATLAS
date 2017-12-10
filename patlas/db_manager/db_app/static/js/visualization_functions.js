@@ -1759,15 +1759,15 @@ const onLoad = () => {
   })
 
   // control the alertClose button
-  $("#alertClose").click( () => {
+  $("#alertClose").unbind("click").bind("click", () => {
     $("#alertId").hide()  // hide this div
   })
 
-  $("#alertClose_search").click( () => {
+  $("#alertClose_search").unbind("click").bind("click", () => {
     $("#alertId_search").hide()  // hide this div
   })
 
-  $("#alertCloseNCBI").click( () => {
+  $("#alertCloseNCBI").unbind("click").bind("click", () => {
     $("#alertNCBI").hide()  // hide this div
   })
 
@@ -1775,7 +1775,7 @@ const onLoad = () => {
   The default idea is that the first file in this readFilejson object is the
    one to be loaded when uploading then everything else should use cycler
   */
-  $("#slideRight").click( () => {
+  $("#slideRight").unbind("click").bind("click", () => {
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
     const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
@@ -1785,7 +1785,7 @@ const onLoad = () => {
 
   })
 
-  $("#slideLeft").click( () => {
+  $("#slideLeft").unbind("click").bind("click", () => {
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
     const outArray = slideToLeft(readFilejson, readIndex, g, list_gi, graphics, renderer)
@@ -1793,6 +1793,9 @@ const onLoad = () => {
     listGiFilter = outArray[1][1]
     list_gi = outArray[1][0]
   })
+
+  // changes the behavior of tooltip to show only on click
+  $("#questionPlots").popover()
 
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before

@@ -678,3 +678,31 @@
     line-height: 1.428571429;
     border-radius: 15px;
 }
+
+/* this is only for popover in question sign for plots
+Careful when using this in other popovers in the future*/
+.popover {
+    max-width: 100%;
+    border-top: 2px solid #514F52;
+    border-left: 2px solid #514F52;
+    border-right: 2px solid #514F52;
+    border-bottom: 2px solid #514F52;
+}
+
+.popover.right>.arrow:after {
+    left: 2px;
+    bottom: -10px;
+}
+.popover.right>.arrow {
+    left: -12px;
+    margin-top: -12px;
+    border-right-color: #514F52;
+}
+.popover>.arrow {
+    border-width: 12px;
+}
+
+.popover-title  {
+    background: #514F52;
+    color: white;
+}
