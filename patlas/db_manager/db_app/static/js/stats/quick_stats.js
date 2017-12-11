@@ -24,6 +24,56 @@ const arraytoHighcharts = (array) => {
   return [exportArray, categories]
 }
 
+const axisHighlight = (that, index) => {
+  console.log(that.series.chart.yAxis)
+  const newyAxis = {
+      title: {
+        style: {
+          fontWeight: "bold",
+          color: "black"
+        }
+      }
+    }
+  const newxAxis = {
+      title: {
+        style: {
+          fontWeight: "bold",
+          color: "black"
+        }
+      }
+    }
+
+  that.series.chart.update({
+    yAxis: (index === 1) ? [{}, newyAxis] : [newyAxis, {}],
+    xAxis: (index === 1) ? [{}, newxAxis] : [newxAxis, {}]
+  })
+}
+
+const resetAxis = (that, index) => {
+  // return that.series.chart.update({
+  const oldyAxis = {
+    title: {
+      style: {
+        fontWeight: "normal",
+        color: "grey"
+      }
+    }
+  }
+  const oldxAxis = {
+    title: {
+      style: {
+        fontWeight: "normal",
+        color: "#666666"
+      }
+    }
+  }
+
+  that.series.chart.update({
+    yAxis: (index === 1) ? [{}, oldyAxis] : [oldyAxis, {}],
+    xAxis: (index === 1) ? [{}, oldxAxis] : [oldxAxis, {}]
+  })
+}
+
 // function to parse stats //
 const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
   // controls progress bar div
@@ -99,13 +149,33 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       yAxis: 1,
       baseSeries: 1,
       color: colorsPlot[taxaType.replace(" ", "")],
-      zIndex: -1
+      zIndex: -1,
+      point: {
+        events: {
+          mouseOver: function () {
+            axisHighlight(this, 1)
+          },
+          mouseOut: function () {
+            resetAxis(this, 1)
+          }
+        }
+      }
     }, {
       name: "Individual plasmids",
       type: "scatter",
       data: histoArray,
       marker: {
         radius: 3
+      },
+      point: {
+        events: {
+          mouseOver: function () {
+            axisHighlight(this, 0)
+          },
+          mouseOut: function () {
+            resetAxis(this, 0)
+          }
+        }
       }
     }]
     // disable sort buttons
