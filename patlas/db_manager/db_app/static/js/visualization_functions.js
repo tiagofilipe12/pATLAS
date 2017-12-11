@@ -1798,12 +1798,11 @@ const onLoad = () => {
 
   // function to avoid shift key to be triggered when any modal is open
   $(".modal").on("shown.bs.modal", () => {
-    console.log("test_show")
     multiSelectOverlay = "disable"
   })
 
+  // function to allow shift key to select nodes again, on modal close
   $(".modal").on("hidden.bs.modal", function () {
-    console.log("test_hidden")
     multiSelectOverlay = false
   })
 
