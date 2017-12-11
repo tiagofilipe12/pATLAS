@@ -42,6 +42,7 @@ const axisHighlight = (that, index, color, font) => {
 
 // function to parse stats //
 const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
+  $("#alertPlot").hide()
   // controls progress bar div
   $("#progressBar").hide()
   $("#progressDiv").hide()
@@ -163,6 +164,9 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
         }
       }, defaultSeries]
     } else {
+      // alert("All plasmids have same size. There is no sufficient data to" +
+      //   " plot an histogram.")
+      $("#alertPlot").show()
       layout.xAxis = defaultXAxis
       layout.yAxis = defaultYAxis
       layout.tooltip = {

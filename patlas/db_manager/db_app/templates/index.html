@@ -976,6 +976,16 @@
                 <h4 class="modal-title">Quick statistics histograms</h4>
             </div>
             <div class="modal-body" id="modal-body-plot">
+                <div class="alert alert-warning alert-dismissable fade in"
+                     id="alertPlot"
+                     style="display: none">
+                    <button type="button" class="close" id="alertPlotClose"
+                            aria-hidden="true" data-hide="true"
+                            onclick="this.parentNode.style.display = 'none'">
+                        &times;</button>
+                    <strong>Warning!</strong> All plasmids have same size.
+                    There is no sufficient data to plot an histogram.
+                </div>
                 <div>
                     <button class="btn btn-info" id="sortGraph"
                             type="button" data-toogle="tooptip"
