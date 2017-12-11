@@ -84,7 +84,8 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     // scatter
     const allEqual = (histoArray) => histoArray.every( (v) => v === histoArray[0] )
 
-    // some defaults comment to both graphs
+    // some defaults comment to both graphs instances, when there are
+    // several bins or just one
     const defaultXAxis = {
       labels: {enabled: false},
       categories: accessionResultsList,
@@ -164,8 +165,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
         }
       }, defaultSeries]
     } else {
-      // alert("All plasmids have same size. There is no sufficient data to" +
-      //   " plot an histogram.")
+      // instance for one bin only... no histogram will be shown
       $("#alertPlot").show()
       layout.xAxis = defaultXAxis
       layout.yAxis = defaultYAxis
