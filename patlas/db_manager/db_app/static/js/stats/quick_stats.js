@@ -34,7 +34,7 @@ const axisHighlight = (that, index, color, font) => {
     }
   }
 
-  that.series.chart.update({
+  that.chart.update({
     yAxis: (index === 1) ? [{}, newAxis] : [newAxis, {}],
     xAxis: (index === 1) ? [{}, newAxis] : [newAxis, {}]
   })
@@ -105,18 +105,16 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       marker: {
         radius: 3
       },
-      point: {
-        events: {
-          mouseOver: function () {
-            axisHighlight(this, 0, "black", "bold")
-          },
-          mouseOut: function () {
-            axisHighlight(this, 0, "#666666", "normal")
-          },
-          click: function () {
-            clickedHighchart = this.category
-            $("#submitButton").click()
-          }
+      events: {
+        mouseOver: function () {
+          axisHighlight(this, 0, "black", "bold")
+        },
+        mouseOut: function () {
+          axisHighlight(this, 0, "#666666", "normal")
+        },
+        click: function () {
+          clickedHighchart = this.category
+          $("#submitButton").click()
         }
       }
     }
@@ -153,14 +151,12 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
         baseSeries: 1,
         color: colorsPlot[taxaType.replace(" ", "")],
         zIndex: -1,
-        point: {
-          events: {
-            mouseOver: function () {
-              axisHighlight(this, 1, "black", "bold")
-            },
-            mouseOut: function () {
-              axisHighlight(this, 1, "#666666", "normal")
-            }
+        events: {
+          mouseOver: function () {
+            axisHighlight(this, 1, "black", "bold")
+          },
+          mouseOut: function () {
+            axisHighlight(this, 1, "#666666", "normal")
           }
         }
       }, defaultSeries]
