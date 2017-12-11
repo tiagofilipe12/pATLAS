@@ -24,53 +24,19 @@ const arraytoHighcharts = (array) => {
   return [exportArray, categories]
 }
 
-const axisHighlight = (that, index) => {
-  console.log(that.series.chart.yAxis)
-  const newyAxis = {
-      title: {
-        style: {
-          fontWeight: "bold",
-          color: "black"
-        }
-      }
-    }
-  const newxAxis = {
-      title: {
-        style: {
-          fontWeight: "bold",
-          color: "black"
-        }
-      }
-    }
-
-  that.series.chart.update({
-    yAxis: (index === 1) ? [{}, newyAxis] : [newyAxis, {}],
-    xAxis: (index === 1) ? [{}, newxAxis] : [newxAxis, {}]
-  })
-}
-
-const resetAxis = (that, index) => {
-  // return that.series.chart.update({
-  const oldyAxis = {
+const axisHighlight = (that, index, color, font) => {
+  const newAxis = {
     title: {
       style: {
-        fontWeight: "normal",
-        color: "grey"
-      }
-    }
-  }
-  const oldxAxis = {
-    title: {
-      style: {
-        fontWeight: "normal",
-        color: "#666666"
+        fontWeight: font,
+        color: color,
       }
     }
   }
 
   that.series.chart.update({
-    yAxis: (index === 1) ? [{}, oldyAxis] : [oldyAxis, {}],
-    xAxis: (index === 1) ? [{}, oldxAxis] : [oldxAxis, {}]
+    yAxis: (index === 1) ? [{}, newAxis] : [newAxis, {}],
+    xAxis: (index === 1) ? [{}, newAxis] : [newAxis, {}]
   })
 }
 
@@ -153,10 +119,10 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       point: {
         events: {
           mouseOver: function () {
-            axisHighlight(this, 1)
+            axisHighlight(this, 1, "black", "bold")
           },
           mouseOut: function () {
-            resetAxis(this, 1)
+            axisHighlight(this, 1, "#666666", "normal")
           }
         }
       }
@@ -170,10 +136,10 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       point: {
         events: {
           mouseOver: function () {
-            axisHighlight(this, 0)
+            axisHighlight(this, 0, "black", "bold")
           },
           mouseOut: function () {
-            resetAxis(this, 0)
+            axisHighlight(this, 0, "#666666", "normal")
           }
         }
       }
