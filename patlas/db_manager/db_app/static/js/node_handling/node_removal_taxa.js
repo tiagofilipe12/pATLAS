@@ -149,7 +149,8 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           // the button was clicked and makes the legends
           $("#taxaModalSubmit").click()
         } else {
-          colorNodes(g, graphics, listGiFilter, 0x23A900) //green color for
+          colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
+          // color for
           // area selection
         }
       })
@@ -161,9 +162,9 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
 }
 
 // function that actually removes the nodes
-const actualRemoval = (g, graphics, onload) => {
+const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
   // removes all nodes from g using the same layout
-  firstInstace = false
+  // firstInstace = false
   // change play button in order to be properly set to pause
   $("#couve-flor").empty()
   // TODO check if this can be cleaner... removing vivagraph canvas?
@@ -366,18 +367,20 @@ const actualRemoval = (g, graphics, onload) => {
     })
     return tempListAccessions
   }
-  listGiFilter = (listGiFilter.length === 0) ? reGetListGi(g, graphics) : listGiFilter
+  if (forgetListGiFilter === false) {
+    listGiFilter = (listGiFilter.length === 0) ? reGetListGi(g, graphics) : listGiFilter
+  }
+  // otherwise doesn't care for listGiFilter because is just a page reload
   onload()
   // TODO maybe add some nicer loading screen
 }
 
 // a function to display the loader mask
-const showDiv = (callback) => {
-  $("#loading").show()
-  // if callback exist execute it
-  callback && callback()
+const showDiv = () => {
+  return new Promise( (resolve) => {
+    resolve($("#loading").show())
+  })
 }
-
 // function to reset node colors
 const node_color_reset = (graphics, g, nodeColor, renderer) => {
   document.getElementById('taxa_label').style.display = 'none' // hide label

@@ -1,5 +1,5 @@
 // cycles nodes
-const colorNodes = (g, graphics, accessionRequested, currentColor) => {
+const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => {
   g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)
 
@@ -9,6 +9,7 @@ const colorNodes = (g, graphics, accessionRequested, currentColor) => {
       // changed_nodes.push(node.id)
     }
   })
+  renderer.rerender()
 }
 
 /////////// IMPORTANT ///////////
@@ -22,8 +23,8 @@ const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
     for (object in data) {
       listData.push(data[object].plasmid_id)
     }
-    colorNodes(g, graphics, listData, currentColor)
+    colorNodes(g, graphics, renderer, listData, currentColor)
     //return listData
-    renderer.rerender()
+    renderer.rerender() //TODO maybe remove?
   })
 }

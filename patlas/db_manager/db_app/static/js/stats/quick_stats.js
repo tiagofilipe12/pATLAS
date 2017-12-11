@@ -112,7 +112,6 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     $("#sortGraph").attr("disabled", true)
     $("#sortGraphAlp").attr("disabled", true)
   }
-
   Highcharts.chart("chartContainer1", layout)
 }
 
@@ -128,7 +127,9 @@ const resetProgressBar = () => {
 const layoutGet = (taxaType, length) => {
   return {
     chart: {
-      zoomType: "x"
+      zoomType: "x",
+      panKey: "ctrl",   //key used to navigate the graph when zommed
+      panning: true     // allow paning of the graph when zommed
     },
     title: {
       text: `${length} ${taxaType} in selection`

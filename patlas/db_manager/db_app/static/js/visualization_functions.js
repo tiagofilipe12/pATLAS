@@ -156,6 +156,9 @@ const onLoad = () => {
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
+    //* * Loading Screen goes off **//
+    $("#loading").hide()
+    $("#couve-flor").css("visibility", "visible")
 
     /*******************/
     /* MULTI-SELECTION */
@@ -282,12 +285,7 @@ const onLoad = () => {
       requestPlasmidTable(node, setupPopupDisplay)
     })
 
-    //* * mouse hovering block end **//
-    renderer.rerender()
-
-    //* * Loading Screen goes off **//
-    $("#loading").hide()
-    $("#couve-flor").css("visibility", "visible")
+    // renderer.rerender()
 
     //* **************//
     //* ** BUTTONS ***//
@@ -1347,9 +1345,10 @@ const onLoad = () => {
         showGoback, showDownload, showTable, idsArrays)
     })
     // runs the re run operation for the selected species
-    $("#Re_run").click(function (event) {
+    $("#Re_run").unbind("click").bind("click", () => {
       // resets areaSelection
       areaSelection = false
+      firstInstace = false
       rerun = true
       reloadAccessionList = []  // needs to be killed every instance in
       // order for reload to allow reloading again
@@ -1358,15 +1357,27 @@ const onLoad = () => {
       document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      showDiv(
+      showDiv().then( () => {
         // removes nodes
-        actualRemoval(g, graphics, onLoad)
-      )
+        setTimeout( () => {
+          actualRemoval(g, graphics, onLoad, false)
+        }, 100)
+      })
     })
 
     // returns to the initial tree by reloading the page
-    $("#go_back").click(function (event) {
-      window.location.reload()   // a temporary fix to go back to full dataset
+    $("#go_back").unbind("click").bind("click", () => {
+      // window.location.reload()   // a temporary fix to go back to full dataset
+      firstInstace = true
+      list = []
+      list_gi = []
+      list_lengths = []
+      showDiv().then( () => {
+        // removes nodes and forces adding same nodes
+        setTimeout( () => {
+          actualRemoval (g, graphics, onLoad, true)
+        }, 100)
+      })
     })
   } // closes renderGraph
   //}) //end of getArray
@@ -1422,7 +1433,6 @@ const onLoad = () => {
         // this is a more efficient implementation which takes a different
         // file for loading the graph.
         getArray.done(function (json) {
-
           const addAllNodes = (json) => {
             return new Promise((resolve, reject) => {
               for (const i in json) {
@@ -1483,6 +1493,10 @@ const onLoad = () => {
           addAllNodes(json.nodes)
             .then(addAllLinks(json.links))
             .then(renderGraph(graphics))
+            // .then( () => {
+            //   $("#loading").hide()
+            //   $("#couve-flor").css("visibility", "visible")
+            // })
             .catch((err) => {
               console.log(err)
             })
@@ -1623,7 +1637,7 @@ const onLoad = () => {
   // button to color selected nodes by check boxes
   $("#tableSubmit").unbind("click").bind("click", (e) => {
     $("#reset-sliders").click()
-    colorNodes(g, graphics, bootstrapTableList, "0x3957ff")
+    colorNodes(g, graphics, renderer, bootstrapTableList, "0x3957ff")
     // handles hidden buttons
     showRerun.style.display = "block"
     showGoback.style.display = "block"
@@ -1745,15 +1759,15 @@ const onLoad = () => {
   })
 
   // control the alertClose button
-  $("#alertClose").click( () => {
+  $("#alertClose").unbind("click").bind("click", () => {
     $("#alertId").hide()  // hide this div
   })
 
-  $("#alertClose_search").click( () => {
+  $("#alertClose_search").unbind("click").bind("click", () => {
     $("#alertId_search").hide()  // hide this div
   })
 
-  $("#alertCloseNCBI").click( () => {
+  $("#alertCloseNCBI").unbind("click").bind("click", () => {
     $("#alertNCBI").hide()  // hide this div
   })
 
@@ -1761,7 +1775,7 @@ const onLoad = () => {
   The default idea is that the first file in this readFilejson object is the
    one to be loaded when uploading then everything else should use cycler
   */
-  $("#slideRight").click( () => {
+  $("#slideRight").unbind("click").bind("click", () => {
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
     const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
@@ -1771,7 +1785,7 @@ const onLoad = () => {
 
   })
 
-  $("#slideLeft").click( () => {
+  $("#slideLeft").unbind("click").bind("click", () => {
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
       showGoback, showDownload, showTable, idsArrays)
     const outArray = slideToLeft(readFilejson, readIndex, g, list_gi, graphics, renderer)
@@ -1779,6 +1793,9 @@ const onLoad = () => {
     listGiFilter = outArray[1][1]
     list_gi = outArray[1][0]
   })
+
+  // changes the behavior of tooltip to show only on click
+  $("#questionPlots").popover()
 
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before

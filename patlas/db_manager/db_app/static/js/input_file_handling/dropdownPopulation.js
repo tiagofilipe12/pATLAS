@@ -29,7 +29,7 @@ const resRequest = (g, graphics, renderer, gene, currentColor) => {
         listData.push(data[object].plasmid_id)
       }
     }
-    colorNodes(g, graphics, listData, currentColor)
+    colorNodes(g, graphics, renderer, listData, currentColor)
     renderer.rerender()
   })
 }
@@ -45,7 +45,7 @@ const pfRequest = (g, graphics, renderer, gene, currentColor) => {
       if ({}.hasOwnProperty.call(data, object)) {
         listData.push(data[object].plasmid_id)
       }    }
-    colorNodes(g, graphics, listData, currentColor)
+    colorNodes(g, graphics, renderer, listData, currentColor)
     renderer.rerender()
   })
 }
