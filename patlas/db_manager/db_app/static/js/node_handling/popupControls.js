@@ -17,7 +17,7 @@ const arrayToCsv = (array) => {
 const setupPopupDisplay = (node, speciesName, plasmidName, lenghtVar) => {
   // first needs to empty the popup in order to avoid having
   // multiple entries from previous interactions
-  if (node.data !== undefined) {
+  if (typeof node.data !== "undefined") {
     $("#accessionPop").html(node.data.sequence)
     $("#speciesNamePopSpan").html(speciesName)
     $("#lengthPop").html(node.data.seq_length)

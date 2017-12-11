@@ -18,7 +18,7 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
   // from mapping
   let speciesName, plasmidName
   // if (node.data !== undefined) {
-    if (node.data.seq_length !== undefined) {
+    if (typeof node.data.seq_length !== "undefined") {
       $.get("api/getspecies/", {"accession": node.id}, (data, status) => {
         // this request uses nested json object to access json entries
         // available in the database

@@ -82,7 +82,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     const histoArray = finalArray.map( (e) => { return parseFloat(e) }).sort()
     // returns true if all elements have the same size and thus make only a
     // scatter
-    const allEqual = (histoArray) => histoArray.every( v => v === histoArray[0] )
+    const allEqual = (histoArray) => histoArray.every( (v) => v === histoArray[0] )
 
     // some defaults comment to both graphs
     const defaultXAxis = {
