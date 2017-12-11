@@ -38,6 +38,8 @@ let assemblyJson = false
 
 let readIndex = -1
 
+let clickedHighchart
+
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
   return $.getJSON("/taxa")
@@ -381,14 +383,14 @@ const onLoad = () => {
     $("#sortGraph").on("click", function (e) {
       const sortVal = true
       const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(listPlots, layout, clickerButton, false, sortVal) }
+      if (listPlots) { statsParser(false, listPlots, layout, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").on("click", function (e) {
       const sortAlp = true
       const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(listPlots, layout, clickerButton, sortAlp, false) }
+      if (listPlots) { statsParser(false, listPlots, layout, clickerButton, sortAlp, false) }
     })
 
     // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -456,7 +458,9 @@ const onLoad = () => {
       $("#plasmidButton").removeClass("active")
       event.preventDefault()    // prevents page from reloading
       if (toggle_status === false) {
-        const query = $("#formValueId").val().replace(".", "_")
+        // const query !==)
+        const query = ($("#formValueId").val() === "") ? clickedHighchart :
+          $("#formValueId").val().replace(".", "_")
 
         currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
