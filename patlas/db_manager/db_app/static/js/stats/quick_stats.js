@@ -130,7 +130,7 @@ const highlightHist = (el) => {
     data: modifiedPoints
   })
 
-};
+}
 
 const resetHighlight = (ch) => {
 
@@ -151,7 +151,7 @@ const resetHighlight = (ch) => {
   ch.series[1].update({data: resetPoints})
   ch.series[0].update({data: resetBars})
 
-};
+}
 
   // parse the final array
   // here it assures that sorts are made just once
