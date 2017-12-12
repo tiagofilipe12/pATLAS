@@ -286,8 +286,6 @@ const onLoad = () => {
       requestPlasmidTable(node, setupPopupDisplay)
     })
 
-    // renderer.rerender()
-
     //* **************//
     //* ** BUTTONS ***//
     //* **************//
@@ -316,7 +314,7 @@ const onLoad = () => {
     // all these buttons require that the modalPlot modal opens before
     // executing the function and that is the reason why they wait half a
     // second before executing repetitivePlotFunction's
-    $("#refreshButton").on("click", function (e) {
+    $("#refreshButton").unbind("click").bind("click", () => {
       clickerButton = "species"
       listGiFilter = (reloadAccessionList.length !== 0) ?
         // reduces listGiFilter to reloadAccessionList
@@ -329,42 +327,42 @@ const onLoad = () => {
       }, 500)
     })
 
-    $("#speciesStats").on("click", function (e) {
+    $("#speciesStats").unbind("click").bind("click", () => {
       clickerButton = "species"
       setTimeout( () => {
         listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       },500)
     })
 
-    $("#genusStats").on("click", function (e) {
+    $("#genusStats").unbind("click").bind("click", () => {
       clickerButton = "genus"
       setTimeout( () => {
         listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
     })
 
-    $("#familyStats").on("click", function (e) {
+    $("#familyStats").unbind("click").bind("click", () => {
       clickerButton = "family"
       setTimeout( () => {
         listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
     })
 
-    $("#orderStats").on("click", function (e) {
+    $("#orderStats").unbind("click").bind("click", () => {
       clickerButton = "order"
       setTimeout( () => {
         listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
     })
 
-    $("#resistanceStats").on("click", function (e) {
+    $("#resistanceStats").unbind("click").bind("click", () => {
       clickerButton = "resistances"
       setTimeout( () => {
         listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
     })
 
-    $("#pfamilyStats").on("click", function (e) {
+    $("#pfamilyStats").unbind("click").bind("click", () => {
       clickerButton = "plasmid families"
       setTimeout( () => {
         listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
@@ -372,7 +370,7 @@ const onLoad = () => {
     })
 
     // redundant with speciesStats but may be useful in the future
-    $("#lengthStats").on("click", function (e) {
+    $("#lengthStats").unbind("click").bind("click", () => {
       clickerButton = "length"
       setTimeout( () => {
         listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
@@ -380,14 +378,14 @@ const onLoad = () => {
     })
 
     // sort by values
-    $("#sortGraph").on("click", function (e) {
+    $("#sortGraph").unbind("click").bind("click", () => {
       const sortVal = true
       const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
       if (listPlots) { statsParser(false, listPlots, layout, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
-    $("#sortGraphAlp").on("click", function (e) {
+    $("#sortGraphAlp").unbind("click").bind("click", () => {
       const sortAlp = true
       const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
       if (listPlots) { statsParser(false, listPlots, layout, clickerButton, sortAlp, false) }
@@ -397,38 +395,38 @@ const onLoad = () => {
 
     // if buttons inside modalPlot are pressed
 
-    $("#lengthPlot").on("click", function (e) {
+    $("#lengthPlot").unbind("click").bind("click", () => {
       clickerButton = "length"
       // TODO save previous plotly generated graphs before rendering the new ones
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
-    $("#speciesPlot").on("click", function (e) {
+    $("#speciesPlot").unbind("click").bind("click", () => {
       clickerButton = "species"
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
-    $("#genusPlot").on("click", function (e) {
+    $("#genusPlot").unbind("click").bind("click", () => {
       clickerButton = "genus"
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
-    $("#familyPlot").on("click", function (e) {
+    $("#familyPlot").unbind("click").bind("click", () => {
       clickerButton = "family"
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
-    $("#orderPlot").on("click", function (e) {
+    $("#orderPlot").unbind("click").bind("click", () => {
       clickerButton = "order"
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
-    $("#resPlot").on("click", function (e) {
+    $("#resPlot").unbind("click").bind("click", () => {
       clickerButton = "resistances"
       listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
-    $("#pfPlot").on("click", function (e) {
+    $("#pfPlot").unbind("click").bind("click", () => {
       clickerButton = "plasmid families"
       listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })

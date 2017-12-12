@@ -39,24 +39,16 @@ const axisHighlight = (that, index, color, font) => {
     xAxis: (index === 1) ? [{}, newAxis] : [newAxis, {}]
   })
 }
-
-// function to parse stats //
-const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
-  $("#alertPlot").hide()
-  // controls progress bar div
-  $("#progressBar").hide()
-  $("#progressDiv").hide()
-  $("#chartContainer1").show()
-
-  const colorsPlot = {
-    species: "#058DC7",
-    genus: "#50B432",
-    family: "#ED561B",
-    order: "#DDDF00",
-    resistances: "#24CBE5",
-    plasmidfamilies: "#64E572",
-    length: "#A9B3CE"
-  }
+// object defining colors for each type of plot
+const colorsPlot = {
+  species: "#058DC7",
+  genus: "#50B432",
+  family: "#ED561B",
+  order: "#DDDF00",
+  resistances: "#24CBE5",
+  plasmidfamilies: "#64E572",
+  length: "#A9B3CE"
+}
 
 const highLightScatter = (el) => {
 
@@ -152,6 +144,14 @@ const resetHighlight = (ch) => {
   ch.series[0].update({data: resetBars})
 
 }
+
+// function to parse stats //
+const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
+  $("#alertPlot").hide()
+  // controls progress bar div
+  $("#progressBar").hide()
+  $("#progressDiv").hide()
+  $("#chartContainer1").show()
 
   // parse the final array
   // here it assures that sorts are made just once
