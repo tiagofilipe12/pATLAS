@@ -55,7 +55,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     order: "#DDDF00",
     resistances: "#24CBE5",
     plasmidfamilies: "#64E572",
-    length: "#84bcff"
+    length: "#A9B3CE"
   }
 
 const highLightScatter = (el) => {
@@ -73,9 +73,9 @@ const highLightScatter = (el) => {
   let modifiedPoints = []
   for (const p of points) {
     if ( cat[0] <= p.y && p.y < cat[1] ) {
-      modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#aaa3a3", radius: 5, lineColor: "#000", lineWidth: 1}})
+      modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#EF626C", radius: 5, lineColor: "#F9D6EB", lineWidth: 1}})
     } else {
-      modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#524F52", radius: 3, lineWidth: 0}})
+      modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3, lineWidth: 0}})
     }
   }
 
@@ -88,7 +88,7 @@ const highLightScatter = (el) => {
   let modifiedBar = []
   for (const b of el.series.chart.series[0].data) {
     if ( b.index === el.index ) {
-      modifiedBar.push({"color": "#aaa3a3"})
+      modifiedBar.push({"color": "#4A6EAD"})
     } else {
       modifiedBar.push({"color": colorsPlot.length})
     }
@@ -111,7 +111,7 @@ const highlightHist = (el) => {
   let modifiedBars = []
   for ( const b of bars ){
     if ( b.x <= yval && yval < b.x2 ) {
-      modifiedBars.push({"color": "#aaa3a3"})
+      modifiedBars.push({"color": "#4A6EAD"})
     } else {
       modifiedBars.push({"color": colorsPlot.length})
     }
@@ -121,9 +121,9 @@ const highlightHist = (el) => {
   let modifiedPoints = []
   for ( const p of points ) {
     if ( p.index === el.index ) {
-      modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#aaa3a3", radius: 5, lineColor: "#000", lineWidth: 1}})
+      modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#EF626C", radius: 5, lineColor: "#F9D6EB", lineWidth: 1}})
     } else {
-      modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#524F52", radius: 3, lineWidth: 0}})
+      modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3, lineWidth: 0}})
     }
   }
   el.series.chart.series[1].update({
@@ -141,7 +141,7 @@ const resetHighlight = (ch) => {
   let resetBars = []
 
   for ( const p of points ) {
-    resetPoints.push({x: p.x, y:p.y, marker: {fillColor: "#524F52", radius: 3}})
+    resetPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3}})
   }
 
   for ( const b in bars ) {
@@ -197,7 +197,7 @@ const resetHighlight = (ch) => {
       name: "Individual plasmids",
       type: "scatter",
       data: histoArray,
-      color: "#524F52",
+      color: "#000501",
       cursor: "pointer",
       marker: {
         radius: 3
