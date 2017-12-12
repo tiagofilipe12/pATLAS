@@ -10,13 +10,16 @@ const getTableWithAreaSelection = (g, graphics) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
-    if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
+    if (currentNodeUI.color === 0x23A900 || currentNodeUI.backupColor === 0x23A900) {
+      tempListAccessions.push(node.id)
+    }
   })
   return tempListAccessions
 }
 
-const makeTable = (areaSelection, listGiFilter, g, graphics) => {
+const makeTable = (areaSelection, listGiFilter, g, graphics, graphSize) => {
   let promises = []
+  let accessionsMap = new Map
   // redefines listGiFilter if area selection is used
   // IMPORTANT: in this case listGiFilter doesn't exit this function scope
   // which is the intended behavior
@@ -44,7 +47,8 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
             "speciesName": "",
             "plasmidName": "",
             "resGenes": "",
-            "pfGenes": ""
+            "pfGenes": "",
+            "cluster": ""
           }
           // sequence of promises that are executed sequentially
           await  $.get("api/getspecies/", {accession}, (data, status) => {
@@ -73,23 +77,40 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
           })
           // async function must return the desired entry to push to dataArray
           return entry // returns promise
-
         }
         // collect every promise for each accession number
         promises.push(promiseGather())
       }
-
       // for every loop instance entries could be added to array, each entry
       // in dataArray should be a single row
     }
   }
   // waits for all promises before constructing full table
-  Promise.all(promises)
-    .then( (results) => {
+  Promise.all(promises).then(async (results) => {
+    await new Promise( (resolve) => {
+      g.forEachNode( (parentNode) => {
+        // makes an array for each node in graph
+        let linksArray = []
+        for (const link of parentNode.links) {
+          const trueLink = (parentNode.id === link.fromId) ? link.toId : link.fromId
+          linksArray.push(trueLink)
+        }
+        // add parendNode.id and its linksArray to accessionMap
+        accessionsMap.set(parentNode.id, linksArray)
+      })
+      // hardcoded for the max number of nodes
+      if (accessionsMap.size === graphSize) {
+        // TODO dump cluster info into results and return it
+        resolve()
+        return results
+      }
+    })
+    await new Promise( (resolve) => {
+      console.log(accessionsMap, results)
       // table is just returned in the end before that a json should be
       // constructed
       $("#metadataTable").bootstrapTable({
-        // columens are used to generate headers
+        // columns are used to generate headers
         columns: [{
           field: "state",
           checkbox: true
@@ -122,16 +143,17 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
           field: "pfGenes",
           title: "Plasmid families",
           visible: false
+        }, {
+          field: "cluster",
+          title: "Cluster no.",
+          visible: false
         }],
         // data is an array of rows
-        data: results,
-        // formatLoadingMessage: function () {
-        //   return "<img src=\"{{ url_for('static'," +
-        //     " filename='images/loading.gif') }}'\" />"
-        // }
+        data: results
       })
       $("#loading").hide()
     })
+  })
 }
 
 const parseReadObj = (readObjects, masterReadArray) => {

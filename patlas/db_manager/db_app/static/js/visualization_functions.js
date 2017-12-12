@@ -40,6 +40,8 @@ let readIndex = -1
 
 let clickedHighchart
 
+let graphSize
+
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
   return $.getJSON("/taxa")
@@ -380,15 +382,15 @@ const onLoad = () => {
     // sort by values
     $("#sortGraph").unbind("click").bind("click", () => {
       const sortVal = true
-      const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(false, listPlots, layout, clickerButton, false, sortVal) }
+      const layoutPlot = layoutGet(clickerButton, [...new Set(listPlots)].length)
+      if (listPlots) { statsParser(false, listPlots, layoutPlot, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").unbind("click").bind("click", () => {
       const sortAlp = true
-      const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(false, listPlots, layout, clickerButton, sortAlp, false) }
+      const layoutPlot = layoutGet(clickerButton, [...new Set(listPlots)].length)
+      if (listPlots) { statsParser(false, listPlots, layoutPlot, clickerButton, sortAlp, false) }
     })
 
     // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -485,19 +487,6 @@ const onLoad = () => {
     $("#clearButton").click( (event) => {
       document.getElementById("formValueId").value = ""
     })
-
-    //* ***********************//
-    //* ***Fast Form filter****//
-    //* ***********************//
-
-    // Form search box utils
-
-    // then applying autocomplete function
-    // $( () => {
-    //   $('#formValueId').autocomplete({
-    //     source: list_gi
-    //   })
-    // })
 
     //* ******************//
     //* ***plasmidfinder Filters****//
@@ -1434,6 +1423,7 @@ const onLoad = () => {
         // this is a more efficient implementation which takes a different
         // file for loading the graph.
         getArray.done(function (json) {
+          graphSize = json.nodes.length
           const addAllNodes = (json) => {
             return new Promise((resolve, reject) => {
               for (const i in json) {
@@ -1655,7 +1645,7 @@ const onLoad = () => {
     $("#metadataTable").bootstrapTable("destroy")
     $(".nav-tabs a[href='#homeTable']").tab("show")
     showDiv(
-      makeTable(areaSelection, listGiFilter, g, graphics)
+      makeTable(areaSelection, listGiFilter, g, graphics, graphSize)
     )
   })
 
