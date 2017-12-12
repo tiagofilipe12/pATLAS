@@ -55,8 +55,103 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     order: "#DDDF00",
     resistances: "#24CBE5",
     plasmidfamilies: "#64E572",
-    length: "#FF9655"
+    length: "#84bcff"
   }
+
+const highLightScatter = (el) => {
+
+  const cat = [el.x, el.x2]
+  const points = el.series.chart.series[1].data
+
+  // Exit if the scatter data series is absent
+  if ( points.length === 0 ) {
+    return
+  }
+
+  // Check if each point is within range and modify style attributes
+  // accordingly
+  let modifiedPoints = []
+  for (const p of points) {
+    if ( cat[0] <= p.y && p.y < cat[1] ) {
+      modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#aaa3a3", radius: 5, lineColor: "#000", lineWidth: 1}})
+    } else {
+      modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#524F52", radius: 3, lineWidth: 0}})
+    }
+  }
+
+  // Update scatter with modified points
+  el.series.chart.series[1].update({
+    data: modifiedPoints
+  });
+
+  // Highlight currently selected bar
+  let modifiedBar = []
+  for (const b of el.series.chart.series[0].data) {
+    if ( b.index === el.index ) {
+      modifiedBar.push({"color": "#aaa3a3"})
+    } else {
+      modifiedBar.push({"color": colorsPlot.length})
+    }
+  }
+  el.series.chart.series[0].update({
+    data: modifiedBar
+  })
+};
+
+const highlightHist = (el) => {
+
+  const yval = el.y
+  const bars = el.series.chart.series[0].data
+  const points = el.series.chart.series[1].data
+
+  if ( bars.length === 0 ){
+    return
+  }
+
+  let modifiedBars = []
+  for ( const b of bars ){
+    if ( b.x <= yval && yval < b.x2 ) {
+      modifiedBars.push({"color": "#aaa3a3"})
+    } else {
+      modifiedBars.push({"color": colorsPlot.length})
+    }
+  }
+  el.series.chart.series[0].update({data: modifiedBars})
+
+  let modifiedPoints = []
+  for ( const p of points ) {
+    if ( p.index === el.index ) {
+      modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#aaa3a3", radius: 5, lineColor: "#000", lineWidth: 1}})
+    } else {
+      modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#524F52", radius: 3, lineWidth: 0}})
+    }
+  }
+  el.series.chart.series[1].update({
+    data: modifiedPoints
+  })
+
+};
+
+const resetHighlight = (ch) => {
+
+  let points = ch.series[1].data
+  let bars = ch.series[0].data
+
+  let resetPoints = []
+  let resetBars = []
+
+  for ( const p of points ) {
+    resetPoints.push({x: p.x, y:p.y, marker: {fillColor: "#524F52", radius: 3}})
+  }
+
+  for ( const b in bars ) {
+    resetBars.push({"color": colorsPlot.length})
+  }
+
+  ch.series[1].update({data: resetPoints})
+  ch.series[0].update({data: resetBars})
+
+};
 
   // parse the final array
   // here it assures that sorts are made just once
@@ -102,6 +197,8 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       name: "Individual plasmids",
       type: "scatter",
       data: histoArray,
+      color: "#524F52",
+      cursor: "pointer",
       marker: {
         radius: 3
       },
@@ -112,9 +209,27 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
         mouseOut: function () {
           axisHighlight(this, 0, "#666666", "normal")
         },
-        click: function () {
-          clickedHighchart = this.category
-          $("#submitButton").click()
+      },
+      point: {
+        events: {
+          click: function () {
+            clickedHighchart = this.category
+            $("#submitButton").click()
+            highlightHist(this)
+          }
+        }
+      }
+    }
+
+    layout.exporting = {
+      buttons: {
+        clearHighlight: {
+          text: "Clear highlights",
+          onclick: function () { resetHighlight(this) },
+          buttonSpacing: 8,
+          theme: {
+            stroke: "#313131"
+          }
         }
       }
     }
@@ -151,12 +266,20 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
         baseSeries: 1,
         color: colorsPlot[taxaType.replace(" ", "")],
         zIndex: -1,
+        cursor: "pointer",
         events: {
           mouseOver: function () {
             axisHighlight(this, 1, "black", "bold")
           },
           mouseOut: function () {
             axisHighlight(this, 1, "#666666", "normal")
+          }
+        },
+        point: {
+          events: {
+            click: function () {
+              highLightScatter(this)
+            }
           }
         }
       }, defaultSeries]
@@ -207,7 +330,7 @@ const layoutGet = (taxaType, length) => {
       }
     },
     exporting: {
-      sourceWidth: 1000
+      sourceWidth: 1000,
     }
   }
 }
