@@ -82,7 +82,7 @@ const highLightScatter = (el) => {
   // Update scatter with modified points
   el.series.chart.series[1].update({
     data: modifiedPoints
-  });
+  })
 
   // Highlight currently selected bar
   let modifiedBar = []
@@ -96,7 +96,7 @@ const highLightScatter = (el) => {
   el.series.chart.series[0].update({
     data: modifiedBar
   })
-};
+}
 
 const highlightHist = (el) => {
 
@@ -144,7 +144,7 @@ const resetHighlight = (ch) => {
     resetPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3}})
   }
 
-  for ( const b in bars ) {
+  for ( const b of bars ) {
     resetBars.push({"color": colorsPlot.length})
   }
 
