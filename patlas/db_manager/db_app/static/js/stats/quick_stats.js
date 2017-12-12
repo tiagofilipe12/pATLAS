@@ -24,8 +24,25 @@ const arraytoHighcharts = (array) => {
   return [exportArray, categories]
 }
 
+const axisHighlight = (that, index, color, font) => {
+  const newAxis = {
+    title: {
+      style: {
+        fontWeight: font,
+        color,
+      }
+    }
+  }
+
+  that.chart.update({
+    yAxis: (index === 1) ? [{}, newAxis] : [newAxis, {}],
+    xAxis: (index === 1) ? [{}, newAxis] : [newAxis, {}]
+  })
+}
+
 // function to parse stats //
 const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
+  $("#alertPlot").hide()
   // controls progress bar div
   $("#progressBar").hide()
   $("#progressDiv").hide()
@@ -38,8 +55,103 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     order: "#DDDF00",
     resistances: "#24CBE5",
     plasmidfamilies: "#64E572",
-    length: "#FF9655"
+    length: "#A9B3CE"
   }
+
+const highLightScatter = (el) => {
+
+  const cat = [el.x, el.x2]
+  const points = el.series.chart.series[1].data
+
+  // Exit if the scatter data series is absent
+  if ( points.length === 0 ) {
+    return
+  }
+
+  // Check if each point is within range and modify style attributes
+  // accordingly
+  let modifiedPoints = []
+  for (const p of points) {
+    if ( cat[0] <= p.y && p.y < cat[1] ) {
+      modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#EF626C", radius: 5, lineColor: "#F9D6EB", lineWidth: 1}})
+    } else {
+      modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3, lineWidth: 0}})
+    }
+  }
+
+  // Update scatter with modified points
+  el.series.chart.series[1].update({
+    data: modifiedPoints
+  })
+
+  // Highlight currently selected bar
+  let modifiedBar = []
+  for (const b of el.series.chart.series[0].data) {
+    if ( b.index === el.index ) {
+      modifiedBar.push({"color": "#4A6EAD"})
+    } else {
+      modifiedBar.push({"color": colorsPlot.length})
+    }
+  }
+  el.series.chart.series[0].update({
+    data: modifiedBar
+  })
+}
+
+const highlightHist = (el) => {
+
+  const yval = el.y
+  const bars = el.series.chart.series[0].data
+  const points = el.series.chart.series[1].data
+
+  if ( bars.length === 0 ){
+    return
+  }
+
+  let modifiedBars = []
+  for ( const b of bars ){
+    if ( b.x <= yval && yval < b.x2 ) {
+      modifiedBars.push({"color": "#4A6EAD"})
+    } else {
+      modifiedBars.push({"color": colorsPlot.length})
+    }
+  }
+  el.series.chart.series[0].update({data: modifiedBars})
+
+  let modifiedPoints = []
+  for ( const p of points ) {
+    if ( p.index === el.index ) {
+      modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#EF626C", radius: 5, lineColor: "#F9D6EB", lineWidth: 1}})
+    } else {
+      modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3, lineWidth: 0}})
+    }
+  }
+  el.series.chart.series[1].update({
+    data: modifiedPoints
+  })
+
+}
+
+const resetHighlight = (ch) => {
+
+  let points = ch.series[1].data
+  let bars = ch.series[0].data
+
+  let resetPoints = []
+  let resetBars = []
+
+  for ( const p of points ) {
+    resetPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3}})
+  }
+
+  for ( const b of bars ) {
+    resetBars.push({"color": colorsPlot.length})
+  }
+
+  ch.series[1].update({data: resetPoints})
+  ch.series[0].update({data: resetBars})
+
+}
 
   // parse the final array
   // here it assures that sorts are made just once
@@ -53,7 +165,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     layout.series = [{
       type: "column",
       data: doubleArray[0],
-      name: "# of plasmids",
+      name: "No. of plasmids",
       showInLegend: false,
       color: colorsPlot[taxaType.replace(" ", "")]
     }]
@@ -63,51 +175,129 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
   } else {
     //converts every element in finalArray to float and then sorts it
     const histoArray = finalArray.map( (e) => { return parseFloat(e) }).sort()
-    layout.xAxis = [{
-      labels: { enabled: false},
+    // returns true if all elements have the same size and thus make only a
+    // scatter
+    const allEqual = (histoArray) => histoArray.every( (v) => v === histoArray[0] )
+
+    // some defaults comment to both graphs instances, when there are
+    // several bins or just one
+    const defaultXAxis = {
+      labels: {enabled: false},
       categories: accessionResultsList,
-      title: { text: null},
+      title: {text: null},
       opposite: true
-    }, {
-     title: { text: "Sequence size (histogram)"},
-     // opposite: true
-    }]
-    layout.yAxis = [{
-      title: { text: "Sequence size (scatter)"},
-      opposite: true
-    }, {
-      title: { text: "Number of plasmids (histogram)"},
-      // opposite: true
-    }]
-    // tooltip that enables different tooltips on each series
-    // series.name is here used to return different tooltips for each
-    layout.tooltip = {
-      formatter: function() {
-        if (this.series.name === "Individual plasmids") {
-          return "<b>Accession no.: </b>" +
-            this.x + "<br><b>Size (bp): </b>" + this.y
-        } else {
-          return "<b>No. of plasmids: </b>" + this.y + "<br><b>Range: </b>" +
-            Math.floor(this.x + 1) + " - " + Math.floor(this.point.x2)
-        }
-      }
     }
-    layout.series = [{
-      type: "histogram",
-      name: "Distribution by length",
-      xAxis: 1,
-      yAxis: 1,
-      baseSeries: 1,
-      color: colorsPlot[taxaType.replace(" ", "")],
-      zIndex: -1
-    }, {
+
+    const defaultYAxis = {
+      title: {text: "Sequence size (scatter)"},
+      opposite: true
+    }
+
+    const defaultSeries = {
       name: "Individual plasmids",
       type: "scatter",
       data: histoArray,
+      color: "#000501",
+      cursor: "pointer",
       marker: {
         radius: 3
+      },
+      events: {
+        mouseOver: function () {
+          axisHighlight(this, 0, "black", "bold")
+        },
+        mouseOut: function () {
+          axisHighlight(this, 0, "#666666", "normal")
+        },
+      },
+      point: {
+        events: {
+          click: function () {
+            clickedHighchart = this.category
+            $("#submitButton").click()
+            highlightHist(this)
+          }
+        }
       }
-    }]
+    }
+
+    layout.exporting = {
+      buttons: {
+        clearHighlight: {
+          text: "Clear highlights",
+          onclick: function () { resetHighlight(this) },
+          buttonSpacing: 8,
+          theme: {
+            stroke: "#313131"
+          }
+        }
+      }
+    }
+
+    // checks if all lengths in array are the same and if so... do not
+    // do histogram
+    if (allEqual(histoArray) === false) {
+      layout.xAxis = [defaultXAxis, {
+        title: {text: "Sequence size (histogram)"},
+        // opposite: true
+      }]
+      layout.yAxis = [defaultYAxis, {
+        title: {text: "Number of plasmids (histogram)"},
+        // opposite: true
+      }]
+      // tooltip that enables different tooltips on each series
+      // series.name is here used to return different tooltips for each
+      layout.tooltip = {
+        formatter: function () {
+          if (this.series.name === "Individual plasmids") {
+            return "<b>Accession no.: </b>" +
+              this.x + "<br><b>Size (bp): </b>" + this.y
+          } else {
+            return "<b>No. of plasmids: </b>" + this.y + "<br><b>Range: </b>" +
+              Math.floor(this.x + 1) + " - " + Math.floor(this.point.x2)
+          }
+        }
+      }
+      layout.series = [{
+        type: "histogram",
+        name: "Distribution by length",
+        xAxis: 1,
+        yAxis: 1,
+        baseSeries: 1,
+        color: colorsPlot[taxaType.replace(" ", "")],
+        zIndex: -1,
+        cursor: "pointer",
+        events: {
+          mouseOver: function () {
+            axisHighlight(this, 1, "black", "bold")
+          },
+          mouseOut: function () {
+            axisHighlight(this, 1, "#666666", "normal")
+          }
+        },
+        point: {
+          events: {
+            click: function () {
+              highLightScatter(this)
+            }
+          }
+        }
+      }, defaultSeries]
+    } else {
+      // instance for one bin only... no histogram will be shown
+      $("#alertPlot").show()
+      layout.xAxis = defaultXAxis
+      layout.yAxis = defaultYAxis
+      layout.tooltip = {
+        formatter: function () {
+          if (this.series.name === "Individual plasmids") {
+            return "<b>Accession no.: </b>" +
+              this.x + "<br><b>Size (bp): </b>" + this.y
+          }
+        }
+      }
+      layout.series = [defaultSeries]
+    }
     // disable sort buttons
     $("#sortGraph").attr("disabled", true)
     $("#sortGraphAlp").attr("disabled", true)
@@ -138,6 +328,9 @@ const layoutGet = (taxaType, length) => {
       title: {
         text: "Number of selected plasmids"
       }
+    },
+    exporting: {
+      sourceWidth: 1000,
     }
   }
 }

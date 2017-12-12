@@ -38,6 +38,8 @@ let assemblyJson = false
 
 let readIndex = -1
 
+let clickedHighchart
+
 // load JSON file with taxa dictionary
 const getArray_taxa = () => {
   return $.getJSON("/taxa")
@@ -79,7 +81,8 @@ const onLoadWelcome = (callback) => {
 // initiates vivagraph main functions
 // onLoad consists of mainly three functions: init, precompute and renderGraph
 const onLoad = () => {
-
+  // variable used to control if div is shown or not
+  let multiSelectOverlay = false
   // store the node with more links
   let storeMasterNode = []    //cleared every instance of onload
   // start array that controls taxa filters
@@ -164,8 +167,6 @@ const onLoad = () => {
     /* MULTI-SELECTION */
     /*******************/
 
-    // variable used to control if div is shown or not
-    let multiSelectOverlay = false
     // event for shift key down
     // shows overlay div and exectures startMultiSelect
     document.addEventListener("keydown", (e) => {
@@ -190,7 +191,7 @@ const onLoad = () => {
     // event for shift key up
     // destroys overlay div and transformes multiSelectOverlay to false
     document.addEventListener("keyup", (e) => {
-      if (e.which === 16 && multiSelectOverlay) {
+      if (e.which === 16 && multiSelectOverlay !== "disable") {
         $(".graph-overlay").hide()
         multiSelectOverlay.destroy()
         multiSelectOverlay = false
@@ -382,14 +383,14 @@ const onLoad = () => {
     $("#sortGraph").on("click", function (e) {
       const sortVal = true
       const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(listPlots, layout, clickerButton, false, sortVal) }
+      if (listPlots) { statsParser(false, listPlots, layout, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").on("click", function (e) {
       const sortAlp = true
       const layout = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(listPlots, layout, clickerButton, sortAlp, false) }
+      if (listPlots) { statsParser(false, listPlots, layout, clickerButton, sortAlp, false) }
     })
 
     // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -457,7 +458,9 @@ const onLoad = () => {
       $("#plasmidButton").removeClass("active")
       event.preventDefault()    // prevents page from reloading
       if (toggle_status === false) {
-        const query = $("#formValueId").val().replace(".", "_")
+        // const query !==)
+        const query = ($("#formValueId").val() === "") ? clickedHighchart :
+          $("#formValueId").val().replace(".", "_")
 
         currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
@@ -1796,6 +1799,16 @@ const onLoad = () => {
 
   // changes the behavior of tooltip to show only on click
   $("#questionPlots").popover()
+
+  // function to avoid shift key to be triggered when any modal is open
+  $(".modal").on("shown.bs.modal", () => {
+    multiSelectOverlay = "disable"
+  })
+
+  // function to allow shift key to select nodes again, on modal close
+  $(".modal").on("hidden.bs.modal", function () {
+    multiSelectOverlay = false
+  })
 
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before

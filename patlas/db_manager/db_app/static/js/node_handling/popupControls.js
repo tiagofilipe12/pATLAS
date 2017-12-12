@@ -14,15 +14,17 @@ const arrayToCsv = (array) => {
   link.click() // This will download the data file named "my_data.csv".
 }
 
-const setupPopupDisplay = (node, speciesName, plasmidName) => {
+const setupPopupDisplay = (node, speciesName, plasmidName, lenghtVar) => {
   // first needs to empty the popup in order to avoid having
   // multiple entries from previous interactions
-  $("#accessionPop").html(node.data.sequence)
-  $("#speciesNamePopSpan").html(speciesName)
-  $("#lengthPop").html(node.data.seq_length)
-  $("#plasmidNamePopSpan").html(plasmidName)
-  $("#percentagePopSpan").html(node.data.percentage)
-  $("#copyNumberPopSpan").html(node.data.copyNumber)
+  if (typeof node.data !== "undefined") {
+    $("#accessionPop").html(node.data.sequence)
+    $("#speciesNamePopSpan").html(speciesName)
+    $("#lengthPop").html(node.data.seq_length)
+    $("#plasmidNamePopSpan").html(plasmidName)
+    $("#percentagePopSpan").html(node.data.percentage)
+    $("#copyNumberPopSpan").html(node.data.copyNumber)
+  }
 
   $("#popup_description").show()
 }
