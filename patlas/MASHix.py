@@ -292,7 +292,8 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
 
     # Get modified reference accession
     string_sequence = "{}_{}".format(seq_accession,
-                                     sequence_info[seq_accession][1])  ##stores acession and lenght
+                                     sequence_info[seq_accession][1])
+    ##stores accession and lenght
 
     ## Added new sequence string in order to parse easier within
     # visualization_functions.js
@@ -302,7 +303,7 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
     length = sequence_info[seq_accession][1]
     plasmid_name = sequence_info[seq_accession][2]
     if temporary_list:
-        x += len(temporary_list)
+        #x += 1
         ## actual database filling
         ## string_sequence.split("_")[-1] is used to remove length from
         # accession in database
@@ -318,10 +319,12 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
             plasmid_id = "_".join(string_sequence.split("_")[:-1]),
             json_entry = doc
         )
-        db.session.add(row)
-        db.session.commit()
+        if seq_accession == "NC_002106_1" or seq_accession == "NC_002107_1":
+            print(seq_accession)
+        #db.session.add(row)
+        #db.session.commit()
     ## used for graphics visualization
-        return temporary_list, string_sequence
+        return temporary_list, string_sequence, x
     # When temporary_list is empty, return tuple for consistency
     else:
         # return singletons
@@ -333,9 +336,49 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
             plasmid_id="_".join(string_sequence.split("_")[:-1]),
             json_entry=doc
         )
-        db.session.add(row)
-        db.session.commit()
-        return None, string_sequence
+        if seq_accession == "NC_002106_1" or seq_accession == "NC_002107_1":
+            print(seq_accession)
+        #db.session.add(row)
+        #db.session.commit()
+        return None, string_sequence, x
+
+def nodeCrawler(node, links, crawledNodes, clusterArray, master_dict):
+    '''
+
+    Parameters
+    ----------
+    node: str
+        An accession number
+    links: list
+        A list with all links of that accession number
+    crawledNodes: list
+        A list of all nodes that were crawled already for this accession number
+    clusterArray: list
+        A list that stores all related accessions within as cluster
+    master_dict: dict
+        The dictionary that stores all nodes and links
+
+    '''
+
+    if node in crawledNodes:
+        return
+    else:
+        crawledNodes.append(node)
+
+
+    for link in links:
+
+        if node not in clusterArray:
+            clusterArray.append(node)
+
+        if link not in clusterArray:
+            clusterArray.append(link)
+        # recursively crawl through all accessions linked to node
+
+        try:
+            nodeCrawler(link, master_dict[link], crawledNodes, clusterArray, master_dict)
+        except KeyError:
+            continue
 
 ## calculates ths distances between pairwise genomes
 ## This function should be multiprocessed in order to retrieve several output
@@ -363,6 +406,7 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
     ## loop to print a nice progress bar
     try:
         for _ in tqdm.tqdm(mp2, total=len(list_mash_files)):
+            x += 1
             pass
     except:
         print("progress will not be tracked because of 'reasons'... check if "
@@ -375,7 +419,10 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
     num_links = 0
     list_of_traces = []
 
-    for temp_list, ref_string in mp2:
+    print(x)
+    for temp_list, ref_string, x in mp2:
+
+        break
 
         # Example of iteration `dic` and lookup table.
         # dic1 = {"Ac1": [rec2, rec3, rec4]}
@@ -402,13 +449,47 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
         # Update link counter for filtered dic
         master_dict.update(new_dic)
 
+    # use master_dict to generate links do db
     ## writes output json for loading in vivagraph
-    print(len(master_dict))
     out_file.write(json.dumps(master_dict))
     out_file.close()
 
-    ## commits everything to db
+    outra_coisa = dict(("_".join(k.split("_")[:-1]),
+                        [list(i.keys())[0] for i in v])
+                       for k, v in master_dict.items() if v)
 
+
+    # commits everything to db TODO
+    accessionFinalDict = {}
+    counter = 1
+    for key, value in outra_coisa.items():
+        if any([True if key in x else False for x in
+                accessionFinalDict.values()]):
+            continue
+
+        accessionFinalDict[counter] = []
+
+        crawledNodes = []
+        nodeCrawler(key, value, crawledNodes, accessionFinalDict[counter],
+                    outra_coisa)
+        counter += 1
+        # empty entry
+        #db.session.delete(key)
+        #db.session.commit()  # effectively assures that row is deleted
+        # re-add entry with cluster info
+        # update row
+        #updated_row = models.Plasmid(
+        #    plasmid_id=accession,
+        #    json_entry=entry
+        #)
+        #try:
+            # row gets properly modified
+        #    db.session.add(updated_row)
+        #    db.session.commit()
+        #except:
+        #    db.session.rollback()
+        #    raise
+    print(accessionFinalDict)
     db.session.close()
     print("total number of nodes = {}".format(len(master_dict.keys())))
     # master_dict
