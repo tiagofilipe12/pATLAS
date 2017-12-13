@@ -3,8 +3,8 @@ from flask_restful import Resource, reqparse, fields, marshal_with
 from sqlalchemy import func
 
 try:
-    from db_app import db
-    from db_app.models import Plasmid, Card, Database
+    from db_manager.db_app import db
+    from db_manager.db_app.models import Plasmid, Card, Database
 except ImportError:
     from patlas.db_manager.db_app import db
     from patlas.db_manager.db_app.models import Plasmid, Card, Database

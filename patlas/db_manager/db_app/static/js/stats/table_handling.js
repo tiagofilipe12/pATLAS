@@ -100,7 +100,46 @@ const makeTable = (areaSelection, listGiFilter, g, graphics, graphSize) => {
       })
       // hardcoded for the max number of nodes
       if (accessionsMap.size === graphSize) {
-        // TODO dump cluster info into results and return it
+        const finalAccessionObj = {}
+        counter = 0
+
+        const nodeCrawler = (node, links, crawledNodes, clusterArray) => {
+
+          if (crawledNodes.includes(node)){
+            return
+          } else {
+            crawledNodes.push(node)
+          }
+
+          for (const link of links){
+
+            if (!clusterArray.includes(node)){
+              clusterArray.push(node)
+            }
+            if (!clusterArray.includes(link)){
+              clusterArray.push(link)
+            }
+            nodeCrawler(link, accessionsMap.get(link), crawledNodes, clusterArray)
+          }
+        }
+
+        for (const [k, v] of accessionsMap) {
+          for (const clusters of Object.values(finalAccessionObj)) {
+            if (clusters.includes(v)) {
+              break
+            }
+          }
+
+          const bosta =  []
+          counter += 1
+          crawledNodes = []
+          console.log(finalAccessionObj, bosta)
+          nodeCrawler(k, v, crawledNodes, bosta)
+          console.log("asdad")
+          finalAccessionObj[counter.toString()] = bosta
+        }
+
+        console.log(finalAccessionObj)
         resolve()
         return results
       }

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-## Last update: 17/9/2017
+## Last update: 13/12/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a pairwise diagonal matrix
 # for each pairwise comparison between libraries
@@ -20,7 +20,8 @@ from collections import defaultdict
 try:
     from utils.hist_util import plot_histogram
     from db_manager.db_app import db, models
-except ImportError:
+except ImportError as e:
+    print(e)
     from patlas.utils.hist_util import plot_histogram
     from patlas.db_manager.db_app import db, models
 
@@ -329,7 +330,7 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
         for v in temp_list:
             list_of_traces.append(v.distance)
-
+    print(master_dict)
     ## writes output json for loading in vivagraph
     out_file.write(json.dumps(master_dict))
     out_file.close()

@@ -1,7 +1,7 @@
 ## the actual file that does the structure to be imported in the database
 
 try:
-    from db_app import db
+    from db_manager.db_app import db
 except ImportError:
     from patlas.db_manager.db_app import db
 

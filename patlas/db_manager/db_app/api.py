@@ -1,8 +1,9 @@
 from flask_restful import Api
 
 try:
-    from db_app import app
-    from db_app.resources import GetSpecies, GetAccession, GetResistances, \
+    from db_manager.db_app import app
+    from db_manager.db_app.resources import GetSpecies, GetAccession, \
+        GetResistances, \
         GetPlasmidFinder, GetAccessionRes, GetAccessionPF, GetPlasmidName
 except ImportError:
     from patlas.db_manager.db_app import app
