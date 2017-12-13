@@ -20,8 +20,7 @@ from collections import defaultdict
 try:
     from utils.hist_util import plot_histogram
     from db_manager.db_app import db, models
-except ImportError as e:
-    print(e)
+except ImportError:
     from patlas.utils.hist_util import plot_histogram
     from patlas.db_manager.db_app import db, models
 
@@ -267,6 +266,77 @@ def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size,
     masher(ref_sketch, genome_sketch, output_tag, mother_directory)
 
 
+def multiprocess_mash_file(sequence_info, pvalue, mashdist,
+                           in_folder, x, infile):
+    input_f = open(os.path.join(in_folder, infile), 'r')
+    temporary_list = []
+    #  mash dist specified in each sequence/genome
+    for line in input_f:
+        tab_split = line.split("\t")
+        ref_accession = "_".join(tab_split[0].strip().split("_")[0:3])
+        seq_accession = "_".join(tab_split[1].strip().split("_")[0:3])
+        mash_dist = tab_split[2].strip()
+        p_value = tab_split[3].strip()
+        size = sequence_info[ref_accession][1]
+        ## Added new reference string in order to parse easier within
+        #  visualization_functions.js
+        rec = Record(ref_accession, size, mash_dist)
+        #  to json
+        ## there is no need to store all values since we are only interested in
+        # representing the significant ones
+        ## and those that correlate well with ANI (mashdist<=0.1)
+        if float(p_value) < float(pvalue) and \
+                ref_accession != seq_accession and \
+                float(mash_dist) < float(mashdist):
+            temporary_list.append(rec)
+
+    # Get modified reference accession
+    string_sequence = "{}_{}".format(seq_accession,
+                                     sequence_info[seq_accession][1])  ##stores acession and lenght
+
+    ## Added new sequence string in order to parse easier within
+    # visualization_functions.js
+    ## adds an entry to postgresql database
+    ## but first lets parse some variables used for the database
+    spp_name = sequence_info[seq_accession][0]
+    length = sequence_info[seq_accession][1]
+    plasmid_name = sequence_info[seq_accession][2]
+    if temporary_list:
+        x += len(temporary_list)
+        ## actual database filling
+        ## string_sequence.split("_")[-1] is used to remove length from
+        # accession in database
+        ## cannot use json.dumps because it puts double quotes
+        doc = {"name": spp_name,
+               "length": length,
+               "plasmid_name": plasmid_name,
+               "significantLinks": [rec.get_dict() for rec in
+                                    temporary_list]
+               }
+
+        row = models.Plasmid(
+            plasmid_id = "_".join(string_sequence.split("_")[:-1]),
+            json_entry = doc
+        )
+        db.session.add(row)
+        db.session.commit()
+    ## used for graphics visualization
+        return temporary_list, string_sequence
+    # When temporary_list is empty, return tuple for consistency
+    else:
+        # return singletons
+        doc = {"name": spp_name,
+               "length": length,
+               "plasmid_name": plasmid_name,
+               "significantLinks": None}
+        row = models.Plasmid(
+            plasmid_id="_".join(string_sequence.split("_")[:-1]),
+            json_entry=doc
+        )
+        db.session.add(row)
+        db.session.commit()
+        return None, string_sequence
+
 ## calculates ths distances between pairwise genomes
 ## This function should be multiprocessed in order to retrieve several output
 # files (as many as the specified cores specified?)
@@ -307,31 +377,33 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
     for temp_list, ref_string in mp2:
 
-        if not temp_list and not ref_string:
-            continue
-
         # Example of iteration `dic` and lookup table.
         # dic1 = {"Ac1": [rec2, rec3, rec4]}
         # dic2 = {"Ac2: [rec1, rec3,rec5]}
         # lt = {"Ac2": ["Ac1"], "Ac1": ["Ac2"]}
 
         # Filter temp_list to remove duplicate links
-        new_dic = {ref_string: [x.to_json() for x in temp_list if
-                                ref_string not in lookup_table[x.a]]}
+        if temp_list:
+            # None is used for singletons
+            new_dic = {ref_string: [x.to_json() for x in temp_list if
+                                    ref_string not in lookup_table[x.a]]}
+            # Update lookup table
+            for rec in temp_list:
+                if rec.a not in lookup_table[ref_string]:
+                    lookup_table[ref_string].append(rec.a)
+
+            num_links += len(new_dic[ref_string])
+            for v in temp_list:
+                list_of_traces.append(v.distance)
+        else:
+            # instance for singletons
+            new_dic = {ref_string: None}
+
         # Update link counter for filtered dic
-        num_links += len(new_dic[ref_string])
-
-        # Update lookup table
-        for rec in temp_list:
-            if rec.a not in lookup_table[ref_string]:
-                lookup_table[ref_string].append(rec.a)
-
         master_dict.update(new_dic)
 
-        for v in temp_list:
-            list_of_traces.append(v.distance)
-    print(master_dict)
     ## writes output json for loading in vivagraph
+    print(len(master_dict))
     out_file.write(json.dumps(master_dict))
     out_file.close()
 
@@ -342,72 +414,6 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
     # master_dict
     print("total number of links = {}".format(num_links))
     return list_of_traces
-
-
-def multiprocess_mash_file(sequence_info, pvalue, mashdist,
-                           in_folder, x, infile):
-    input_f = open(os.path.join(in_folder, infile), 'r')
-    temporary_list = []
-    temp_dict = {}
-    #  mash dist specified in each sequence/genome
-    for line in input_f:
-        tab_split = line.split("\t")
-        # gi = "_".join(tab_split[0].strip().split("_")[0:2])
-        ref_accession = "_".join(tab_split[0].strip().split("_")[0:3])
-        seq_accession = "_".join(tab_split[1].strip().split("_")[0:3])
-        mash_dist = tab_split[2].strip()
-        p_value = tab_split[3].strip()
-        size = sequence_info[ref_accession][1]
-        ## Added new reference string in order to parse easier within
-        #  visualization_functions.js
-        rec = Record(ref_accession, size, mash_dist)
-        #  to json
-        ## there is no need to store all values since we are only interested in
-        # representing the significant ones
-        ## and those that correlate well with ANI (mashdist<=0.1)
-        if float(p_value) < float(pvalue) and \
-                ref_accession != seq_accession and \
-                float(mash_dist) < float(mashdist):
-            temporary_list.append(rec)
-
-    # Get modified reference accession
-    string_sequence = "{}_{}".format(seq_accession,
-                                     sequence_info[seq_accession][1])  ##stores acession and lenght
-
-    if temporary_list:
-        x += len(temporary_list)
-        ## Added new sequence string in order to parse easier within
-        # visualization_functions.js
-        ## adds an entry to postgresql database
-        ## but first lets parse some variables used for the database
-        spp_name = sequence_info[seq_accession][0]
-        length = sequence_info[seq_accession][1]
-        # gi = sequence_info[seq_accession][2]
-        plasmid_name = sequence_info[seq_accession][2]
-        ## actual database filling
-        ## string_sequence.split("_")[-1] is used to remove length from
-        # accession in database
-
-        ## cannot use json.dumps because it puts double quotes
-        doc = {"name": spp_name,
-               "length": length,
-               "plasmid_name": plasmid_name,
-               "significantLinks": [rec.get_dict() for rec in
-                                    temporary_list]
-               }
-
-        row = models.Plasmid(
-            plasmid_id = "_".join(string_sequence.split("_")[:-1]),
-            json_entry = doc
-        )
-        db.session.add(row)
-        db.session.commit()
-    ## used for graphics visualization
-        return temporary_list, string_sequence
-    # When temporary_list is empty, return tuple for consistency
-    else:
-        return None, None
-
 
 ##MAIN##
 
