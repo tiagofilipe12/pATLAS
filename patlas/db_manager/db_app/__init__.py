@@ -12,7 +12,9 @@ db = SQLAlchemy(app)
 #loads required files to be used
 try:
     from db_manager.db_app import views, models, resources, api
-except ImportError as e:
-    print(e)
-    from patlas.db_manager.db_app import views, models, resources, api
+except ImportError:
+    try:
+        from db_app import views, models, resources, api
+    except ImportError:
+        from patlas.db_manager.db_app import views, models, resources, api
 # import views, models, resources, api
