@@ -259,7 +259,7 @@ def masher(ref_sketch, genome_sketch, output_tag, mother_directory):
 
 # return out_file
 
-def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size,
+def multiprocess_mash(ref_sketch, output_tag, kmer_size,
                       mother_directory, genome):
     genome_sketch = sketch_genomes(genome, mother_directory, output_tag,
                                    kmer_size)
@@ -267,7 +267,7 @@ def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size,
 
 
 def multiprocess_mash_file(sequence_info, pvalue, mashdist,
-                           in_folder, x, infile):
+                           in_folder, infile):
     input_f = open(os.path.join(in_folder, infile), 'r')
     temporary_list = []
     #  mash dist specified in each sequence/genome
@@ -302,8 +302,8 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
     spp_name = sequence_info[seq_accession][0]
     length = sequence_info[seq_accession][1]
     plasmid_name = sequence_info[seq_accession][2]
+    exportable_accession = "_".join(string_sequence.split("_")[:-1])
     if temporary_list:
-        #x += 1
         ## actual database filling
         ## string_sequence.split("_")[-1] is used to remove length from
         # accession in database
@@ -314,17 +314,15 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
                "significantLinks": [rec.get_dict() for rec in
                                     temporary_list]
                }
-
-        row = models.Plasmid(
-            plasmid_id = "_".join(string_sequence.split("_")[:-1]),
-            json_entry = doc
-        )
-        if seq_accession == "NC_002106_1" or seq_accession == "NC_002107_1":
-            print(seq_accession)
+        #
+        # row = models.Plasmid(
+        #     plasmid_id = "_".join(string_sequence.split("_")[:-1]),
+        #     json_entry = doc
+        # )
         #db.session.add(row)
         #db.session.commit()
     ## used for graphics visualization
-        return temporary_list, string_sequence, x
+        return temporary_list, string_sequence, exportable_accession, doc
     # When temporary_list is empty, return tuple for consistency
     else:
         # return singletons
@@ -332,17 +330,17 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
                "length": length,
                "plasmid_name": plasmid_name,
                "significantLinks": None}
-        row = models.Plasmid(
-            plasmid_id="_".join(string_sequence.split("_")[:-1]),
-            json_entry=doc
-        )
-        if seq_accession == "NC_002106_1" or seq_accession == "NC_002107_1":
-            print(seq_accession)
+        # row = models.Plasmid(
+        #     plasmid_id="_".join(string_sequence.split("_")[:-1]),
+        #     json_entry=doc
+        # )
+        # if seq_accession == "NC_002106_1" or seq_accession == "NC_002107_1":
+        #     print(seq_accession)
         #db.session.add(row)
         #db.session.commit()
-        return None, string_sequence, x
+        return None, string_sequence, exportable_accession, doc
 
-def nodeCrawler(node, links, crawledNodes, clusterArray, master_dict):
+def node_crawler(node, links, crawled_nodes, cluster_array, master_dict):
     '''
 
     Parameters
@@ -351,32 +349,31 @@ def nodeCrawler(node, links, crawledNodes, clusterArray, master_dict):
         An accession number
     links: list
         A list with all links of that accession number
-    crawledNodes: list
-        A list of all nodes that were crawled already for this accession number
-    clusterArray: list
-        A list that stores all related accessions within as cluster
+    crawled_nodes: list
+        A list of all nodes that were crawled already for this cluster
+    cluster_array: list
+        A list that stores all related accessions within a cluster
     master_dict: dict
         The dictionary that stores all nodes and links
 
     '''
 
-    if node in crawledNodes:
+    if node in crawled_nodes:
         return
     else:
-        crawledNodes.append(node)
+        crawled_nodes.append(node)
 
+    if node not in cluster_array:
+        cluster_array.append(node)
 
     for link in links:
-
-        if node not in clusterArray:
-            clusterArray.append(node)
-
-        if link not in clusterArray:
-            clusterArray.append(link)
+        if link not in cluster_array:
+            cluster_array.append(link)
         # recursively crawl through all accessions linked to node
 
         try:
-            nodeCrawler(link, master_dict[link], crawledNodes, clusterArray, master_dict)
+            node_crawler(link, master_dict[link], crawled_nodes,
+                        cluster_array, master_dict)
         except KeyError:
             continue
 
@@ -390,23 +387,22 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
     out_file = open(os.path.join(mother_directory, "results",
                                  "import_to_vivagraph.json"), "w")
     master_dict = {}  ## A dictionary to store all distances to all references of
+    accession_match_dict = {}
     lookup_table = defaultdict(list)
     #  each sequence/genome
     list_mash_files = [f for f in os.listdir(in_folder) if f.endswith(
         "distances.txt")]
     # lists_traces=[]		## list that lists all trace_lists generated
-    x = 0
 
     # new mp module
     pool = Pool(int(threads))  # Create a multiprocessing Pool
     mp2 = pool.map(
         partial(multiprocess_mash_file, sequence_info, pvalue, mashdist,
-                in_folder, x), list_mash_files)  # process list_mash_files
+                in_folder), list_mash_files)  # process list_mash_files
     # iterable with pool
     ## loop to print a nice progress bar
     try:
         for _ in tqdm.tqdm(mp2, total=len(list_mash_files)):
-            x += 1
             pass
     except:
         print("progress will not be tracked because of 'reasons'... check if "
@@ -419,10 +415,7 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
     num_links = 0
     list_of_traces = []
 
-    print(x)
-    for temp_list, ref_string, x in mp2:
-
-        break
+    for temp_list, ref_string in (x[:2] for x in mp2):
 
         # Example of iteration `dic` and lookup table.
         # dic1 = {"Ac1": [rec2, rec3, rec4]}
@@ -431,9 +424,15 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
         # Filter temp_list to remove duplicate links
         if temp_list:
+            # new_dic stores unique links between sequences
             # None is used for singletons
             new_dic = {ref_string: [x.to_json() for x in temp_list if
                                     ref_string not in lookup_table[x.a]]}
+            # new_dic2 stores all links regardless of having being reported
+            # already
+            new_dic2 = {"_".join(ref_string.split("_")[:-1]):
+                            [list(x.to_json().keys())[0] for x in temp_list]}
+
             # Update lookup table
             for rec in temp_list:
                 if rec.a not in lookup_table[ref_string]:
@@ -448,48 +447,48 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
         # Update link counter for filtered dic
         master_dict.update(new_dic)
+        accession_match_dict.update(new_dic2)
+
+    # block to add
+    accession_final_dict = {}
+    counter = 1
+    for key, value in accession_match_dict.items():
+        if any([True if key in x else False for x in
+                accession_final_dict.values()]):
+            continue
+
+        accession_final_dict[counter] = []
+
+        crawled_nodes = []
+        node_crawler(key, value, crawled_nodes, accession_final_dict[
+            counter], accession_match_dict)
+        counter += 1
+
+    for accession, doc in (x[2:4] for x in mp2):
+        #print(accession, doc)
+        # first lets check if accession is in accession_final_dict
+        # basically checks for clusters and add it to doc dict
+        clusted_id = [key for key, value in \
+                accession_final_dict.items() if accession in value][0]
+        doc["cluster"] = str(clusted_id)
+        print(doc)
+
+        # TODO taxa information to db using taxa_fetch.py
+
+        # TODO uncomment db associated code when everything is set in doc
+        # finally adds row to database
+        #row = models.Plasmid(
+            plasmid_id = "_".join(string_sequence.split("_")[:-1]),
+            json_entry = doc
+        )
+        #db.session.add(row)
+        #db.session.commit()
 
     # use master_dict to generate links do db
     ## writes output json for loading in vivagraph
     out_file.write(json.dumps(master_dict))
     out_file.close()
 
-    outra_coisa = dict(("_".join(k.split("_")[:-1]),
-                        [list(i.keys())[0] for i in v])
-                       for k, v in master_dict.items() if v)
-
-
-    # commits everything to db TODO
-    accessionFinalDict = {}
-    counter = 1
-    for key, value in outra_coisa.items():
-        if any([True if key in x else False for x in
-                accessionFinalDict.values()]):
-            continue
-
-        accessionFinalDict[counter] = []
-
-        crawledNodes = []
-        nodeCrawler(key, value, crawledNodes, accessionFinalDict[counter],
-                    outra_coisa)
-        counter += 1
-        # empty entry
-        #db.session.delete(key)
-        #db.session.commit()  # effectively assures that row is deleted
-        # re-add entry with cluster info
-        # update row
-        #updated_row = models.Plasmid(
-        #    plasmid_id=accession,
-        #    json_entry=entry
-        #)
-        #try:
-            # row gets properly modified
-        #    db.session.add(updated_row)
-        #    db.session.commit()
-        #except:
-        #    db.session.rollback()
-        #    raise
-    print(accessionFinalDict)
     db.session.close()
     print("total number of nodes = {}".format(len(master_dict.keys())))
     # master_dict
@@ -584,7 +583,7 @@ def main():
     print("Sketching genomes and running mash distances...\n")
 
     pool = Pool(int(threads))  # Create a multiprocessing Pool
-    mp = pool.imap_unordered(partial(multiprocess_mash, ref_sketch, main_fasta,
+    mp = pool.imap_unordered(partial(multiprocess_mash, ref_sketch,
                                      output_tag, kmer_size, mother_directory),
                              genomes)  # process genomes iterable with pool
 
