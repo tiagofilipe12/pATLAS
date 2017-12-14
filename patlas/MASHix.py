@@ -19,9 +19,11 @@ from collections import defaultdict
 
 try:
     from utils.hist_util import plot_histogram
+    from utils.taxa_fetch import executor
     from db_manager.db_app import db, models
 except ImportError:
     from patlas.utils.hist_util import plot_histogram
+    from patlas.utils.taxa_fetch import executor
     from patlas.db_manager.db_app import db, models
 
 
@@ -116,7 +118,6 @@ def master_fasta(fastas, output_tag, mother_directory):
                 ## added this if statement to check whether CDS is present in
                 #  fasta header, since database contain them with CDS in string
                 if "cds" in line.lower():
-                    #print (line)
                     truePlasmid = False #variable to control when plasmids
                     # and when genes
                     continue
@@ -171,9 +172,9 @@ def master_fasta(fastas, output_tag, mother_directory):
         # to dict last entry of each input file
     master_fasta.close()
     ## writes a species list to output file
-    species_output.write('\n'.join(str(i) for i in list(set(all_species))))
+    species_output.write("\n".join(str(i) for i in list(set(all_species))))
     species_output.close()
-    return out_file, sequence_info
+    return out_file, sequence_info, all_species
 
 
 # Creates temporary fasta files in a tmp directory in order to give to mash
@@ -181,7 +182,7 @@ def master_fasta(fastas, output_tag, mother_directory):
 def genomes_parser(main_fasta, output_tag, mother_directory):
     out_folder = os.path.join(mother_directory, "tmp")
     out_file = os.path.join(out_folder, os.path.basename(main_fasta)[:-4])
-    if_handle = open(main_fasta, 'r')
+    if_handle = open(main_fasta, "r")
     list_genomes_files = []
     out_handle = None
     for x, line in enumerate(if_handle):  ## x coupled with enumerate creates
@@ -381,7 +382,7 @@ def node_crawler(node, links, crawled_nodes, cluster_array, master_dict):
 ## This function should be multiprocessed in order to retrieve several output
 # files (as many as the specified cores specified?)
 def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
-                         threads):
+                         threads, nodes_file, names_file, species_lst):
     ## read all infiles
     in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
     out_file = open(os.path.join(mother_directory, "results",
@@ -464,21 +465,29 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
             counter], accession_match_dict)
         counter += 1
 
+    super_dic = executor(names_file, nodes_file, species_lst)
+
     for accession, doc in (x[2:4] for x in mp2):
-        #print(accession, doc)
+        species = " ".join(doc["name"].split("_"))
+        if species in super_dic:
+            taxa = super_dic[species]
+        else:
+            taxa = "unknown"
+        doc["taxa"] = taxa
         # first lets check if accession is in accession_final_dict
         # basically checks for clusters and add it to doc dict
         clusted_id = [key for key, value in \
-                accession_final_dict.items() if accession in value][0]
-        doc["cluster"] = str(clusted_id)
-        print(doc)
+                accession_final_dict.items() if accession in value]
+        if clusted_id:
+            cluster_info = str(clusted_id[0])
+        else:
+            cluster_info = None
+        #print(doc)
+        doc["cluster"] = cluster_info
 
-        # TODO taxa information to db using taxa_fetch.py
-
-        # TODO uncomment db associated code when everything is set in doc
         # finally adds row to database
-        #row = models.Plasmid(
-            plasmid_id = "_".join(string_sequence.split("_")[:-1]),
+        row = models.Plasmid(
+            plasmid_id = "_".join(accession.split("_")[:-1]),
             json_entry = doc
         )
         #db.session.add(row)
@@ -498,53 +507,64 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 ##MAIN##
 
 def main():
-    parser = argparse.ArgumentParser(description='Compares all entries in a '
-                                                 'fasta file using MASH')
+    parser = argparse.ArgumentParser(description="Compares all entries in a "
+                                                 "fasta file using MASH")
 
-    main_options = parser.add_argument_group('Main options')
-    main_options.add_argument('-i', '--input_references', dest='inputfile',
-                              nargs='+', required=True, help='Provide the  '
-                                                             'input fasta '
-                                                             'files  to  '
-                                                             'parse.')
-    main_options.add_argument('-o', '--output', dest='output_tag',
-                              required=True, help='Provide an output tag.')
-    main_options.add_argument('-t', '--threads', dest='threads', default="1",
-                              help='Provide the number of threads to be used. '
-                                   'Default: 1.')
+    main_options = parser.add_argument_group("Main options")
+    main_options.add_argument("-i", "--input_references", dest="inputfile",
+                              nargs="+", required=True, help="Provide the  "
+                                                             "input fasta "
+                                                             "files  to  "
+                                                             "parse.")
+    main_options.add_argument("-o", "--output", dest="output_tag",
+                              required=True, help="Provide an output tag.")
+    main_options.add_argument("-t", "--threads", dest="threads", default="1",
+                              help="Provide the number of threads to be used. "
+                                   "Default: 1.")
 
-    mash_options = parser.add_argument_group('MASH related options')
-    mash_options.add_argument('-k', '--kmers', dest='kmer_size', default="21",
-                              help='Provide the number of k-mers to be provided to mash '
-                                   'sketch. Default: 21.')
-    mash_options.add_argument('-p', '--pvalue', dest='pvalue',
-                              default="0.05", help='Provide the p-value to '
-                                                   'consider a distance '
-                                                   'significant. Default: '
-                                                   '0.05.')
-    mash_options.add_argument('-md', '--mashdist', dest='mashdistance',
-                              default="0.1", help='Provide the maximum mash '
-                                                  'distance to be parsed to '
-                                                  'the matrix. Default: 0.1.')
+    mash_options = parser.add_argument_group("MASH related options")
+    mash_options.add_argument("-k", "--kmers", dest="kmer_size", default="21",
+                              help="Provide the number of k-mers to be provided to mash "
+                                   "sketch. Default: 21.")
+    mash_options.add_argument("-p", "--pvalue", dest="pvalue",
+                              default="0.05", help="Provide the p-value to "
+                                                   "consider a distance "
+                                                   "significant. Default: "
+                                                   "0.05.")
+    mash_options.add_argument("-md", "--mashdist", dest="mashdistance",
+                              default="0.1", help="Provide the maximum mash "
+                                                  "distance to be parsed to "
+                                                  "the matrix. Default: 0.1.")
 
-    other_options = parser.add_argument_group('Other options')
-    other_options.add_argument('-rm', '--remove', dest='remove',
-                               action='store_true', help='Remove any temporary '
-                                                         'files and folders not '
-                                                         'needed (not present '
-                                                         'in results '
-                                                         'subdirectory).')
-    other_options.add_argument('-hist', '--histograms', dest='histograms',
-                               action='store_true', help='Checks the '
-                                                         'distribution of '
-                                                         'distances values  '
-                                                         'plotting histograms')
+    other_options = parser.add_argument_group("Other options")
+    other_options.add_argument("-rm", "--remove", dest="remove",
+                               action="store_true", help="Remove any temporary "
+                                                         "files and folders not "
+                                                         "needed (not present "
+                                                         "in results "
+                                                         "subdirectory).")
+    other_options.add_argument("-hist", "--histograms", dest="histograms",
+                               action="store_true", help="Checks the "
+                                                         "distribution of "
+                                                         "distances values  "
+                                                         "plotting histograms")
+    other_options.add_argument("-non", "--nodes_ncbi", dest="nodes_file",
+                               required=True, help="specify the path to the "
+                                                   "file containing nodes.dmp "
+                                                   "from NCBI" )
+    other_options.add_argument("-nan", "--names_ncbi", dest="names_file",
+                               required=True, help="specify the path to the "
+                                                   "file containing names.dmp "
+                                                   "from NCBI")
+
     args = parser.parse_args()
 
     threads = args.threads
     kmer_size = args.kmer_size
     pvalue = args.pvalue
     mashdist = args.mashdistance
+    names_file = args.names_file
+    nodes_file = args.nodes_file
 
     ## lists all fastas given to argparser
     fastas = [f for f in args.inputfile if f.endswith((".fas", ".fasta",
@@ -559,7 +579,7 @@ def main():
     # function
     print("***********************************")
     print("Creating main database...\n")
-    main_fasta, sequence_info = master_fasta(fastas, output_tag,
+    main_fasta, sequence_info, all_species = master_fasta(fastas, output_tag,
                                              mother_directory)
 
     #########################
@@ -603,7 +623,8 @@ def main():
     print("\n***********************************")
     print("Creating distance matrix...\n")
     lists_traces = mash_distance_matrix(mother_directory, sequence_info,
-                                        pvalue, mashdist, threads)
+                                        pvalue, mashdist, threads,
+                                        nodes_file, names_file, all_species)
 
     ## remove master_fasta
     if args.remove:
