@@ -131,11 +131,13 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
         }, {
           field: "percentage",
           title: "Percentage coverage",
-          sortable: true
+          sortable: true,
+          visible: false
         }, {
           field: "speciesName",
           title: "Species name",
-          sortable: true
+          sortable: true,
+          detailFilter: true
         }, {
           field: "resGenes",
           title: "Resistance genes",

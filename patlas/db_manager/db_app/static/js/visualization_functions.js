@@ -889,9 +889,10 @@ const onLoad = () => {
       // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
         const style_color = "background-color:" + colorList[2]
-        store_lis = store_lis + '<li' +
-          ' class="centeredList"><button class="jscolor btn' +
-          ' btn-default" style=' + style_color + '></button>&nbsp;multi taxa selection</li>'
+        store_lis = store_lis + "<li" +
+          " class='centeredList'><button class='jscolor btn" +
+          " btn-default' style=" + style_color + "></button>&nbsp;multi taxa" +
+          " selection</li>"
         showDiv().then( () => {
           const promises = []
           const currentColor = 0xf71735   // sets color of all changes_nodes to
