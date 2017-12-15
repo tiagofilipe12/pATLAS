@@ -1,5 +1,5 @@
 // if this is a developer session please enable the below line of code
-const devel = false
+const devel = true
 
 // boolean that controls the prerender function if rerun
 // is activated
@@ -1381,12 +1381,11 @@ const onLoad = () => {
           $.each(json, function (sequence_info, dict_dist) {
             counter++
             // next we need to retrieve each information type independently
-            const sequence = sequence_info.split("_").slice(0, 3).join("_");
-            //var species = sequence_info.split("_").slice(2,4).join(" ");
+            const sequence = sequence_info.split("_").slice(0, 3).join("_")
 
             // and continues
-            const seqLength = sequence_info.split("_").slice(-1).join("");
-            const log_length = Math.log(parseInt(seqLength)); //ln seq length
+            const seqLength = sequence_info.split("_").slice(-1).join("")
+            const log_length = Math.log(parseInt(seqLength)) //ln seq length
             list_lengths.push(seqLength); // appends all lengths to this list
             list_gi.push(sequence)
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
@@ -1404,16 +1403,27 @@ const onLoad = () => {
               })
               list.push(sequence)
 
-              // loops between all arrays of array pairing sequence and distances
-              for (let i = 0; i < dict_dist.length; i++) {
-                const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
-                const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
-                g.addLink(sequence, reference, { distance })
+              if (dict_dist !== null) {
+                // loops between all arrays of array pairing sequence and distances
+                for (let i = 0; i < dict_dist.length; i++) {
+                  const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
+                  const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
+                  g.addLink(sequence, reference, {distance})
+                }
+              } else {
+                dict_dist = 0
               }
             }
+            storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
             // checks if the node is the one with most links and stores it in
             // storedNode --> returns an array with storedNode and previousDictDist
-            storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
+            // if (dict_dist !== null) {
+            //   dict_dist = 0
+            //   storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
+            //   console.log(storeMasterNode)
+            // } else {
+            //
+            // }
           })
           // precompute before rendering
           renderGraph(graphics)

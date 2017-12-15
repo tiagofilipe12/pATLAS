@@ -1,3 +1,11 @@
+/**
+ * This function controls the elements in the toggle button on the top left
+ * corner of patlas that enables the user to switch the search between
+ * plasmid names and accession number.
+ * @param {boolean} toggle_status - a boolean to control the status of the
+ * toggle for plasmid name or accession number search box
+ */
+
 const toggle_manager = (toggle_status) => {
   // if node mode on disable dropdown and retrieve an alert whenever the dropdown is clicked in this instance
   if (toggle_status === true) {
@@ -17,9 +25,11 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
   // if statement to check if node is in database or is a new import
   // from mapping
   let speciesName, plasmidName
+  console.log(node)
   // if (node.data !== undefined) {
     if (typeof node.data.seq_length !== "undefined") {
       $.get("api/getspecies/", {"accession": node.id}, (data, status) => {
+        console.log(data)
         // this request uses nested json object to access json entries
         // available in the database
         // if request return no speciesName or plasmidName
