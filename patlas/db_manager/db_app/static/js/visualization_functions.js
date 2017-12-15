@@ -1821,21 +1821,36 @@ const onLoad = () => {
   // changes the behavior of tooltip to show only on click
   $("#questionPlots").popover()
 
+  $("#questionTable").popover()
+
   // function to avoid shift key to be triggered when any modal is open
   $(".modal").on("shown.bs.modal", () => {
     multiSelectOverlay = "disable"
   })
 
-  // function to allow shift key to select nodes again, on modal close
+  /**
+  * function to allow shift key to select nodes again, on modal close
+  */
   $(".modal").on("hidden.bs.modal", function () {
     multiSelectOverlay = false
+    // this force question buttons to close if tableModal and modalPlot are
+    // closed
+    if (this.id === "tableModal") {
+      $("#questionTable").popover("hide")
+    } else if (this.id === "modalPlot") {
+      $("#questionPlots").popover("hide")
+    }
   })
 
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph
 
-  // keyboard shortcut to save file with node positions
+  /**
+   * function for keyboard shortcut to save file with node positions
+   * This is only useful if devel is true and should be disabled by default
+   * for users
+   */
   Mousetrap.bind("shift+ctrl+space", () => {
     initCallback(g, layout, devel)
   })
