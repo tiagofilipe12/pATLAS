@@ -467,6 +467,7 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
     super_dic = executor(names_file, nodes_file, species_lst)
 
+    print("\ncommiting to db...")
     for accession, doc in (x[2:4] for x in mp2):
         species = " ".join(doc["name"].split("_"))
         if species in super_dic:
@@ -487,11 +488,11 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
         # finally adds row to database
         row = models.Plasmid(
-            plasmid_id = "_".join(accession.split("_")[:-1]),
+            plasmid_id = accession,
             json_entry = doc
         )
-        #db.session.add(row)
-        #db.session.commit()
+        db.session.add(row)
+        db.session.commit()
 
     # use master_dict to generate links do db
     ## writes output json for loading in vivagraph

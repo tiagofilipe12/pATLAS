@@ -34,7 +34,7 @@ def index():
 
 @app.route("/test")
 def main_summary():
-    return repetitiveFunction("db_app/static/json/import_to_vivagraph_v5.json")
+    return repetitiveFunction("db_app/static/json/import_to_vivagraph_new.json")
     # data = make_summary("db_app/static/json/import_to_vivagraph_v5.json")
     # response = app.response_class(
     #     response=json.dumps(data),

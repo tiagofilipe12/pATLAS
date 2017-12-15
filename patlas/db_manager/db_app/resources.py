@@ -24,7 +24,8 @@ nested_entry_fields = {
     "plasmid_name": fields.String,
     "name": fields.String,
     "significantLinks": fields.String,
-    "taxa": fields.String
+    "taxa": fields.String,
+    "cluster": fields.String
 }
 
 
@@ -62,11 +63,11 @@ class GetSpecies(Resource):
     def get(self):        
         #Put req_parser inside get function. Only this way it parses the request.
         args = req_parser.parse_args()
+        print(args)
         single_query = db.session.query(Plasmid).filter(
             Plasmid.plasmid_id == args.accession).first()
-        #print single_query.json_entry
         #json_object = json.loads(single_query.json_entry)
-        #print json_object[u'name']
+        print("return query ", single_query)
         return single_query
 
 class GetResistances(Resource):

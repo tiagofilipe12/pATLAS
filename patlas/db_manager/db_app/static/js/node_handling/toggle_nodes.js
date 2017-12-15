@@ -25,36 +25,34 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
   // if statement to check if node is in database or is a new import
   // from mapping
   let speciesName, plasmidName
-  console.log(node)
   // if (node.data !== undefined) {
-    if (typeof node.data.seq_length !== "undefined") {
-      $.get("api/getspecies/", {"accession": node.id}, (data, status) => {
-        console.log(data)
-        // this request uses nested json object to access json entries
-        // available in the database
-        // if request return no speciesName or plasmidName
-        // sometimes plasmids have no descriptor for one of these or both
-        if (data.json_entry.name === null) {
-          speciesName = "N/A"
-        } else {
-          speciesName = data.json_entry.name.split("_").join(" ")
-        }
-        if (data.json_entry.plasmid_name === null) {
-          plasmidName = "N/A"
-        } else {
-          plasmidName = data.json_entry.plasmid_name
-        }
-        // check if data can be called as json object properly from db something like data.species or data.length
-        setupPopupDisplay(node, speciesName, plasmidName, false) //callback
-        // function for
-        // node displaying after fetching data from db
-      })
-    }  // exception when node has no length (used on new nodes?)
-    else {
-      speciesName = "N/A"
-      plasmidName = "N/A"
+  if (typeof node.data.seq_length !== "undefined") {
+    $.get("api/getspecies/", {"accession": node.id}, (data, status) => {
+      // this request uses nested json object to access json entries
+      // available in the database
+      // if request return no speciesName or plasmidName
+      // sometimes plasmids have no descriptor for one of these or both
+      if (data.json_entry.name === null) {
+        speciesName = "N/A"
+      } else {
+        speciesName = data.json_entry.name.split("_").join(" ")
+      }
+      if (data.json_entry.plasmid_name === null) {
+        plasmidName = "N/A"
+      } else {
+        plasmidName = data.json_entry.plasmid_name
+      }
+      // check if data can be called as json object properly from db something like data.species or data.length
       setupPopupDisplay(node, speciesName, plasmidName, false) //callback
-    }
+      // function for
+      // node displaying after fetching data from db
+    })
+  }  // exception when node has no length (used on new nodes?)
+  else {
+    speciesName = "N/A"
+    plasmidName = "N/A"
+    setupPopupDisplay(node, speciesName, plasmidName, false) //callback
+  }
 }
 
 // function that iterates all nodes and when it finds a match recenters the dom
@@ -62,7 +60,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
                            clickedPopupButtonCard, clickedPopupButtonRes,
                            clickedPopupButtonFamily, requestPlasmidTable) => {
 
-  const queriedNode = g.forEachNode( (node) => {
+  const queriedNode = g.forEachNode((node) => {
     const nodeUI = graphics.getNodeUI(node.id)
     const sequence = node.data.sequence.split(">")[3].split("<")[0]
     const x = nodeUI.position.x,
@@ -73,7 +71,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
       nodeUI.backupColor = nodeUI.color
       nodeUI.color = 0x900C3F
       // this sets the popup internal buttons to allow them to run,
-      // otherwise they won't run because its own function returns this
+      // otherwise they won"t run because its own function returns this
       // variable to false, preventing the popup to expand with its
       // respective functions
       clickedPopupButtonCard = true
@@ -94,7 +92,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
   if (queriedNode !== true) {
     // if no query is returned then alert the user
     $("#alertId_search").show()
-    window.setTimeout( () => { $("#alertId_search").hide() }, 5000)
+    window.setTimeout(() => { $("#alertId_search").hide() }, 5000)
   }
   // if queriedNode is true then it mean that a match was found, otherwise
   // it will return undefined
