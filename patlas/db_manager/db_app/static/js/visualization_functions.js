@@ -1626,6 +1626,11 @@ const onLoad = () => {
       bootstrapTableList = []
     })
 
+  // function to control cell click
+    .on("dbl-click-cell.bs.table", (field, value, row, element) => {
+      recenterDOM(renderer, layout, [element.id, false])
+    })
+
   // function to download dataset selected in table
   $("#downloadTable").unbind("click").bind("click", (e) => {
     // transform internal accession numbers to ncbi acceptable accesions
