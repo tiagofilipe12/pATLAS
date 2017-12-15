@@ -85,6 +85,8 @@ class DbInsertion(Abricate):
                     aro_accession = csv_dict[trimmed_accession]
                 except KeyError:
                     aro_accession = None
+            else:
+                aro_accession = False
 
             seq_range = entry["seq_range"]
 
@@ -98,8 +100,10 @@ class DbInsertion(Abricate):
                     "gene": [gene],
                     "accession": [accession],
                     "seq_range": [seq_range],
-                    "aro_accession": [aro_accession]
+                    #"aro_accession": [aro_accession]
                 }
+                if aro_accession == False:
+                    temp_dict[reference_accession]["aro_accession"] = [aro_accession]
             else:
                 # checks if gene and its accession is in the their respective
                 # lists in the dict. If they are there is no reason to add
@@ -116,12 +120,16 @@ class DbInsertion(Abricate):
                 temp_dict[reference_accession]["gene"].append(gene)
                 temp_dict[reference_accession]["accession"].append(accession)
                 temp_dict[reference_accession]["seq_range"].append(seq_range)
-                temp_dict[reference_accession]["aro_accession"].append(aro_accession)
+                #temp_dict[reference_accession]["aro_accession"].append(
+                # aro_accession)
+                if aro_accession == False:
+                    temp_dict[reference_accession]["aro_accession"].append(aro_accession)
 
-        self.db_dump(temp_dict, db_type, csv_dict)
+        self.db_dump(temp_dict, db_type)
+        self.get_json_file(list_of_filters, db_type)
 
     @staticmethod
-    def db_dump(temp_dict, db_type, csv_dict):
+    def db_dump(temp_dict, db_type):
         '''This function just dumps a dict to psql database
 
         :param temp_dict: dict, dictionary with reworked entries to properly
@@ -146,8 +154,8 @@ class DbInsertion(Abricate):
                 print("Wrong db type specified in '-db' option")
                 raise SystemExit
             # then do db magic
-            db.session.add(row)
-            db.session.commit()
+            #db.session.add(row)
+            #db.session.commit()
         db.session.close()
 
     def get_json_file(self, list_of_filters, db_type):
@@ -189,7 +197,6 @@ class DbInsertion(Abricate):
 def main():
     parser = argparse.ArgumentParser(description="Compares all entries in a "
                                                  "fasta file using abricate")
-    #options = parser.add_argument_group("Main options")
 
     parser.add_argument("-i", "--input_file", dest="inputfile",
                               nargs="+", required=True, help="Provide the "
@@ -210,12 +217,13 @@ def main():
                          default="80", help="minimum coverage do be "
                                                "reported to db")
     parser.add_argument("-csv", "--csv", dest="csvfile",
-                         nargs=1, help="Provide card csv "
-                                                        "file to get "
-                                                        "correspondence "
-                                                        "between DNA "
-                                                        "accessions and ARO "
-                                                        "accessions")
+                         nargs=1, help="Provide card csv file to get  "
+                                       "correspondence between DNA accessions "
+                                       "and ARO accessions. Usually "
+                                       "named aro_index.csv. By default this "
+                                       "file is already available in patlas "
+                                       "repo with a specific path: "
+                                       "'db_manager/db_app/static/csv/aro_index.csv'")
     args = parser.parse_args()
 
     input_file = args.inputfile
