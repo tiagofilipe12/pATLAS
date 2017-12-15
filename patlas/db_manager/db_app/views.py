@@ -45,7 +45,7 @@ def main_summary():
 
 @app.route("/fullDS")
 def full_ds():
-    return repetitiveFunction("db_app/static/json/filtered.json")
+    return repetitiveFunction("db_app/static/json/filtered_2.json")
     # data = make_summary("db_app/static/json/filtered.json")
     # response = app.response_class(
     #     response=json.dumps(data),
