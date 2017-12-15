@@ -6,6 +6,16 @@ const linkFormatter = (value, row, index) => {
     "' target='_blank'>" + cleanAccession + "</a>"
 }
 
+/**
+ * This function allows to get accessions associated with green color in
+ * area selection events
+ * @param {Object} g - vivagraph graph object that allows to add nodes and links
+ * @param {Object} graphics - vivagraph object that allows to change colors
+ * of nodes and links
+ * @returns {Array} an array with all accession numbers
+ * that have color. This have similar functions to listGiFilter and in fact
+ * will replace it in makeTable function.
+ */
 const getTableWithAreaSelection = (g, graphics) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
@@ -15,6 +25,17 @@ const getTableWithAreaSelection = (g, graphics) => {
   return tempListAccessions
 }
 
+/**
+ * Function to generate a table for each selection made in vivagraph
+ * @param {boolean} areaSelection - boolean that controls if an area
+ * selection was made (true) or if nodes were selected using menus (false)
+ * @param {Array} listGiFilter - in the case areaSelection is false then
+ * this variable will be populated with an array of accession numbers for
+ * which colors are assigned in vivagraph network
+ * @param {Object} g - vivagraph graph object that allows to add nodes and links
+ * @param {Object} graphics - vivagraph object that allows to change colors
+ * of nodes and links
+ */
 const makeTable = (areaSelection, listGiFilter, g, graphics) => {
   let promises = []
   // redefines listGiFilter if area selection is used
@@ -25,8 +46,7 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
     if ({}.hasOwnProperty.call(listGiFilter, i)) {
       // gets info for every node and puts it in a line
       const accession = listGiFilter[i]
-      if (g.getNode(accession)) { // TODO table doesn't handle what is not
-        // in graph
+      if (g.getNode(accession)) {
         const nodeData = g.getNode(accession).data
         const seqPercentage = (nodeData.percentage) ? nodeData.percentage : "N/A" // this may be
         // undefined
