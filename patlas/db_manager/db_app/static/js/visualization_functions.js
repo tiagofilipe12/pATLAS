@@ -1,3 +1,7 @@
+/**
+* A bunch of global functions to be used throughout patlas
+*/
+
 // if this is a developer session please enable the below line of code
 const devel = true
 
@@ -42,17 +46,29 @@ let clickedHighchart
 
 let graphSize
 
-// load JSON file with taxa dictionary
+/**
+ * load JSON file with taxa dictionary
+ * @returns {Object} - return is an object that perform matches between taxa
+ * levels species, genera, families and orders.
+ */
 const getArray_taxa = () => {
   return $.getJSON("/taxa")
 }
 
-// load JSON file with resistance dictionary
+/**
+ * load JSON file with resistance dictionary
+ * @returns {Object} - returns an object that allows resistance menus to be
+ * populated
+ */
 const getArray_res = () => {
   return $.getJSON("/resistance")
 }
 
-// load JSON file with taxa dictionary
+/**
+ * load JSON file with plasmidfinder dictionary
+ * @returns {Object} - returns an object that allows plasmidfinder menus
+ * to be populated
+ */
 const getArray_pf = () => {
   return $.getJSON("/plasmidfinder")
 }
@@ -68,6 +84,13 @@ let list_gi = []
 // outside renderGraph
 let renderer
 
+/**
+ * forces welcomeModal to be the first thing the user sees when the page
+ * is loaded.
+ * @param {function} callback - uses onLoad function as callback in order to
+ * allow for welcomeModal to be displayer before rendering everything else with
+ * a delay of 1 sec.
+ */
 const onLoadWelcome = (callback) => {
   // forces welcomeModal to be the first thing the user sees when the page
   // is loaded
@@ -77,11 +100,14 @@ const onLoadWelcome = (callback) => {
   // a second before starting the load
   setTimeout( () => {
     callback()
-  }, 500)
+  }, 1000)
 }
 
-// initiates vivagraph main functions
-// onLoad consists of mainly three functions: init, precompute and renderGraph
+/**
+ * initiates vivagraph main functions
+ * onLoad consists of mainly three functions: init, precompute and renderGraph
+ * This function is executed after onLoadWelcome function
+ */
 const onLoad = () => {
   // variable used to control if div is shown or not
   let multiSelectOverlay = false
@@ -1411,19 +1437,11 @@ const onLoad = () => {
                   g.addLink(sequence, reference, {distance})
                 }
               } else {
-                dict_dist = 0
+                dict_dist = []
               }
             }
+            // centers on node with more links
             storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
-            // checks if the node is the one with most links and stores it in
-            // storedNode --> returns an array with storedNode and previousDictDist
-            // if (dict_dist !== null) {
-            //   dict_dist = 0
-            //   storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
-            //   console.log(storeMasterNode)
-            // } else {
-            //
-            // }
           })
           // precompute before rendering
           renderGraph(graphics)
