@@ -787,7 +787,7 @@ const onLoad = () => {
       event.preventDefault()
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
-      noLegend = false // sets legend to hidden state by default
+      // noLegend = false // sets legend to hidden state by default
       // now processes the current selection
       const species_query = document.getElementById("p_Species").innerHTML,
         genus_query = document.getElementById("p_Genus").innerHTML,
@@ -980,130 +980,128 @@ const onLoad = () => {
           if (alertArrays[array].length !== 0 && firstIteration === true) {
             currentSelection = alertArrays[array]
             // performs the actual interaction for color picking and assigning
-            for (const i in currentSelection) {
-              // orders //
-              if (alertArrays.order.length !== 0) {
-                const currentColor = colorList[i].replace("#", "0x")
-                const tempArray = assocOrderGenus[currentSelection[i]]
-                const style_color = 'background-color:' + colorList[i]
-                store_lis = store_lis + '<li' +
-                  ' class="centeredList"><button class="jscolor btn' +
-                  ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
-                // executres node function for family and orders
-                showDiv().then( () => {
-                  const promises = []
+            showDiv().then( () => {
+              const promises = []
+              for (const i in currentSelection) {
+                // orders //
+                if (alertArrays.order.length !== 0) {
+                  const currentColor = colorList[i].replace("#", "0x")
+                  const tempArray = assocOrderGenus[currentSelection[i]]
+                  const style_color = 'background-color:' + colorList[i]
+                  store_lis = store_lis + '<li' +
+                    ' class="centeredList"><button class="jscolor btn' +
+                    ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                  // executres node function for family and orders
                   for (const sp in tempArray) {
-                    const onePromise = taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                      .then( (results) => {
-                        results.map( (request) => {
-                          listGiFilter.push(request.plasmid_id)
+                    promises.push(
+                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                        .then((results) => {
+                          results.map((request) => {
+                            listGiFilter.push(request.plasmid_id)
+                          })
                         })
-                      })
-                    promises.push(onePromise)
+                    )
                   }
-                  Promise.all(promises)
-                    .then( () => {
-                      $("#loading").hide()
-                    })
-                })
-              }
+                }
 
-              // families //
-              else if (alertArrays.family.length !== 0) {
-                const currentColor = colorList[i].replace("#", "0x")
-                const tempArray = assocFamilyGenus[currentSelection[i]]
-                const style_color = "background-color:" + colorList[i]
-                store_lis = store_lis + '<li' +
-                  ' class="centeredList"><button class="jscolor btn' +
-                  ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
-                // executres node function for family
-                showDiv().then( () => {
-                  const promises = []
+                // families //
+                else if (alertArrays.family.length !== 0) {
+                  const currentColor = colorList[i].replace("#", "0x")
+                  const tempArray = assocFamilyGenus[currentSelection[i]]
+                  const style_color = "background-color:" + colorList[i]
+                  store_lis = store_lis + '<li' +
+                    ' class="centeredList"><button class="jscolor btn' +
+                    ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                  // executres node function for family
                   for (const sp in tempArray) {
-                    const onePromise = taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                      .then( (results) => {
-                        results.map( (request) => {
-                          listGiFilter.push(request.plasmid_id)
+                    promises.push(
+                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                        .then((results) => {
+                          results.map((request) => {
+                            listGiFilter.push(request.plasmid_id)
+                          })
                         })
-                      })
-                    promises.push(onePromise)
+                    )
                   }
-                  Promise.all(promises)
-                    .then( () => {
-                      $("#loading").hide()
-                    })
-                })
-              }
+                }
 
-              // genus //
-              else if (alertArrays.genus.length !== 0) {
-                const currentColor = colorList[i].replace("#", "0x")
-                const tempArray = assocGenus[currentSelection[i]]
-                const style_color = "background-color:" + colorList[i]
-                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
-                  style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                // genus //
+                else if (alertArrays.genus.length !== 0) {
+                  const currentColor = colorList[i].replace("#", "0x")
+                  const tempArray = assocGenus[currentSelection[i]]
+                  const style_color = "background-color:" + colorList[i]
+                  store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
+                    style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
 
-                // requests taxa associated accession from db and colors
-                // respective nodes
-                showDiv().then( () => {
-                  const promises = []
+                  // requests taxa associated accession from db and colors
+                  // respective nodes
                   for (const sp in tempArray) {
-                    const onePromise = taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                    promises.push(
+                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                        .then((results) => {
+                          results.map((request) => {
+                            listGiFilter.push(request.plasmid_id)
+                          })
+                        })
+                    )
+                  }
+                }
+
+                // species //
+                else if (alertArrays.species.length !== 0) {
+                  const currentColor = colorList[i].replace("#", "0x")
+                  const style_color = "background-color:" + colorList[i]
+                  store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
+                    style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+
+                  // requests taxa associated accession from db and colors
+                  // respective nodes
+                  promises.push(
+                    taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)
+                    // })//, changed_nodes)
                       .then((results) => {
                         results.map(request => {
                           listGiFilter.push(request.plasmid_id)
                         })
                       })
-                    promises.push(onePromise)
-                  }
-                  Promise.all(promises)
-                    .then( () => {
-                      $("#loading").hide()
-                    })
+                  )
+                }
+              }
+              Promise.all(promises)
+                .then(() => {
+                  $("#loading").hide()
+                  showLegend.style.display = "block"
+                  document.getElementById("taxa_label").style.display = "block" // show label
+                  $("#colorLegendBox").empty()
+                  $("#colorLegendBox").append(store_lis +
+                    '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
+                  showRerun.style.display = "block"
+                  showGoback.style.display = "block"
+                  showDownload.style.display = "block"
+                  showTable.style.display = "block"
                 })
-              }
+            }) // ends showDiv
 
-              // species //
-              else if (alertArrays.species.length !== 0) {
-                const currentColor = colorList[i].replace("#", "0x")
-                const style_color = "background-color:" + colorList[i]
-                store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
-                  style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
-
-                // requests taxa associated accession from db and colors
-                // respective nodes
-                showDiv().then( () => {
-                  return taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)
-                })//, changed_nodes)
-                  .then( (results) => {
-                    console.log(results)
-                    results.map(request => {
-                      listGiFilter.push(request.plasmid_id)
-                    })
-                  })
-                  .then( () => { $("#loading").hide() })
-              }
-            }
             firstIteration = false // stops getting lower levels
           }
         }
       }
       // used to control if no selection was made avoiding to display the legend
-      else {
-        noLegend = true
-      }
-      // show legend //
-      if (noLegend === false) {
-        showLegend.style.display = "block"
-        document.getElementById("taxa_label").style.display = "block" // show label
-        $("#colorLegendBox").empty()
-        $("#colorLegendBox").append(store_lis +
-          '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
-        showRerun.style.display = "block"
-        showGoback.style.display = "block"
-        showDownload.style.display = "block"
-        showTable.style.display = "block"
-      }
+      // else {
+      //   noLegend = true
+      // }
+      // // show legend //
+      // if (noLegend === false) {
+      //   showLegend.style.display = "block"
+      //   document.getElementById("taxa_label").style.display = "block" // show label
+      //   $("#colorLegendBox").empty()
+      //   $("#colorLegendBox").append(store_lis +
+      //     '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
+      //   showRerun.style.display = "block"
+      //   showGoback.style.display = "block"
+      //   showDownload.style.display = "block"
+      //   showTable.style.display = "block"
+      // }
     })
 
     //* ************//

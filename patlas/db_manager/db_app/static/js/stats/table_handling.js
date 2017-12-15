@@ -57,7 +57,6 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
   // IMPORTANT: in this case listGiFilter doesn't exit this function scope
   // which is the intended behavior
   listGiFilter = (areaSelection === false) ? listGiFilter : getTableWithAreaSelection(g, graphics)
-  console.log(listGiFilter, previousTableList)
   if (arraysEqual(listGiFilter, previousTableList) === false) {
     $("#metadataTable").bootstrapTable("destroy")
     previousTableList = listGiFilter
