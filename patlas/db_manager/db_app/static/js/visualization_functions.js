@@ -520,7 +520,7 @@ const onLoad = () => {
     //* ***plasmidfinder Filters****//
     //* ******************//
 
-    if (firstInstace === true) {
+    if (firstInstace === true && pageReload === false) {
       getArray_pf().done((json) => {
         // first parse the json input file
         const listPF = []
@@ -599,7 +599,7 @@ const onLoad = () => {
     //* ******************//
 
     // first parse the json input file
-    if (firstInstace === true) {
+    if (firstInstace === true && pageReload === false) {
       getArray_res().done((json) => {
         const listCard = [],
           listRes = []
@@ -888,63 +888,82 @@ const onLoad = () => {
 
       // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
-        const currentColor = 0xf71735   // sets color of all changes_nodes to
-        // be red
-        store_lis = "<li class='centeredList'><button class='jscolor btn'" +
-          " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
-        // for (const i in alertArrays.order) {
-        let currentSelectionOrder = alertArrays.order
-        for (const i in currentSelectionOrder) {
-          const tempArray = assocOrderGenus[currentSelectionOrder[i]]
-          for (const sp in tempArray) {
-            taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-              .then( (results) => {
-                results.map( (request) => {
-                  listGiFilter.push(request.plasmid_id)
-                })
-              })
+        const style_color = "background-color:" + colorList[2]
+        store_lis = store_lis + '<li' +
+          ' class="centeredList"><button class="jscolor btn' +
+          ' btn-default" style=' + style_color + '></button>&nbsp;multi taxa selection</li>'
+        showDiv().then( () => {
+          const promises = []
+          const currentColor = 0xf71735   // sets color of all changes_nodes to
+          // be red
+          store_lis = "<li class='centeredList'><button class='jscolor btn'" +
+            " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
+          // for (const i in alertArrays.order) {
+          let currentSelectionOrder = alertArrays.order
+          for (const i in currentSelectionOrder) {
+            const tempArray = assocOrderGenus[currentSelectionOrder[i]]
+            for (const sp in tempArray) {
+              promises.push(
+                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                  .then( (results) => {
+                    results.map( (request) => {
+                      listGiFilter.push(request.plasmid_id)
+                    })
+                  })
+              )
+            }
           }
-        }
-        // }
-        // for (i in alertArrays.family) {
-        let currentSelectionFamily = alertArrays.family
-        for (const i in currentSelectionFamily) {
-          const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
-          for (const sp in tempArray) {
-            taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-              .then( (results) => {
-                results.map( (request) => {
-                  listGiFilter.push(request.plasmid_id)
-                })
-              })
-          }
-        }
-        // }
-        // for (i in alertArrays.genus) {
-        let currentSelectionGenus = alertArrays.genus
-        for (const i in currentSelectionGenus) {
-          const tempArray = assocGenus[currentSelectionGenus[i]]
-          for (const sp in tempArray) {
-            taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-              .then( (results) => {
-                results.map( (request) => {
-                  listGiFilter.push(request.plasmid_id)
-                })
-              })
-          }
-        }
-        // }
-        // for (i in alertArrays.species) {
-        let currentSelectionSpecies = alertArrays.species
-        for (const i in currentSelectionSpecies) {
-          taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor, reloadAccessionList)//, changed_nodes)
-            .then( (results) => {
-              results.map( (request) => {
-                listGiFilter.push(request.plasmid_id)
-              })
-            })
           // }
-        }
+          // for (i in alertArrays.family) {
+          let currentSelectionFamily = alertArrays.family
+          for (const i in currentSelectionFamily) {
+            const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
+            for (const sp in tempArray) {
+              promises.push(
+                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                  .then( (results) => {
+                    results.map( (request) => {
+                      listGiFilter.push(request.plasmid_id)
+                    })
+                  })
+              )
+            }
+          }
+          // }
+          // for (i in alertArrays.genus) {
+          let currentSelectionGenus = alertArrays.genus
+          for (const i in currentSelectionGenus) {
+            const tempArray = assocGenus[currentSelectionGenus[i]]
+            for (const sp in tempArray) {
+              promises.push(
+                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                  .then( (results) => {
+                    results.map( (request) => {
+                      listGiFilter.push(request.plasmid_id)
+                    })
+                  })
+              )
+            }
+          }
+          // }
+          // for (i in alertArrays.species) {
+          let currentSelectionSpecies = alertArrays.species
+          for (const i in currentSelectionSpecies) {
+            promises.push(
+              taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor, reloadAccessionList)//, changed_nodes)
+                .then( (results) => {
+                  results.map( (request) => {
+                    listGiFilter.push(request.plasmid_id)
+                  })
+                })
+            )
+            // }
+          }
+          Promise.all(promises)
+            .then( () => {
+              $("#loading").hide()
+            })
+        })
       }
       // renders the graph for the desired taxon if one taxon type is selected
       // allows for different colors between taxa of the same level
@@ -966,14 +985,22 @@ const onLoad = () => {
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family and orders
-                for (const sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                    .then( (results) => {
-                      results.map( (request) => {
-                        listGiFilter.push(request.plasmid_id)
+                showDiv().then( () => {
+                  const promises = []
+                  for (const sp in tempArray) {
+                    const onePromise = taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                      .then( (results) => {
+                        results.map( (request) => {
+                          listGiFilter.push(request.plasmid_id)
+                        })
                       })
+                    promises.push(onePromise)
+                  }
+                  Promise.all(promises)
+                    .then( () => {
+                      $("#loading").hide()
                     })
-                }
+                })
               }
 
               // families //
@@ -985,14 +1012,22 @@ const onLoad = () => {
                   ' class="centeredList"><button class="jscolor btn' +
                   ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
                 // executres node function for family
-                for (const sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                    .then( (results) => {
-                      results.map( (request) => {
-                        listGiFilter.push(request.plasmid_id)
+                showDiv().then( () => {
+                  const promises = []
+                  for (const sp in tempArray) {
+                    const onePromise = taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                      .then( (results) => {
+                        results.map( (request) => {
+                          listGiFilter.push(request.plasmid_id)
+                        })
                       })
+                    promises.push(onePromise)
+                  }
+                  Promise.all(promises)
+                    .then( () => {
+                      $("#loading").hide()
                     })
-                }
+                })
               }
 
               // genus //
@@ -1005,14 +1040,22 @@ const onLoad = () => {
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                for (const sp in tempArray) {
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
-                    .then( (results) => {
-                      results.map(request => {
-                        listGiFilter.push(request.plasmid_id)
+                showDiv().then( () => {
+                  const promises = []
+                  for (const sp in tempArray) {
+                    const onePromise = taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                      .then((results) => {
+                        results.map(request => {
+                          listGiFilter.push(request.plasmid_id)
+                        })
                       })
+                    promises.push(onePromise)
+                  }
+                  Promise.all(promises)
+                    .then( () => {
+                      $("#loading").hide()
                     })
-                }
+                })
               }
 
               // species //
@@ -1024,12 +1067,16 @@ const onLoad = () => {
 
                 // requests taxa associated accession from db and colors
                 // respective nodes
-                taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)//, changed_nodes)
+                showDiv().then( () => {
+                  return taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)
+                })//, changed_nodes)
                   .then( (results) => {
+                    console.log(results)
                     results.map(request => {
                       listGiFilter.push(request.plasmid_id)
                     })
                   })
+                  .then( () => { $("#loading").hide() })
               }
             }
             firstIteration = false // stops getting lower levels
@@ -1681,9 +1728,9 @@ const onLoad = () => {
     $("#tableModal").modal()
     $("#metadataTable").bootstrapTable("destroy")
     $(".nav-tabs a[href='#homeTable']").tab("show")
-    showDiv(
+    showDiv().then( () => {
       makeTable(areaSelection, listGiFilter, g, graphics, graphSize)
-    )
+    })
   })
 
   // function to close table
