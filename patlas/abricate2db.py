@@ -187,36 +187,35 @@ class DbInsertion(Abricate):
         out_file.close()
 
 def main():
-    parser = argparse.ArgumentParser(description='Compares all entries in a '
-                                                 'fasta file using abricate')
-    options = parser.add_argument_group('Main options')
+    parser = argparse.ArgumentParser(description="Compares all entries in a "
+                                                 "fasta file using abricate")
+    #options = parser.add_argument_group("Main options")
 
-    options.add_argument('-i', '--input_file', dest='inputfile',
-                              nargs='+', required=True, help='Provide the '
-                                                             'abricate file '
-                                                             'to parse to db. '
-                                                             'It can accept '
-                                                             'more than one '
-                                                             'file in the '
-                                                             'case of resistances')
-    options.add_argument('-db', '--db', dest='output_psql_db',
+    parser.add_argument("-i", "--input_file", dest="inputfile",
+                              nargs="+", required=True, help="Provide the "
+                                                             "abricate file "
+                                                             "to parse to db. "
+                                                             "It can accept "
+                                                             "more than one "
+                                                             "file in the "
+                                                             "case of resistances")
+    parser.add_argument("-db", "--db", dest="output_psql_db",
         choices=["resistance", "plasmidfinder"], required=True,
-        help='Provide the db to output in psql models.')
-    options.add_argument('-id', '--identity', dest='identity',
-                         default="90", help='minimum identity to be '
-                                               'reported '
-                                           'to db')
-    options.add_argument('-cov', '--coverage', dest='coverage',
-                         default="80", help='minimum coverage do be '
-                                               'reported to db')
-    options.add_argument('-csv', '--csv', dest='csvfile',
-                         nargs='1', help="Provide card csv "
+        help="Provide the db to output in psql models.")
+    parser.add_argument("-id", "--identity", dest="identity",
+                         default="90", help="minimum identity to be "
+                                               "reported "
+                                           "to db")
+    parser.add_argument("-cov", "--coverage", dest="coverage",
+                         default="80", help="minimum coverage do be "
+                                               "reported to db")
+    parser.add_argument("-csv", "--csv", dest="csvfile",
+                         nargs=1, help="Provide card csv "
                                                         "file to get "
                                                         "correspondence "
                                                         "between DNA "
                                                         "accessions and ARO "
                                                         "accessions")
-
     args = parser.parse_args()
 
     input_file = args.inputfile
