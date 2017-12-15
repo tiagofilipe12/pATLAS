@@ -14,6 +14,8 @@ let first_click_menu = true
 
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
+// variable to check if page was reloaded
+let pageReload = false
 
 // starts a global instance for checking if button was clicked before
 let clickedPopupButtonRes = false
@@ -689,7 +691,7 @@ const onLoad = () => {
       list_families = [],
       list_genera = [],
       list_species = []
-    if (firstInstace === true) {
+    if (firstInstace === true && pageReload === false) {
       getArray_taxa().done((json) => {
         $.each(json, (sps, other) => {    // sps aka species
           const species = sps.split("_").join(" ")
@@ -1385,9 +1387,11 @@ const onLoad = () => {
     $("#go_back").unbind("click").bind("click", () => {
       // window.location.reload()   // a temporary fix to go back to full dataset
       firstInstace = true
+      pageReload = true
       list = []
       list_gi = []
       list_lengths = []
+      listGiFilter = []
       showDiv().then( () => {
         // removes nodes and forces adding same nodes
         setTimeout( () => {
