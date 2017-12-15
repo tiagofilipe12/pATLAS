@@ -1,3 +1,18 @@
+const arraysEqual = (arr1, arr2) => {
+  if (arr2.length === 0) {
+    return false
+  }
+  if(arr1.length !== arr2.length) {
+    return false
+  }
+  for(const i in arr1.length) {
+    if(arr1[i] !== arr2[i]) {
+      return false
+    }
+  }
+  return true
+}
+
 const linkFormatter = (value, row, index) => {
   const reducedAccession = value.split("_").slice(0, 2).join("_")
   const cleanAccession = reducedAccession + "." + value.split("_").slice(2)
@@ -42,127 +57,135 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
   // IMPORTANT: in this case listGiFilter doesn't exit this function scope
   // which is the intended behavior
   listGiFilter = (areaSelection === false) ? listGiFilter : getTableWithAreaSelection(g, graphics)
-  for (const i in listGiFilter) {
-    if ({}.hasOwnProperty.call(listGiFilter, i)) {
-      // gets info for every node and puts it in a line
-      const accession = listGiFilter[i]
-      if (g.getNode(accession)) {
-        const nodeData = g.getNode(accession).data
-        const seqPercentage = (nodeData.percentage) ? nodeData.percentage : "N/A" // this may be
-        // undefined
-        // depending if input file is provided or not
+  console.log(listGiFilter, previousTableList)
+  if (arraysEqual(listGiFilter, previousTableList) === false) {
+    $("#metadataTable").bootstrapTable("destroy")
+    previousTableList = listGiFilter
+    for (const i in listGiFilter) {
+      if ({}.hasOwnProperty.call(listGiFilter, i)) {
+        // gets info for every node and puts it in a line
+        const accession = listGiFilter[i]
+        if (g.getNode(accession)) {
+          const nodeData = g.getNode(accession).data
+          const seqPercentage = (nodeData.percentage) ? nodeData.percentage : "N/A" // this may be
+          // undefined
+          // depending if input file is provided or not
 
-        const seqLength = (nodeData.seq_length) ? nodeData.seq_length.split(">")[2] : "N/A"
-        // querying database is required before this
-        // promises.push(
-        const promiseGather = async () => {
-          // starts entry variable
-          const entry = {
-            "id": "",
-            "length": "",
-            "percentage": "",
-            "speciesName": "",
-            "plasmidName": "",
-            "resGenes": "",
-            "pfGenes": ""
-          }
-          // sequence of promises that are executed sequentially
-          await  $.get("api/getspecies/", {accession}, (data, status) => {
-            if (data.plasmid_id) {
-              const species = data.json_entry.name.split("_").join(" ")
-              const plasmid = data.json_entry.plasmid_name
-              const clusterId = data.json_entry.cluster
-
-              // then add all to the object
-              entry.id = accession
-              entry.length = seqLength
-              entry.percentage = seqPercentage
-              entry.speciesName = species
-              entry.plasmidName = plasmid
-              entry.cluster = clusterId
+          const seqLength = (nodeData.seq_length) ? nodeData.seq_length.split(">")[2] : "N/A"
+          // querying database is required before this
+          // promises.push(
+          const promiseGather = async () => {
+            // starts entry variable
+            const entry = {
+              "id": "",
+              "length": "",
+              "percentage": "",
+              "speciesName": "",
+              "plasmidName": "",
+              "resGenes": "",
+              "pfGenes": ""
             }
-          })
+            // sequence of promises that are executed sequentially
+            await  $.get("api/getspecies/", {accession}, (data, status) => {
+              if (data.plasmid_id) {
+                const species = data.json_entry.name.split("_").join(" ")
+                const plasmid = data.json_entry.plasmid_name
+                const clusterId = data.json_entry.cluster
 
-          await $.get("api/getresistances/", {accession}, (data, status) => {
-            const resistances = (data.plasmid_id) ? data.json_entry.gene.replace(/['u"\[\]]/g, "") : "N/A"
-            // add to entry
-            entry.resGenes = resistances
-          })
+                // then add all to the object
+                entry.id = accession
+                entry.length = seqLength
+                entry.percentage = seqPercentage
+                entry.speciesName = species
+                entry.plasmidName = plasmid
+                entry.cluster = clusterId
+              }
+            })
 
-          await $.get("api/getplasmidfinder/", {accession}, (data, status) => {
-            const plasmidfinder = (data.plasmid_id) ? data.json_entry.gene.replace(/['u"\[\]]/g, "") : "N/A"
-            entry.pfGenes = plasmidfinder
-          })
-          // async function must return the desired entry to push to dataArray
-          return entry // returns promise
+            await $.get("api/getresistances/", {accession}, (data, status) => {
+              const resistances = (data.plasmid_id) ? data.json_entry.gene.replace(/['u"\[\]]/g, "") : "N/A"
+              // add to entry
+              entry.resGenes = resistances
+            })
 
+            await $.get("api/getplasmidfinder/", {accession}, (data, status) => {
+              const plasmidfinder = (data.plasmid_id) ? data.json_entry.gene.replace(/['u"\[\]]/g, "") : "N/A"
+              entry.pfGenes = plasmidfinder
+            })
+            // async function must return the desired entry to push to dataArray
+            return entry // returns promise
+
+          }
+          // collect every promise for each accession number
+          promises.push(promiseGather())
         }
-        // collect every promise for each accession number
-        promises.push(promiseGather())
-      }
 
-      // for every loop instance entries could be added to array, each entry
-      // in dataArray should be a single row
+        // for every loop instance entries could be added to array, each entry
+        // in dataArray should be a single row
+      }
     }
-  }
-  // waits for all promises before constructing full table
-  Promise.all(promises)
-    .then( (results) => {
-      // table is just returned in the end before that a json should be
-      // constructed
-      $("#metadataTable").bootstrapTable({
-        // columens are used to generate headers
-        columns: [{
-          field: "state",
-          checkbox: true
-        }, {
-          field: "id",
-          title: "Accession number",
-          switchable: false,
-          formatter: linkFormatter
-        }, {
-          field: "plasmidName",
-          title: "Plasmid name",
-          sortable: true
-        }, {
-          field: "length",
-          title: "Sequence length",
-          sortable: true
-        }, {
-          field: "percentage",
-          title: "Percentage coverage",
-          sortable: true,
-          visible: false
-        }, {
-          field: "speciesName",
-          title: "Species name",
-          sortable: true,
-          detailFilter: true
-        }, {
-          field: "resGenes",
-          title: "Resistance genes",
-          visible: false,
-          sortable: true
-        }, {
-          field: "pfGenes",
-          title: "Plasmid families",
-          visible: false,
-          sortable: true
-        }, {
-          field: "cluster",
-          title: "Cluster no.",
-          visible: false,
-          sortable: true
-        }],
-        // data is an array of rows
-        data: results,
-        // formatLoadingMessage: function () {
-        //   return "<img src=\"{{ url_for('static'," +
-        //     " filename='images/loading.gif') }}'\" />"
-        // }
+    // waits for all promises before constructing full table
+    Promise.all(promises)
+      .then((results) => {
+        // table is just returned in the end before that a json should be
+        // constructed
+        $("#metadataTable").bootstrapTable({
+          // columens are used to generate headers
+          columns: [{
+            field: "state",
+            checkbox: true
+          }, {
+            field: "id",
+            title: "Accession number",
+            switchable: false,
+            formatter: linkFormatter
+          }, {
+            field: "plasmidName",
+            title: "Plasmid name",
+            sortable: true
+          }, {
+            field: "length",
+            title: "Sequence length",
+            sortable: true
+          }, {
+            field: "percentage",
+            title: "Percentage coverage",
+            sortable: true,
+            visible: false
+          }, {
+            field: "speciesName",
+            title: "Species name",
+            sortable: true,
+            detailFilter: true
+          }, {
+            field: "resGenes",
+            title: "Resistance genes",
+            visible: false,
+            sortable: true
+          }, {
+            field: "pfGenes",
+            title: "Plasmid families",
+            visible: false,
+            sortable: true
+          }, {
+            field: "cluster",
+            title: "Cluster no.",
+            visible: false,
+            sortable: true
+          }],
+          // data is an array of rows
+          data: results,
+          // formatLoadingMessage: function () {
+          //   return "<img src=\"{{ url_for('static'," +
+          //     " filename='images/loading.gif') }}'\" />"
+          // }
+        })
+        $("#loading").hide()
       })
-      $("#loading").hide()
-    })
+  } else {
+    $("#loading").hide()
+    return
+  }
 }
 
 const parseReadObj = (readObjects, masterReadArray) => {

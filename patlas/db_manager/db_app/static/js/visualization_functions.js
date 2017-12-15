@@ -79,6 +79,10 @@ const getArray_pf = () => {
 let listGiFilter = []
 let reloadAccessionList = []
 
+// variable to store previous list of accessions that iterate through table
+// is the same or not
+let previousTableList = []
+
 let sliderMinMax = [] // initiates an array for min and max slider entries
 // and stores it for reloading instances of onload()
 let list_gi = []
@@ -1726,12 +1730,12 @@ const onLoad = () => {
 
   // function to create table
   $("#tableShow").unbind("click").bind("click", (e) => {
-    $("#tableModal").modal()
-    $("#metadataTable").bootstrapTable("destroy")
-    $(".nav-tabs a[href='#homeTable']").tab("show")
-    showDiv().then( () => {
-      makeTable(areaSelection, listGiFilter, g, graphics, graphSize)
-    })
+      $("#tableModal").modal()
+      // $("#metadataTable").bootstrapTable("destroy")
+      $(".nav-tabs a[href='#homeTable']").tab("show")
+      showDiv().then(() => {
+        makeTable(areaSelection, listGiFilter, g, graphics, graphSize)
+      })
   })
 
   // function to close table
