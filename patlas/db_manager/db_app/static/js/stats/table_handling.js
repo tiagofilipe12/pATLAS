@@ -62,13 +62,13 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
           })
 
           await $.get("api/getresistances/", {accession}, (data, status) => {
-            const resistances = (data.plasmid_id) ? data.json_entry.gene : "N/A"
+            const resistances = (data.plasmid_id) ? data.json_entry.gene.replace(/['u"\[\]]/g, "") : "N/A"
             // add to entry
             entry.resGenes = resistances
           })
 
           await $.get("api/getplasmidfinder/", {accession}, (data, status) => {
-            const plasmidfinder = (data.plasmid_id) ? data.json_entry.gene : "N/A"
+            const plasmidfinder = (data.plasmid_id) ? data.json_entry.gene.replace(/['u"\[\]]/g, "") : "N/A"
             entry.pfGenes = plasmidfinder
           })
           // async function must return the desired entry to push to dataArray
