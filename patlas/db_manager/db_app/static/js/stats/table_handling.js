@@ -51,6 +51,7 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
             if (data.plasmid_id) {
               const species = data.json_entry.name.split("_").join(" ")
               const plasmid = data.json_entry.plasmid_name
+              const clusterId = data.json_entry.cluster
 
               // then add all to the object
               entry.id = accession
@@ -58,6 +59,7 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
               entry.percentage = seqPercentage
               entry.speciesName = species
               entry.plasmidName = plasmid
+              entry.cluster = clusterId
             }
           })
 
@@ -117,11 +119,18 @@ const makeTable = (areaSelection, listGiFilter, g, graphics) => {
         }, {
           field: "resGenes",
           title: "Resistance genes",
-          visible: false
+          visible: false,
+          sortable: true
         }, {
           field: "pfGenes",
           title: "Plasmid families",
-          visible: false
+          visible: false,
+          sortable: true
+        }, {
+          field: "cluster",
+          title: "Cluster no.",
+          visible: false,
+          sortable: true
         }],
         // data is an array of rows
         data: results,
