@@ -26,7 +26,7 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
   // from mapping
   // if (node.data !== undefined) {
   if (typeof node.data.seq_length !== "undefined") {
-    $.get("api/getspecies/", {"accession": node.id}, (data, status) => {
+    $.get("api/getspecies/", {"accession": JSON.stringify([node.id])}, (data, status) => {
       console.log(data)
       // this request uses nested json object to access json entries
       // available in the database

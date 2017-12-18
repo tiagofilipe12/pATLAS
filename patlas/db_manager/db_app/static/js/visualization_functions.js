@@ -1616,7 +1616,10 @@ const onLoad = () => {
 
   // function to control cell click
     .on("dbl-click-cell.bs.table", (field, value, row, element) => {
+      console.log(g.getNode(element.id))
+
       recenterDOM(renderer, layout, [element.id, false])
+      requestPlasmidTable(g.getNode(element.id), setupPopupDisplay)
     })
 
   // function to download dataset selected in table
