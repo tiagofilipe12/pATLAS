@@ -1717,7 +1717,8 @@ const onLoad = () => {
       "#pfGenbankPop",
       "#pfCoveragePop",
       "#pfIdentityPop",
-      "#pfRangePop"
+      "#pfRangePop",
+      "#clusterIdPop"
     ])
     // then convert the resulting array to a csv file
     arrayToCsv(targetArray)
