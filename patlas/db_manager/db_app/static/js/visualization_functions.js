@@ -1335,71 +1335,6 @@ const onLoad = () => {
       inputs[handle].value = Math.trunc(Math.exp(values[handle]))
     })
 
-    // function setSliderHandle (i, value) {
-    //   var r = [null, null]
-    //   r[i] = value
-    //   slider.noUiSlider.set(r)
-    // }
-
-    // Listen to keydown events on the input field.
-    // inputs.forEach(function (input, handle) {
-    //   input.addEventListener('change', function () {
-    //     setSliderHandle(handle, this.value)
-    //   })
-    //
-    //   input.addEventListener('keydown', function (e) {
-    //     var values = slider.noUiSlider.get()
-    //     var value = Number(values[handle])
-    //
-    //     // [[handle0_down, handle0_up], [handle1_down, handle1_up]]
-    //     var steps = slider.noUiSlider.steps()
-    //
-    //     // [down, up]
-    //     var step = steps[handle]
-    //
-    //     var position
-    //
-    //     // 13 is enter,
-    //     // 38 is key up,
-    //     // 40 is key down.
-    //     switch (e.which) {
-    //       case 13:
-    //         setSliderHandle(handle, this.value)
-    //         break
-    //
-    //       case 38:
-    //
-    //         // Get step to go increase slider value (up)
-    //         position = step[1]
-    //
-    //         // false = no step is set
-    //         if (position === false) {
-    //           position = 1
-    //         }
-    //
-    //         // null = edge of slider
-    //         if (position !== null) {
-    //           setSliderHandle(handle, value + position)
-    //         }
-    //
-    //         break
-    //
-    //       case 40:
-    //
-    //         position = step[0]
-    //
-    //         if (position === false) {
-    //           position = 1
-    //         }
-    //
-    //         if (position !== null) {
-    //           setSliderHandle(handle, value - position)
-    //         }
-    //         break
-    //     }
-    //   })
-    // })
-
     // resets the slider
     $("#reset-sliders").click(function (event) {
       listGiFilter = [] //resets listGiFilter
@@ -1553,7 +1488,6 @@ const onLoad = () => {
                 } else {
                   // if there is no reference associated with sequence then
                   // there are no links
-                  // TODO this will break if singletons are added
                   reject(new Error(`link wasn't added: ${array.childId} -> ${sequence}`))
                 }
                 if (i + 1 === json.lenght) {
@@ -1732,7 +1666,10 @@ const onLoad = () => {
       // $("#metadataTable").bootstrapTable("destroy")
       $(".nav-tabs a[href='#homeTable']").tab("show")
       showDiv().then(() => {
-        makeTable(areaSelection, listGiFilter, previousTableList, g, graphics, graphSize)
+        console.log(previousTableList)
+        previousTableList = makeTable(areaSelection, listGiFilter,
+          previousTableList, g, graphics, graphSize)
+        console.log(previousTableList)
       })
   })
 

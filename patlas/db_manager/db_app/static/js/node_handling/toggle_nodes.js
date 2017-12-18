@@ -24,22 +24,22 @@ const toggle_manager = (toggle_status) => {
 const requestPlasmidTable = (node, setupPopupDisplay) => {
   // if statement to check if node is in database or is a new import
   // from mapping
-  let clusterId
   // if (node.data !== undefined) {
   if (typeof node.data.seq_length !== "undefined") {
     $.get("api/getspecies/", {"accession": node.id}, (data, status) => {
+      console.log(data)
       // this request uses nested json object to access json entries
       // available in the database
       // if request return no speciesName or plasmidName
       // sometimes plasmids have no descriptor for one of these or both
-      const speciesName = (data.json_entry.name === null) ?
-        "N/A" : data.json_entry.name.split("_").join(" ")
+      const speciesName = (data[0].json_entry.name === null) ?
+        "N/A" : data[0].json_entry.name.split("_").join(" ")
 
-      const plasmidName = (data.json_entry.plasmid_name === null) ?
-        "N/A" : data.json_entry.plasmid_name
+      const plasmidName = (data[0].json_entry.plasmid_name === null) ?
+        "N/A" : data[0].json_entry.plasmid_name
 
-      const clusterId = (data.json_entry.cluster === null) ?
-        "N/A" : data.json_entry.cluster
+      const clusterId = (data[0].json_entry.cluster === null) ?
+        "N/A" : data[0].json_entry.cluster
       // check if data can be called as json object properly from db something like data.species or data.length
       setupPopupDisplay(node, speciesName, plasmidName, clusterId) //callback
       // function for

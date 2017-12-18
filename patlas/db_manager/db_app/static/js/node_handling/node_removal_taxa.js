@@ -71,62 +71,111 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
     let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
     // loops every Accession stored in listGiFilter on re_run button
-    for (let i = 0; i < listGiFilter.length; i++) {
-      promises.push(
-        $.get("api/getspecies/", {"accession": listGiFilter[i]},
-          (data, status) => {
-            // this request uses nested json object to access json entries
-            // available in the database
+    // for (let i = 0; i < listGiFilter.length; i++) {
+    // promises.push(
+    $.get("api/getspecies/", {"accession": JSON.stringify(listGiFilter)}) //,
+    // (data, status) => {
+    //   // this request uses nested json object to access json entries
+    //   // available in the database
+    //
+    //   // if request return no speciesName or plasmidName
+    //   // sometimes plasmids have no descriptor for one of these or both
+    //   if (data.json_entry.name === null) {
+    //     speciesName = "N/A"
+    //   } else {
+    //     speciesName = data.json_entry.name.split("_").join(" ")
+    //   }
+    //   if (data.json_entry.plasmid_name === null) {
+    //     plasmidName = "N/A"
+    //   } else {
+    //     plasmidName = data.json_entry.plasmid_name
+    //   }
+    //   // if accession is not present in the database because singletons
+    //   // are not stored in database
+    //   if (data.json_entry.significantLinks === null) {
+    //     const jsonObj = {
+    //       "plasmidAccession": listGiFilter[i],
+    //       "plasmidLenght": "N/A",
+    //       "speciesName": "N/A",
+    //       "plasmidName": "N/A",
+    //       "significantLinks": "N/A"
+    //     }
+    //     //add node
+    //     reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+    //     reloadAccessionList = reAddNodeList[0]
+    //     newListHashes = reAddNodeList[1]
+    //
+    //   } else {  // add node for every accession that has links and that is
+    //     // present in plasmid_db
+    //     const jsonObj = {
+    //       "plasmidAccession": data.plasmid_id,
+    //       "plasmidLenght": data.json_entry.length,
+    //       "speciesName": speciesName,
+    //       "plasmidName": plasmidName,
+    //       // this splits the string into an array with each entry
+    //       "significantLinks": data.json_entry.significantLinks//.split("],")
+    //     }
+    //     //add node
+    //     reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+    //     reloadAccessionList = reAddNodeList[0]
+    //     newListHashes = reAddNodeList[1]
+    //   }
+    // })
+    // )
 
-            // if request return no speciesName or plasmidName
-            // sometimes plasmids have no descriptor for one of these or both
-            if (data.json_entry.name === null) {
-              speciesName = "N/A"
-            } else {
-              speciesName = data.json_entry.name.split("_").join(" ")
-            }
-            if (data.json_entry.plasmid_name === null) {
-              plasmidName = "N/A"
-            } else {
-              plasmidName = data.json_entry.plasmid_name
-            }
-            // if accession is not present in the database because singletons
-            // are not stored in database
-            if (data.json_entry.significantLinks === null) {
-              const jsonObj = {
-                "plasmidAccession": listGiFilter[i],
-                "plasmidLenght": "N/A",
-                "speciesName": "N/A",
-                "plasmidName": "N/A",
-                "significantLinks": "N/A"
-              }
-              //add node
-              reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
-              reloadAccessionList = reAddNodeList[0]
-              newListHashes = reAddNodeList[1]
-
-            } else {  // add node for every accession that has links and that is
-              // present in plasmid_db
-              const jsonObj = {
-                "plasmidAccession": data.plasmid_id,
-                "plasmidLenght": data.json_entry.length,
-                "speciesName": speciesName,
-                "plasmidName": plasmidName,
-                // this splits the string into an array with each entry
-                "significantLinks": data.json_entry.significantLinks//.split("],")
-              }
-              //add node
-              reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
-              reloadAccessionList = reAddNodeList[0]
-              newListHashes = reAddNodeList[1]
-            }
-          })
-      )
-    }
     // promise that waits for all the requests and nodes to be added to
     // vivagraph.... and only then precompute the graph.
-    Promise.all(promises)
+    //Promise.all(promises)
+      .then( (results) => {
+        console.log(results)
+        for (const data of results) {
+          console.log(data)
+          // if request rtaeturn no speciesName or plasmidName
+          // sometimes plasmids have no descriptor for one of these or both
+          if (data.json_entry.name === null) {
+            speciesName = "N/A"
+          } else {
+            speciesName = data.json_entry.name.split("_").join(" ")
+          }
+          if (data.json_entry.plasmid_name === null) {
+            plasmidName = "N/A"
+          } else {
+            plasmidName = data.json_entry.plasmid_name
+          }
+          // if accession is not present in the database because singletons
+          // are not stored in database
+          if (data.json_entry.significantLinks === null) {
+            const jsonObj = {
+              "plasmidAccession": data.plasmid_id,
+              "plasmidLenght": "N/A",
+              "speciesName": "N/A",
+              "plasmidName": "N/A",
+              "significantLinks": "N/A"
+            }
+            //add node
+            reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+            reloadAccessionList = reAddNodeList[0]
+            newListHashes = reAddNodeList[1]
+
+          } else {  // add node for every accession that has links and that is
+            // present in plasmid_db
+            const jsonObj = {
+              "plasmidAccession": data.plasmid_id,
+              "plasmidLenght": data.json_entry.length,
+              "speciesName": speciesName,
+              "plasmidName": plasmidName,
+              // this splits the string into an array with each entry
+              "significantLinks": data.json_entry.significantLinks//.split("],")
+            }
+            //add node
+            reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+            reloadAccessionList = reAddNodeList[0]
+            newListHashes = reAddNodeList[1]
+          }
+        }
+      })
       .then( () => {
+        console.log("coco")
         renderGraph(graphics)
         if (readString !== false) {
           readColoring(g, list_gi, graphics, renderer, readString)
@@ -154,9 +203,10 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           // area selection
         }
       })
-      .catch( (error) => {
+      .catch((error) => {
         console.log("Error! No query was made. Error message: ", error)
       })
+    //}
   }
   return [listGiFilter, reloadAccessionList]
 }

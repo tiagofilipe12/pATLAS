@@ -169,6 +169,12 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       showInLegend: false,
       color: colorsPlot[taxaType.replace(" ", "")]
     }]
+    // this options allows column plots to show more than 10k plasmids
+    layout.plotOptions = {
+      column: {
+        turboThreshold: 0
+      }
+    }
     // enable sort buttons again
     $("#sortGraph").removeAttr("disabled")
     $("#sortGraphAlp").removeAttr("disabled")
@@ -341,44 +347,50 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
   resetProgressBar()
 
   let PFList = []
-  let promises = []
+  // let counter = 0
+  // let promises = []
 
-  for (const item in tempList) {
-    if ({}.hasOwnProperty.call(tempList, item)) {
-      const nodeId = tempList[item]
-      promises.push(
-        $.get("api/getplasmidfinder/", {"accession": nodeId}, () => {
+  // for (const item in tempList) {
+  //   if ({}.hasOwnProperty.call(tempList, item)) {
+  //     const nodeId = tempList[item]
+  //     promises.push(
+  $.get("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
           // for each instance of item update progressBar
-          progressBarControl(parseInt(item) + 1, tempList.length)
-        })
-      )
-    }
-  }
+          // progressBarControl(parseInt(item) + 1, tempList.length)
+        // })
+      // )
+    // }
+  // }
 
-  let counter = 0
+
   // when all promises are gathered
-  Promise.all(promises)
+  // Promise.all(promises)
     .then( (results) => {
+      console.log(results)
+      const noUnknowns = tempList.length - results.length
+      for (let i=0; i < noUnknowns; i++) {
+        PFList.push("unknown")
+      }
       results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
         //then if unknown can push directly to array
         if (pfName === "unknown") {
           PFList.push(pfName)
-          counter += 1
+          // counter += 1
         } else {
           // otherwise needs to parse the array into an array
           for (const i in pfName) {
             if ({}.hasOwnProperty.call(pfName, i)) {
               PFList.push(pfName[i])
-              counter += 1
+              // counter += 1
             }
           }
         }
 
       })
       // EXECUTE STATS
-      if (PFList.length === counter) {
+      if (PFList.length >= tempList.length) {
         const layout = layoutGet(taxaType, [...new Set(PFList)].length)
         statsParser(false, PFList, layout, taxaType, sortAlp, sortVal)
       }
@@ -394,47 +406,49 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
   resetProgressBar()
 
   let resList = []
-  let promises = []
+  //let promises = []
 
-  for (const item in tempList) {
-    if ({}.hasOwnProperty.call(tempList, item)) {
-      const nodeId = tempList[item]
-      promises.push(
-        $.get("api/getresistances/", {"accession": nodeId}, () => {
+  // for (const item in tempList) {
+  //   if ({}.hasOwnProperty.call(tempList, item)) {
+  //     const nodeId = tempList[item]
+  //     promises.push(
+  $.get("api/getresistances/", { "accession": JSON.stringify(tempList) })
           // for each instance of item update progressBar
-          progressBarControl(parseInt(item) + 1, tempList.length)
-        })
-      )
-    }
-  }
+  //         progressBarControl(parseInt(item) + 1, tempList.length)
+  //       })
+  //     )
+  //   }
+  // }
 
   // when all promises are gathered
-  let counter = 0
-  Promise.all(promises)
+  // Promise.all(promises)
     .then( (results) => {
+      console.log(results)
+      const noUnknowns = tempList.length - results.length
+      for (let i=0; i < noUnknowns; i++) {
+        resList.push("unknown")
+      }
+      // resList = Array.from([...Array(noUnknowns)], () => "unknown")
       results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
         //then if unknown can push directly to array
         if (pfName === "unknown") {
-          counter += 1
           resList.push(pfName)
         } else {
           // otherwise needs to parse the array into an array
           for (const i in pfName) {
             resList.push(pfName[i])
-            counter += 1
           }
         }
 
       })
       // EXECUTE STATS
-      if (resList.length === counter) {
+      if (resList.length >= tempList.length) {
         const layout = layoutGet(taxaType, [...new Set(resList)].length)
         statsParser(false, resList, layout, taxaType, sortAlp, sortVal)
       }
     })
-
   return resList
 }
 
@@ -444,28 +458,34 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
   let speciesList = []
-  let promises = []
+  //let promises = []
+  //console.log(JSON.stringify(tempList))
   // const speciesObject = {}
-  for (const item in tempList) {
-    if ({}.hasOwnProperty.call(tempList, item)) {
-      const nodeId = tempList[item]
-      promises.push(
+  // for (const item in tempList) {
+  //   if ({}.hasOwnProperty.call(tempList, item)) {
+  //     const nodeId = tempList[item]
+  //     promises.push(
         // query used to push to promise the . there is no need for the
         // function that parses the data and status but just to push data
         // into the promises array
-        $.get("api/getspecies/", {"accession": nodeId}, () => {
+  $.get("api/getspecies/", { "accession": JSON.stringify(tempList) })
           // for each instance of item update progressBar
-          progressBarControl(parseInt(item) + 1, tempList.length)
+          // progressBarControl(parseInt(item) + 1, tempList.length)
 
-        })
-      )
-    }
-  }
+        // })
+      // )
+    // }
+  // }
   // waits for all promises to finish and then execute functions that will
   // render the graph
-  Promise.all(promises)
+  //Promise.all(promises)
     .then( (results) => {
       const accessionResultsList = []
+      const noUnknowns = tempList.length - results.length
+      for (let i=0; i < noUnknowns; i++) {
+        console.log("tau")
+        speciesList.push("unknown")
+      }
       results.map( (result) => {
         // checks if plasmid is present in db
         if (result.plasmid_id !== null) {
@@ -497,7 +517,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
       })
       // if (taxaType === "species") {
       const layout = layoutGet(taxaType, [...new Set(speciesList)].length)
-      if (speciesList.length === tempList.length) { statsParser(accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal) }
+      if (speciesList.length >= tempList.length) { statsParser(accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal) }
     })
     .catch( (error) => {
       console.log("Error: ", error)
