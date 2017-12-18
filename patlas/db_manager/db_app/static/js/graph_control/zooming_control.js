@@ -1,22 +1,32 @@
-// Final bit: most likely graph will take more space than available
-// screen. Let's zoom out to fit it into the view:
+/**
+ * function to use renderer.zoomOut() function
+ * @param {float} desiredScale
+ * @param {float} currentScale
+ * @param {Object} renderer - stores a series of functions related with
+ * vivagraph renderer
+ */
+const zoomOut = (desiredScale, currentScale, renderer) => {
+  if (desiredScale < currentScale) {
+    currentScale = renderer.zoomOut()
+    setTimeout( () => {
+      zoomOut(desiredScale, currentScale, renderer)
+    }, 16)
+  }
+}
 
-const defaultZooming = (layout,renderer) => {
+/**
+ * Function to zoom out in order to fit all nodes on the graph in the screen
+ * @param {Object} layout - stores a series of functions related with
+ * vivagraph layout
+ * @param {Object} renderer - stores a series of functions related with
+ * vivagraph renderer
+ */
+const defaultZooming = (layout, renderer) => {
   const graphRect = layout.getGraphRect()
   const graphSize = Math.min(graphRect.x2 - graphRect.x1, graphRect.y2 - graphRect.y1)
   const screenSize = Math.min(document.body.clientWidth, document.body.clientHeight)
   const desiredScale = screenSize / graphSize
-
-  const zoomOut = (desiredScale, currentScale) => {
-    // zoom API in vivagraph 0.5.x is silly. There is no way to pass transform
-    // directly. Maybe it will be fixed in future, for now this is the best I could do:
-    if (desiredScale < currentScale) {
-      currentScale = renderer.zoomOut()
-      setTimeout( () => {
-        zoomOut(desiredScale, currentScale)
-      }, 16)
-    }
-  }
-
-  zoomOut(desiredScale, 1)
+  zoomOut(desiredScale, 1, renderer)
 }
+
+// TODO make a function that controls zoom in rather than zoom out for .on("dbl-click-cell.bs.table"
