@@ -51,7 +51,7 @@ const getTableWithAreaSelection = (g, graphics) => {
  * @param {Object} graphics - vivagraph object that allows to change colors
  * of nodes and links
  */
-const makeTable = (areaSelection, listGiFilter, g, graphics) => {
+const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) => {
   let promises = []
   // redefines listGiFilter if area selection is used
   // IMPORTANT: in this case listGiFilter doesn't exit this function scope

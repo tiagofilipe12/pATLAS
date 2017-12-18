@@ -1732,7 +1732,7 @@ const onLoad = () => {
       // $("#metadataTable").bootstrapTable("destroy")
       $(".nav-tabs a[href='#homeTable']").tab("show")
       showDiv().then(() => {
-        makeTable(areaSelection, listGiFilter, g, graphics, graphSize)
+        makeTable(areaSelection, listGiFilter, previousTableList, g, graphics, graphSize)
       })
   })
 

@@ -47,9 +47,9 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
     })
   }  // exception when node has no length (used on new nodes?)
   else {
-    speciesName = "N/A"
-    plasmidName = "N/A"
-    clusterId = "N/A"
+    const speciesName = "N/A"
+    const plasmidName = "N/A"
+    const clusterId = "N/A"
     setupPopupDisplay(node, speciesName, plasmidName, clusterId) //callback
   }
 }
