@@ -365,6 +365,7 @@ const onLoad = () => {
     // executing the function and that is the reason why they wait half a
     // second before executing repetitivePlotFunction's
     $("#plotButton").unbind("click").bind("click", () => {
+      $("#modalPlot").modal()
       clickerButton = "species"
       listGiFilter = (reloadAccessionList.length !== 0) ?
         // reduces listGiFilter to reloadAccessionList
