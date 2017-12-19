@@ -70,6 +70,7 @@ const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilt
   showDownload.style.display = "block"
   showTable.style.display = "block"
   showLegend.style.display = "block"
+  $("#readString").empty()
   $("#assemblyLabel").show()
   // renderer.run()
   return listGiFilter

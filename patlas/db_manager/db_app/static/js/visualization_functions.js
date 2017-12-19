@@ -1798,7 +1798,6 @@ const onLoad = () => {
     // when it is already queried and we are just cycling b/w the two divs
     // (tabs) then just show and hide the respective divs
     // $("#pfTab").show()
-
     // }
   })
 
@@ -1816,8 +1815,8 @@ const onLoad = () => {
   })
 
   /** control the visualization of multiple files for read mode
-  The default idea is that the first file in this readFilejson object is the
-   one to be loaded when uploading then everything else should use cycler
+  * The default idea is that the first file in this readFilejson object is the
+  * one to be loaded when uploading then everything else should use cycler
   */
   $("#slideRight").unbind("click").bind("click", () => {
     resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
@@ -1851,7 +1850,7 @@ const onLoad = () => {
   /**
   * function to allow shift key to select nodes again, on modal close
   */
-  $(".modal").on("hidden.bs.modal", function () {
+  $(".modal").on("hidden.bs.modal", () => {
     multiSelectOverlay = false
     // this force question buttons to close if tableModal and modalPlot are
     // closed
