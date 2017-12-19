@@ -75,7 +75,6 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
   // IMPORTANT: in this case listGiFilter doesn't exit this function scope
   // which is the intended behavior
   listGiFilter = (areaSelection === false) ? listGiFilter : getTableWithAreaSelection(g, graphics)
-  console.log(listGiFilter, previousTableList)
   if (arraysEqual(listGiFilter, previousTableList) === false) {
     $("#metadataTable").bootstrapTable("destroy")
     previousTableList = listGiFilter
@@ -147,8 +146,9 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
     promiseGather(listGiFilter)
       .then( (requests) => {
         // let promises = []
-        for (let i in listGiFilter) {
-          const accession = listGiFilter[i]
+        for (const i in listGiFilter) {
+          const accession = ({}.hasOwnProperty.call(listGiFilter, i)) ?
+            listGiFilter[i] : false
           // forces reseting of the entry object to be passed has an array
           const entry = {
             "id": "",
@@ -164,7 +164,7 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
             g.getNode(accession).data.percentage : "N/A"
 
           // iterates through main database entries
-          for (mainRequest of requests.sequences) {
+          for (let mainRequest of requests.sequences) {
             if (mainRequest.plasmid_id === accession) {
               // then add all to the object
               entry.id = accession
@@ -178,7 +178,7 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
             }
           }
           // iterates through resistance database entries
-          for (resistanceRequest of requests.resistances) {
+          for (let resistanceRequest of requests.resistances) {
             if (resistanceRequest.plasmid_id === accession) {
               entry.resGenes = resistanceRequest.json_entry.gene.replace(/['u"\[\]]/g, "")
               // loops must be break because there must be only one entry
@@ -186,7 +186,7 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
             }
           }
           // iterates through plasmidfinder database entries
-          for (pfamiliesRequest of requests.pfamilies) {
+          for (let pfamiliesRequest of requests.pfamilies) {
             if (pfamiliesRequest.plasmid_id === accession) {
               entry.pfGenes = pfamiliesRequest.json_entry.gene.replace(/['u"\[\]]/g, "")
               // loops must be break because there must be only one entry
@@ -200,7 +200,6 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
 
         Promise.all(promises)
           .then( (entry) => {
-            console.log(entry)
             // table is just returned in the end before that a json should be
             // constructed
             $("#metadataTable").bootstrapTable({

@@ -92,7 +92,7 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
                     order_taxid_dic, species_list):
     super_dic = {}
     # then cycle each species in list
-    for x, species in enumerate(species_list):
+    for species in species_list:
         #print(species)
         #print(x) # used to count the number of species already parsed
         k = species.split(" ")[0]  # cycle genera

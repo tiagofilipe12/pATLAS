@@ -366,7 +366,6 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
   // when all promises are gathered
   // Promise.all(promises)
     .then( (results) => {
-      console.log(results)
       const noUnknowns = tempList.length - results.length
       for (let i=0; i < noUnknowns; i++) {
         PFList.push("unknown")
@@ -483,7 +482,6 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
       const accessionResultsList = []
       const noUnknowns = tempList.length - results.length
       for (let i=0; i < noUnknowns; i++) {
-        console.log("tau")
         speciesList.push("unknown")
       }
       results.map( (result) => {

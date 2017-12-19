@@ -131,12 +131,16 @@
 #modal-body-length{
     height: 200px;
     overflow: auto;
-
 }
+
+.modal-header{
+    color: white;
+    background-color: #524F52;
+}
+
 /*input min value*/
 #min-modal{
     text-align: center;
-
 }
 
 #slider_input_min{

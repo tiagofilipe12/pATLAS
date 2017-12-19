@@ -127,9 +127,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
     // vivagraph.... and only then precompute the graph.
     //Promise.all(promises)
       .then( (results) => {
-        console.log(results)
         for (const data of results) {
-          console.log(data)
           // if request rtaeturn no speciesName or plasmidName
           // sometimes plasmids have no descriptor for one of these or both
           if (data.json_entry.name === null) {

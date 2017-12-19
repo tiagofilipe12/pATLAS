@@ -154,8 +154,8 @@ class DbInsertion(Abricate):
                 print("Wrong db type specified in '-db' option")
                 raise SystemExit
             # then do db magic
-            #db.session.add(row)
-            #db.session.commit()
+            db.session.add(row)
+            db.session.commit()
         db.session.close()
 
     def get_json_file(self, list_of_filters, db_type):

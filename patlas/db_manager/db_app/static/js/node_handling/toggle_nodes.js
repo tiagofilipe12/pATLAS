@@ -27,7 +27,6 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
   // if (node.data !== undefined) {
   if (typeof node.data.seq_length !== "undefined") {
     $.get("api/getspecies/", {"accession": JSON.stringify([node.id])}, (data, status) => {
-      console.log(data)
       // this request uses nested json object to access json entries
       // available in the database
       // if request return no speciesName or plasmidName
