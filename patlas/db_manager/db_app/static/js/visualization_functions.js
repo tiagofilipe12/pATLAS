@@ -241,6 +241,7 @@ const onLoad = () => {
     document.addEventListener("keyup", (e) => {
       if (e.which === 16 && multiSelectOverlay !== "disable") {
         $(".graph-overlay").hide()
+        $("#colorLegend").hide()
         if (multiSelectOverlay !== false) {
           multiSelectOverlay.destroy()
         }
