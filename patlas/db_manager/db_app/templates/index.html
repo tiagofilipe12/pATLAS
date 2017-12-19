@@ -162,6 +162,66 @@
     </div>
 </div>
 
+<!-- about modal -->
+<div class="modal fade" id="aboutModal" data-backdrop="static"
+     role="dialog" tabindex="-1">
+    <div class="modal-dialog" id="aboutDialog" style="width: 80%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     alt="pATLAS" style="width:30%;height:auto; display:block;
+                     margin:auto;"/>
+            </div>
+            <div class="modal-body" id="aboutModalBody">
+                <h1><b>Plasmid Atlas</b></h1>
+                <p class="mainText">
+                    pATLAS is a web-based tool enabling searching for a
+                    specific plasmid (or plasmids) of interest, visualize the
+                    available plasmid database and to identify plasmids
+                    contained in High Throughput Sequencing data.
+                </p>
+
+                <h3><b>Version:</b> 0.1 (beta)</h3>
+                <p class="mainText">
+                </p>
+                <h3><b>Last database update:</b> 15 December 2017</h3>
+                <p class="mainText">
+                </p>
+                <h3><b>Acknowledgements</b></h3>
+                <p class="mainText">
+                <li>FCT - "Fundação para a Ciência e a Tecnologia"and
+                    BacGenTrack (TUBITAK/0004/2014)
+                    <br>[FCT/ Scientific and
+                    Technological Research Council of Turkey (Türkiye Bilimsel
+                    ve Teknolojik Araşrrma Kurumu, TÜBİTAK)]</li>
+                <br>
+                <li><a href="https://fhs.mcmaster.ca/biochem/mcarthur_andrew.html"
+                       target="_blank" style="color:#6292A9;">Andrew McArthur</a>
+                </li>
+                <li><a href="https://genomeinformatics.github.io/people/phillippy/"
+                       target="_blank" style="color:#6292A9;">Adam Phillippy</a>
+                </li>
+                <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:cmendes"
+                       target="_blank" style="color:#6292A9;">Catarina Inês Mendes</a>
+                </li>
+                <li><a href="https://www.rug.nl/staff/n.monge.gomes.do.couto/"
+                       target="_blank" style="color:#6292A9;">Natacha Couto</a>
+                </li>
+                </p>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="close" class="btn btn-default"
+                        data-dismiss="modal" id="aboutDismiss">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal for table-->
 <div id="tableModal" class="modal fade" data-backdrop="static" role="dialog"
      tabindex="-1">
@@ -696,7 +756,8 @@
                 </div>
             </li>
             <li class="collapse_groups">
-                <a href="#">About</a>
+                <a href="#" data-toggle="modal" data-backdrop="static"
+                   data-target="#aboutModal">About</a>
             </li>
         </ul>
     </div>

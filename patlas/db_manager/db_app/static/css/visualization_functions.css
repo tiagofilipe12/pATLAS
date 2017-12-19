@@ -722,3 +722,7 @@ Careful when using this in other popovers in the future*/
 #plotWait{
     margin: 0 auto;
 }
+
+#aboutModalBody{
+    text-align: center;
+}
