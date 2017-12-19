@@ -625,12 +625,13 @@
 #progressDiv{
     font-size: 18px;
     position: relative;
-    top: 40%;
+    width: 100%;
+    text-align: center;
+    top: 30%;
 }
 
 #actualProgress{
-    width: 0%;
-    height: auto;
+    display: inline-block;
 }
 
 #headerTaxaGroup, #headerABRGroup, #headerOtherGroup {
@@ -716,4 +717,8 @@ Careful when using this in other popovers in the future*/
 .popover-title  {
     background: #514F52;
     color: white;
+}
+
+#plotWait{
+    margin: 0 auto;
 }

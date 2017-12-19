@@ -147,6 +147,7 @@ const resetHighlight = (ch) => {
 
 // function to parse stats //
 const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
+  $("#loadingImgPlots").hide()
   $("#alertPlot").hide()
   // controls progress bar div
   $("#progressBar").hide()
@@ -540,6 +541,7 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
 // repetitive function that is often called by main js
 // (visualization_functions.js)
 const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  $("#loadingImgPlots").show()
   const listPlots = (areaSelection === false) ?
     getMetadata(listGiFilter, clickerButton, false, false)
     : statsColor(g, graphics, clickerButton, false, false)
