@@ -422,7 +422,6 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
   // when all promises are gathered
   // Promise.all(promises)
     .then( (results) => {
-      console.log(results)
       const noUnknowns = tempList.length - results.length
       for (let i=0; i < noUnknowns; i++) {
         resList.push("unknown")

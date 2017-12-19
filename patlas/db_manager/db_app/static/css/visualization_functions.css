@@ -133,9 +133,16 @@
     overflow: auto;
 }
 
+/*changes headers of all modals*/
 .modal-header{
     color: white;
+    border-color: #524F52;
     background-color: #524F52;
+}
+
+/*changes close button for all modals*/
+.modal-header .close{
+    color: white;
 }
 
 /*input min value*/

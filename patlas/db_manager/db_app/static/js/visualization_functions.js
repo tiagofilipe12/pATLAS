@@ -1694,10 +1694,8 @@ const onLoad = () => {
     $(".nav-tabs a[href='#homeTable']").tab("show")
     showDiv()
       .then( () => {
-        console.log(previousTableList)
         previousTableList = makeTable(areaSelection, listGiFilter,
           previousTableList, g, graphics, graphSize)
-        console.log(previousTableList)
       })
   })
 
