@@ -40,7 +40,8 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
 // this function is intended to use in single query instances such as
 // popup_description button
 const resGetter = (nodeId) => {
-  $.get("api/getresistances/", {"accession": nodeId}, (data, status) => {
+  $.get("api/getresistances/", {"accession": JSON.stringify(nodeId)}, (data, status) => {
+    console.log(data)
     // first we need to gather all information in a format that may be
     // passed to jquery to append to popup_descriptions div
     // set of arrays for card db

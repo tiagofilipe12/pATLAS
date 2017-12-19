@@ -1682,10 +1682,11 @@ const onLoad = () => {
 
   // function to create table
   $("#tableShow").unbind("click").bind("click", (e) => {
-      $("#tableModal").modal()
-      // $("#metadataTable").bootstrapTable("destroy")
-      $(".nav-tabs a[href='#homeTable']").tab("show")
-      showDiv().then(() => {
+    $("#tableModal").modal()
+    // $("#metadataTable").bootstrapTable("destroy")
+    $(".nav-tabs a[href='#homeTable']").tab("show")
+    showDiv()
+      .then( () => {
         console.log(previousTableList)
         previousTableList = makeTable(areaSelection, listGiFilter,
           previousTableList, g, graphics, graphSize)

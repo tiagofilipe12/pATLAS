@@ -170,7 +170,7 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
               entry.id = accession
               entry.length = mainRequest.json_entry.length
               entry.percentage = seqPercentage
-              entry.speciesName = mainRequest.json_entry.name
+              entry.speciesName = mainRequest.json_entry.name.split("_").join(" ")
               entry.plasmidName = mainRequest.json_entry.plasmid_name
               entry.cluster = mainRequest.json_entry.cluster
               // loops must be break because there must be only one entry
