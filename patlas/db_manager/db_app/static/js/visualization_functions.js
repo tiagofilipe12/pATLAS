@@ -262,13 +262,13 @@ const onLoad = () => {
 
     // opens events in webgl such as mouse hoverings or clicks
 
-    $("#zoom_in").click( (event) => {
+    $("#zoom_in").unbind("click").bind("click", (event) => {
       event.preventDefault()
       renderer.zoomIn()
       renderer.rerender()   // rerender after zoom avoids glitch with
       // duplicated nodes
     })
-    $("#zoom_out").click( (event) => {
+    $("#zoom_out").unbind("click").bind("click", (event) => {
       event.preventDefault()
       renderer.zoomOut()
       renderer.rerender()   // rerender after zoom avoids glitch with
@@ -485,7 +485,7 @@ const onLoad = () => {
 
     // Buttons to control force play/pause using bootstrap navigation bar
     paused = true
-    $("#playpauseButton").on("click", function (e) {
+    $("#playpauseButton").unbind("click").bind("click", () => {
       $("#playpauseButton").empty()
       if (paused === true) {
         renderer.resume()
@@ -534,7 +534,7 @@ const onLoad = () => {
       clickedPopupButtonFamily = true
     })
     // Button to clear the selected nodes by form
-    $("#clearButton").click( (event) => {
+    $("#clearButton").unbind("click").bind("click", () => {
       document.getElementById("formValueId").value = ""
     })
 
@@ -1173,7 +1173,7 @@ const onLoad = () => {
       return returnArray
     }
 
-    $("#fileSubmit").click( (event) => {
+    $("#fileSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
       masterReadArray = []
       // feeds the first file
@@ -1201,7 +1201,7 @@ const onLoad = () => {
       $("#slideLeft").prop("disabled", false)
     })
 
-    $("#cancel_infile").click( (event) => {
+    $("#cancel_infile").unbind("click").bind("click", () => {
       abortRead(readFilejson)
     })
 
@@ -1209,7 +1209,7 @@ const onLoad = () => {
     //* ***MASH****//
     //* ************//
 
-    $("#fileSubmit_mash").click( (event) => {
+    $("#fileSubmit_mash").unbind("click").bind("click", (event) => {
       masterReadArray = []
       readFilejson = mashJson // converts mash_json into readFilejson to
       readString = JSON.parse(Object.values(readFilejson)[0])
@@ -1239,14 +1239,14 @@ const onLoad = () => {
 
     })
 
-    $("#cancel_infile_mash").click( (event) => {
+    $("#cancel_infile_mash").unbind("click").bind("click", () => {
       abortRead(mashJson)
     })
 
     //* ********* ***//
     //* * Assembly **//
     //* ********* ***//
-    $("#assemblySubmit").click( (event) => {
+    $("#assemblySubmit").unbind("click").bind("click", (event) => {
       masterReadArray = []
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
@@ -1266,14 +1266,14 @@ const onLoad = () => {
       }, 100)
     })
 
-    $("#cancel_assembly").click( (event) => {
+    $("#cancel_assembly").unbind("click").bind("click", () => {
       abortRead(assemblyJson)
     })
 
     //* *********************//
     //* * Distances filter **//
     //* *********************//
-    $("#distancesSubmit").click(function (event) {
+    $("#distancesSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
       $("#loading").show()
       $("#scaleLegend").empty()
@@ -1285,7 +1285,7 @@ const onLoad = () => {
       //document.getElementById("reset-links").disabled = ""
     })
 
-    $("#reset-links").click(function (event) {
+    $("#reset-links").unbind("click").bind("click", (event) => {
       event.preventDefault()
       const arrayOfDivs = [
         $("#colorLegendBox").html(),
@@ -1783,13 +1783,13 @@ const onLoad = () => {
     assemblyJson = false
   }
 
-  $("#uploadFile").click( (event) => {
+  $("#uploadFile").unbind("click").bind("click", () => {
     emptyFiles()
   })
-  $("#uploadFileMash").click( (event) => {
+  $("#uploadFileMash").unbind("click").bind("click", () => {
     emptyFiles()
   })
-  $("#uploadFileAssembly").click( (event) => {
+  $("#uploadFileAssembly").unbind("click").bind("click", () => {
     emptyFiles()
   })
 
@@ -1874,11 +1874,8 @@ const onLoad = () => {
     multiSelectOverlay = false
     // this force question buttons to close if tableModal and modalPlot are
     // closed
-    if (this.id === "tableModal") {
-      $("#questionTable").popover("hide")
-    } else if (this.id === "modalPlot") {
-      $("#questionPlots").popover("hide")
-    }
+    $("#questionTable").popover("hide")
+    $("#questionPlots").popover("hide")
   })
 
   // this forces the entire script to run
