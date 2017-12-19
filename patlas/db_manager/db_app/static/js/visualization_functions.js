@@ -1669,7 +1669,13 @@ const onLoad = () => {
   // button to color selected nodes by check boxes
   $("#tableSubmit").unbind("click").bind("click", (e) => {
     $("#reset-sliders").click()
-    colorNodes(g, graphics, renderer, bootstrapTableList, "0x3957ff")
+    // if bootstraTableList contains only one accession then showPopup
+    if (bootstrapTableList.length === 1) {
+      recenterDOM(renderer, layout, [bootstrapTableList[0], false])
+      requestPlasmidTable(g.getNode(bootstrapTableList[0]), setupPopupDisplay)
+    }
+    console.log(bootstrapTableList)
+    colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
     // handles hidden buttons
     showRerun.style.display = "block"
     showGoback.style.display = "block"
@@ -1677,6 +1683,7 @@ const onLoad = () => {
     showTable.style.display = "block"
     // sets listGiFilter to the selected nodes
     listGiFilter = bootstrapTableList
+    bootstrapTableList = []
     renderer.rerender()
   })
 
