@@ -583,6 +583,13 @@ const onLoad = () => {
 
     $("#pfSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      // clears previous selected nodes
+      node_color_reset(graphics, g, nodeColor, renderer)
+      // empties taxa and plasmidfinder legend
+      $("#taxa_label").hide()
+      $("#colorLegendBox").empty()
+      $("#res_label").hide()
+      $("#colorLegendBoxRes").empty()
       // reset nodes before submitting new colors
       const legendInst = pfSubmitFunction(g, graphics, renderer)
       // just show legend if any selection is made at all
@@ -642,9 +649,8 @@ const onLoad = () => {
     }
 
     $("#resClear").unbind("click").bind("click", (event) => {
-      document.getElementById("reset-sliders").click()
-      // clear = true;
       event.preventDefault()
+      document.getElementById("reset-sliders").click()
       resetDisplayTaxaBox(["p_Resfinder", "p_Card"])
 
       // resets dropdown selections
@@ -670,7 +676,13 @@ const onLoad = () => {
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
-      // TODO reset nodes before adding new colors
+      // clears previously selected nodes
+      node_color_reset(graphics, g, nodeColor, renderer)
+      // empties taxa and plasmidfinder legend
+      $("#taxa_label").hide()
+      $("#colorLegendBox").empty()
+      $("#pf_label").hide()
+      $("#colorLegendBoxPf").empty()
       // same should be done for taxa filters submit button
       const legendInst = resSubmitFunction(g, graphics, renderer)
       // just show legend if any selection is made at all
@@ -889,6 +901,11 @@ const onLoad = () => {
 
       // first restores all nodes to default color
       node_color_reset(graphics, g, nodeColor, renderer)
+      // empties taxa and plasmidfinder legend
+      $("#res_label").hide()
+      $("#colorLegendBoxRes").empty()
+      $("#pf_label").hide()
+      $("#colorLegendBoxPf").empty()
 
       // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
@@ -1540,17 +1557,17 @@ const onLoad = () => {
   // control the infile input and related functions //
   //* ***********************************************//
 
-  handleFileSelect('infile', '#file_text', (newReadJson) => {
+  handleFileSelect("infile", "#file_text", (newReadJson) => {
     readFilejson = newReadJson
     // $("#infile").val("")
   })
 
-  handleFileSelect('mashInfile', '#file_text_mash', function (newMashJson) {
+  handleFileSelect("mashInfile", "#file_text_mash", function (newMashJson) {
     mashJson = newMashJson
     // $("#mashInfile").val("")
   })
 
-  handleFileSelect('assemblyfile', '#assembly_text', function (newAssemblyJson) {
+  handleFileSelect("assemblyfile", "#assembly_text", function (newAssemblyJson) {
     assemblyJson = newAssemblyJson
     // $("#assemblyfile").val("")
   })
@@ -1561,10 +1578,10 @@ const onLoad = () => {
 
   $("#menu-toggle").on("click", function (e) {
     if (first_click_menu === true) {
-      $("#menu-toggle").css({"color": "#fff"})
+      $("#menu-toggle").css( {"color": "#fff"} )
       first_click_menu = false
     } else {
-      $("#menu-toggle").css({"color": "#999999"})
+      $("#menu-toggle").css( {"color": "#999999"} )
       first_click_menu = true
     }
   })

@@ -134,8 +134,9 @@ const resSubmitFunction = (g, graphics, renderer) => {
         $("#colorLegendBoxRes").append(
           storeLis +
           "<li class='centeredList'><button class='jscolor btn btn-default'" +
-          " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
+          " style='background-color:#666370' ></button>&nbsp;unselected</li>"
         )
+        $("#colorLegendBoxRes").show()
       }
     })
   return legendInst
@@ -199,8 +200,9 @@ const pfSubmitFunction = (g, graphics, renderer) => {
         $("#colorLegendBoxPf").append(
           storeLis +
           "<li class='centeredList'><button class='jscolor btn btn-default'" +
-          " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
+          " style='background-color:#666370' ></button>&nbsp;unselected</li>"
         )
+        $("#colorLegendBoxPf").show()
       }
     })
   return legendInst

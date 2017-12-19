@@ -175,7 +175,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
         }
       })
       .then( () => {
-        console.log("coco")
         renderGraph(graphics)
         if (readString !== false) {
           readColoring(g, list_gi, graphics, renderer, readString)
@@ -212,6 +211,17 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
 }
 
 // function that actually removes the nodes
+/**
+ * Function that actually removes the nodes when re_run button is clicked
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data
+ * @param {requestCallback} onload - a function that is used as a callback to
+ * trigger the reload of the page with a new dataset
+ * @param {boolean} forgetListGiFilter - this variable is set to false if
+ * re_run is triggered and true if go_back is triggered
+ */
 const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
   // removes all nodes from g using the same layout
   // firstInstace = false
@@ -422,18 +432,22 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
   }
   // otherwise doesn't care for listGiFilter because is just a page reload
   onload()
-  // TODO maybe add some nicer loading screen
 }
 
-// a function to display the loader mask
+/**
+ * Function to display the loader mask
+ * @returns {Promise} Returns a promise that resolves by triggering the
+ * loader div
+ */
 const showDiv = () => {
   return new Promise( (resolve) => {
     resolve($("#loading").show())
   })
 }
+
 // function to reset node colors
 const node_color_reset = (graphics, g, nodeColor, renderer) => {
-  document.getElementById('taxa_label').style.display = 'none' // hide label
+  document.getElementById("taxa_label").style.display = "none" // hide label
   g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)
     // reset all nodes before changing colors because of the second instance of filters
