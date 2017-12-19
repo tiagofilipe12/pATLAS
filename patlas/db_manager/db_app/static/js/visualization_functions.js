@@ -1705,6 +1705,7 @@ const onLoad = () => {
   // button to color selected nodes by check boxes
   $("#tableSubmit").unbind("click").bind("click", (e) => {
     $("#reset-sliders").click()
+    $("#colorLegend").hide()
     // if bootstraTableList contains only one accession then showPopup
     if (bootstrapTableList.length === 1) {
       recenterDOM(renderer, layout, [bootstrapTableList[0], false])
