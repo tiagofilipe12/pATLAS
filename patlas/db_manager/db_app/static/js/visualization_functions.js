@@ -427,6 +427,13 @@ const onLoad = () => {
       }, 500)
     })
 
+    $("#clusterStats").unbind("click").bind("click", () => {
+      clickerButton = "cluster"
+      setTimeout( () => {
+        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
+    })
+
     // sort by values
     $("#sortGraph").unbind("click").bind("click", () => {
       const sortVal = true
@@ -468,6 +475,11 @@ const onLoad = () => {
 
     $("#orderPlot").unbind("click").bind("click", () => {
       clickerButton = "order"
+      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+    })
+
+    $("#clusterPlot").unbind("click").bind("click", () => {
+      clickerButton = "cluster"
       listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 

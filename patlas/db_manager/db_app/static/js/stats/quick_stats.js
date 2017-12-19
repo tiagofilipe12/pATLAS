@@ -45,6 +45,7 @@ const colorsPlot = {
   genus: "#50B432",
   family: "#ED561B",
   order: "#DDDF00",
+  cluster: "#DF565F",
   resistances: "#24CBE5",
   plasmidfamilies: "#64E572",
   length: "#A9B3CE"
@@ -181,7 +182,10 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     $("#sortGraphAlp").removeAttr("disabled")
   } else {
     //converts every element in finalArray to float and then sorts it
-    const histoArray = finalArray.map( (e) => { return parseFloat(e) }).sort()
+    const histoArray = finalArray.map( (e) => { return parseFloat(e) })
+      .sort( (a, b) => {
+        return a - b
+      })
     // returns true if all elements have the same size and thus make only a
     // scatter
     const allEqual = (histoArray) => histoArray.every( (v) => v === histoArray[0] )
@@ -501,6 +505,9 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
           } else if (taxaType === "order") {
             const orderName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[2].replace(/['\]]/g, "")
             speciesList.push(orderName)
+          } else if (taxaType === "cluster") {
+            const clusterName = (result.json_entry.cluster === null) ? "unknown" : result.json_entry.cluster
+            speciesList.push(clusterName)
           } else {
             const speciesLength = (result.json_entry.length === null) ? "unknown" : result.json_entry.length
             speciesList.push(speciesLength)
