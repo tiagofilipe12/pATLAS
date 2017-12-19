@@ -209,9 +209,6 @@
                        target="_blank" style="color:#6292A9;">Natacha Couto</a>
                 </li>
                 </p>
-
-
-
             </div>
             <div class="modal-footer">
                 <button type="close" class="btn btn-default"
@@ -293,7 +290,6 @@
                 </button>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -821,6 +817,12 @@
                             title="Table with metadata" style="display:
                             none">
                         <span class="glyphicon glyphicon-list-alt"></span></button>
+                    <button class="btn btn-default" href="#" data-toggle="modal"
+                            data-backdrop="static" title="Quick stats"
+                            data-target="#modalPlot" id="plotButton"
+                            style="display: none">
+                        <span class="glyphicon glyphicon-stats"></span>
+                    </button>
 
                     <!--<button class="btn btn-default" id="download_img"
                             type="button" data-toogle="tooptip"
@@ -897,14 +899,15 @@
             <!-- Buttons that overlay the graph and interact with it -->
             <button id="playpauseButton" data-toggle="tooltip"
                     title="Play/Pause" type="button"
-                    class="btn btn-success">
+                    class="btn btn-default">
                 <span class="glyphicon glyphicon-play"></span>
             </button>
 
-            <button class="btn btn-primary" href="#" data-toggle="modal"
-                    data-backdrop="static" title="Quick stats"
-                    data-target="#modalPlot" id="refreshButton">
-                <span class="glyphicon glyphicon-stats"></span>
+            <button class="btn btn-default" data-toggle="tooltip"
+                    title="Trigger area selection (uses shift key)"
+                    type="button"
+                    id="refreshButton">
+                <span class="glyphicon glyphicon-screenshot"></span>
             </button>
 
         </div>

@@ -24,6 +24,8 @@ let clickedPopupButtonFamily = false
 
 // variable to control stats displayer
 let areaSelection = false
+// variable to freeze shift
+let freezeShift = true
 
 const getArray = (devel === true) ? $.getJSON("/test") : $.getJSON("/fullDS")
 // an array to store bootstrap table related list for downloads and coloring
@@ -154,8 +156,10 @@ const onLoad = () => {
   let showRerun = document.getElementById("Re_run"),
     showGoback = document.getElementById("go_back"),
     showDownload = document.getElementById("download_ds"),
-    showLegend = document.getElementById("colorLegend")
-    showTable = document.getElementById("tableShow")
+    showLegend = document.getElementById("colorLegend"),
+    showTable = document.getElementById("tableShow"),
+    plotButton = document.getElementById("plotButton")
+
 
   const graphics = Viva.Graph.View.webglGraphics()
 
@@ -201,10 +205,20 @@ const onLoad = () => {
     /* MULTI-SELECTION */
     /*******************/
 
+    $("#refreshButton").unbind("click").bind("click", () => {
+      if (freezeShift === false) {
+        freezeShift = true
+        $("#refreshButton").removeClass("btn-success").addClass("btn-default")
+      } else {
+        freezeShift = false
+        $("#refreshButton").removeClass("btn-default").addClass("btn-success")
+      }
+    })
+
     // event for shift key down
     // shows overlay div and exectures startMultiSelect
     document.addEventListener("keydown", (e) => {
-      if (e.which === 16 && multiSelectOverlay === false) { // shift key
+      if (e.which === 16 && multiSelectOverlay === false && freezeShift === false) { // shift key
         // should close popup open so it doesn't get into listGiFilter
         $("#closePop").click()
         $(".graph-overlay").show()
@@ -213,13 +227,13 @@ const onLoad = () => {
         showGoback.style.display = "block"
         showDownload.style.display = "block"
         showTable.style.display = "block"
-        showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        plotButton.style.display = "block"
+        // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         areaSelection = true
         listGiFilter = [] //if selection is made listGiFilter should be empty
-        resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-          showGoback, showDownload, showTable, idsArrays)
+        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       }
     })
     // event for shift key up
@@ -227,7 +241,9 @@ const onLoad = () => {
     document.addEventListener("keyup", (e) => {
       if (e.which === 16 && multiSelectOverlay !== "disable") {
         $(".graph-overlay").hide()
-        multiSelectOverlay.destroy()
+        if (multiSelectOverlay !== false) {
+          multiSelectOverlay.destroy()
+        }
         multiSelectOverlay = false
       }
     })
@@ -348,7 +364,7 @@ const onLoad = () => {
     // all these buttons require that the modalPlot modal opens before
     // executing the function and that is the reason why they wait half a
     // second before executing repetitivePlotFunction's
-    $("#refreshButton").unbind("click").bind("click", () => {
+    $("#plotButton").unbind("click").bind("click", () => {
       clickerButton = "species"
       listGiFilter = (reloadAccessionList.length !== 0) ?
         // reduces listGiFilter to reloadAccessionList
@@ -474,10 +490,12 @@ const onLoad = () => {
       if (paused === true) {
         renderer.resume()
         $("#playpauseButton").append("<span class='glyphicon glyphicon-pause'></span>")
+        $("#playpauseButton").removeClass("btn-default").addClass("btn-success")
         paused = false
       } else {
         renderer.pause()
         $("#playpauseButton").append("<span class='glyphicon glyphicon-play'></span>")
+        $("#playpauseButton").removeClass("btn-success").addClass("btn-default")
         paused = true
       }
     })
@@ -571,6 +589,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
@@ -578,6 +597,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        plotButton.style.display = "none"
       }
     })
 
@@ -599,9 +619,10 @@ const onLoad = () => {
         showGoback.style.display = "block"
         showDownload.style.display = "block"
         showTable.style.display = "block"
-        showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        plotButton.style.display = "block"
+        // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       }
     })
 
@@ -665,6 +686,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
@@ -672,6 +694,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        plotButton.style.display = "none"
       }
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
@@ -692,9 +715,10 @@ const onLoad = () => {
         showGoback.style.display = "block"
         showDownload.style.display = "block"
         showTable.style.display = "block"
-        showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        plotButton.style.display = "block"
+        // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       }
     })
 
@@ -776,6 +800,7 @@ const onLoad = () => {
         //document.getElementById("go_back").className += " disabled"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
@@ -784,6 +809,7 @@ const onLoad = () => {
         //document.getElementById("go_back").className += " disabled"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        plotButton.style.display = "none"
       }
     })
 
@@ -1096,6 +1122,7 @@ const onLoad = () => {
                   showGoback.style.display = "block"
                   showDownload.style.display = "block"
                   showTable.style.display = "block"
+                  plotButton.style.display = "block"
                 })
             }) // ends showDiv
 
@@ -1155,8 +1182,7 @@ const onLoad = () => {
       $("#fileNameDiv").show()
       // readIndex will be used by slider buttons
       readIndex += 1
-      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, showTable, idsArrays)
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       $("#loading").show()
       setTimeout( () => {
         // colors each node for first element of readFilejson
@@ -1192,8 +1218,7 @@ const onLoad = () => {
       // readIndex will be used by slider buttons
       readIndex += 1
       // it and use the same function (readColoring)
-      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, showTable, idsArrays)
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       event.preventDefault()
       $("#loading").show()
       setTimeout( () => {
@@ -1224,8 +1249,7 @@ const onLoad = () => {
     $("#assemblySubmit").click( (event) => {
       masterReadArray = []
       event.preventDefault()
-      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, showTable, idsArrays)
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       $("#loading").show()
       // setTimeout( () => {
       listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
@@ -1321,7 +1345,7 @@ const onLoad = () => {
 
     // event handler for slider
     // trigger only if clicked to avoid looping through the nodes again
-    $("#length_filter").click( (event) => {
+    $("#length_filter").unbind("click").bind("click", () => {
       slider.noUiSlider.on("set", (event) => {
         let slider_max = Math.exp(slider.noUiSlider.get()[1]),
           slider_min = Math.exp(slider.noUiSlider.get()[0])
@@ -1353,7 +1377,7 @@ const onLoad = () => {
     })
 
     // resets the slider
-    $("#reset-sliders").click(function (event) {
+    $("#reset-sliders").unbind("click").bind("click", () => {
       listGiFilter = [] //resets listGiFilter
       areaSelection = false
       readFilejson = false // makes file selection empty again
@@ -1361,8 +1385,7 @@ const onLoad = () => {
       mashJson = false
       currentQueryNode = false
       slider.noUiSlider.set(sliderMinMax)
-      resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-        showGoback, showDownload, showTable, idsArrays)
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
     })
     // runs the re run operation for the selected species
     $("#Re_run").unbind("click").bind("click", () => {
@@ -1374,9 +1397,9 @@ const onLoad = () => {
       // order for reload to allow reloading again
       //* * Loading Screen goes on **//
       // removes disabled from class in go_back button
-      document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      // document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      // document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+      // document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       showDiv().then( () => {
         // removes nodes
         setTimeout( () => {
@@ -1681,6 +1704,7 @@ const onLoad = () => {
     showGoback.style.display = "block"
     showDownload.style.display = "block"
     showTable.style.display = "block"
+    plotButton.style.display = "block"
     // sets listGiFilter to the selected nodes
     listGiFilter = bootstrapTableList
     bootstrapTableList = []
@@ -1817,8 +1841,7 @@ const onLoad = () => {
   * one to be loaded when uploading then everything else should use cycler
   */
   $("#slideRight").unbind("click").bind("click", () => {
-    resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-      showGoback, showDownload, showTable, idsArrays)
+    resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
     const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
@@ -1827,8 +1850,7 @@ const onLoad = () => {
   })
 
   $("#slideLeft").unbind("click").bind("click", () => {
-    resetAllNodes(graphics, g, nodeColor, renderer, showLegend, showRerun,
-      showGoback, showDownload, showTable, idsArrays)
+    resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
     const outArray = slideToLeft(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]

@@ -65,11 +65,13 @@ const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilt
   let showDownload = document.getElementById("download_ds")
   let showTable = document.getElementById("tableShow")
   let showLegend = document.getElementById("colorLegend")
+  let plotButton = document.getElementById("plotButton")
   showRerun.style.display = "block"
   showGoback.style.display = "block"
   showDownload.style.display = "block"
   showTable.style.display = "block"
   showLegend.style.display = "block"
+  plotButton.style.display = "block"
   $("#readString").empty()
   $("#assemblyLabel").show()
   // renderer.run()
