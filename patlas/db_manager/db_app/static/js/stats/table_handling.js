@@ -52,9 +52,9 @@ const getTableWithAreaSelection = (g, graphics) => {
  */
 const promiseGather = async (listGiFilter) => {
   let request = {}
-  request.sequences = await $.get("api/getspecies/", {"accession": JSON.stringify(listGiFilter)})
-  request.resistances = await $.get("api/getresistances/", {"accession": JSON.stringify(listGiFilter)})
-  request.pfamilies = await $.get("api/getplasmidfinder/", {"accession": JSON.stringify(listGiFilter)})
+  request.sequences = await $.post("api/getspecies/", {"accession": JSON.stringify(listGiFilter)})
+  request.resistances = await $.post("api/getresistances/", {"accession": JSON.stringify(listGiFilter)})
+  request.pfamilies = await $.post("api/getplasmidfinder/", {"accession": JSON.stringify(listGiFilter)})
   return request
 }
 

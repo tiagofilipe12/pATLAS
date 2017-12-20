@@ -67,10 +67,10 @@ req_parser.add_argument("plasmid_name", dest="plasmid_name", type=str,
 
 class GetSpecies(Resource):
     @marshal_with(entry_field)
-    def get(self):        
+    def post(self):
         #Put req_parser inside get function. Only this way it parses the request.
         #args = req_parser.parse_args()
-        var_response = request.args["accession"].replace("[", "")\
+        var_response = request.form["accession"].replace("[", "")\
             .replace("]", "").replace('"', "").split(",")
         single_query = db.session.query(Plasmid).filter(
             Plasmid.plasmid_id.in_(var_response)).all()
@@ -80,10 +80,10 @@ class GetSpecies(Resource):
 
 class GetResistances(Resource):
     @marshal_with(card_field)
-    def get(self):
+    def post(self):
         # Put req_parser inside get function. Only this way it parses the request.
         #args = req_parser.parse_args()
-        var_response = request.args["accession"].replace("[", "")\
+        var_response = request.form["accession"].replace("[", "")\
             .replace("]", "").replace('"', "").split(",")
         print(var_response)
         single_query = db.session.query(Card).filter(
@@ -92,10 +92,10 @@ class GetResistances(Resource):
 
 class GetPlasmidFinder(Resource):
     @marshal_with(card_field)
-    def get(self):
+    def post(self):
         # Put req_parser inside get function. Only this way it parses the request.
         #args = req_parser.parse_args()
-        var_response = request.args["accession"].replace("[", "")\
+        var_response = request.form["accession"].replace("[", "")\
             .replace("]", "").replace('"', "").split(",")
         single_query = db.session.query(Database).filter(
             Database.plasmid_id.in_(var_response)).all()

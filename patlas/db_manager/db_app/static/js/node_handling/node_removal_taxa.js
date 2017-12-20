@@ -73,7 +73,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
     // loops every Accession stored in listGiFilter on re_run button
     // for (let i = 0; i < listGiFilter.length; i++) {
     // promises.push(
-    $.get("api/getspecies/", {"accession": JSON.stringify(listGiFilter)}) //,
+    $.post("api/getspecies/", {"accession": JSON.stringify(listGiFilter)}) //,
     // (data, status) => {
     //   // this request uses nested json object to access json entries
     //   // available in the database

@@ -359,7 +359,7 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
   //   if ({}.hasOwnProperty.call(tempList, item)) {
   //     const nodeId = tempList[item]
   //     promises.push(
-  $.get("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
+  $.post("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
           // for each instance of item update progressBar
           // progressBarControl(parseInt(item) + 1, tempList.length)
         // })
@@ -416,7 +416,7 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
   //   if ({}.hasOwnProperty.call(tempList, item)) {
   //     const nodeId = tempList[item]
   //     promises.push(
-  $.get("api/getresistances/", { "accession": JSON.stringify(tempList) })
+  $.post("api/getresistances/", { "accession": JSON.stringify(tempList) })
           // for each instance of item update progressBar
   //         progressBarControl(parseInt(item) + 1, tempList.length)
   //       })
@@ -471,7 +471,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
         // query used to push to promise the . there is no need for the
         // function that parses the data and status but just to push data
         // into the promises array
-  $.get("api/getspecies/", { "accession": JSON.stringify(tempList) })
+  $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
           // for each instance of item update progressBar
           // progressBarControl(parseInt(item) + 1, tempList.length)
 

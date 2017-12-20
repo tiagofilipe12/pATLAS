@@ -40,7 +40,7 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
 // this function is intended to use in single query instances such as
 // popup_description button
 const resGetter = (nodeId) => {
-  $.get("api/getresistances/", {"accession": JSON.stringify([nodeId])}, (data, status) => {
+  $.post("api/getresistances/", {"accession": JSON.stringify([nodeId])}, (data, status) => {
     // first we need to gather all information in a format that may be
     // passed to jquery to append to popup_descriptions div
     // set of arrays for card db
@@ -144,7 +144,7 @@ const pfPopupPopulate = (queryArrayPFGenes, queryArrayPFAccession,
 const plasmidFamilyGetter = (nodeId) => {
   // here in this function there is no need to parse the
   // data.json_entry.database entry since it is a single database
-  $.get("api/getplasmidfinder/", {"accession": JSON.stringify([nodeId])}, (data, status) => {
+  $.post("api/getplasmidfinder/", {"accession": JSON.stringify([nodeId])}, (data, status) => {
     // first we need to gather all information in a format that may be
     // passed to jquery to append to popup_descriptions div
     // set of arrays for card db
