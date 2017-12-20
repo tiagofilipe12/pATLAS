@@ -1435,7 +1435,7 @@ const onLoad = () => {
       showDiv().then( () => {
         // removes nodes and forces adding same nodes
         setTimeout( () => {
-          actualRemoval (g, graphics, onLoad, true)
+          actualRemoval(g, graphics, onLoad, true)
         }, 100)
       })
     })
