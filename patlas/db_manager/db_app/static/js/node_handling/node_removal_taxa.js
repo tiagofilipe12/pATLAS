@@ -257,17 +257,13 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     "<div class='btn-group'>\n" +
     "\n" +
     "<!-- Buttons that overlay the graph and interact with it -->\n" +
-    "<button id='playpauseButton' data-toggle='tooltip' \n" +
-    "        title='Play/Pause' type='button' \n" +
-    "        class='btn btn-success'>\n" +
-    "<span class='glyphicon glyphicon-play'></span>\n" +
-    "</button>\n" +
-    "\n" +
-    "<button class='btn btn-primary' href='#' data-toggle='modal' " +
-    "        data-backdrop='static' title='Quick stats' " +
-    "        data-target='#modalPlot' id='refreshButton'>" +
-    "<span class='glyphicon glyphicon-stats'></span>\n" +
-    "</button>\n" +
+    "<button id='playpauseButton' data-toggle='tooltip'" +
+    "title='Play/Pause' type='button' class='btn btn-default'>" +
+    "<span class='glyphicon glyphicon-play'></span></button>" +
+    "<button class='btn btn-default' data-toggle='tooltip'" +
+    "title='Trigger area selection (uses shift key)'" +
+    "type='button' id='refreshButton'>" +
+    "<span class='glyphicon glyphicon-screenshot'></span></button>" +
     "</div>\n" +
     "<!--zoom buttons-->\n" +
     "<div class='btn-group'>\n" +

@@ -1418,6 +1418,7 @@ const onLoad = () => {
         // removes nodes
         setTimeout( () => {
           actualRemoval(g, graphics, onLoad, false)
+          freezeShift = true
         }, 100)
       })
     })
