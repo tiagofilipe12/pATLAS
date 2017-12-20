@@ -208,6 +208,8 @@ const onLoad = () => {
     $("#refreshButton").unbind("click").bind("click", () => {
       if (freezeShift === false) {
         freezeShift = true
+        console.log(multiSelectOverlayObj)
+        multiSelectOverlayObj.destroy()
         $("#refreshButton").removeClass("btn-success").addClass("btn-default")
       } else {
         freezeShift = false
@@ -222,7 +224,8 @@ const onLoad = () => {
         // should close popup open so it doesn't get into listGiFilter
         $("#closePop").click()
         $(".graph-overlay").show()
-        multiSelectOverlay = startMultiSelect(g, renderer, layout)
+        multiSelectOverlay = true
+        multiSelectOverlayObj = startMultiSelect(g, renderer, layout)
         showRerun.style.display = "block"
         showGoback.style.display = "block"
         showDownload.style.display = "block"
@@ -243,7 +246,7 @@ const onLoad = () => {
         $(".graph-overlay").hide()
         $("#colorLegend").hide()
         if (multiSelectOverlay !== false) {
-          multiSelectOverlay.destroy()
+          multiSelectOverlayObj.destroy()
         }
         multiSelectOverlay = false
       }

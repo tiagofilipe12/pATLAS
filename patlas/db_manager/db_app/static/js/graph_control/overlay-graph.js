@@ -64,11 +64,12 @@ const createOverlay = (overlayDom, underElement) => {
     },
     destroy: () => {
       overlayDom.style.display = "none"
+      selectionIndicator.style.display = "none"
       dragndrop.release()
     }//,
-    //selectedArea: () => {
+    // selectedArea: () => {
     //  return selectedArea
-    //}
+    // }
   }
 }
 
