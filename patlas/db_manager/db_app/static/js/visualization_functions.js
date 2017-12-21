@@ -373,13 +373,11 @@ const onLoad = () => {
     $("#plotButton").unbind("click").bind("click", () => {
       $("#modalPlot").modal()
       clickerButton = "species"
-      console.log(reloadAccessionList, listGiFilter, listGiFilter.length)
       listGiFilter = (reloadAccessionList.length !== 0) ?
         // reduces listGiFilter to reloadAccessionList
         listGiFilter.filter( (n) => reloadAccessionList.includes(n)) :
         // otherwise maintain listGiFilter untouched
         listGiFilter
-      console.log(listGiFilter, listGiFilter.length)
       setTimeout( () => {
         listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
@@ -631,19 +629,23 @@ const onLoad = () => {
       $("#res_label").hide()
       $("#colorLegendBoxRes").empty()
       // reset nodes before submitting new colors
-      const legendInst = pfSubmitFunction(g, graphics, renderer)
-      // just show legend if any selection is made at all
-      if (legendInst === true) {
-        showLegend.style.display = "block"
-        showRerun.style.display = "block"
-        showGoback.style.display = "block"
-        showDownload.style.display = "block"
-        showTable.style.display = "block"
-        plotButton.style.display = "block"
-        // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      }
+      const tempPageReRun = pageReRun
+      pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+        legendInst = results
+        pageReRun = false
+        // just show legend if any selection is made at all
+        if (legendInst === true) {
+          showLegend.style.display = "block"
+          showRerun.style.display = "block"
+          showGoback.style.display = "block"
+          showDownload.style.display = "block"
+          showTable.style.display = "block"
+          plotButton.style.display = "block"
+          // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+          // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+          // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        }
+      })
     })
 
     //* ******************//
@@ -727,23 +729,23 @@ const onLoad = () => {
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
       // same should be done for taxa filters submit button
-      console.log(pageReRun)
-      const arrayResSubmit = resSubmitFunction(g, graphics, renderer, pageReRun)
-      legendInst = arrayResSubmit[0]
-      pageReRun = arrayResSubmit[1]
-      console.log(pageReRun)
-      // just show legend if any selection is made at all
-      if (legendInst === true) {
-        showLegend.style.display = "block"
-        showRerun.style.display = "block"
-        showGoback.style.display = "block"
-        showDownload.style.display = "block"
-        showTable.style.display = "block"
-        plotButton.style.display = "block"
-        // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      }
+      const tempPageReRun = pageReRun
+      resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
+        legendInst = results
+        pageReRun = false
+        // just show legend if any selection is made at all
+        if (legendInst === true) {
+          showLegend.style.display = "block"
+          showRerun.style.display = "block"
+          showGoback.style.display = "block"
+          showDownload.style.display = "block"
+          showTable.style.display = "block"
+          plotButton.style.display = "block"
+          // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+          // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+          // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        }
+      })
     })
 
 
@@ -1034,6 +1036,16 @@ const onLoad = () => {
           Promise.all(promises)
             .then( () => {
               $("#loading").hide()
+              showLegend.style.display = "block"
+              document.getElementById("taxa_label").style.display = "block" // show label
+              $("#colorLegendBox").empty()
+              $("#colorLegendBox").append(store_lis +
+                '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
+              showRerun.style.display = "block"
+              showGoback.style.display = "block"
+              showDownload.style.display = "block"
+              showTable.style.display = "block"
+              plotButton.style.display = "block"
             })
         })
       }
@@ -1593,7 +1605,6 @@ const onLoad = () => {
           assemblyJson)
       }
       listGiFilter = requestDBList[0] // list with the nodes used to filter
-      console.log(reloadAccessionList, listGiFilter, listGiFilter.length)
       reloadAccessionList = requestDBList[1] //list stores all nodes present
       // this list_gi isn't the same as the initial but has information on
       // all the nodes that were used in filters
