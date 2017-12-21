@@ -8,8 +8,22 @@ const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
   return newListHashes
 }
 
-// re adds nodes after cleaning the entire graph
+/**
+ * function that re-adds nodes after cleaning the entire graph by querying
+ * the database before
+ * @param {Object} g - object that stores vivagraph graph associated functions
+ * @param {Object} jsonObj - an object that stores information to be added
+ * to nodes and that was obtained from a db request
+ * @param {Array} newList - an array with all the accession numbers that will bplottedloted
+ * @param {Array} newListHashes - an array with a list of hashes, each one
+ * coding for an already added link.
+ * @returns {Array} returns an array with the updated newList which will
+ * contain all added nodes and another array with the list of hashes already
+ * added that is used to avoid the duplication of links in the graph (user
+ * by reAddLinks function
+ */
 const reAddNode = (g, jsonObj, newList, newListHashes) => {
+  console.log(newListHashes)
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
@@ -22,7 +36,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       seq_length: "<span style='color:#468499'>Sequence length: </span>" + ((length !== "N/A") ? length : "N/A"),
       log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
-    newList.push(sequence)  //adds to list everytime a new node is added here
+    newList.push(sequence)  //adds to list every time a new node is added here
   }
 
   // loops between all arrays of array pairing sequence and distances
@@ -36,8 +50,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       const linkLength = entry[2].split(":")[1]
       const linkAccession = entry[0].split(":")[1]
 
-      // TODO make requests to get metadata to render the node
-      // if node doesn't exist yet, add it and add the links
       if (newList.indexOf(linkAccession) < 0) {
         g.addNode(linkAccession, {
           sequence: "<span style='color:#468499'>Accession:" +
@@ -127,6 +139,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
     // vivagraph.... and only then precompute the graph.
     //Promise.all(promises)
       .then( (results) => {
+        console.log("reload list", reloadAccessionList, listGiFilter)
         for (const data of results) {
           // if request rtaeturn no speciesName or plasmidName
           // sometimes plasmids have no descriptor for one of these or both

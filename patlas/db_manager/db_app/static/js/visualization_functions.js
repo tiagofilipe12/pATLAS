@@ -303,6 +303,7 @@ const onLoad = () => {
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
+      pageReRun = false
       $("#resTab").removeClass("active")
       $("#resButton").removeClass("active")
       $("#pfTab").removeClass("active")
@@ -844,6 +845,7 @@ const onLoad = () => {
     // perform actions when submit button is clicked.
 
     $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
+      pageReRun = false
       // clear legend from reads
       $("#readString").empty()
       $("#readLegend").empty()
@@ -1581,7 +1583,7 @@ const onLoad = () => {
             //   $("#loading").hide()
             //   $("#couve-flor").css("visibility", "visible")
             // })
-            .catch((err) => {
+            .catch( (err) => {
               console.log(err)
             })
         })

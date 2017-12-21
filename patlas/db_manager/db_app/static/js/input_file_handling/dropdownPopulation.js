@@ -66,6 +66,7 @@ const iterateSelectedArrays = (array, g, graphics, renderer, tempPageReRun) => {
 
       resRequest(g, graphics, renderer, gene, currentColor)
         .then( (results) => {
+          listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
           results.map( (request) => {
             if (tempPageReRun === false) {
               listGiFilter.push(request.plasmid_id)
@@ -115,6 +116,7 @@ const resSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
         promises.push(
           resRequest(g, graphics, renderer, gene, currentColor)
             .then( (results) => {
+              listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
               results.map( (request) => {
                 if (tempPageReRun === false) {
                   listGiFilter.push(request.plasmid_id)
@@ -182,7 +184,9 @@ const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
         promises.push(
           pfRequest(g, graphics, renderer, gene, currentColor)
           .then( (results) => {
+            listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
             results.map( (request) => {
+              console.log(tempPageReRun)
               if (tempPageReRun === false) {
                 listGiFilter.push(request.plasmid_id)
               }
