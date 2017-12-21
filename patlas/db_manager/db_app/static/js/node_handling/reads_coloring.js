@@ -245,6 +245,10 @@ const color_legend = (readMode) => {
   palette(scale, 10, readMode)
 }
 
+const forceSelectorFullRemoval = (selector) => {
+  $(`#${selector}`).val('').trigger('change')
+}
+
 // Clear nodes function for reset-sliders button
 
 const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
@@ -297,10 +301,15 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   $("#familyList").selectpicker("deselectAll")
   $("#genusList").selectpicker("deselectAll")
   $("#speciesList").selectpicker("deselectAll")
+  forceSelectorFullRemoval("speciesList")
+  forceSelectorFullRemoval("genusList")
+  forceSelectorFullRemoval("familyList")
+  forceSelectorFullRemoval("orderList")
 
   // reset plasmid families and resistance associated divs
   // this needs an array for reusability purposes
   resetDisplayTaxaBox(["p_Plasmidfinder"])
+  forceSelectorFullRemoval("plasmidFamiliesList")
   // resets dropdown selections
   $("#plasmidFamiliesList").selectpicker("deselectAll")
 
@@ -308,4 +317,6 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   // resets dropdown selections
   $("#cardList").selectpicker("deselectAll")
   $("#resList").selectpicker("deselectAll")
+  forceSelectorFullRemoval("cardList")
+  forceSelectorFullRemoval("resList")
 }
