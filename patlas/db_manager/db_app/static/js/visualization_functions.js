@@ -208,7 +208,6 @@ const onLoad = () => {
     $("#refreshButton").unbind("click").bind("click", () => {
       if (freezeShift === false) {
         freezeShift = true
-        console.log(multiSelectOverlayObj)
         multiSelectOverlayObj.destroy()
         $("#refreshButton").removeClass("btn-success").addClass("btn-default")
       } else {

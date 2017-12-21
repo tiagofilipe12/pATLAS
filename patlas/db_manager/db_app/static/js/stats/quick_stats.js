@@ -151,7 +151,6 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
   $("#loadingImgPlots").hide()
   $("#alertPlot").hide()
   // controls progress bar div
-  $("#progressBar").hide()
   $("#progressDiv").hide()
   $("#chartContainer1").show()
 
@@ -318,8 +317,6 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
 
 const resetProgressBar = () => {
   // resets progressBar
-  $("#actualProgress").width("0%") // sets the width to 0 at each interaction
-  $("#progressBar").show()
   $("#progressDiv").show()
   $("#chartContainer1").hide()
 }

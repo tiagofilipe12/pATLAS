@@ -8,7 +8,6 @@
  * @returns {Object} returns an object with functions related with overlay
  */
 const createOverlay = (overlayDom, underElement) => {
-  console.log(overlayDom, underElement)
   let notify = []
   const dragndrop = Viva.Graph.Utils.dragndrop(overlayDom)
   let selectedArea = {
