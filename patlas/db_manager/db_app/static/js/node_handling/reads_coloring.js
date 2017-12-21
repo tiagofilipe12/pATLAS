@@ -246,7 +246,7 @@ const color_legend = (readMode) => {
 }
 
 const forceSelectorFullRemoval = (selector) => {
-  $(`#${selector}`).val('').trigger('change')
+  $(`#${selector}`).val("").trigger("change")
 }
 
 // Clear nodes function for reset-sliders button

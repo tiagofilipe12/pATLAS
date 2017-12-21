@@ -68,7 +68,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, list_gi, readString,
                      assemblyJson) => {
   if (listGiFilter.length > 0) {
-    let promises = []   //an array to store all the requests as promises
+    //let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
     // loops every Accession stored in listGiFilter on re_run button
     // for (let i = 0; i < listGiFilter.length; i++) {
@@ -196,11 +196,10 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           $("#taxaModalSubmit").click()
         } else {
           colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
-          // color for
-          // area selection
+          // color for area selection
         }
       })
-      .catch((error) => {
+      .catch( (error) => {
         console.log("Error! No query was made. Error message: ", error)
       })
     //}
@@ -424,6 +423,7 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
   if (forgetListGiFilter === false) {
     listGiFilter = (listGiFilter.length === 0) ? reGetListGi(g, graphics) : listGiFilter
   }
+
   // otherwise doesn't care for listGiFilter because is just a page reload
   onload()
 }

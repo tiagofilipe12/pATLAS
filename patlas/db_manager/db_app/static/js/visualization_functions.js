@@ -16,6 +16,9 @@ let first_click_menu = true
 let firstInstace = true
 // variable to check if page was reloaded
 let pageReload = false
+// variable to check if page was rerun for pffamilies and resistance
+// filtering to work properly
+let pageReRun = false
 
 // starts a global instance for checking if button was clicked before
 let clickedPopupButtonRes = false
@@ -370,12 +373,13 @@ const onLoad = () => {
     $("#plotButton").unbind("click").bind("click", () => {
       $("#modalPlot").modal()
       clickerButton = "species"
+      console.log(reloadAccessionList, listGiFilter, listGiFilter.length)
       listGiFilter = (reloadAccessionList.length !== 0) ?
         // reduces listGiFilter to reloadAccessionList
-        listGiFilter.filter((n) => reloadAccessionList.includes(n)) :
+        listGiFilter.filter( (n) => reloadAccessionList.includes(n)) :
         // otherwise maintain listGiFilter untouched
         listGiFilter
-
+      console.log(listGiFilter, listGiFilter.length)
       setTimeout( () => {
         listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
       }, 500)
@@ -723,7 +727,11 @@ const onLoad = () => {
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
       // same should be done for taxa filters submit button
-      const legendInst = resSubmitFunction(g, graphics, renderer)
+      console.log(pageReRun)
+      const arrayResSubmit = resSubmitFunction(g, graphics, renderer, pageReRun)
+      legendInst = arrayResSubmit[0]
+      pageReRun = arrayResSubmit[1]
+      console.log(pageReRun)
       // just show legend if any selection is made at all
       if (legendInst === true) {
         showLegend.style.display = "block"
@@ -1577,12 +1585,15 @@ const onLoad = () => {
           assemblyJson)
         // TODO do something similar to assembly
       } else {
+        // sets pageReRun to true
+        pageReRun = true
         // used when no reads are used to filter
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, false,
           assemblyJson)
       }
       listGiFilter = requestDBList[0] // list with the nodes used to filter
+      console.log(reloadAccessionList, listGiFilter, listGiFilter.length)
       reloadAccessionList = requestDBList[1] //list stores all nodes present
       // this list_gi isn't the same as the initial but has information on
       // all the nodes that were used in filters
