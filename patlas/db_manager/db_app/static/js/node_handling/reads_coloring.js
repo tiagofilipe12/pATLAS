@@ -261,6 +261,7 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   } else {
+    $("#colorLegend").hide()
     $("#colorLegendBox").empty()
     document.getElementById("taxa_label").style.display = "none" // hide label
     // showRerun.style.display = "none"
