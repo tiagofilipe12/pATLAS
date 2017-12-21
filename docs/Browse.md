@@ -8,7 +8,7 @@ plasmids. For a more detailed explanation on how are these relationships
 handled and displayed, please refer to [Relationships and distances estimations]
 (distances.md)
 
-## By Distances
+## Distances
 
 Distances are represented in **pATLAS** as grey links between nodes (dark grey 
 circles). This options allows the user to display how closely related are a 
@@ -27,7 +27,7 @@ _Example_
 
 ![](gitbook/images/distance_result.png)
 
-## By Length
+## Length
 
 You may also filter by lenght of the plasmids present in the database. To do 
 so, you select the **By Length** option under the **Browse** submenu, which 
@@ -42,8 +42,17 @@ the slider and the boxes for minimum and maximum limits which will change the
  _Example_
  
  ![](gitbook/images/lenght_example.png)
- 
-## By Taxa
+
+## Plasmid types
+
+Plasmid types classify plasmids using a classical plasmid classification
+system from PlasmidFinder (**citation still missing**).
+
+## Resistances
+
+Resistances highlight plasmids with the selected resistances by the user.
+
+## Taxa
 
 In this option you may select a multitude of taxa filters ranging from order,
  family, genus to species. This will select with different colors each of the
