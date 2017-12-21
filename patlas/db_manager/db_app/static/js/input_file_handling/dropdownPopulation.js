@@ -66,7 +66,6 @@ const iterateSelectedArrays = (array, g, graphics, renderer, tempPageReRun) => {
 
       resRequest(g, graphics, renderer, gene, currentColor)
         .then( (results) => {
-          listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
           results.map( (request) => {
             if (tempPageReRun === false) {
               listGiFilter.push(request.plasmid_id)
@@ -80,6 +79,7 @@ const iterateSelectedArrays = (array, g, graphics, renderer, tempPageReRun) => {
 
 // function to display resistances after clicking resSubmit button
 const resSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
+  listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
   let legendInst = false // by default legend is off
   let storeLis  // initiates storeLis to store the legend entries and colors
@@ -116,7 +116,6 @@ const resSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
         promises.push(
           resRequest(g, graphics, renderer, gene, currentColor)
             .then( (results) => {
-              listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
               results.map( (request) => {
                 if (tempPageReRun === false) {
                   listGiFilter.push(request.plasmid_id)
@@ -150,6 +149,7 @@ const resSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
 
 // function to display resistances after clicking resSubmit button
 const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
+  listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
   let legendInst = false // by default legend is off
   let storeLis = ""  // initiates storeLis to store the legend entries and colors
@@ -184,7 +184,6 @@ const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
         promises.push(
           pfRequest(g, graphics, renderer, gene, currentColor)
           .then( (results) => {
-            listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
             results.map( (request) => {
               console.log(tempPageReRun)
               if (tempPageReRun === false) {

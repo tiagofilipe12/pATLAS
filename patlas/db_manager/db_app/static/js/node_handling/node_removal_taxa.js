@@ -23,7 +23,6 @@ const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
  * by reAddLinks function
  */
 const reAddNode = (g, jsonObj, newList, newListHashes) => {
-  console.log(newListHashes)
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
@@ -80,12 +79,13 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, list_gi, readString,
                      assemblyJson) => {
   if (listGiFilter.length > 0) {
+    console.log(listGiFilter)
     //let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
     // loops every Accession stored in listGiFilter on re_run button
     // for (let i = 0; i < listGiFilter.length; i++) {
     // promises.push(
-    $.post("api/getspecies/", {"accession": JSON.stringify(listGiFilter)}) //,
+    $.post("api/getspecies/", { "accession": JSON.stringify(listGiFilter)} ) //,
     // (data, status) => {
     //   // this request uses nested json object to access json entries
     //   // available in the database
