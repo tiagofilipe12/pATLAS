@@ -46,11 +46,32 @@ the slider and the boxes for minimum and maximum limits which will change the
 ## Plasmid types
 
 Plasmid types classify plasmids using a classical plasmid classification
-system from PlasmidFinder (**citation still missing**).
+system from PlasmidFinder
+
+Citation:
+* [Carattoli, A., Zankari, E., García-Fernández, A.,
+Larsen, M. V., Lund, O., Villa, L., Aarestrup, F. M., Hasman, H.
+(2014). In Silico detection and typing of plasmids using plasmidfinder and
+plasmid multilocus sequence typing. Antimicrobial Agents and Chemotherapy,
+58(7), 3895–3903.](https://doi.org/10.1128/AAC.02412-14).
 
 ## Resistances
 
 Resistances highlight plasmids with the selected resistances by the user.
+
+Citations:
+* [Zankari, E., Hasman, H., Cosentino, S., Vestergaard, M.,
+Rasmussen, S., Lund, O., Aarestrup, F. M., Larsen, M. V. (2012).
+Identification of acquired antimicrobial resistance genes. Journal of
+Antimicrobial Chemotherapy, 67(11), 2640–2644.](https://doi.org/10.1093/jac/dks261)
+* [Jia, B., Raphenya, A. R., Alcock, B., Waglechner, N., Guo, P.,
+Tsang, K. K.,  Lago B. A., Dave B. M., Pereira S., Sharma A. N.,
+Doshi S., Courtot M., Lo R., Williams L. E., Frye J. G., Elsayegh T.,
+Sardar D., Westman E. L., Pawlowski A. C., Johnson T. A.,
+Brinkman F. S., Wright G. D.,
+ McArthur, A. G. (2017). CARD 2017: Expansion and
+model-centric curation of the comprehensive antibiotic resistance
+database. Nucleic Acids Research, 45(D1), D566–D573.](https://doi.org/10.1093/nar/gkw1004)
 
 ## Taxa
 

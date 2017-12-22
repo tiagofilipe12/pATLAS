@@ -185,7 +185,6 @@ const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
           pfRequest(g, graphics, renderer, gene, currentColor)
           .then( (results) => {
             results.map( (request) => {
-              console.log(tempPageReRun)
               if (tempPageReRun === false) {
                 listGiFilter.push(request.plasmid_id)
               }
