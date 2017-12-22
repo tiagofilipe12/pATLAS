@@ -4,13 +4,25 @@
 
 //* * block #2 for node customization **//
 // Lets start from the easiest part - model object for node ui in webgl
+/**
+ * This function creates a modal object for node ui in webgl
+ * @param {float} size - the size of the node
+ * @param {float} color - the color associated with that node, which is a number
+ * @constructor
+ */
 function WebglCircle(size, color) {
   this.size = size
   this.color = color
   this.backupColor = color
 }
-// Next comes the hard part - implementation of API for custom shader
-// program, used by webgl renderer:
+
+/**
+ * This function implements a custom shared program which is used by webgl
+ * renderer
+ * @returns {{load(*=): void, position(*, *): void, render(): void,
+ * updateTransform(*): void, updateSize(*, *): void, createNode(*): void,
+ * removeNode(*): void, replaceProperties(*, *)}}
+ */
 const buildCircleNodeShader = () => {
     // For each primitive we need 4 attributes: x, y, color and size.
   let ATTRIBUTES_PER_PRIMITIVE = 4,
