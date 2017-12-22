@@ -1,7 +1,6 @@
 // function to repopulate #displayCurrentBox
 // idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"] //global variable
 const resetDisplayTaxaBox = (array) => {
-  //TODO this function is being executed twice for idsArrays...
   for (let x = 0; x < array.length; x++) {
     // empty field
     $(`#${array[x]}`).empty()

@@ -8,7 +8,7 @@ plasmids. For a more detailed explanation on how are these relationships
 handled and displayed, please refer to [Relationships and distances estimations]
 (distances.md)
 
-## By Distances
+## Distances
 
 Distances are represented in **pATLAS** as grey links between nodes (dark grey 
 circles). This options allows the user to display how closely related are a 
@@ -27,7 +27,7 @@ _Example_
 
 ![](gitbook/images/distance_result.png)
 
-## By Length
+## Length
 
 You may also filter by lenght of the plasmids present in the database. To do 
 so, you select the **By Length** option under the **Browse** submenu, which 
@@ -42,8 +42,40 @@ the slider and the boxes for minimum and maximum limits which will change the
  _Example_
  
  ![](gitbook/images/lenght_example.png)
- 
-## By Taxa
+
+## Plasmid families
+
+This option allows users to color plasmids (nodes) present in pATLAS by
+selecting genes available in PlasmidFinder database. For that a dropdown
+with all genes present in this database is available for the user and
+searches are enabled with live filter of resulting genes.
+
+Citation:
+* [Carattoli, A., Zankari, E., García-Fernández, A.,
+Larsen, M. V., Lund, O., Villa, L., Aarestrup, F. M., Hasman, H.
+(2014). In Silico detection and typing of plasmids using plasmidfinder and
+plasmid multilocus sequence typing. Antimicrobial Agents and Chemotherapy,
+58(7), 3895–3903.](https://doi.org/10.1128/AAC.02412-14).
+
+## Resistances
+
+Resistances highlight plasmids with the selected resistances by the user.
+
+Citations:
+* [Zankari, E., Hasman, H., Cosentino, S., Vestergaard, M.,
+Rasmussen, S., Lund, O., Aarestrup, F. M., Larsen, M. V. (2012).
+Identification of acquired antimicrobial resistance genes. Journal of
+Antimicrobial Chemotherapy, 67(11), 2640–2644.](https://doi.org/10.1093/jac/dks261)
+* [Jia, B., Raphenya, A. R., Alcock, B., Waglechner, N., Guo, P.,
+Tsang, K. K.,  Lago B. A., Dave B. M., Pereira S., Sharma A. N.,
+Doshi S., Courtot M., Lo R., Williams L. E., Frye J. G., Elsayegh T.,
+Sardar D., Westman E. L., Pawlowski A. C., Johnson T. A.,
+Brinkman F. S., Wright G. D.,
+ McArthur, A. G. (2017). CARD 2017: Expansion and
+model-centric curation of the comprehensive antibiotic resistance
+database. Nucleic Acids Research, 45(D1), D566–D573.](https://doi.org/10.1093/nar/gkw1004)
+
+## Taxa
 
 In this option you may select a multitude of taxa filters ranging from order,
  family, genus to species. This will select with different colors each of the

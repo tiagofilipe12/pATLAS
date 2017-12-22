@@ -14,7 +14,7 @@ const arrayToCsv = (array) => {
   link.click() // This will download the data file named "my_data.csv".
 }
 
-const setupPopupDisplay = (node, speciesName, plasmidName, lenghtVar) => {
+const setupPopupDisplay = (node, speciesName, plasmidName, clusterId) => {
   // first needs to empty the popup in order to avoid having
   // multiple entries from previous interactions
   if (typeof node.data !== "undefined") {
@@ -24,6 +24,7 @@ const setupPopupDisplay = (node, speciesName, plasmidName, lenghtVar) => {
     $("#plasmidNamePopSpan").html(plasmidName)
     $("#percentagePopSpan").html(node.data.percentage)
     $("#copyNumberPopSpan").html(node.data.copyNumber)
+    $("#clusterIdPopSpan").html(clusterId)
   }
 
   $("#popup_description").show()

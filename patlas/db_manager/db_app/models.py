@@ -1,9 +1,12 @@
 ## the actual file that does the structure to be imported in the database
 
 try:
-    from db_app import db
+    from db_manager.db_app import db
 except ImportError:
-    from patlas.db_manager.db_app import db
+    try:
+        from db_app import db
+    except ImportError:
+        from patlas.db_manager.db_app import db
 
 from sqlalchemy.dialects.postgresql import JSON
 
@@ -13,11 +16,11 @@ class Plasmid(db.Model):
     json_entry = db.Column(JSON)
 
     def __repr__(self):
-        return '<Plasmid %r>' % (self.json_entry)
+        return "<Plasmid %r>" % (self.json_entry)
 
 ## in order to add an entry to the database one should use something like the example below
 
-# models.Plasmid(plasmid_id='1345', json=json.dumps({"names":"buh", "distances":{"gi_1":"21388213", "gi_2":"398393"}}))
+# models.Plasmid(plasmid_id="1345", json=json.dumps({"names":"buh", "distances":{"gi_1":"21388213", "gi_2":"398393"}}))
 # db.session.add(row)
 # db.session.commit()
 
@@ -27,7 +30,7 @@ class Card(db.Model):
     json_entry = db.Column(JSON)
 
     def __repr__(self):
-         return '<Card %r>' % (self.json_entry)
+         return "<Card %r>" % (self.json_entry)
 
 class Positive(db.Model):
     __tablename__ = "positive"
@@ -35,7 +38,7 @@ class Positive(db.Model):
     json_entry = db.Column(JSON)
 
     def __repr__(self):
-         return '<Positive %r>' % (self.json_entry)
+         return "<Positive %r>" % (self.json_entry)
 
 class Database(db.Model):
     __tablename__ = "database"
@@ -43,4 +46,4 @@ class Database(db.Model):
     json_entry = db.Column(JSON)
 
     def __repr__(self):
-        return '<Database %r>' % (self.json_entry)
+        return "<Database %r>" % (self.json_entry)

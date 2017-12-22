@@ -1,12 +1,24 @@
-// this function repositions the graph to center on the desired node
-
+/**
+ * this function repositions the graph to center on the desired node
+ * @param {Object} renderer - vivagraph object to render the graph
+ * @param {Object} layout - vivagraph object with the graph layout
+ * @param {string} storeMasterNode - variable that has a string with the
+ * accession number in which the graph is centered
+ */
 const recenterDOM = (renderer, layout, storeMasterNode) => {
   const pos = layout.getNodePosition(storeMasterNode[0])
   renderer.moveTo(pos.x, pos.y)
 }
 
-// this function stores the node with more links
-
+/**
+ * this function stores the node with more links
+ * @param {string} storeMasterNode - variable that has a string with the
+ * accession number in which the graph is centered
+ * @param {Object} dictDist - object that stores all distances of a given node
+ * @param sequence
+ * @param counter
+ * @returns {Array}
+ */
 const storeRecenterDom = (storeMasterNode, dictDist, sequence, counter) => {
   //console.log(dict_dist, sequence, counter)
   //let previousDictDist = storeMasterNode[1]

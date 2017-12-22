@@ -1,13 +1,17 @@
 
-from flask_restful import Resource, reqparse, fields, marshal_with
+from flask_restful import Resource, reqparse, fields, marshal_with, request
 from sqlalchemy import func
 
 try:
-    from db_app import db
-    from db_app.models import Plasmid, Card, Database
+    from db_manager.db_app import db
+    from db_manager.db_app.models import Plasmid, Card, Database
 except ImportError:
-    from patlas.db_manager.db_app import db
-    from patlas.db_manager.db_app.models import Plasmid, Card, Database
+    try:
+        from db_app import db
+        from db_app.models import Plasmid, Card, Database
+    except ImportError:
+        from patlas.db_manager.db_app import db
+        from patlas.db_manager.db_app.models import Plasmid, Card, Database
 #from flask import jsonify
 
 ## Defines response fields
@@ -20,7 +24,8 @@ nested_entry_fields = {
     "plasmid_name": fields.String,
     "name": fields.String,
     "significantLinks": fields.String,
-    "taxa": fields.String
+    "taxa": fields.String,
+    "cluster": fields.String
 }
 
 
@@ -49,51 +54,64 @@ card_field = {
 ## define reqparse arguments
 
 req_parser = reqparse.RequestParser()
-req_parser.add_argument("accession", dest="accession", type=str, help="Accession number to be queried")
+req_parser.add_argument("accession", dest="accession", type=str,
+                        help="Accession number to be queried")
+req_parser.add_argument("name", dest="name", type=str, help="taxa "
+                                                              "to be queried")
+req_parser.add_argument("gene", dest="gene", type=str, help="gene "
+                                                              "to be queried")
+req_parser.add_argument("plasmid_name", dest="plasmid_name", type=str,
+                          help="plasmid name to be queried")
 
 ## define all resources
 
 class GetSpecies(Resource):
     @marshal_with(entry_field)
-    def get(self):        
+    def post(self):
         #Put req_parser inside get function. Only this way it parses the request.
-        args = req_parser.parse_args()
+        #args = req_parser.parse_args()
+        var_response = request.form["accession"].replace("[", "")\
+            .replace("]", "").replace('"', "").split(",")
         single_query = db.session.query(Plasmid).filter(
-            Plasmid.plasmid_id == args.accession).first()
-        #print single_query.json_entry
+            Plasmid.plasmid_id.in_(var_response)).all()
         #json_object = json.loads(single_query.json_entry)
-        #print json_object[u'name']
+        #print("return query ", single_query)
         return single_query
 
 class GetResistances(Resource):
     @marshal_with(card_field)
-    def get(self):
+    def post(self):
         # Put req_parser inside get function. Only this way it parses the request.
-        args = req_parser.parse_args()
+        #args = req_parser.parse_args()
+        var_response = request.form["accession"].replace("[", "")\
+            .replace("]", "").replace('"', "").split(",")
+        print(var_response)
         single_query = db.session.query(Card).filter(
-            Card.plasmid_id == args.accession).first()
+            Card.plasmid_id.in_(var_response)).all()
         return single_query
 
 class GetPlasmidFinder(Resource):
     @marshal_with(card_field)
-    def get(self):
+    def post(self):
         # Put req_parser inside get function. Only this way it parses the request.
-        args = req_parser.parse_args()
+        #args = req_parser.parse_args()
+        var_response = request.form["accession"].replace("[", "")\
+            .replace("]", "").replace('"', "").split(",")
         single_query = db.session.query(Database).filter(
-            Database.plasmid_id == args.accession).first()
+            Database.plasmid_id.in_(var_response)).all()
         return single_query
 
 # define more reqparse arguments for GetAccession classe resource
 
-req_parser_2 = reqparse.RequestParser()
-req_parser_2.add_argument("name", dest="name", type=str, help="taxa "
-                                                              "to be queried")
+#req_parser_2 = reqparse.RequestParser()
+#req_parser_2.add_argument("name", dest="name", type=str, help="taxa "
+#                                                              "to be queried")
 
 class GetAccession(Resource):
     @marshal_with(entry_field)
     def get(self):
         # Put req_parser inside get function. Only this way it parses the request.
-        args = req_parser_2.parse_args()
+        args = req_parser.parse_args()
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
         records = db.session.query(Plasmid).filter(
@@ -104,15 +122,15 @@ class GetAccession(Resource):
 
 # define more reqparse arguments for GetAccession classe resource
 
-req_parser_3 = reqparse.RequestParser()
-req_parser_3.add_argument("gene", dest="gene", type=str, help="gene "
-                                                              "to be queried")
+#req_parser_3 = reqparse.RequestParser()
+#req_parser_3.add_argument("gene", dest="gene", type=str, help="gene "
+#                                                              "to be queried")
 
 class GetAccessionRes(Resource):
     @marshal_with(entry_field)
     def get(self):
         # Put req_parser inside get function. Only this way it parses the request.
-        args = req_parser_3.parse_args()
+        args = req_parser.parse_args()
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
         records = db.session.query(Card).filter(
@@ -126,7 +144,7 @@ class GetAccessionPF(Resource):
     @marshal_with(entry_field)
     def get(self):
         # Put req_parser inside get function. Only this way it parses the request.
-        args = req_parser_3.parse_args()
+        args = req_parser.parse_args()
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
         records = db.session.query(Database).filter(
@@ -136,15 +154,16 @@ class GetAccessionPF(Resource):
         # string
         return records
 
-req_parser_4 = reqparse.RequestParser()
-req_parser_4.add_argument("plasmid_name", dest="plasmid_name", type=str, help="plasmid name "
-                                                              "to be queried")
+#req_parser_4 = reqparse.RequestParser()
+#req_parser_4.add_argument("plasmid_name", dest="plasmid_name", type=str,
+        # help="plasmid name "
+#                                                              "to be queried")
 
 class GetPlasmidName(Resource):
     @marshal_with(entry_field)
     def get(self):
         # Put req_parser inside get function. Only this way it parses the request.
-        args = req_parser_4.parse_args()
+        args = req_parser.parse_args()
         print(args.plasmid_name)
         # This queries if input plasmid name is present in db
         # func.lower() function from sqalchemy allows the user to make case insensitive searches

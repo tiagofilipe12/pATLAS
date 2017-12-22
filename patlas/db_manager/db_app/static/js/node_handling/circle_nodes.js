@@ -4,44 +4,66 @@
 
 //* * block #2 for node customization **//
 // Lets start from the easiest part - model object for node ui in webgl
-function WebglCircle (size, color) {
+/**
+ * This function creates a modal object for node ui in webgl
+ * @param {float} size - the size of the node
+ * @param {float} color - the color associated with that node, which is a number
+ * @constructor
+ */
+function WebglCircle(size, color) {
   this.size = size
   this.color = color
   this.backupColor = color
 }
-// Next comes the hard part - implementation of API for custom shader
-// program, used by webgl renderer:
+
+/**
+ * This function implements a custom shared program which is used by webgl
+ * renderer
+ * @returns {{load(*=): void, position(*, *): void, render(): void,
+ * updateTransform(*): void, updateSize(*, *): void, createNode(*): void,
+ * removeNode(*): void, replaceProperties(*, *)}}
+ */
 const buildCircleNodeShader = () => {
     // For each primitive we need 4 attributes: x, y, color and size.
   let ATTRIBUTES_PER_PRIMITIVE = 4,
     nodesFS = [
-      'precision mediump float;',
-      'varying vec4 color;',
-      'void main(void) {',
-      '   if ((gl_PointCoord.x - 0.5) * (gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) * (gl_PointCoord.y - 0.5) < 0.25) {',
-      '     gl_FragColor = color;',
-      '   } else {',
-      '     gl_FragColor = vec4(0);',
-      '   }',
-      '}'].join('\n'),
+      "#ifdef GL_OES_standard_derivatives",
+      "#extension GL_OES_standard_derivatives : enable",
+      "#endif",
+      "precision mediump float;",
+      "varying vec4 color;",
+      "void main(void) {",
+      "   float r = 0.5, delta = 0.0, alpha = 1.0;",
+      "   vec2 cxy = 2.0 * gl_PointCoord - 1.0;",
+      "   r = dot(cxy, cxy);",
+      "   #ifdef GL_OES_standard_derivatives",
+      "   delta = fwidth(r);",
+      "   alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);",
+      "   #endif",
+      "   if ((gl_PointCoord.x - 0.5) * (gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) * (gl_PointCoord.y - 0.5) < 0.25) {",
+      "     gl_FragColor = color*alpha;",
+      "   } else {",
+      "     gl_FragColor = vec4(0);",
+      "   }",
+      "}"].join("\n"),
     nodesVS = [
-      'attribute vec2 a_vertexPos;',
+      "attribute vec2 a_vertexPos;",
         // Pack color and size into vector. First element is color, second - size.
-        // Since it's floating point we can only use 24 bit to pack colors...
+        // Since it"s floating point we can only use 24 bit to pack colors...
         // thus alpha channel is dropped, and is always assumed to be 1.
-      'attribute vec2 a_customAttributes;',
-      'uniform vec2 u_screenSize;',
-      'uniform mat4 u_transform;',
-      'varying vec4 color;',
-      'void main(void) {',
-      '   gl_Position = u_transform * vec4(a_vertexPos/u_screenSize, 0, 1);',
-      '   gl_PointSize = a_customAttributes[1] * u_transform[0][0];',
-      '   float c = a_customAttributes[0];',
-      '   color.b = mod(c, 256.0); c = floor(c/256.0);',
-      '   color.g = mod(c, 256.0); c = floor(c/256.0);',
-      '   color.r = mod(c, 256.0); c = floor(c/256.0); color /= 255.0;',
-      '   color.a = 1.0;',
-      '}'].join('\n')
+      "attribute vec2 a_customAttributes;",
+      "uniform vec2 u_screenSize;",
+      "uniform mat4 u_transform;",
+      "varying vec4 color;",
+      "void main(void) {",
+      "   gl_Position = u_transform * vec4(a_vertexPos/u_screenSize, 0, 1);",
+      "   gl_PointSize = a_customAttributes[1] * u_transform[0][0];",
+      "   float c = a_customAttributes[0];",
+      "   color.b = mod(c, 256.0); c = floor(c/256.0);",
+      "   color.g = mod(c, 256.0); c = floor(c/256.0);",
+      "   color.r = mod(c, 256.0); c = floor(c/256.0); color /= 255.0;",
+      "   color.a = 1.0;",
+      "}"].join("\n")
   let program,
     gl,
     buffer,
@@ -58,6 +80,7 @@ const buildCircleNodeShader = () => {
     load(glContext) {
       gl = glContext
       webglUtils = Viva.Graph.webgl(glContext)
+      gl.getExtension("OES_standard_derivatives")
       program = webglUtils.createProgram(nodesVS, nodesFS)
       gl.useProgram(program)
       locations = webglUtils.getLocations(program, ['a_vertexPos', 'a_customAttributes', 'u_screenSize', 'u_transform'])
@@ -72,7 +95,7 @@ const buildCircleNodeShader = () => {
           * @param pos - {x, y} coordinates of the node.
           */
     position(nodeUI, pos) {
-      var idx = nodeUI.id
+      let idx = nodeUI.id
       nodes[idx * ATTRIBUTES_PER_PRIMITIVE] = pos.x
       nodes[idx * ATTRIBUTES_PER_PRIMITIVE + 1] = -pos.y
       nodes[idx * ATTRIBUTES_PER_PRIMITIVE + 2] = nodeUI.color

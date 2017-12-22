@@ -8,7 +8,20 @@ const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
   return newListHashes
 }
 
-// re adds nodes after cleaning the entire graph
+/**
+ * function that re-adds nodes after cleaning the entire graph by querying
+ * the database before
+ * @param {Object} g - object that stores vivagraph graph associated functions
+ * @param {Object} jsonObj - an object that stores information to be added
+ * to nodes and that was obtained from a db request
+ * @param {Array} newList - an array with all the accession numbers that will bplottedloted
+ * @param {Array} newListHashes - an array with a list of hashes, each one
+ * coding for an already added link.
+ * @returns {Array} returns an array with the updated newList which will
+ * contain all added nodes and another array with the list of hashes already
+ * added that is used to avoid the duplication of links in the graph (user
+ * by reAddLinks function
+ */
 const reAddNode = (g, jsonObj, newList, newListHashes) => {
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
@@ -22,7 +35,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       seq_length: "<span style='color:#468499'>Sequence length: </span>" + ((length !== "N/A") ? length : "N/A"),
       log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
-    newList.push(sequence)  //adds to list everytime a new node is added here
+    newList.push(sequence)  //adds to list every time a new node is added here
   }
 
   // loops between all arrays of array pairing sequence and distances
@@ -36,8 +49,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       const linkLength = entry[2].split(":")[1]
       const linkAccession = entry[0].split(":")[1]
 
-      // TODO make requests to get metadata to render the node
-      // if node doesn't exist yet, add it and add the links
       if (newList.indexOf(linkAccession) < 0) {
         g.addNode(linkAccession, {
           sequence: "<span style='color:#468499'>Accession:" +
@@ -68,64 +79,110 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, list_gi, readString,
                      assemblyJson) => {
   if (listGiFilter.length > 0) {
-    let promises = []   //an array to store all the requests as promises
+    //let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
     // loops every Accession stored in listGiFilter on re_run button
-    for (let i = 0; i < listGiFilter.length; i++) {
-      promises.push(
-        $.get("api/getspecies/", {"accession": listGiFilter[i]},
-          (data, status) => {
-            // this request uses nested json object to access json entries
-            // available in the database
+    // for (let i = 0; i < listGiFilter.length; i++) {
+    // promises.push(
+    $.post("api/getspecies/", { "accession": JSON.stringify(listGiFilter)} ) //,
+    // (data, status) => {
+    //   // this request uses nested json object to access json entries
+    //   // available in the database
+    //
+    //   // if request return no speciesName or plasmidName
+    //   // sometimes plasmids have no descriptor for one of these or both
+    //   if (data.json_entry.name === null) {
+    //     speciesName = "N/A"
+    //   } else {
+    //     speciesName = data.json_entry.name.split("_").join(" ")
+    //   }
+    //   if (data.json_entry.plasmid_name === null) {
+    //     plasmidName = "N/A"
+    //   } else {
+    //     plasmidName = data.json_entry.plasmid_name
+    //   }
+    //   // if accession is not present in the database because singletons
+    //   // are not stored in database
+    //   if (data.json_entry.significantLinks === null) {
+    //     const jsonObj = {
+    //       "plasmidAccession": listGiFilter[i],
+    //       "plasmidLenght": "N/A",
+    //       "speciesName": "N/A",
+    //       "plasmidName": "N/A",
+    //       "significantLinks": "N/A"
+    //     }
+    //     //add node
+    //     reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+    //     reloadAccessionList = reAddNodeList[0]
+    //     newListHashes = reAddNodeList[1]
+    //
+    //   } else {  // add node for every accession that has links and that is
+    //     // present in plasmid_db
+    //     const jsonObj = {
+    //       "plasmidAccession": data.plasmid_id,
+    //       "plasmidLenght": data.json_entry.length,
+    //       "speciesName": speciesName,
+    //       "plasmidName": plasmidName,
+    //       // this splits the string into an array with each entry
+    //       "significantLinks": data.json_entry.significantLinks//.split("],")
+    //     }
+    //     //add node
+    //     reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+    //     reloadAccessionList = reAddNodeList[0]
+    //     newListHashes = reAddNodeList[1]
+    //   }
+    // })
+    // )
 
-            // if request return no speciesName or plasmidName
-            // sometimes plasmids have no descriptor for one of these or both
-            if (data.json_entry.name === null) {
-              speciesName = "N/A"
-            } else {
-              speciesName = data.json_entry.name.split("_").join(" ")
-            }
-            if (data.json_entry.plasmid_name === null) {
-              plasmidName = "N/A"
-            } else {
-              plasmidName = data.json_entry.plasmid_name
-            }
-            // if accession is not present in the database because singletons
-            // are not stored in database
-            if (data.json_entry.significantLinks === null) {
-              const jsonObj = {
-                "plasmidAccession": listGiFilter[i],
-                "plasmidLenght": "N/A",
-                "speciesName": "N/A",
-                "plasmidName": "N/A",
-                "significantLinks": "N/A"
-              }
-              //add node
-              reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
-              reloadAccessionList = reAddNodeList[0]
-              newListHashes = reAddNodeList[1]
-
-            } else {  // add node for every accession that has links and that is
-              // present in plasmid_db
-              const jsonObj = {
-                "plasmidAccession": data.plasmid_id,
-                "plasmidLenght": data.json_entry.length,
-                "speciesName": speciesName,
-                "plasmidName": plasmidName,
-                // this splits the string into an array with each entry
-                "significantLinks": data.json_entry.significantLinks//.split("],")
-              }
-              //add node
-              reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
-              reloadAccessionList = reAddNodeList[0]
-              newListHashes = reAddNodeList[1]
-            }
-          })
-      )
-    }
     // promise that waits for all the requests and nodes to be added to
     // vivagraph.... and only then precompute the graph.
-    Promise.all(promises)
+    //Promise.all(promises)
+      .then( (results) => {
+        for (const data of results) {
+          // if request rtaeturn no speciesName or plasmidName
+          // sometimes plasmids have no descriptor for one of these or both
+          if (data.json_entry.name === null) {
+            speciesName = "N/A"
+          } else {
+            speciesName = data.json_entry.name.split("_").join(" ")
+          }
+          if (data.json_entry.plasmid_name === null) {
+            plasmidName = "N/A"
+          } else {
+            plasmidName = data.json_entry.plasmid_name
+          }
+          // if accession is not present in the database because singletons
+          // are not stored in database
+          if (data.json_entry.significantLinks === null) {
+            const jsonObj = {
+              "plasmidAccession": data.plasmid_id,
+              "plasmidLenght": "N/A",
+              "speciesName": "N/A",
+              "plasmidName": "N/A",
+              "significantLinks": "N/A"
+            }
+            //add node
+            reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+            reloadAccessionList = reAddNodeList[0]
+            newListHashes = reAddNodeList[1]
+
+          } else {  // add node for every accession that has links and that is
+            // present in plasmid_db
+            const jsonObj = {
+              "plasmidAccession": data.plasmid_id,
+              "plasmidLenght": data.json_entry.length,
+              "speciesName": speciesName,
+              "plasmidName": plasmidName,
+              // this splits the string into an array with each entry
+              "significantLinks": data.json_entry.significantLinks//.split("],")
+            }
+            //add node
+            reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+            reloadAccessionList = reAddNodeList[0]
+            newListHashes = reAddNodeList[1]
+          }
+        }
+      })
       .then( () => {
         renderGraph(graphics)
         if (readString !== false) {
@@ -150,18 +207,29 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           $("#taxaModalSubmit").click()
         } else {
           colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
-          // color for
-          // area selection
+          // color for area selection
         }
       })
       .catch( (error) => {
         console.log("Error! No query was made. Error message: ", error)
       })
+    //}
   }
   return [listGiFilter, reloadAccessionList]
 }
 
 // function that actually removes the nodes
+/**
+ * Function that actually removes the nodes when re_run button is clicked
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data
+ * @param {requestCallback} onload - a function that is used as a callback to
+ * trigger the reload of the page with a new dataset
+ * @param {boolean} forgetListGiFilter - this variable is set to false if
+ * re_run is triggered and true if go_back is triggered
+ */
 const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
   // removes all nodes from g using the same layout
   // firstInstace = false
@@ -199,17 +267,13 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     "<div class='btn-group'>\n" +
     "\n" +
     "<!-- Buttons that overlay the graph and interact with it -->\n" +
-    "<button id='playpauseButton' data-toggle='tooltip' \n" +
-    "        title='Play/Pause' type='button' \n" +
-    "        class='btn btn-success'>\n" +
-    "<span class='glyphicon glyphicon-play'></span>\n" +
-    "</button>\n" +
-    "\n" +
-    "<button class='btn btn-primary' href='#' data-toggle='modal' " +
-    "        data-backdrop='static' title='Quick stats' " +
-    "        data-target='#modalPlot' id='refreshButton'>" +
-    "<span class='glyphicon glyphicon-stats'></span>\n" +
-    "</button>\n" +
+    "<button id='playpauseButton' data-toggle='tooltip'" +
+    "title='Play/Pause' type='button' class='btn btn-default'>" +
+    "<span class='glyphicon glyphicon-play'></span></button>" +
+    "<button class='btn btn-default' data-toggle='tooltip'" +
+    "title='Trigger area selection (uses shift key)'" +
+    "type='button' id='refreshButton'>" +
+    "<span class='glyphicon glyphicon-screenshot'></span></button>" +
     "</div>\n" +
     "<!--zoom buttons-->\n" +
     "<div class='btn-group'>\n" +
@@ -370,20 +434,25 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
   if (forgetListGiFilter === false) {
     listGiFilter = (listGiFilter.length === 0) ? reGetListGi(g, graphics) : listGiFilter
   }
+
   // otherwise doesn't care for listGiFilter because is just a page reload
   onload()
-  // TODO maybe add some nicer loading screen
 }
 
-// a function to display the loader mask
+/**
+ * Function to display the loader mask
+ * @returns {Promise} Returns a promise that resolves by triggering the
+ * loader div
+ */
 const showDiv = () => {
   return new Promise( (resolve) => {
     resolve($("#loading").show())
   })
 }
+
 // function to reset node colors
 const node_color_reset = (graphics, g, nodeColor, renderer) => {
-  document.getElementById('taxa_label').style.display = 'none' // hide label
+  document.getElementById("taxa_label").style.display = "none" // hide label
   g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)
     // reset all nodes before changing colors because of the second instance of filters

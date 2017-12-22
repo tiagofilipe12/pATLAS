@@ -37,8 +37,8 @@ const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
     const nodeUI = graphics.getNodeUI(node.id)
 
     if (gi === nodeGI) {
-      nodeUI.color = readColor
       nodeUI.backupColor = nodeUI.color
+      nodeUI.color = readColor
       perc = parseFloat(perc)
       node.data["percentage"] =  perc.toFixed(2).toString()
       if (copyNumber) {
@@ -245,10 +245,13 @@ const color_legend = (readMode) => {
   palette(scale, 10, readMode)
 }
 
+const forceSelectorFullRemoval = (selector) => {
+  $(`#${selector}`).val("").trigger("change")
+}
+
 // Clear nodes function for reset-sliders button
 
-const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
-                       showGoback, showDownload, showTable, idsArrays) => {
+const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   // first iters nodes to get nodeColor (default color)
   node_color_reset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
@@ -262,6 +265,7 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
     document.getElementById("read_label").style.display = "none" // hide label
     $("#readLegend").empty()
   } else {
+    $("#colorLegend").hide()
     $("#colorLegendBox").empty()
     document.getElementById("taxa_label").style.display = "none" // hide label
     // showRerun.style.display = "none"
@@ -297,10 +301,15 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
   $("#familyList").selectpicker("deselectAll")
   $("#genusList").selectpicker("deselectAll")
   $("#speciesList").selectpicker("deselectAll")
+  forceSelectorFullRemoval("speciesList")
+  forceSelectorFullRemoval("genusList")
+  forceSelectorFullRemoval("familyList")
+  forceSelectorFullRemoval("orderList")
 
   // reset plasmid families and resistance associated divs
   // this needs an array for reusability purposes
   resetDisplayTaxaBox(["p_Plasmidfinder"])
+  forceSelectorFullRemoval("plasmidFamiliesList")
   // resets dropdown selections
   $("#plasmidFamiliesList").selectpicker("deselectAll")
 
@@ -308,4 +317,6 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, showLegend, showRerun,
   // resets dropdown selections
   $("#cardList").selectpicker("deselectAll")
   $("#resList").selectpicker("deselectAll")
+  forceSelectorFullRemoval("cardList")
+  forceSelectorFullRemoval("resList")
 }

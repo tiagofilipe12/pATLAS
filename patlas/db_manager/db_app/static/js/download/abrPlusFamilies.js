@@ -40,7 +40,7 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
 // this function is intended to use in single query instances such as
 // popup_description button
 const resGetter = (nodeId) => {
-  $.get("api/getresistances/", {"accession": nodeId}, (data, status) => {
+  $.post("api/getresistances/", {"accession": JSON.stringify([nodeId])}, (data, status) => {
     // first we need to gather all information in a format that may be
     // passed to jquery to append to popup_descriptions div
     // set of arrays for card db
@@ -60,13 +60,13 @@ const resGetter = (nodeId) => {
 
     try {
       // totalLength array corresponds to gene names
-      const totalLenght = data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
-      const acessionList = data.json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
-      const coverageList = data.json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
-      const databaseList = data.json_entry.database.replace(/['u\[\] ]/g, "").split(",")
-      const identityList = data.json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
-      const rangeList = data.json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
-      const aroList = data.json_entry.aro_accession.replace(/['u\[\] ]/g, "").split(",")
+      const totalLenght = data[0].json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+      const acessionList = data[0].json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
+      const coverageList = data[0].json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
+      const databaseList = data[0].json_entry.database.replace(/['u\[\] ]/g, "").split(",")
+      const identityList = data[0].json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
+      const rangeList = data[0].json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
+      const aroList = data[0].json_entry.aro_accession.replace(/['u\[\] ]/g, "").split(",")
 
       // consts to control the numbering of each database entry
       let num = 0
@@ -144,7 +144,7 @@ const pfPopupPopulate = (queryArrayPFGenes, queryArrayPFAccession,
 const plasmidFamilyGetter = (nodeId) => {
   // here in this function there is no need to parse the
   // data.json_entry.database entry since it is a single database
-  $.get("api/getplasmidfinder/", {"accession": nodeId}, (data, status) => {
+  $.post("api/getplasmidfinder/", {"accession": JSON.stringify([nodeId])}, (data, status) => {
     // first we need to gather all information in a format that may be
     // passed to jquery to append to popup_descriptions div
     // set of arrays for card db
@@ -156,11 +156,11 @@ const plasmidFamilyGetter = (nodeId) => {
 
     try{
       // totalLength array corresponds to gene names
-      const totalLength = data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
-      const accessionList = data.json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
-      const coverageList = data.json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
-      const identityList = data.json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
-      const rangeList = data.json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
+      const totalLength = data[0].json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+      const accessionList = data[0].json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
+      const coverageList = data[0].json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
+      const identityList = data[0].json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
+      const rangeList = data[0].json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
       for (const i in totalLength) {
         if ({}.hasOwnProperty.call(totalLength, i)) {
           const num = (parseFloat(i) + 1).toString()

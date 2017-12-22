@@ -50,7 +50,7 @@ const pfRequest = (g, graphics, renderer, gene, currentColor) => {
   })
 }
 
-const iterateSelectedArrays = (array, g, graphics, renderer) => {
+const iterateSelectedArrays = (array, g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""
   for (let i in array) {
     if ({}.hasOwnProperty.call(array, i)) {
@@ -67,7 +67,9 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
       resRequest(g, graphics, renderer, gene, currentColor)
         .then( (results) => {
           results.map( (request) => {
-            listGiFilter.push(request.plasmid_id)
+            if (tempPageReRun === false) {
+              listGiFilter.push(request.plasmid_id)
+            }
           })
         })
     }
@@ -76,7 +78,8 @@ const iterateSelectedArrays = (array, g, graphics, renderer) => {
 }
 
 // function to display resistances after clicking resSubmit button
-const resSubmitFunction = (g, graphics, renderer) => {
+const resSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
+  listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
   let legendInst = false // by default legend is off
   let storeLis  // initiates storeLis to store the legend entries and colors
@@ -92,11 +95,11 @@ const resSubmitFunction = (g, graphics, renderer) => {
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
-    storeLis = iterateSelectedArrays(selectedCard, g, graphics, renderer)
+    storeLis = iterateSelectedArrays(selectedCard, g, graphics, renderer, tempPageReRun)
     legendInst = true
   } else if (selectedCard.length === 0 && selectedResfinder.length !== 0) {
     // if only resfinder has selected entries
-    storeLis = iterateSelectedArrays(selectedResfinder, g, graphics, renderer)
+    storeLis = iterateSelectedArrays(selectedResfinder, g, graphics, renderer, tempPageReRun)
     legendInst = true
   } else if (selectedCard.length !== 0 && selectedResfinder.length !== 0) {
     // if multiple menus are selected
@@ -111,12 +114,14 @@ const resSubmitFunction = (g, graphics, renderer) => {
       if ({}.hasOwnProperty.call(mergedSelectedArray, i)) {
         const gene = mergedSelectedArray[i]
         promises.push(
-        resRequest(g, graphics, renderer, gene, currentColor)
-          .then( (results) => {
-            results.map( (request) => {
-              listGiFilter.push(request.plasmid_id)
+          resRequest(g, graphics, renderer, gene, currentColor)
+            .then( (results) => {
+              results.map( (request) => {
+                if (tempPageReRun === false) {
+                  listGiFilter.push(request.plasmid_id)
+                }
+              })
             })
-          })
         )
       }
     }
@@ -126,7 +131,7 @@ const resSubmitFunction = (g, graphics, renderer) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  Promise.all(promises)
+  return Promise.all(promises)
     .then( () => {
       if (legendInst === true) {
         $("#res_label").show()
@@ -134,15 +139,17 @@ const resSubmitFunction = (g, graphics, renderer) => {
         $("#colorLegendBoxRes").append(
           storeLis +
           "<li class='centeredList'><button class='jscolor btn btn-default'" +
-          " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
+          " style='background-color:#666370' ></button>&nbsp;unselected</li>"
         )
+        $("#colorLegendBoxRes").show()
       }
+      return legendInst
     })
-  return legendInst
 }
 
 // function to display resistances after clicking resSubmit button
-const pfSubmitFunction = (g, graphics, renderer) => {
+const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
+  listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
   let legendInst = false // by default legend is off
   let storeLis = ""  // initiates storeLis to store the legend entries and colors
@@ -178,7 +185,9 @@ const pfSubmitFunction = (g, graphics, renderer) => {
           pfRequest(g, graphics, renderer, gene, currentColor)
           .then( (results) => {
             results.map( (request) => {
-              listGiFilter.push(request.plasmid_id)
+              if (tempPageReRun === false) {
+                listGiFilter.push(request.plasmid_id)
+              }
             })
           })
         )
@@ -191,7 +200,7 @@ const pfSubmitFunction = (g, graphics, renderer) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  Promise.all(promises)
+  return Promise.all(promises)
     .then( () => {
       if (legendInst === true) {
         $("#pf_label").show()
@@ -199,9 +208,10 @@ const pfSubmitFunction = (g, graphics, renderer) => {
         $("#colorLegendBoxPf").append(
           storeLis +
           "<li class='centeredList'><button class='jscolor btn btn-default'" +
-          " style='background-color:#666370' ></button>&nbsp;unselected</li>'"
+          " style='background-color:#666370' ></button>&nbsp;unselected</li>"
         )
+        $("#colorLegendBoxPf").show()
       }
+      return legendInst
     })
-  return legendInst
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-## Last update: 17/9/2017
+## Last update: 13/12/2017
 ## Author: T.F. Jesus
 ## This script runs MASH in plasmid databases making a pairwise diagonal matrix
 # for each pairwise comparison between libraries
@@ -19,9 +19,11 @@ from collections import defaultdict
 
 try:
     from utils.hist_util import plot_histogram
+    from utils.taxa_fetch import executor
     from db_manager.db_app import db, models
 except ImportError:
     from patlas.utils.hist_util import plot_histogram
+    from patlas.utils.taxa_fetch import executor
     from patlas.db_manager.db_app import db, models
 
 
@@ -116,7 +118,6 @@ def master_fasta(fastas, output_tag, mother_directory):
                 ## added this if statement to check whether CDS is present in
                 #  fasta header, since database contain them with CDS in string
                 if "cds" in line.lower():
-                    #print (line)
                     truePlasmid = False #variable to control when plasmids
                     # and when genes
                     continue
@@ -171,9 +172,9 @@ def master_fasta(fastas, output_tag, mother_directory):
         # to dict last entry of each input file
     master_fasta.close()
     ## writes a species list to output file
-    species_output.write('\n'.join(str(i) for i in list(set(all_species))))
+    species_output.write("\n".join(str(i) for i in list(set(all_species))))
     species_output.close()
-    return out_file, sequence_info
+    return out_file, sequence_info, all_species
 
 
 # Creates temporary fasta files in a tmp directory in order to give to mash
@@ -181,7 +182,7 @@ def master_fasta(fastas, output_tag, mother_directory):
 def genomes_parser(main_fasta, output_tag, mother_directory):
     out_folder = os.path.join(mother_directory, "tmp")
     out_file = os.path.join(out_folder, os.path.basename(main_fasta)[:-4])
-    if_handle = open(main_fasta, 'r')
+    if_handle = open(main_fasta, "r")
     list_genomes_files = []
     out_handle = None
     for x, line in enumerate(if_handle):  ## x coupled with enumerate creates
@@ -259,99 +260,20 @@ def masher(ref_sketch, genome_sketch, output_tag, mother_directory):
 
 # return out_file
 
-def multiprocess_mash(ref_sketch, main_fasta, output_tag, kmer_size,
+def multiprocess_mash(ref_sketch, output_tag, kmer_size,
                       mother_directory, genome):
     genome_sketch = sketch_genomes(genome, mother_directory, output_tag,
                                    kmer_size)
     masher(ref_sketch, genome_sketch, output_tag, mother_directory)
 
 
-## calculates ths distances between pairwise genomes
-## This function should be multiprocessed in order to retrieve several output
-# files (as many as the specified cores specified?)
-def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
-                         threads):
-    ## read all infiles
-    in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
-    out_file = open(os.path.join(mother_directory, "results",
-                                 "import_to_vivagraph.json"), "w")
-    master_dict = {}  ## A dictionary to store all distances to all references of
-    lookup_table = defaultdict(list)
-    #  each sequence/genome
-    list_mash_files = [f for f in os.listdir(in_folder) if f.endswith(
-        "distances.txt")]
-    # lists_traces=[]		## list that lists all trace_lists generated
-    x = 0
-
-    # new mp module
-    pool = Pool(int(threads))  # Create a multiprocessing Pool
-    mp2 = pool.map(
-        partial(multiprocess_mash_file, sequence_info, pvalue, mashdist,
-                in_folder, x), list_mash_files)  # process list_mash_files
-    # iterable with pool
-    ## loop to print a nice progress bar
-    try:
-        for _ in tqdm.tqdm(mp2, total=len(list_mash_files)):
-            pass
-    except:
-        print("progress will not be tracked because of 'reasons'... check if "
-              "you have tqdm package installed.")
-    pool.close()
-    pool.join()  ## needed in order for the process to end before the remaining
-    #  options are triggered
-
-    # new block to get trace_list and num_links
-    num_links = 0
-    list_of_traces = []
-
-    for temp_list, ref_string in mp2:
-
-        if not temp_list and not ref_string:
-            continue
-
-        # Example of iteration `dic` and lookup table.
-        # dic1 = {"Ac1": [rec2, rec3, rec4]}
-        # dic2 = {"Ac2: [rec1, rec3,rec5]}
-        # lt = {"Ac2": ["Ac1"], "Ac1": ["Ac2"]}
-
-        # Filter temp_list to remove duplicate links
-        new_dic = {ref_string: [x.to_json() for x in temp_list if
-                                ref_string not in lookup_table[x.a]]}
-        # Update link counter for filtered dic
-        num_links += len(new_dic[ref_string])
-
-        # Update lookup table
-        for rec in temp_list:
-            if rec.a not in lookup_table[ref_string]:
-                lookup_table[ref_string].append(rec.a)
-
-        master_dict.update(new_dic)
-
-        for v in temp_list:
-            list_of_traces.append(v.distance)
-
-    ## writes output json for loading in vivagraph
-    out_file.write(json.dumps(master_dict))
-    out_file.close()
-
-    ## commits everything to db
-
-    db.session.close()
-    print("total number of nodes = {}".format(len(master_dict.keys())))
-    # master_dict
-    print("total number of links = {}".format(num_links))
-    return list_of_traces
-
-
 def multiprocess_mash_file(sequence_info, pvalue, mashdist,
-                           in_folder, x, infile):
+                           in_folder, infile):
     input_f = open(os.path.join(in_folder, infile), 'r')
     temporary_list = []
-    temp_dict = {}
     #  mash dist specified in each sequence/genome
     for line in input_f:
         tab_split = line.split("\t")
-        # gi = "_".join(tab_split[0].strip().split("_")[0:2])
         ref_accession = "_".join(tab_split[0].strip().split("_")[0:3])
         seq_accession = "_".join(tab_split[1].strip().split("_")[0:3])
         mash_dist = tab_split[2].strip()
@@ -371,22 +293,21 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
 
     # Get modified reference accession
     string_sequence = "{}_{}".format(seq_accession,
-                                     sequence_info[seq_accession][1])  ##stores acession and lenght
+                                     sequence_info[seq_accession][1])
+    ##stores accession and lenght
 
+    ## Added new sequence string in order to parse easier within
+    # visualization_functions.js
+    ## adds an entry to postgresql database
+    ## but first lets parse some variables used for the database
+    spp_name = sequence_info[seq_accession][0]
+    length = sequence_info[seq_accession][1]
+    plasmid_name = sequence_info[seq_accession][2]
+    exportable_accession = "_".join(string_sequence.split("_")[:-1])
     if temporary_list:
-        x += len(temporary_list)
-        ## Added new sequence string in order to parse easier within
-        # visualization_functions.js
-        ## adds an entry to postgresql database
-        ## but first lets parse some variables used for the database
-        spp_name = sequence_info[seq_accession][0]
-        length = sequence_info[seq_accession][1]
-        # gi = sequence_info[seq_accession][2]
-        plasmid_name = sequence_info[seq_accession][2]
         ## actual database filling
         ## string_sequence.split("_")[-1] is used to remove length from
         # accession in database
-
         ## cannot use json.dumps because it puts double quotes
         doc = {"name": spp_name,
                "length": length,
@@ -394,70 +315,257 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
                "significantLinks": [rec.get_dict() for rec in
                                     temporary_list]
                }
+        #
+        # row = models.Plasmid(
+        #     plasmid_id = "_".join(string_sequence.split("_")[:-1]),
+        #     json_entry = doc
+        # )
+        #db.session.add(row)
+        #db.session.commit()
+    ## used for graphics visualization
+        return temporary_list, string_sequence, exportable_accession, doc
+    # When temporary_list is empty, return tuple for consistency
+    else:
+        # return singletons
+        doc = {"name": spp_name,
+               "length": length,
+               "plasmid_name": plasmid_name,
+               "significantLinks": None}
+        # row = models.Plasmid(
+        #     plasmid_id="_".join(string_sequence.split("_")[:-1]),
+        #     json_entry=doc
+        # )
+        # if seq_accession == "NC_002106_1" or seq_accession == "NC_002107_1":
+        #     print(seq_accession)
+        #db.session.add(row)
+        #db.session.commit()
+        return None, string_sequence, exportable_accession, doc
 
+def node_crawler(node, links, crawled_nodes, cluster_array, master_dict):
+    '''
+
+    Parameters
+    ----------
+    node: str
+        An accession number
+    links: list
+        A list with all links of that accession number
+    crawled_nodes: list
+        A list of all nodes that were crawled already for this cluster
+    cluster_array: list
+        A list that stores all related accessions within a cluster
+    master_dict: dict
+        The dictionary that stores all nodes and links
+
+    '''
+
+    if node in crawled_nodes:
+        return
+    else:
+        crawled_nodes.append(node)
+
+    if node not in cluster_array:
+        cluster_array.append(node)
+
+    for link in links:
+        if link not in cluster_array:
+            cluster_array.append(link)
+        # recursively crawl through all accessions linked to node
+
+        try:
+            node_crawler(link, master_dict[link], crawled_nodes,
+                        cluster_array, master_dict)
+        except KeyError:
+            continue
+
+## calculates ths distances between pairwise genomes
+## This function should be multiprocessed in order to retrieve several output
+# files (as many as the specified cores specified?)
+def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
+                         threads, nodes_file, names_file, species_lst):
+    ## read all infiles
+    in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
+    out_file = open(os.path.join(mother_directory, "results",
+                                 "import_to_vivagraph.json"), "w")
+    master_dict = {}  ## A dictionary to store all distances to all references of
+    accession_match_dict = {}
+    lookup_table = defaultdict(list)
+    #  each sequence/genome
+    list_mash_files = [f for f in os.listdir(in_folder) if f.endswith(
+        "distances.txt")]
+    # lists_traces=[]		## list that lists all trace_lists generated
+
+    # new mp module
+    pool = Pool(int(threads))  # Create a multiprocessing Pool
+    mp2 = pool.map(
+        partial(multiprocess_mash_file, sequence_info, pvalue, mashdist,
+                in_folder), list_mash_files)  # process list_mash_files
+    # iterable with pool
+    ## loop to print a nice progress bar
+    try:
+        for _ in tqdm.tqdm(mp2, total=len(list_mash_files)):
+            pass
+    except:
+        print("progress will not be tracked because of 'reasons'... check if "
+              "you have tqdm package installed.")
+    pool.close()
+    pool.join()  ## needed in order for the process to end before the remaining
+    #  options are triggered
+
+    # new block to get trace_list and num_links
+    num_links = 0
+    list_of_traces = []
+
+    for temp_list, ref_string in (x[:2] for x in mp2):
+
+        # Example of iteration `dic` and lookup table.
+        # dic1 = {"Ac1": [rec2, rec3, rec4]}
+        # dic2 = {"Ac2: [rec1, rec3,rec5]}
+        # lt = {"Ac2": ["Ac1"], "Ac1": ["Ac2"]}
+
+        # Filter temp_list to remove duplicate links
+        if temp_list:
+            # new_dic stores unique links between sequences
+            # None is used for singletons
+            new_dic = {ref_string: [x.to_json() for x in temp_list if
+                                    ref_string not in lookup_table[x.a]]}
+            # new_dic2 stores all links regardless of having being reported
+            # already
+            new_dic2 = {"_".join(ref_string.split("_")[:-1]):
+                            [list(x.to_json().keys())[0] for x in temp_list]}
+
+            # Update lookup table
+            for rec in temp_list:
+                if rec.a not in lookup_table[ref_string]:
+                    lookup_table[ref_string].append(rec.a)
+
+            num_links += len(new_dic[ref_string])
+            for v in temp_list:
+                list_of_traces.append(v.distance)
+        else:
+            # instance for singletons
+            new_dic = {ref_string: None}
+
+        # Update link counter for filtered dic
+        master_dict.update(new_dic)
+        accession_match_dict.update(new_dic2)
+
+    # block to add
+    accession_final_dict = {}
+    counter = 1
+    for key, value in accession_match_dict.items():
+        if any([True if key in x else False for x in
+                accession_final_dict.values()]):
+            continue
+
+        accession_final_dict[counter] = []
+
+        crawled_nodes = []
+        node_crawler(key, value, crawled_nodes, accession_final_dict[
+            counter], accession_match_dict)
+        counter += 1
+
+    super_dic = executor(names_file, nodes_file, species_lst)
+
+    print("\ncommiting to db...")
+    for accession, doc in (x[2:4] for x in mp2):
+        species = " ".join(doc["name"].split("_"))
+        if species in super_dic:
+            taxa = super_dic[species]
+        else:
+            taxa = "unknown"
+        doc["taxa"] = taxa
+        # first lets check if accession is in accession_final_dict
+        # basically checks for clusters and add it to doc dict
+        clusted_id = [key for key, value in \
+                accession_final_dict.items() if accession in value]
+        if clusted_id:
+            cluster_info = str(clusted_id[0])
+        else:
+            cluster_info = None
+        #print(doc)
+        doc["cluster"] = cluster_info
+
+        # finally adds row to database
         row = models.Plasmid(
-            plasmid_id = "_".join(string_sequence.split("_")[:-1]),
+            plasmid_id = accession,
             json_entry = doc
         )
         db.session.add(row)
         db.session.commit()
-    ## used for graphics visualization
-        return temporary_list, string_sequence
-    # When temporary_list is empty, return tuple for consistency
-    else:
-        return None, None
 
+    # use master_dict to generate links do db
+    ## writes output json for loading in vivagraph
+    out_file.write(json.dumps(master_dict))
+    out_file.close()
+
+    db.session.close()
+    print("total number of nodes = {}".format(len(master_dict.keys())))
+    # master_dict
+    print("total number of links = {}".format(num_links))
+    return list_of_traces
 
 ##MAIN##
 
 def main():
-    parser = argparse.ArgumentParser(description='Compares all entries in a '
-                                                 'fasta file using MASH')
+    parser = argparse.ArgumentParser(description="Compares all entries in a "
+                                                 "fasta file using MASH")
 
-    main_options = parser.add_argument_group('Main options')
-    main_options.add_argument('-i', '--input_references', dest='inputfile',
-                              nargs='+', required=True, help='Provide the  '
-                                                             'input fasta '
-                                                             'files  to  '
-                                                             'parse.')
-    main_options.add_argument('-o', '--output', dest='output_tag',
-                              required=True, help='Provide an output tag.')
-    main_options.add_argument('-t', '--threads', dest='threads', default="1",
-                              help='Provide the number of threads to be used. '
-                                   'Default: 1.')
+    main_options = parser.add_argument_group("Main options")
+    main_options.add_argument("-i", "--input_references", dest="inputfile",
+                              nargs="+", required=True, help="Provide the  "
+                                                             "input fasta "
+                                                             "files  to  "
+                                                             "parse.")
+    main_options.add_argument("-o", "--output", dest="output_tag",
+                              required=True, help="Provide an output tag.")
+    main_options.add_argument("-t", "--threads", dest="threads", default="1",
+                              help="Provide the number of threads to be used. "
+                                   "Default: 1.")
 
-    mash_options = parser.add_argument_group('MASH related options')
-    mash_options.add_argument('-k', '--kmers', dest='kmer_size', default="21",
-                              help='Provide the number of k-mers to be provided to mash '
-                                   'sketch. Default: 21.')
-    mash_options.add_argument('-p', '--pvalue', dest='pvalue',
-                              default="0.05", help='Provide the p-value to '
-                                                   'consider a distance '
-                                                   'significant. Default: '
-                                                   '0.05.')
-    mash_options.add_argument('-md', '--mashdist', dest='mashdistance',
-                              default="0.1", help='Provide the maximum mash '
-                                                  'distance to be parsed to '
-                                                  'the matrix. Default: 0.1.')
+    mash_options = parser.add_argument_group("MASH related options")
+    mash_options.add_argument("-k", "--kmers", dest="kmer_size", default="21",
+                              help="Provide the number of k-mers to be provided to mash "
+                                   "sketch. Default: 21.")
+    mash_options.add_argument("-p", "--pvalue", dest="pvalue",
+                              default="0.05", help="Provide the p-value to "
+                                                   "consider a distance "
+                                                   "significant. Default: "
+                                                   "0.05.")
+    mash_options.add_argument("-md", "--mashdist", dest="mashdistance",
+                              default="0.1", help="Provide the maximum mash "
+                                                  "distance to be parsed to "
+                                                  "the matrix. Default: 0.1.")
 
-    other_options = parser.add_argument_group('Other options')
-    other_options.add_argument('-rm', '--remove', dest='remove',
-                               action='store_true', help='Remove any temporary '
-                                                         'files and folders not '
-                                                         'needed (not present '
-                                                         'in results '
-                                                         'subdirectory).')
-    other_options.add_argument('-hist', '--histograms', dest='histograms',
-                               action='store_true', help='Checks the '
-                                                         'distribution of '
-                                                         'distances values  '
-                                                         'plotting histograms')
+    other_options = parser.add_argument_group("Other options")
+    other_options.add_argument("-rm", "--remove", dest="remove",
+                               action="store_true", help="Remove any temporary "
+                                                         "files and folders not "
+                                                         "needed (not present "
+                                                         "in results "
+                                                         "subdirectory).")
+    other_options.add_argument("-hist", "--histograms", dest="histograms",
+                               action="store_true", help="Checks the "
+                                                         "distribution of "
+                                                         "distances values  "
+                                                         "plotting histograms")
+    other_options.add_argument("-non", "--nodes_ncbi", dest="nodes_file",
+                               required=True, help="specify the path to the "
+                                                   "file containing nodes.dmp "
+                                                   "from NCBI" )
+    other_options.add_argument("-nan", "--names_ncbi", dest="names_file",
+                               required=True, help="specify the path to the "
+                                                   "file containing names.dmp "
+                                                   "from NCBI")
+
     args = parser.parse_args()
 
     threads = args.threads
     kmer_size = args.kmer_size
     pvalue = args.pvalue
     mashdist = args.mashdistance
+    names_file = args.names_file
+    nodes_file = args.nodes_file
 
     ## lists all fastas given to argparser
     fastas = [f for f in args.inputfile if f.endswith((".fas", ".fasta",
@@ -472,7 +580,7 @@ def main():
     # function
     print("***********************************")
     print("Creating main database...\n")
-    main_fasta, sequence_info = master_fasta(fastas, output_tag,
+    main_fasta, sequence_info, all_species = master_fasta(fastas, output_tag,
                                              mother_directory)
 
     #########################
@@ -496,7 +604,7 @@ def main():
     print("Sketching genomes and running mash distances...\n")
 
     pool = Pool(int(threads))  # Create a multiprocessing Pool
-    mp = pool.imap_unordered(partial(multiprocess_mash, ref_sketch, main_fasta,
+    mp = pool.imap_unordered(partial(multiprocess_mash, ref_sketch,
                                      output_tag, kmer_size, mother_directory),
                              genomes)  # process genomes iterable with pool
 
@@ -516,7 +624,8 @@ def main():
     print("\n***********************************")
     print("Creating distance matrix...\n")
     lists_traces = mash_distance_matrix(mother_directory, sequence_info,
-                                        pvalue, mashdist, threads)
+                                        pvalue, mashdist, threads,
+                                        nodes_file, names_file, all_species)
 
     ## remove master_fasta
     if args.remove:

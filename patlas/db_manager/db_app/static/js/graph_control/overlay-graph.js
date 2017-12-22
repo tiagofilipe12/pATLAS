@@ -1,3 +1,12 @@
+/**
+ * Function to create overlay that permits startMultiSelect to change color
+ * of nodes
+ * @param {HTMLElement} overlayDom - html element graph-overlay which has
+ * the overlay itself
+ * @param {HTMLElement} underElement - html element couve-flor where
+ * vivagraph is represented.
+ * @returns {Object} returns an object with functions related with overlay
+ */
 const createOverlay = (overlayDom, underElement) => {
   let notify = []
   const dragndrop = Viva.Graph.Utils.dragndrop(overlayDom)
@@ -64,14 +73,24 @@ const createOverlay = (overlayDom, underElement) => {
     },
     destroy: () => {
       overlayDom.style.display = "none"
+      selectionIndicator.style.display = "none"
       dragndrop.release()
     }//,
-    //selectedArea: () => {
+    // selectedArea: () => {
     //  return selectedArea
-    //}
+    // }
   }
 }
 
+/**
+ * Function to start multiple selections on graph
+ * @param {Object} graph
+ * @param {Object} renderer
+ * @param {Object} layout
+ * @returns {Object} returns overlay in order to prevent drag and drop
+ * from bottom to top to be properly executed otherwise it will become
+ * increasingly slow
+ */
 const startMultiSelect = (graph, renderer, layout) => {
   const graphics = renderer.getGraphics()
   const overlay = createOverlay(document.querySelector(".graph-overlay"), document.getElementById("couve-flor"))
@@ -113,7 +132,5 @@ const startMultiSelect = (graph, renderer, layout) => {
     return
 
   })
-  return overlay    // returns overlay in order to prevent drag and drop
-  // from bottom to top to be properly executed
-  // otherwise it will become increasingly slow
+  return overlay
 }

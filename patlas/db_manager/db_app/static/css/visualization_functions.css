@@ -131,12 +131,23 @@
 #modal-body-length{
     height: 200px;
     overflow: auto;
-
 }
+
+/*changes headers of all modals*/
+.modal-header{
+    color: white;
+    border-color: #524F52;
+    background-color: #524F52;
+}
+
+/*changes close button for all modals*/
+.modal-header .close{
+    color: white;
+}
+
 /*input min value*/
 #min-modal{
     text-align: center;
-
 }
 
 #slider_input_min{
@@ -249,9 +260,10 @@
   overflow-y: scroll;
   overflow-x: hidden;
 }*/
-#order_dropdown{
+#order_dropdown, #famDropdown, #resDropdown, #cardDropdown{
     text-align: center;
 }
+
 /*#familyList.dropdown-menu{
   overflow-y: scroll;
   overflow-x: hidden;
@@ -289,7 +301,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
-#modal-body-taxa-1{
+#modal-body-taxa-1, #modalBodyFAM1, #modalBodyABR1{
     margin-bottom: 5%;
 }
 
@@ -614,12 +626,13 @@
 #progressDiv{
     font-size: 18px;
     position: relative;
-    top: 40%;
+    width: 100%;
+    text-align: center;
+    top: 30%;
 }
 
 #actualProgress{
-    width: 0%;
-    height: auto;
+    display: inline-block;
 }
 
 #headerTaxaGroup, #headerABRGroup, #headerOtherGroup {
@@ -705,4 +718,16 @@ Careful when using this in other popovers in the future*/
 .popover-title  {
     background: #514F52;
     color: white;
+}
+
+#plotWait{
+    margin: 0 auto;
+}
+
+#aboutModalBody{
+    text-align: center;
+}
+
+#uploadFileAssembly{
+    margin-bottom: 5%;
 }
