@@ -43,10 +43,12 @@ the slider and the boxes for minimum and maximum limits which will change the
  
  ![](gitbook/images/lenght_example.png)
 
-## Plasmid types
+## Plasmid families
 
-Plasmid types classify plasmids using a classical plasmid classification
-system from PlasmidFinder
+This option allows users to color plasmids (nodes) present in pATLAS by
+selecting genes available in PlasmidFinder database. For that a dropdown
+with all genes present in this database is available for the user and
+searches are enabled with live filter of resulting genes.
 
 Citation:
 * [Carattoli, A., Zankari, E., García-Fernández, A.,

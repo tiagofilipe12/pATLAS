@@ -453,6 +453,23 @@
                         <input type="text" class="form-control" id="assembly_text" readonly autocomplete="off">
                     </div>
                 </div>
+                <div class="panel panel-info">
+                    <div class="panel-heading">How to run</div>
+                    <div class="panel-body">
+                        <li>
+                            Download repo: git clone
+                            https://github.com/tiagofilipe12/mash_wrapper.git
+                        </li>
+                        <li>
+                            Install dependencies: pip install requirements.txt
+                        </li>
+                        <li>
+                            Execute command: mash_wrapper.py -rs
+                            &ltreference.msh&gt -a
+                            &ltyour_fasta&gt -j -o &ltyour_output_folder&gt
+                        </li>
+                    </div>
+                </div>
             </div>
 
             <div class="modal-footer">
@@ -633,6 +650,14 @@
     <strong>Warning!</strong> File is too big, download will be split
     into batches 100 sequences. Note that this behavior will open several
     windows
+</div>
+
+<div class="alert alert-info alert-dismissable fade in" id="alertAssembly"
+     style="display: none">
+    <button type="button" class="close" id="alertCloseAssembly"
+            aria-hidden="true" data-hide="true">&times;</button>
+    Use play button to let red nodes/circles converge with their related
+    plasmids (orange nodes/circles). They will converge with the orange nodes.
 </div>
 
 <!--Alert message to check that some selection is made-->

@@ -727,3 +727,7 @@ Careful when using this in other popovers in the future*/
 #aboutModalBody{
     text-align: center;
 }
+
+#uploadFileAssembly{
+    margin-bottom: 5%;
+}

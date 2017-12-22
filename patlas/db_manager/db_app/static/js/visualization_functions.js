@@ -1285,6 +1285,7 @@ const onLoad = () => {
     //* * Assembly **//
     //* ********* ***//
     $("#assemblySubmit").unbind("click").bind("click", (event) => {
+      $("#alertAssembly").show()
       masterReadArray = []
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
@@ -1876,6 +1877,9 @@ const onLoad = () => {
 
   $("#alertCloseNCBI").unbind("click").bind("click", () => {
     $("#alertNCBI").hide()  // hide this div
+  })
+  $("#alertCloseAssembly").unbind("click").bind("click", () => {
+    $("#alertAssembly").hide()  // hide this div
   })
 
   /** control the visualization of multiple files for read mode
