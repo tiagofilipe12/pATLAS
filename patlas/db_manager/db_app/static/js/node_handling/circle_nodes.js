@@ -80,7 +80,7 @@ const buildCircleNodeShader = () => {
     load(glContext) {
       gl = glContext
       webglUtils = Viva.Graph.webgl(glContext)
-      gl.getExtension("OES_standard_derivatives");
+      gl.getExtension("OES_standard_derivatives")
       program = webglUtils.createProgram(nodesVS, nodesFS)
       gl.useProgram(program)
       locations = webglUtils.getLocations(program, ['a_vertexPos', 'a_customAttributes', 'u_screenSize', 'u_transform'])

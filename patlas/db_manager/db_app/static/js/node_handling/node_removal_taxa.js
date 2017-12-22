@@ -79,7 +79,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, list_gi, readString,
                      assemblyJson) => {
   if (listGiFilter.length > 0) {
-    console.log(listGiFilter)
     //let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
     // loops every Accession stored in listGiFilter on re_run button
