@@ -4,7 +4,7 @@
 
 //* * block #2 for node customization **//
 // Lets start from the easiest part - model object for node ui in webgl
-function WebglCircle (size, color) {
+function WebglCircle(size, color) {
   this.size = size
   this.color = color
   this.backupColor = color
@@ -15,11 +15,21 @@ const buildCircleNodeShader = () => {
     // For each primitive we need 4 attributes: x, y, color and size.
   let ATTRIBUTES_PER_PRIMITIVE = 4,
     nodesFS = [
+      '#ifdef GL_OES_standard_derivatives',
+      '#extension GL_OES_standard_derivatives : enable',
+      '#endif',
       'precision mediump float;',
       'varying vec4 color;',
       'void main(void) {',
+      '   float r = 0.5, delta = 0.0, alpha = 1.0;',
+      '   vec2 cxy = 2.0 * gl_PointCoord - 1.0;',
+      '   r = dot(cxy, cxy);',
+      '   #ifdef GL_OES_standard_derivatives',
+      '   delta = fwidth(r);',
+      '   alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);',
+      '   #endif',
       '   if ((gl_PointCoord.x - 0.5) * (gl_PointCoord.x - 0.5) + (gl_PointCoord.y - 0.5) * (gl_PointCoord.y - 0.5) < 0.25) {',
-      '     gl_FragColor = color;',
+      '     gl_FragColor = color*alpha;',
       '   } else {',
       '     gl_FragColor = vec4(0);',
       '   }',
@@ -58,6 +68,7 @@ const buildCircleNodeShader = () => {
     load(glContext) {
       gl = glContext
       webglUtils = Viva.Graph.webgl(glContext)
+      gl.getExtension("OES_standard_derivatives");
       program = webglUtils.createProgram(nodesVS, nodesFS)
       gl.useProgram(program)
       locations = webglUtils.getLocations(program, ['a_vertexPos', 'a_customAttributes', 'u_screenSize', 'u_transform'])
