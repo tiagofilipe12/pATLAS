@@ -1908,6 +1908,8 @@ const onLoad = () => {
 
   $("#questionTable").popover()
 
+  $("#questionMap").popover()
+
   // function to avoid shift key to be triggered when any modal is open
   $(".modal").on("shown.bs.modal", () => {
     multiSelectOverlay = "disable"
@@ -1922,6 +1924,7 @@ const onLoad = () => {
     // closed
     $("#questionTable").popover("hide")
     $("#questionPlots").popover("hide")
+    $("#questionMap").popover("hide")
   })
 
   // this forces the entire script to run
