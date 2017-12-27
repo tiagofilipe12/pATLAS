@@ -183,10 +183,12 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
   let showGoback = document.getElementById("go_back")
   let showDownload = document.getElementById("download_ds")
   let showTable = document.getElementById("tableShow")
+  let plotButton = document.getElementById("plotButton")
   showRerun.style.display = "block"
   showGoback.style.display = "block"
   showDownload.style.display = "block"
   showTable.style.display = "block"
+  plotButton.style.display = "block"
   renderer.rerender()
   $("#loading").hide()
   return [list_gi, listGiFilter]

@@ -1219,7 +1219,7 @@ const onLoad = () => {
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
       $("#fileNameDiv").show()
       // readIndex will be used by slider buttons
-      readIndex += 1
+      readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       $("#loading").show()
       setTimeout( () => {
@@ -1243,6 +1243,31 @@ const onLoad = () => {
       abortRead(readFilejson)
     })
 
+    $("#sampleMapping").unbind("click").bind("click", (event) => {
+      event.preventDefault()
+      // readIndex will be used by slider buttons
+      readIndex = 0
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      $("#loading").show()
+      setTimeout( () => {
+        getArrayMapping().done((result) => {
+          // puts to readFilejson object that may store many files
+          readFilejson = {
+            // has to be stringifyed to be passed to pushToMasterReadArray
+            "mapping_sample1": JSON.stringify(result)
+          }
+          const outLists = readColoring(g, list_gi, graphics, renderer, result)
+          list_gi = outLists[0]
+          listGiFilter = outLists[1]
+          masterReadArray = pushToMasterReadArray(readFilejson)
+        })
+      })
+      // used to hide when function is not executed properly
+      setTimeout( () => {
+        $("#loading").hide()
+      }, 100)
+    })
+
     //* ************//
     //* ***MASH****//
     //* ************//
@@ -1251,6 +1276,7 @@ const onLoad = () => {
       masterReadArray = []
       readFilejson = mashJson // converts mash_json into readFilejson to
       readString = JSON.parse(Object.values(readFilejson)[0])
+      console.log(readString)
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
       $("#fileNameDiv").show()
       // readIndex will be used by slider buttons
@@ -1281,6 +1307,33 @@ const onLoad = () => {
       abortRead(mashJson)
     })
 
+    $("#sampleMash").unbind("click").bind("click", (event) => {
+      event.preventDefault()
+      // readIndex will be used by slider buttons
+      readIndex = 0
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      $("#loading").show()
+      setTimeout( () => {
+        getArrayMash().done((result) => {
+          console.log(result)
+          // puts to readFilejson object that may store many files
+          mashJson = {
+            // has to be stringifyed to be passed to pushToMasterReadArray
+            "mapping_sample1": JSON.stringify(result)
+          }
+          const outLists = readColoring(g, list_gi, graphics, renderer, result)
+          console.log(outLists)
+          list_gi = outLists[0]
+          listGiFilter = outLists[1]
+          masterReadArray = pushToMasterReadArray(mashJson)
+        })
+      })
+      // used to hide when function is not executed properly
+      setTimeout( () => {
+        $("#loading").hide()
+      }, 100)
+    })
+
     //* ********* ***//
     //* * Assembly **//
     //* ********* ***//
@@ -1289,6 +1342,7 @@ const onLoad = () => {
       masterReadArray = []
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      console.log(assemblyJson)
       $("#loading").show()
       // setTimeout( () => {
       listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
@@ -1307,6 +1361,29 @@ const onLoad = () => {
 
     $("#cancel_assembly").unbind("click").bind("click", () => {
       abortRead(assemblyJson)
+    })
+
+    $("#sampleAssembly").unbind("click").bind("click", (event) => {
+      $("#alertAssembly").show()
+      masterReadArray = []
+      event.preventDefault()
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      $("#loading").show()
+      // setTimeout( () => {
+      getArrayAssembly().then( (results) => {
+        listGiFilter = assembly(list_gi, results, g, graphics, masterReadArray, listGiFilter)
+      // }, 100)
+      })
+      setTimeout( () => {
+        renderer.rerender()
+        // TODO raise a warning for users to press play if they want
+      }, 100)
+
+      // }
+      // used to hide when function is not executed properly
+      setTimeout( () => {
+        $("#loading").hide()
+      }, 100)
     })
 
     //* *********************//

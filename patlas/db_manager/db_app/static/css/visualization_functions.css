@@ -724,3 +724,10 @@ Careful when using this in other popovers in the future*/
     max-height: 500px;
     overflow-y: auto;
 }
+
+.sampleImportClass{
+    background-color: #BCCBBC;
+    border-color: #4cae4c;
+    display: block;
+    margin: 0 auto;
+}

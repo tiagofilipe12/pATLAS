@@ -59,6 +59,8 @@
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
     <!--input files handler script-->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='js/input_file_handling/importJsonSamples.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/zooming_control.js') }}"></script>
     <script language="javascript" type="text/javascript"
@@ -378,6 +380,12 @@
                         </li>
                     </div>
                 </div>
+                <button type="submit" class="btn sampleImportClass"
+                        data-dismiss="modal" id="sampleMapping"
+                        title="This will load an example dataset"
+                        >Load
+                    sample dataset...
+                </button>
             </div>
 
             <div class="modal-footer">
@@ -481,6 +489,12 @@
                         </li>
                     </div>
                 </div>
+                <button type="submit" class="btn sampleImportClass"
+                        data-dismiss="modal" id="sampleMash"
+                        title="This will load an example dataset"
+                        >Load
+                    sample dataset...
+                </button>
             </div>
 
             <div class="modal-footer">
@@ -540,6 +554,12 @@
                         </li>
                     </div>
                 </div>
+                <button type="submit" class="btn sampleImportClass"
+                        data-dismiss="modal" id="sampleAssembly"
+                        title="This will load an example dataset"
+                        >Load
+                    sample dataset...
+                </button>
             </div>
 
             <div class="modal-footer">
