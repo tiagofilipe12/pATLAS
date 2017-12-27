@@ -97,15 +97,16 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
     const perc = readString[string]
 
     // adds node if it doesn't have links
-    if (list_gi.indexOf(gi) <= -1) {
-      g.addNode(gi, {
-        sequence: "<span style='color:#468499'>Accession: </span><a " +
-        "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split("_").slice(0, 2).join("_") + "' target='_blank'>" + gi + "</a>",
-        log_length: 10
-        // percentage: "<font color='#468499'>percentage: </font>" + perc
-      })
-      list_gi.push(gi)
-    }
+    // TODO singletons were removed in order to avoid misleading users
+    // if (list_gi.indexOf(gi) <= -1) {
+    //   g.addNode(gi, {
+    //     sequence: "<span style='color:#468499'>Accession: </span><a " +
+    //     "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split("_").slice(0, 2).join("_") + "' target='_blank'>" + gi + "</a>",
+    //     log_length: 10
+    //     // percentage: "<font color='#468499'>percentage: </font>" + perc
+    //   })
+    //   list_gi.push(gi)
+    // }
     // checks if it is an array --> enabling mash mode
     if (perc.constructor === Array) {
       const identity = parseFloat(perc[0])
