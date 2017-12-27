@@ -172,18 +172,6 @@
     height: 14px;
 }
 
-/* customizes taxa filters buttons*/
-
-#modal-body-file{
-    /*height: 190px;*/
-    overflow: auto;
-}
-
-#modal-body-mash{
-    height: 260px;
-    overflow: auto;
-}
-
 #label_mash {
     display: block;
     padding-left: 15px;
@@ -728,6 +716,11 @@ Careful when using this in other popovers in the future*/
     text-align: center;
 }
 
-#uploadFileAssembly{
+#uploadFileAssembly, #uploadFileMash{
     margin-bottom: 5%;
+}
+
+#modal-body-mash, #modal-body-file, #modal-body-fileAssembly{
+    max-height: 500px;
+    overflow-y: auto;
 }
