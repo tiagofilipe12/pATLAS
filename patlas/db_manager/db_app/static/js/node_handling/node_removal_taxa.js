@@ -188,10 +188,10 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
         if (readString !== false) {
           readColoring(g, list_gi, graphics, renderer, readString)
         } else if (assemblyJson !== false) {
+          console.log(assemblyJson)
           masterReadArray = [] //needs to reset this array for the assembly
           // function to be successful
           listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
-          // TODO add support for mash_json (maybe it can use readString?
         } else if ($("#p_Card").html() !== "Card:" ||
           $("#p_Resfinder").html() !== "Resfinder:") {
           $("#resSubmit").click()
@@ -206,6 +206,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           // the button was clicked and makes the legends
           $("#taxaModalSubmit").click()
         } else {
+          console.log("else")
           colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
           // color for area selection
         }

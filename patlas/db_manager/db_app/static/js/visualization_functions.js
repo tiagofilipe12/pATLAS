@@ -1371,6 +1371,7 @@ const onLoad = () => {
       $("#loading").show()
       // setTimeout( () => {
       getArrayAssembly().then( (results) => {
+        assemblyJson = results
         listGiFilter = assembly(list_gi, results, g, graphics, masterReadArray, listGiFilter)
       // }, 100)
       })
@@ -1675,8 +1676,8 @@ const onLoad = () => {
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, readReload,
           assemblyJson)
-        // TODO do something similar to assembly
       } else {
+        console.log(assemblyJson)
         // sets pageReRun to true
         pageReRun = true
         // used when no reads are used to filter
