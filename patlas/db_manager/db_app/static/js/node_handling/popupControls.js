@@ -15,6 +15,10 @@ const arrayToCsv = (array) => {
 }
 
 const setupPopupDisplay = (node, speciesName, plasmidName, clusterId) => {
+  // this will assure that even db doesn't return anything these divs are
+  // emptied before adding something new
+  $("#percentagePopSpan").html("")
+  $("#copyNumberPopSpan").html("")
   // first needs to empty the popup in order to avoid having
   // multiple entries from previous interactions
   if (typeof node.data !== "undefined") {
