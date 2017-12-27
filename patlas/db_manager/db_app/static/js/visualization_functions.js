@@ -1275,8 +1275,8 @@ const onLoad = () => {
     $("#fileSubmit_mash").unbind("click").bind("click", (event) => {
       masterReadArray = []
       readFilejson = mashJson // converts mash_json into readFilejson to
-      readString = JSON.parse(Object.values(readFilejson)[0])
-      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+      readString = JSON.parse(Object.values(mashJson)[0])
+      $("#fileNameDiv").html(Object.keys(mashJson)[0])
       $("#fileNameDiv").show()
       // readIndex will be used by slider buttons
       readIndex += 1
