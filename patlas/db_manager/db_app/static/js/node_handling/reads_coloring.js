@@ -29,11 +29,11 @@ const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
     // when filter removes all nodes and then adds them again. Looks like g
     // was somehow affected.
     // if statement added for parsing singletons into the graph visualization
-    if (node.id.indexOf("singleton") > -1) {
-      nodeGI = node.id.split("_").slice(1, 4).join("_")
-    } else {
-      nodeGI = node.id.split("_").slice(0, 3).join("_")
-    }
+    // if (node.id.indexOf("singleton") > -1) {
+    //   nodeGI = node.id.split("_").slice(1, 4).join("_")
+    // } else {
+    const nodeGI = node.id.split("_").slice(0, 3).join("_")
+    // }
     const nodeUI = graphics.getNodeUI(node.id)
 
     if (gi === nodeGI) {
