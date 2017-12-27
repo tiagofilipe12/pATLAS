@@ -690,16 +690,17 @@ Careful when using this in other popovers in the future*/
     border-bottom: 2px solid #514F52;
 }
 
-.popover.right>.arrow:after {
+.popover.right > .arrow:after {
     left: 2px;
     bottom: -10px;
 }
-.popover.right>.arrow {
+.popover.right > .arrow {
     left: -12px;
     margin-top: -12px;
     border-right-color: #514F52;
 }
-.popover>.arrow {
+
+.popover > .arrow {
     border-width: 12px;
 }
 
