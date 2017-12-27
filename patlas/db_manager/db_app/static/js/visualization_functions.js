@@ -1276,7 +1276,6 @@ const onLoad = () => {
       masterReadArray = []
       readFilejson = mashJson // converts mash_json into readFilejson to
       readString = JSON.parse(Object.values(readFilejson)[0])
-      console.log(readString)
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
       $("#fileNameDiv").show()
       // readIndex will be used by slider buttons
@@ -1315,14 +1314,13 @@ const onLoad = () => {
       $("#loading").show()
       setTimeout( () => {
         getArrayMash().done((result) => {
-          console.log(result)
           // puts to readFilejson object that may store many files
           mashJson = {
             // has to be stringifyed to be passed to pushToMasterReadArray
             "mapping_sample1": JSON.stringify(result)
           }
+          readFilejson = mashJson
           const outLists = readColoring(g, list_gi, graphics, renderer, result)
-          console.log(outLists)
           list_gi = outLists[0]
           listGiFilter = outLists[1]
           masterReadArray = pushToMasterReadArray(mashJson)
@@ -1342,7 +1340,6 @@ const onLoad = () => {
       masterReadArray = []
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
-      console.log(assemblyJson)
       $("#loading").show()
       // setTimeout( () => {
       listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
@@ -1677,7 +1674,6 @@ const onLoad = () => {
           graphics, reloadAccessionList, renderer, list_gi, readReload,
           assemblyJson)
       } else {
-        console.log(assemblyJson)
         // sets pageReRun to true
         pageReRun = true
         // used when no reads are used to filter
@@ -1776,8 +1772,6 @@ const onLoad = () => {
 
   // function to control cell click
     .on("dbl-click-cell.bs.table", (field, value, row, element) => {
-      console.log(g.getNode(element.id))
-
       recenterDOM(renderer, layout, [element.id, false])
       requestPlasmidTable(g.getNode(element.id), setupPopupDisplay)
     })
@@ -1818,7 +1812,6 @@ const onLoad = () => {
       recenterDOM(renderer, layout, [bootstrapTableList[0], false])
       requestPlasmidTable(g.getNode(bootstrapTableList[0]), setupPopupDisplay)
     }
-    console.log(bootstrapTableList)
     colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
     // handles hidden buttons
     showRerun.style.display = "block"

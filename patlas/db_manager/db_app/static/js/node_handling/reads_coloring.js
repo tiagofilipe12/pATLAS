@@ -49,7 +49,8 @@ const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
 }
 
 // get pallete
-const palette = (scale, x, readMode) => { // x is the number of colors to the
+const palette = (scale, x, readMode) => { // x is the number of colors
+// to the
 // gradient
   showLegend = document.getElementById("colorLegend") // global variable to
   // be reset by the button reset-filters
@@ -88,7 +89,10 @@ const palette = (scale, x, readMode) => { // x is the number of colors to the
 const readColoring = (g, list_gi, graphics, renderer, readString) => {
   const readMode = true
   let listGiFilter = []
+  let meanValue, minValue
+  let counter = 0
   for (let string in readString) {
+    counter += 1
     const gi = string
     const perc = readString[string]
 
@@ -106,24 +110,25 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
     if (perc.constructor === Array) {
       const identity = parseFloat(perc[0])
       const copyNumber = perc[1]
-      // TODO add functionality to the code below
-      if (document.getElementsByClassName("check_file_mash").checked) {
-        if (identity >= 0.5) {
-          // perc values had to be normalized to the percentage value between 0
-          // and 1
-          const readColor = chroma.mix("#eacc00", "maroon", (identity - 0.5) * 2).hex()
-            .replace("#", "0x")
-          node_iter(g, readColor, gi, graphics, identity, copyNumber)
-          listGiFilter.push(gi)
-        } else {
-          const readColor = chroma.mix("blue", "#eacc00", identity * 2).hex()
-            .replace("#", "0x")
-          node_iter(g, readColor, gi, graphics, identity, copyNumber)
-          listGiFilter.push(gi)
-        }
-        const scale = chroma.scale(["blue", "#eacc00", "maroon"])
-        palette(scale, 10, readMode)
-      } else {
+      // TODO removed previous implementation of comparison between mash
+      // samples
+      // if (document.getElementsByClassName("check_file_mash").checked) {
+      //   if (identity >= 0.5) {
+      //     // perc values had to be normalized to the percentage value between 0
+      //     // and 1
+      //     const readColor = chroma.mix("#eacc00", "maroon", (identity - 0.5) * 2).hex()
+      //       .replace("#", "0x")
+      //     node_iter(g, readColor, gi, graphics, identity, copyNumber)
+      //     listGiFilter.push(gi)
+      //   } else {
+      //     const readColor = chroma.mix("blue", "#eacc00", identity * 2).hex()
+      //       .replace("#", "0x")
+      //     node_iter(g, readColor, gi, graphics, identity, copyNumber)
+      //     listGiFilter.push(gi)
+      //   }
+      //   const scale = chroma.scale(["blue", "#eacc00", "maroon"])
+      //   palette(scale, 10, readMode)
+      // } else {
         if (identity >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
           const newPerc = rangeConverter(identity, cutoffParserMash(), 1, 0, 1)
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
@@ -132,7 +137,17 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           node_iter(g, readColor, gi, graphics, identity, copyNumber)
           listGiFilter.push(gi)
         }
-      }
+        if (Object.keys(readString).length === counter) {
+          // min value is the one fetched from the input form or by default 0.6
+          // values are fixed to two decimal
+          minValue = parseFloat(
+            ($("#cutoffValueMash").val() !== "") ? $("#cutoffValueMash").val() : "0.90"
+          ).toFixed(2)
+          // mean value is the sum of the min value plus the range between the min
+          // and max values divided by two
+          meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
+        }
+      // }
       // otherwise just runs read mode
     } else {
       if (document.getElementsByClassName("check_file").checked) {
@@ -161,16 +176,18 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           listGiFilter.push(gi)
         }
       }
+      if (Object.keys(readString).length === counter) {
+        // min value is the one fetched from the input form or by default 0.6
+        // values are fixed to two decimal
+        minValue = parseFloat(
+          ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
+        ).toFixed(2)
+        // mean value is the sum of the min value plus the range between the min
+        // and max values divided by two
+        meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
+      }
     }
   }
-  // min value is the one fetched from the input form or by default 0.6
-  // values are fixed to two decimal
-  const minValue = parseFloat(
-    ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
-  ).toFixed(2)
-  // mean value is the sum of the min value plus the range between the min
-  // and max values divided by two
-  const meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
   $("#readString").append("<div class='min'>" +
     minValue.toString() + "</div>")
   $("#readString").append("<div class='med'>" +
