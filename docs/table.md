@@ -65,3 +65,9 @@ export as:
 * TXT
 * SQL
 * MS-Excel
+
+### Double click on a cell
+
+Double clicking on a cell will trigger an event that will pass almost
+unnoticed for those that are not very familiar with pATLAS. This will
+center on the double clicked plasmid and open the popup for that plasmid.
