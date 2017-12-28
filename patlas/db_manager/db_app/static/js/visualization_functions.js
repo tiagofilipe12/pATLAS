@@ -1539,18 +1539,27 @@ const onLoad = () => {
         }, 100)
       })
     })
-
+    // sets a counter for welcome div
     if (($("#welcomeModal").data("bs.modal") || {}).isShown) {
       let logger = 30
-      let test = setInterval(() => {
-        logger -= 1
-        $("#counter").html(`Closing in: ${logger.toString()}s`)
-        if (logger === 0) {
-          clearInterval(test)
-          $("#welcomeModal").modal("hide")
+      let countDown = setInterval( () => {
+        if ($("#counter").html() !== "") {
+          console.log($("#counter").html())
+          logger -= 1
+          $("#counter").html(`Closing in: ${logger.toString()}s`)
+          if (logger === 0) {
+            clearInterval(countDown)
+            $("#welcomeModal").modal("hide")
+            $("#counter").html("")
+          }
         }
       }, 1000)
     }
+    // button to cancel cowntdown control
+    $("#counterClose").unbind("click").bind("click", () => {
+      $("#counter").html("")
+      $("#counterClose").hide()
+    })
 
   } // closes renderGraph
   //}) //end of getArray
