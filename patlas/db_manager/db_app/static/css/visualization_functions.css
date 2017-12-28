@@ -715,6 +715,8 @@ Careful when using this in other popovers in the future*/
 
 #aboutModalBody{
     text-align: center;
+    max-height: 600px;
+    overflow-y: auto;
 }
 
 #uploadFileAssembly, #uploadFileMash{
