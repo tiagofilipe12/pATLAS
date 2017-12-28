@@ -1539,6 +1539,19 @@ const onLoad = () => {
         }, 100)
       })
     })
+
+    if (($("#welcomeModal").data("bs.modal") || {}).isShown) {
+      let logger = 30
+      let test = setInterval(() => {
+        logger -= 1
+        $("#counter").html(`Closing in: ${logger.toString()}s`)
+        if (logger === 0) {
+          clearInterval(test)
+          $("#welcomeModal").modal("hide")
+        }
+      }, 1000)
+    }
+
   } // closes renderGraph
   //}) //end of getArray
 
@@ -1651,7 +1664,6 @@ const onLoad = () => {
               }
             })
           }
-
           addAllNodes(json.nodes)
             .then(addAllLinks(json.links))
             .then(renderGraph(graphics))
