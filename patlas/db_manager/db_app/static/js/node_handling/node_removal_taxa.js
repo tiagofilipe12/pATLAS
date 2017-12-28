@@ -191,7 +191,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           masterReadArray = [] //needs to reset this array for the assembly
           // function to be successful
           listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
-          // TODO add support for mash_json (maybe it can use readString?
         } else if ($("#p_Card").html() !== "Card:" ||
           $("#p_Resfinder").html() !== "Resfinder:") {
           $("#resSubmit").click()
@@ -459,6 +458,9 @@ const node_color_reset = (graphics, g, nodeColor, renderer) => {
     if (nodeUI.color !== nodeColor) {
       nodeUI.backupColor = nodeUI.color
       nodeUI.color = nodeColor
+      // it also needs to remove data from percentage and copy number
+      node.data.percentage = ""
+      node.data.copyNumber = ""
     }
   })
   renderer.rerender()

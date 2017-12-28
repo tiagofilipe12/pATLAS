@@ -87,6 +87,31 @@ def pf_summary():
     # )
     # return response
 
+## routes for sample files
+@app.route("/map_sample")
+def map_sample():
+    return repetitiveFunction(
+        "db_app/static/json/samples/reads_sample_resultSRR5201504.json"
+    )
+
+@app.route("/ass_sample1")
+def ass_sample1():
+    return repetitiveFunction(
+        "db_app/static/json/samples/assembly1.fasta__distances.txt.json"
+    )
+
+@app.route("/ass_sample2")
+def ass_sample2():
+    return repetitiveFunction(
+        "db_app/static/json/samples/assembly2.fasta__distances.txt.json"
+    )
+
+@app.route("/mash_sample")
+def mash_sample():
+    return repetitiveFunction(
+        "db_app/static/json/samples/mash_screen_sample_sorted.json"
+    )
+
 ## functions
 
 def make_summary(path):

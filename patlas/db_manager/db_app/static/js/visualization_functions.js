@@ -1219,7 +1219,7 @@ const onLoad = () => {
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
       $("#fileNameDiv").show()
       // readIndex will be used by slider buttons
-      readIndex += 1
+      readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       $("#loading").show()
       setTimeout( () => {
@@ -1243,6 +1243,31 @@ const onLoad = () => {
       abortRead(readFilejson)
     })
 
+    $("#sampleMapping").unbind("click").bind("click", (event) => {
+      event.preventDefault()
+      // readIndex will be used by slider buttons
+      readIndex = 0
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      $("#loading").show()
+      setTimeout( () => {
+        getArrayMapping().done((result) => {
+          // puts to readFilejson object that may store many files
+          readFilejson = {
+            // has to be stringifyed to be passed to pushToMasterReadArray
+            "mapping_sample1": JSON.stringify(result)
+          }
+          const outLists = readColoring(g, list_gi, graphics, renderer, result)
+          list_gi = outLists[0]
+          listGiFilter = outLists[1]
+          masterReadArray = pushToMasterReadArray(readFilejson)
+        })
+      })
+      // used to hide when function is not executed properly
+      setTimeout( () => {
+        $("#loading").hide()
+      }, 100)
+    })
+
     //* ************//
     //* ***MASH****//
     //* ************//
@@ -1250,8 +1275,8 @@ const onLoad = () => {
     $("#fileSubmit_mash").unbind("click").bind("click", (event) => {
       masterReadArray = []
       readFilejson = mashJson // converts mash_json into readFilejson to
-      readString = JSON.parse(Object.values(readFilejson)[0])
-      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+      readString = JSON.parse(Object.values(mashJson)[0])
+      $("#fileNameDiv").html(Object.keys(mashJson)[0])
       $("#fileNameDiv").show()
       // readIndex will be used by slider buttons
       readIndex += 1
@@ -1281,6 +1306,32 @@ const onLoad = () => {
       abortRead(mashJson)
     })
 
+    $("#sampleMash").unbind("click").bind("click", (event) => {
+      event.preventDefault()
+      // readIndex will be used by slider buttons
+      readIndex = 0
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      $("#loading").show()
+      setTimeout( () => {
+        getArrayMash().done((result) => {
+          // puts to readFilejson object that may store many files
+          mashJson = {
+            // has to be stringifyed to be passed to pushToMasterReadArray
+            "mapping_sample1": JSON.stringify(result)
+          }
+          readFilejson = mashJson
+          const outLists = readColoring(g, list_gi, graphics, renderer, result)
+          list_gi = outLists[0]
+          listGiFilter = outLists[1]
+          masterReadArray = pushToMasterReadArray(mashJson)
+        })
+      })
+      // used to hide when function is not executed properly
+      setTimeout( () => {
+        $("#loading").hide()
+      }, 100)
+    })
+
     //* ********* ***//
     //* * Assembly **//
     //* ********* ***//
@@ -1307,6 +1358,30 @@ const onLoad = () => {
 
     $("#cancel_assembly").unbind("click").bind("click", () => {
       abortRead(assemblyJson)
+    })
+
+    $("#sampleAssembly").unbind("click").bind("click", (event) => {
+      $("#alertAssembly").show()
+      masterReadArray = []
+      event.preventDefault()
+      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      $("#loading").show()
+      // setTimeout( () => {
+      getArrayAssembly().then( (results) => {
+        assemblyJson = results
+        listGiFilter = assembly(list_gi, results, g, graphics, masterReadArray, listGiFilter)
+      // }, 100)
+      })
+      setTimeout( () => {
+        renderer.rerender()
+        // TODO raise a warning for users to press play if they want
+      }, 100)
+
+      // }
+      // used to hide when function is not executed properly
+      setTimeout( () => {
+        $("#loading").hide()
+      }, 100)
     })
 
     //* *********************//
@@ -1464,6 +1539,28 @@ const onLoad = () => {
         }, 100)
       })
     })
+    // sets a counter for welcome div
+    if (($("#welcomeModal").data("bs.modal") || {}).isShown) {
+      let logger = 30
+      let countDown = setInterval( () => {
+        if ($("#counter").html() !== "") {
+          console.log($("#counter").html())
+          logger -= 1
+          $("#counter").html(`Closing in: ${logger.toString()}s`)
+          if (logger === 0) {
+            clearInterval(countDown)
+            $("#welcomeModal").modal("hide")
+            $("#counter").html("")
+          }
+        }
+      }, 1000)
+    }
+    // button to cancel cowntdown control
+    $("#counterClose").unbind("click").bind("click", () => {
+      $("#counter").html("")
+      $("#counterClose").hide()
+    })
+
   } // closes renderGraph
   //}) //end of getArray
 
@@ -1576,7 +1673,6 @@ const onLoad = () => {
               }
             })
           }
-
           addAllNodes(json.nodes)
             .then(addAllLinks(json.links))
             .then(renderGraph(graphics))
@@ -1598,7 +1694,6 @@ const onLoad = () => {
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, list_gi, readReload,
           assemblyJson)
-        // TODO do something similar to assembly
       } else {
         // sets pageReRun to true
         pageReRun = true
@@ -1698,8 +1793,6 @@ const onLoad = () => {
 
   // function to control cell click
     .on("dbl-click-cell.bs.table", (field, value, row, element) => {
-      console.log(g.getNode(element.id))
-
       recenterDOM(renderer, layout, [element.id, false])
       requestPlasmidTable(g.getNode(element.id), setupPopupDisplay)
     })
@@ -1740,7 +1833,6 @@ const onLoad = () => {
       recenterDOM(renderer, layout, [bootstrapTableList[0], false])
       requestPlasmidTable(g.getNode(bootstrapTableList[0]), setupPopupDisplay)
     }
-    console.log(bootstrapTableList)
     colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
     // handles hidden buttons
     showRerun.style.display = "block"
@@ -1908,6 +2000,8 @@ const onLoad = () => {
 
   $("#questionTable").popover()
 
+  $("#questionMap").popover()
+
   // function to avoid shift key to be triggered when any modal is open
   $(".modal").on("shown.bs.modal", () => {
     multiSelectOverlay = "disable"
@@ -1922,6 +2016,7 @@ const onLoad = () => {
     // closed
     $("#questionTable").popover("hide")
     $("#questionPlots").popover("hide")
+    $("#questionMap").popover("hide")
   })
 
   // this forces the entire script to run

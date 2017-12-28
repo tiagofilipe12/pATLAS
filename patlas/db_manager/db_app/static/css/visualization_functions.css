@@ -143,6 +143,7 @@
 /*changes close button for all modals*/
 .modal-header .close{
     color: white;
+    opacity: 1;
 }
 
 /*input min value*/
@@ -170,18 +171,6 @@
     margin:8% 5% 8% 5%;
     width: 90%;
     height: 14px;
-}
-
-/* customizes taxa filters buttons*/
-
-#modal-body-file{
-    height: 190px;
-    overflow: auto;
-}
-
-#modal-body-mash{
-    height: 260px;
-    overflow: auto;
 }
 
 #label_mash {
@@ -702,16 +691,17 @@ Careful when using this in other popovers in the future*/
     border-bottom: 2px solid #514F52;
 }
 
-.popover.right>.arrow:after {
+.popover.right > .arrow:after {
     left: 2px;
     bottom: -10px;
 }
-.popover.right>.arrow {
+.popover.right > .arrow {
     left: -12px;
     margin-top: -12px;
     border-right-color: #514F52;
 }
-.popover>.arrow {
+
+.popover > .arrow {
     border-width: 12px;
 }
 
@@ -726,8 +716,32 @@ Careful when using this in other popovers in the future*/
 
 #aboutModalBody{
     text-align: center;
+    max-height: 600px;
+    overflow-y: auto;
 }
 
-#uploadFileAssembly{
+#uploadFileAssembly, #uploadFileMash{
     margin-bottom: 5%;
+}
+
+#modal-body-mash, #modal-body-file, #modal-body-fileAssembly{
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.sampleImportClass{
+    background-color: #BCCBBC;
+    border-color: #4cae4c;
+    display: block;
+    margin: 0 auto;
+}
+
+#youtubeFrame{
+    display: block;
+    margin: 2% auto;
+}
+
+#videoDialog *{
+    background-color: #514F52;
+    color: white;
 }
