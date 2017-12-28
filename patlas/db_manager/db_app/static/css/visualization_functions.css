@@ -734,3 +734,13 @@ Careful when using this in other popovers in the future*/
     display: block;
     margin: 0 auto;
 }
+
+#youtubeFrame{
+    display: block;
+    margin: 2% auto;
+}
+
+#videoDialog *{
+    background-color: #514F52;
+    color: white;
+}
