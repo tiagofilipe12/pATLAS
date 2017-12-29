@@ -732,16 +732,17 @@ Careful when using this in other popovers in the future*/
 .sampleImportClass{
     background-color: #BCCBBC;
     border-color: #4cae4c;
-    display: block;
-    margin: 0 auto;
+}
+
+.sampleImportWrapperClass{
+    text-align: center;
+}
+
+.popover{
+    max-width:500px;
 }
 
 #youtubeFrame{
     display: block;
     margin: 2% auto;
 }
-
-/*#videoDialog *{*/
-    /*background-color: #514F52;*/
-    /*color: white;*/
-/*}*/

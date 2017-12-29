@@ -1996,10 +1996,12 @@ const onLoad = () => {
 
   // changes the behavior of tooltip to show only on click
   $("#questionPlots").popover()
-
   $("#questionTable").popover()
-
   $("#questionMap").popover()
+
+  $("#infoMap").popover( { container: "body" } )
+  $("#infoMash").popover( { container: "body" } )
+  $("#infoAssembly").popover( { container: "body" } )
 
   // function to avoid shift key to be triggered when any modal is open
   $(".modal").on("shown.bs.modal", () => {
@@ -2016,6 +2018,9 @@ const onLoad = () => {
     $("#questionTable").popover("hide")
     $("#questionPlots").popover("hide")
     $("#questionMap").popover("hide")
+    $("#infoMap").popover("hide")
+    $("#infoMash").popover("hide")
+    $("#infoAssembly").popover("hide")
   })
 
   // this forces the entire script to run
