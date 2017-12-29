@@ -1,9 +1,9 @@
 # Browse
 
 Browse functions allow the user to explore the plasmid database used by 
-plasmid ATLAS (pATLAS). pATLAS uses _refseq_ plasmid database from [NCBI]() 
+plasmid ATLAS (pATLAS). pATLAS uses _refseq_ plasmid database from [NCBI](ftp://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/)
 to establish the relationships between all plasmids available in the database
-. For that, it uses [MASH]() to estimate the pairwise distances between all 
+. For that, it uses [MASH](http://mash.readthedocs.io/en/latest/) to estimate the pairwise distances between all
 plasmids. For a more detailed explanation on how are these relationships 
 handled and displayed, please refer to [Relationships and distances estimations]
 (distances.md)
@@ -15,15 +15,14 @@ circles). This options allows the user to display how closely related are a
 group of plasmids or a plasmid with another plasmid. It has three color 
 schemes options: blue, green and red. You may choose which one you see fit. 
 
-They might be selected using a simple dropdown menu:
+They might be selected using a simple dropdown menu, in which you have
+three color schemes
 
-GIF
+![](gitbook/images/distancedropdown.png)
 
 The darker the color is the smaller is the distance estimated by MASH and thus 
 the more closely related (more similar) are the two plasmids that are linked 
 by the link.
-
-_Example_
 
 ![](gitbook/images/distance_result.png)
 
@@ -39,10 +38,22 @@ the slider and the boxes for minimum and maximum limits which will change the
  
  ![](gitbook/images/lenght_example.png)
 
-{{ 'https://www.youtube.com/watch?v=L1dqZzIj2JE' | noembed }}
 
-<!-- {% youtube src="https://www.youtube.com/watch?v=WaQ6oPKp9W4" %}{% endyoutube %} -->
+## Taxa
 
+In this option you may select a multitude of taxa filters ranging from order,
+ family, genus to species. This will select with different colors each of the
+  selected taxa. For instance, if you select _Borreliella afzelii_ and
+  _Borreliella garinii_, this will color plasmids identified in the each
+  of the two species with different colors.
+
+  _Example_
+
+  ![](gitbook/images/taxa_sample.png)
+
+  *NOTE:* However, if you select a genus and a species, or a family and a
+  species
+  (and so on), this will color all the selected plasmids in red.
 
 ## Plasmid families
 
@@ -76,22 +87,10 @@ Brinkman F. S., Wright G. D.,
 model-centric curation of the comprehensive antibiotic resistance
 database. Nucleic Acids Research, 45(D1), D566–D573.](https://doi.org/10.1093/nar/gkw1004)
 
-## Taxa
+## Virulence
 
-In this option you may select a multitude of taxa filters ranging from order,
- family, genus to species. This will select with different colors each of the
-  selected taxa. For instance, if you select _Borreliella afzelii_ and 
-  _Borreliella garinii_, this will color plasmids identified in the each 
-  of the two species with different colors.
-  
-  _Example_
-  
-  ![](gitbook/images/taxa_sample.png)
-  
-  *NOTE:* However, if you select a genus and a species, or a family and a 
-  species 
-  (and so on), this will color all the selected plasmids in red.
-  
+Coming soon...
+
 ## Final note
 
 This covers for now everything that **pATLAS** has to explore. If you have 

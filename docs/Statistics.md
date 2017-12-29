@@ -39,7 +39,7 @@ enabling to highlight its respective bar or points, respectively.
 
 ### Resistances and plasmid families
 
-Pretty much the same as [Taxa plots](available-options), but for
+Pretty much the same as [Taxa plots](#available-options), but for
 the information on resistances and plasmid families.
 
 ## Plot additional buttons

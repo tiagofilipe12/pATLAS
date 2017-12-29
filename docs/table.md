@@ -47,7 +47,7 @@ Located on the top right corner
 Switches table view from column like entries to a more tabular format.
 So, suit yourself.
 
-### Columns displayed
+### Displayed columns
 
 The next button will provide the user with the ability to hide or show
 additional columns.
