@@ -4,5 +4,11 @@
     "summary": "README.md",
     "readme": "Introduction.md"
   },
-  "plugins": ["youtube"]
+  "pluginsConfig": {
+    "youtubex": {
+      "embedDescription": {
+        "en": "Watch this video!"
+      }
+    }
+  }
 }
