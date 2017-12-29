@@ -136,7 +136,9 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
           node_iter(g, readColor, gi, graphics, identity, copyNumber)
-          listGiFilter.push(gi)
+          if (list_gi.includes(gi)) {
+            listGiFilter.push(gi)
+          }
         }
         if (Object.keys(readString).length === counter) {
           // min value is the one fetched from the input form or by default 0.6
@@ -158,12 +160,16 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
             .replace("#", "0x")
           node_iter(g, readColor, gi, graphics, perc)
-          listGiFilter.push(gi)
+          if (list_gi.includes(gi)) {
+            listGiFilter.push(gi)
+          }
         } else {
           const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
             .replace("#", "0x")
           node_iter(g, readColor, gi, graphics, perc)
-          listGiFilter.push(gi)
+          if (list_gi.includes(gi)) {
+            listGiFilter.push(gi)
+          }
         }
         const scale = chroma.scale(["blue", "#eacc00", "maroon"])
         palette(scale, 10, readMode)
@@ -174,7 +180,9 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
           node_iter(g, readColor, gi, graphics, perc)
-          listGiFilter.push(gi)
+          if (list_gi.includes(gi)) {
+            listGiFilter.push(gi)
+          }
         }
       }
       if (Object.keys(readString).length === counter) {

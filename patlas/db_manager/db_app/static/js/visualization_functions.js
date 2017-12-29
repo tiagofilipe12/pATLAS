@@ -1544,7 +1544,6 @@ const onLoad = () => {
       let logger = 30
       let countDown = setInterval( () => {
         if ($("#counter").html() !== "") {
-          console.log($("#counter").html())
           logger -= 1
           $("#counter").html(`Closing in: ${logger.toString()}s`)
           if (logger === 0) {

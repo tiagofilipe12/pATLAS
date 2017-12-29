@@ -27,7 +27,7 @@ well as facilitate the access to that metadata.
 
 ![](gitbook/images/patlas.gif)
 
-(Too much movement? Don't worry this will be freeze when you load the page.)
+(Too much movement? Don't worry this will be frozen when you load the page.)
 
 ## Main features
 
