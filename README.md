@@ -6,16 +6,140 @@
   <br/>
 </p>
 
-# Summary
+# Description
 
-## Description
+Plasmid Atlas is a web-base tool that empowers researchers to easily and rapidly access
+information related with plasmids present in `NCBI's refseq` database.
+In pATLAS each node (or circle) represents
+a plasmid and each link between two plasmids means that those two plasmids
+share around 90% average nucleotide identity.
 
-pATLAS is a program to browse plasmids database and identify plasmids present
- within whole genome sequencing data.
+With this tool we have two main goals:
 
-[![Custom badge](https://img.shields.io/badge/under-development-yellow.svg)](https://github.com/tiagofilipe12/pATLAS/tree/api)
-[![Custom badge](https://img.shields.io/badge/HTS-plasmids-blue.svg)](https://github.com/tiagofilipe12/pATLAS/tree/api)
+1. Increase the accessibility of plasmid relevant metadata to users as
+well as facilitate the access to that metadata.
+2. Improve the ease of interpreting results from High Throughput Sequencing
+   (HTS) for plasmid detection.
 
-Documentation is still under construction... for now refer to 
-[pATLAS README](https://github.com/tiagofilipe12/pATLAS/blob/api/db_manager/db_app/templates/README.md) and [MASHix README](https://github.com/tiagofilipe12/MASHix/blob/master/README.md) for more information.
+# Documentation
 
+If are interested in learning how to use pATLAS, please refer to
+[gitbook documentation](https://www.gitbook.com/book/tiagofilipe12/patlas/details)
+
+This README is a compilation of how to manage pATLAS back-end and front-end.
+So, do not refer to this README to use pATLAS.
+
+---
+
+# Development
+
+## Dependencies
+
+* **Mash** - You can download mash version 2.0.0 directly here:
+[linux](https://github.com/marbl/Mash/releases/download/v2.0.0/mash-Linux64-v1.1.1.tar.gz) and [OSX](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-OSX64-v1.1.1.tar.gz). Other releases were not tested but may be downloaded in Mash git [releases page](https://github.com/marbl/Mash/releases).
+
+* **Postgresql** - This script uses Postgres database to store the database:
+[releases page](https://www.postgresql.org/download/)
+
+* To install all other dependencies just run: _pip install -r requirements.txt_
+
+## Backend Scripts
+
+### MASHix.py
+
+MASHix.py is the main script to generate the database. This script generates
+a matrix of pairwise comparisons between sequences in input fasta(s) file(s).
+Note that it reads multifastas, i.e., each header in fasta is a reference sequence.
+
+#### Options:
+
+##### Main options:
+
+```
+'-i','--input_references' - 'Provide the input fasta files to parse. This will inputs will be joined in a master fasta.'
+
+'-o','--output' - 'Provide an output tag'
+
+'-t', '--threads' - 'Provide the number of threads to be used'
+```
+
+##### MASH related options:
+```
+'-k','--kmers' - 'Provide the number of k-mers to be provided to mash sketch. Default: 21'
+
+'-p','--pvalue' - 'Provide the p-value to consider a distance significant. Default: 0.05'
+
+'-md','--mashdist' - 'Provide the maximum mash distance to be parsed to the matrix. Default:0.1'
+```
+
+##### Other options:
+
+```
+'-no_rm', '--no-remove' - 'Specify if you do not want to remove the output concatenated fasta.'
+
+'-hist', '--histograms' - 'Checks the distribution of distances values ploting histograms.'
+```
+
+---
+
+#### Database customization:
+
+##### I don't like database name! How do I change it?
+
+Go to `db_manager/config_default.py` and edit the following line:
+
+```python
+SQLALCHEMY_DATABASE_URI = 'postgresql:///<custom_database_name>'
+```
+
+##### I don't like table name inside database! How do I change it?
+
+Go to db_manager/db_app/models.py and edit the following line:
+
+```python
+ __tablename__ = "<custom_table_name>"
+```
+
+---
+
+#### Database migration from one server to another
+
+##### Database export
+
+```
+pg_dump <db_name> > <file_name.sql>
+```
+
+##### Database import
+
+```
+psql -U <user_name> -d <db_name> -f <file_name.sql>
+```
+
+---
+
+## Supplementary scripts
+
+### abricate2db.py
+
+This script inherits a class from
+[ODiogoSilva/Templates](https://github.com/ODiogoSilva/templates) and uses it to
+parse abricate outputs and dumps abricate outputs to a psql database, depending
+on the input type provided.
+
+#### Options:
+
+```
+"-i", "--input_file" - "Provide the abricate file to parse to db.
+                        It can accept more than one file in the case of
+                        resistances."
+"-db", "--db" - "Provide the db to output in psql models."
+"-id", "--identity" - "minimum identity to be reported to db"
+"-cov", "--coverage" - "minimum coverage do be reported to db"
+"-csv", "--csv" - "Provide card csv file to get correspondence between
+                    DNA accessions and ARO accessions. Usually named
+                    aro_index.csv. By default this file is already
+                    available in patlas repo with a specific path:
+                    'db_manager/db_app/static/csv/aro_index.csv'"
+
+```
