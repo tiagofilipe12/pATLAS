@@ -86,7 +86,7 @@ const palette = (scale, x, readMode) => { // x is the number of colors
 // single read displayer
 // This function colors each node present in input read json file
 
-const readColoring = (g, list_gi, graphics, renderer, readString) => {
+const readColoring = (g, listGi, graphics, renderer, readString) => {
   const readMode = true
   let listGiFilter = []
   let meanValue, minValue
@@ -136,7 +136,7 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
           node_iter(g, readColor, gi, graphics, identity, copyNumber)
-          if (list_gi.includes(gi)) {
+          if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
         }
@@ -160,14 +160,14 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
             .replace("#", "0x")
           node_iter(g, readColor, gi, graphics, perc)
-          if (list_gi.includes(gi)) {
+          if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
         } else {
           const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
             .replace("#", "0x")
           node_iter(g, readColor, gi, graphics, perc)
-          if (list_gi.includes(gi)) {
+          if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
         }
@@ -180,7 +180,7 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
           node_iter(g, readColor, gi, graphics, perc)
-          if (list_gi.includes(gi)) {
+          if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
         }
@@ -217,7 +217,7 @@ const readColoring = (g, list_gi, graphics, renderer, readString) => {
   plotButton.style.display = "block"
   renderer.rerender()
   $("#loading").hide()
-  return [list_gi, listGiFilter]
+  return [listGi, listGiFilter]
 }
 
 
