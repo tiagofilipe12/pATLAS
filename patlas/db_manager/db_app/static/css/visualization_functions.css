@@ -741,7 +741,7 @@ Careful when using this in other popovers in the future*/
     margin: 2% auto;
 }
 
-#videoDialog *{
-    background-color: #514F52;
-    color: white;
-}
+/*#videoDialog *{*/
+    /*background-color: #514F52;*/
+    /*color: white;*/
+/*}*/

@@ -37,11 +37,10 @@ the slider and the boxes for minimum and maximum limits which will change the
  interval of selected lengths, whereas ligher grey plasmids are outside the 
  selected interval.
  
- GIF
- 
- _Example_
- 
  ![](gitbook/images/lenght_example.png)
+
+{% youtube src="https://www.youtube.com/watch?v=WaQ6oPKp9W4" %}{% endyoutube %}
+
 
 ## Plasmid families
 

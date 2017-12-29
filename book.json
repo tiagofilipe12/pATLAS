@@ -3,5 +3,6 @@
   "structure": {
     "summary": "README.md",
     "readme": "Introduction.md"
-  }
+  },
+  "plugins": ["youtube"]
 }
