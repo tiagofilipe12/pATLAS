@@ -4,9 +4,11 @@ const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => 
     const nodeUI = graphics.getNodeUI(node.id)
 
     if (accessionRequested.indexOf(node.id) > -1) {
-      nodeUI.backupColor = nodeUI.color
+      nodeUI.backupColor = currentColor
       nodeUI.color = currentColor
       // changed_nodes.push(node.id)
+    } else {
+      nodeUI.backupColor = nodeUI.color
     }
   })
   renderer.rerender()
