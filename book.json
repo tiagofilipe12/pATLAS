@@ -4,11 +4,5 @@
     "summary": "README.md",
     "readme": "Introduction.md"
   },
-  "pluginsConfig": {
-    "youtubex": {
-      "embedDescription": {
-        "en": "Watch this video!"
-      }
-    }
-  }
+  "plugins": ["noembed"]
 }
