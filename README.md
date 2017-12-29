@@ -1,6 +1,6 @@
 <p align="center">
-  <a href=#>
-    <img height="200" width="400" title="pATLAS" alt="pATLAS logo" 
+  <a href="http://www.patlas.site">
+    <img height="200" width="400" title="pATLAS" alt="pATLAS logo"
     src="https://raw.githubusercontent.com/tiagofilipe12/pATLAS/master/docs/gitbook/images/pATLAS_black.png"/>
   </a>
   <br/>
@@ -8,7 +8,7 @@
 
 # Description
 
-Plasmid Atlas is a web-base tool that empowers researchers to easily and rapidly access
+[Plasmid Atlas](http://www.patlas.site) is a web-base tool that empowers researchers to easily and rapidly access
 information related with plasmids present in `NCBI's refseq` database.
 In pATLAS each node (or circle) represents
 a plasmid and each link between two plasmids means that those two plasmids
@@ -24,7 +24,7 @@ well as facilitate the access to that metadata.
 # Documentation
 
 If are interested in learning how to use pATLAS, please refer to
-[gitbook documentation](https://www.gitbook.com/book/tiagofilipe12/patlas/details)
+[gitbook documentation](https://www.gitbook.com/book/tiagofilipe12/patlas/details).
 
 This README is a compilation of how to manage pATLAS back-end and front-end.
 So, do not refer to this README to use pATLAS.
