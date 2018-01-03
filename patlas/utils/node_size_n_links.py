@@ -62,7 +62,7 @@ def main():
         child_id = element["childId"]
         child_node = [x for x in reader_dict["nodes"] if x["id"] == child_id]
         child_node_length = float(child_node[0]["length"])
-        distance = element["distance"]
+        distance = element["distNSizes"]
         size_diff = abs(parent_node_length - child_node_length)
         size_ratio = float(min(parent_node_length, child_node_length)/
                            max(parent_node_length, child_node_length))

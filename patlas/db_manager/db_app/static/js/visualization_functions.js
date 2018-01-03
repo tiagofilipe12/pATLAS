@@ -186,7 +186,8 @@ const onLoad = () => {
     // rerun precomputes 500
     // const prerender = (devel === true || rerun === true) ? 500 : 0
     // version that doesn't rerun
-    const prerender = (devel === true) ? 500 : parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
+    const prerender = (devel === true) ? 500 :
+        parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
 
     renderer = Viva.Graph.View.renderer(g, {
       layout,
@@ -1599,7 +1600,7 @@ const onLoad = () => {
                 for (let i = 0; i < dict_dist.length; i++) {
                   const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
                   const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
-                  g.addLink(sequence, reference, {distance})
+                  g.addLink(sequence, reference, { distance })
                 }
               } else {
                 dict_dist = []
@@ -1663,7 +1664,7 @@ const onLoad = () => {
                   // just stores unique links
                   if (distNSizes.sizeRatio >= 0.7) {  //TODO let user define this cutoff somehow
                     g.addLink(sequence, reference, distNSizes)
-                  }
+                  } // all other links will be stored in file
                 } else {
                   // if there is no reference associated with sequence then
                   // there are no links
