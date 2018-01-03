@@ -1656,11 +1656,14 @@ const onLoad = () => {
                 const array = json[i]
                 const sequence = array.parentId   // stores sequences
                 const reference = array.childId  // stores references
-                const distance = array.distance   // stores distances
+                const distNSizes = array.distNSizes   // stores distances
+                  // and sizeRatios
                 if (reference !== "") {
                   // here it adds only unique links because filtered.json file
                   // just stores unique links
-                  g.addLink(sequence, reference, { distance })
+                  if (distNSizes.sizeRatio >= 0.7) {  //TODO let user define this cutoff somehow
+                    g.addLink(sequence, reference, distNSizes)
+                  }
                 } else {
                   // if there is no reference associated with sequence then
                   // there are no links

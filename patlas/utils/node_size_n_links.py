@@ -2,6 +2,33 @@
 
 import sys
 import json
+import plotly
+import plotly.graph_objs as go
+
+def make_histogram(list):
+    '''
+    Function to make an histogram from a list
+    Parameters
+    ----------
+    list: list
+        A list with all entries to the histogram (entries should be float)
+
+    '''
+    sorted_list = sorted(list, reverse=True)
+    trace_lengths = go.Histogram(x=sorted_list,
+                                 opacity=0.75,
+                                 name="Histogram of the size ratio between "
+                                      "linked nodes")
+    layout = go.Layout(barmode="overlay",
+                           xaxis=dict(
+                               title="number of links"
+                           ),
+                           yaxis=dict(
+                               title="ratio between nodes"
+                           )
+                       )
+    fig = go.Figure(data=[trace_lengths], layout=layout)
+    plotly.offline.plot(fig, filename="dist.html", auto_open=False)
 
 def main():
     '''
@@ -22,6 +49,10 @@ def main():
     # write header
     ofile.write("parentId;parentSize;childId;childSize;distance;sizeDiff\n")
 
+    list_lengths = []
+    dict_refactored_json = {"links": []}
+    dict_refactored_json["nodes"] = reader_dict["nodes"]
+
     for element in reader_dict["links"]:
         ## get parent node related params
         parent_id = element["parentId"]
@@ -33,13 +64,33 @@ def main():
         child_node_length = float(child_node[0]["length"])
         distance = element["distance"]
         size_diff = abs(parent_node_length - child_node_length)
+        size_ratio = float(min(parent_node_length, child_node_length)/
+                           max(parent_node_length, child_node_length))
+        list_lengths.append(size_ratio)
         # write a line in output file
-        ofile.write("{};{},{};{};{};{}\n".format(parent_id, parent_node_length,
+        ofile.write("{};{};{};{};{};{}\n".format(parent_id, parent_node_length,
                                               child_id, child_node_length,
-                                              distance, size_diff))
+                                              distance, size_diff, size_ratio))
+        dict_refactored_json["links"].append({"parentId": parent_id,
+                                              "childId": child_id,
+                                              "distNSizes": {
+                                                  "distance": distance,
+                                                  "sizeRatio": size_ratio
+                                                }
+                                              })
+
     # closes input and output files
     reader.close()
     ofile.close()
+
+    # make an histogram of lengths
+    make_histogram(list_lengths)
+
+    #
+
+    refactored_json = open("refactored_filtered.json", "w")
+    refactored_json.write(json.dumps(dict_refactored_json))
+    refactored_json.close()
 
 if __name__ == "__main__":
     main()
