@@ -12,7 +12,7 @@ const singleDropdownPopulate = (divId, arrayToSort, className) => {
   for (let i = 0; i < sortedArray.length; i++) {
     $(divId).append(`<option class=${className}>${sortedArray[i]}</option>`)
   }
-  $(divId).append(`<option class=${className}><em>Other</em></option>`)
+  // $(divId).append(`<option class=${className}><em>unknown</em></option>`)
   // populate the select with the newly added options
   $(divId).selectpicker("refresh")
 }
