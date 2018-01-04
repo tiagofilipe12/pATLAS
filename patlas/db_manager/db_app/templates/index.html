@@ -5,11 +5,13 @@
           href="{{ url_for('static', filename='images/pATLAS.png') }}"
           size="32x32">
     <title>Plasmid Atlas</title>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-3.1.1.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-ui.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/jquery/jquery-ui.css') }}">
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">
+    <script language="javascript" type="text/javascript"
+            src="{{ url_for('static', filename='bundle.js') }}"></script>
+    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-3.1.1.js') }}"></script>-->
+    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-ui.js') }}"></script>-->
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='dependencies/jquery/jquery-ui.css') }}">-->
+    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script>-->
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">-->
     <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/nouislider/nouislider.css') }}">
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/vivagraph/dist/vivagraph.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">
@@ -727,6 +729,38 @@
     </div>
 </div>
 
+
+<!-- Modal for length-->
+<div id="ratioModal" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <!-- Modal content for ratio-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Filter links with ratio between
+                    minimum and maximum size of pairs of plasmids
+                </h4>
+            </div>
+            <div class="modal-body" id="modal-body-ratio">
+                <div class="header_taxa">Ratio filter cutoff</div>
+                <div class="form-group" data-toggle="tooltip"
+                     title="Provide a value between 100 and 0">
+                    <input id="formRatio" type="text" class="form-control"
+                           placeholder="Default value = 30"/>
+                </div>
+                <div id="cp4" class="input-group colorpicker-component" title="Using color option">
+                    <input type="text" class="form-control input-lg"/>
+                    <span class="input-group-addon"><i></i></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-default"
+                        data-dismiss="modal" id="ratioSubmit">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal for taxa-->
 <div id="taxaModal" class="modal fade" role="dialog" tabindex="-1">
     <div class="modal-dialog">
@@ -888,7 +922,7 @@
             <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
                 <a href="#">Browse</a>
                 <div id="collapse1" class="panel-collapse collapse">
-                    <ul class="list-group">
+                    <ul class="list-group headerPanelGroup">Metadata
                         <button class="list-group-item" href="#"
                                 data-toggle="modal" data-backdrop="static"
                                 data-target="#distancesModal" id="distances_filter">
@@ -897,19 +931,17 @@
                                 data-toggle="modal" data-backdrop="static"
                                 data-target="#lengthModal" id="length_filter">Length
                         </button>
-                        <!--<button class="list-group-item" href="#"-->
-                                <!--data-toggle="modal" data-backdrop="static"-->
-                                <!--data-target="#taxaModal" id="taxa_filter">Taxa-->
-                        <!--</button>-->
-
-                        <!--</li>-->
-                    <!--</ul>-->
-                <!--</div>-->
-            <!--</li>-->
-            <!--<li data-toggle="collapse" data-target="#collapse2" class="collapse_groups">-->
-                <!--<a href="#">ABR</a>-->
-                <!--<div id="collapse2" class="panel-collapse collapse">-->
-                    <!--<ul class="list-group">-->
+                        <button class="list-group-item" href="#"
+                                data-toggle="modal" data-backdrop="static"
+                                data-target="#ratioModal"
+                                id="ratio_filter">Size ratio
+                        </button>
+                        <button class="list-group-item" href="#"
+                                data-toggle="modal" data-backdrop="static"
+                                data-target="#taxaModal" id="taxa_filter">Taxa
+                        </button>
+                    </ul>
+                    <ul class="list-group headerPanelGroup">Annotation
                         <button class="button list-group-item" href="#"
                                 data-toggle="modal" data-backdrop="static"
                                 data-target="#plasmidFamiliesModal"
@@ -919,10 +951,6 @@
                                 data-toggle="modal" data-backdrop="static"
                                 data-target="#resModal"
                                 id="resistancesFilter" >Resistances
-                        </button>
-                        <button class="list-group-item" href="#"
-                                data-toggle="modal" data-backdrop="static"
-                                data-target="#taxaModal" id="taxa_filter">Taxa
                         </button>
                     </ul>
                 </div>
@@ -948,7 +976,7 @@
                 class="collapse_groups">
                 <a href="#">Statistics</a>
                 <div id="collapse4" class="panel-collapse collapse">
-                    <ul class="list-group" id="headerTaxaGroup">Taxa
+                    <ul class="list-group headerPanelGroup">Taxa
                         <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                                 data-target="#modalPlot"
                                 id="speciesStats">Species
@@ -966,7 +994,7 @@
                                 id="orderStats">Orders
                         </button>
                     </ul>
-                    <ul class="list-group" id="headerABRGroup">Annotation
+                    <ul class="list-group headerPanelGroup">Annotation
                         <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                                 data-target="#modalPlot"
                                 id="resistanceStats">Resistances
@@ -976,7 +1004,7 @@
                                 id="pfamilyStats">Plasmid families
                         </button>
                     </ul>
-                    <ul class="list-group" id="headerOtherGroup">Other
+                    <ul class="list-group headerPanelGroup">Other
                         <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                                 data-target="#modalPlot" id="lengthStats">Length
                         </button>

@@ -1662,9 +1662,7 @@ const onLoad = () => {
                 if (reference !== "") {
                   // here it adds only unique links because filtered.json file
                   // just stores unique links
-                  if (distNSizes.sizeRatio >= 0.7) {  //TODO let user define this cutoff somehow
-                    g.addLink(sequence, reference, distNSizes)
-                  } // all other links will be stored in file
+                  g.addLink(sequence, reference, distNSizes)
                 } else {
                   // if there is no reference associated with sequence then
                   // there are no links

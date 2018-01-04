@@ -133,6 +133,11 @@
     overflow: auto;
 }
 
+#modal-body-ratio{
+    width: 400px;
+    overflow: auto;
+}
+
 /*changes headers of all modals*/
 .modal-header{
     color: white;
@@ -299,7 +304,7 @@
 }
 
 .header_taxa{
-    font-size: 70%;
+    font-size: 80%;
     color: #959595;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -624,7 +629,7 @@
     display: inline-block;
 }
 
-#headerTaxaGroup, #headerABRGroup, #headerOtherGroup {
+.headerPanelGroup {
     color: #fff;
     background-color: rgba(255,255,255,0.2);
 }
