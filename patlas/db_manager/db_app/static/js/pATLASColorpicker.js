@@ -1,6 +1,6 @@
 $(function () {
   $("#cp4").colorpicker({
-    "color": "#918e91",
-    "format": "hex"
+    color: "#918e91",
+    format: "hex"
   })
 })

@@ -14,7 +14,7 @@
     <!--<link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">-->
     <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/nouislider/nouislider.css') }}">
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/vivagraph/dist/vivagraph.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">-->
     <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
 
     <script language="javascript" type="text/javascript"
@@ -746,16 +746,27 @@
                 <div class="form-group" data-toggle="tooltip"
                      title="Provide a value between 100 and 0">
                     <input id="formRatio" type="text" class="form-control"
-                           placeholder="Default value = 30"/>
+                           placeholder="Default value = 30" value="30"/>
                 </div>
-                <div id="cp4" class="input-group colorpicker-component" title="Using color option">
-                    <input type="text" class="form-control input-lg"/>
+                <div>
+                <input data-toggle="toggle" type="checkbox"
+                       data-onstyle="success" data-offstyle="default"
+                       data-on="Remove links on"
+                       data-off="Remove links off"
+                       title="Switch between plasmid and accession search"
+                       id="toggleRatio">
+                </div>
+                <div id="cp4"
+                     class="input-group colorpicker-component"
+                     title="Using color option">
+                    <input type="text" class="form-control input-lg"
+                           id="cp4Form"/>
                     <span class="input-group-addon"><i></i></span>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-default"
-                        data-dismiss="modal" id="ratioSubmit">Ok</button>
+                        data-dismiss="modal" id="ratioSubmit">Submit</button>
             </div>
         </div>
     </div>
@@ -1104,7 +1115,7 @@
 
             </form>
             <form class="navbar-form navbar-right">
-                <input checked data-toggle="toggle" type="checkbox"
+                <input data-toggle="toggle" type="checkbox"
                        data-onstyle="success" data-offstyle="default"
                        data-on="Plasmid name"
                        data-off="Accession no"

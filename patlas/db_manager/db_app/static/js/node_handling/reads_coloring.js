@@ -224,29 +224,64 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
 ///////////////////
 // link coloring //
 ///////////////////
-
-const link_coloring = (g, graphics, renderer) => {
+/**
+ * Function to control the coloring of links either in distance filters or
+ * in size ratio filters.
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {String} mode - This string controls the mode that in which the
+ * links will be colored. It may have two options: "distance" and "size".
+ * @param {boolean} toggle - This render true or false depending if it
+ * removes the links or not, respectively
+ */
+const link_coloring = (g, graphics, renderer, mode, toggle) => {
+  promises = []
+  storeLinks = []
   g.forEachLink( (link) => {
-    const dist = link.data.distance * 10
-    const linkUI = graphics.getLinkUI(link.id)
+    const linkUI = (link !== undefined) ? graphics.getLinkUI(link.id) : null
     let linkColor
     // the lower the value the more intense the color is
-    if (document.getElementById("colorForm").value === "Green color scheme" || document.getElementById("colorForm").value === "") {
-      linkColor = chroma.mix("#65B661", "#CAE368", dist).hex().replace("#", "0x") + "FF"
-    } else if (document.getElementById("colorForm").value === "Blue color" +
-      " scheme") {
-      linkColor = chroma.mix("#025D8C", "#73C2FF", dist).hex().replace("#", "0x") + "FF"
-    } else if (document.getElementById("colorForm").value === "Red color" +
-      " scheme") {
-      linkColor = chroma.mix("#4D0E1C", "#E87833", dist).hex().replace("#", "0x") + "FF"
+    if (mode === "distance") {
+      const dist = link.data.distance * 10
+      if (document.getElementById("colorForm").value === "Green color scheme" || document.getElementById("colorForm").value === "") {
+        linkColor = chroma.mix("#65B661", "#CAE368", dist).hex().replace("#", "0x") + "FF"
+      } else if (document.getElementById("colorForm").value === "Blue color" +
+        " scheme") {
+        linkColor = chroma.mix("#025D8C", "#73C2FF", dist).hex().replace("#", "0x") + "FF"
+      } else if (document.getElementById("colorForm").value === "Red color" +
+        " scheme") {
+        linkColor = chroma.mix("#4D0E1C", "#E87833", dist).hex().replace("#", "0x") + "FF"
+      }
+      // since linkUI seems to use alpha in its color definition we had to set alpha to 100%
+      // opacity by adding "FF" at the end of color string
+      linkUI.color = linkColor
+    } else {
+      // used for "size" mode
+      // checks if link has size ratio inside the specified value
+      if (100 - parseFloat($("#formRatio").val()) >= link.data.sizeRatio * 100) {
+        if (toggle === true) {
+          // stores nodes in array to remove after this loop
+          storeLinks.push(link)
+          promises.push(link)
+        } else {
+          // just colors the links within the selection
+          linkColor = $("#cp4Form").val().replace("#", "0x") + "FF"
+          linkUI.color = linkColor
+          promises.push(link)
+        }
+      }
     }
-
-    // since linkUI seems to use alpha in its color definition we had to set alpha to 100%
-    // opacity by adding "FF" at the end of color string
-    linkUI.color = linkColor
   })
-  renderer.rerender()
-  $("#loading").hide()
+  Promise.all(promises).then( () => {
+    for (let l of storeLinks) {
+      g.removeLink(l)
+    }
+    $("#loading").hide()
+    renderer.rerender()
+  })
 }
 
 // option to return links to their default color
@@ -256,7 +291,7 @@ const reset_link_color = (g, graphics, renderer) => {
     linkUI.color = 0xb3b3b3ff
   })
   renderer.rerender()
-  $("#loading").hide()
+  // $("#loading").hide()
 }
 
 // *** color scale legend *** //

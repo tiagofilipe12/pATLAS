@@ -53,6 +53,10 @@ let clickedHighchart
 
 let graphSize
 
+let toggleRatioStatus = false
+
+let totalNumberOfLinks
+
 /**
  * load JSON file with taxa dictionary
  * @returns {Object} - return is an object that perform matches between taxa
@@ -288,8 +292,8 @@ const onLoad = () => {
     //* * This section controls the connection between the toggle button on the leftside ***//
     //* * and the dropdown on the right side **//
 
-    toggle_status = false // default state
-    $("#toggle-event").bootstrapToggle("off") // set to default off
+    let toggle_status = false // default state
+    // $("#toggle-event").bootstrapToggle("off") // set to default off
     $("#toggle-event").change(function () {   // jquery seems not to support es6
       toggle_status = $(this).prop("checked")
       toggle_manager(toggle_status)
@@ -1390,11 +1394,13 @@ const onLoad = () => {
     //* *********************//
     $("#distancesSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      $("#reset-sliders").click()
       $("#loading").show()
       $("#scaleLegend").empty()
-      setTimeout(function () {
-        link_coloring(g, graphics, renderer)
-      }, 100)
+      showDiv().then(
+        link_coloring(g, graphics, renderer, "distance", toggleRatioStatus)
+      )
+      // TODO add hide loading after this promise is resolved
       const readMode = false
       color_legend(readMode)
       //document.getElementById("reset-links").disabled = ""
@@ -1652,7 +1658,8 @@ const onLoad = () => {
           }
 
           const addAllLinks = (json) => {
-            return new Promise((resolve, reject) => {
+            totalNumberOfLinks = json.length
+            return new Promise( (resolve, reject) => {
               for (const i in json) {
                 const array = json[i]
                 const sequence = array.parentId   // stores sequences
@@ -1975,6 +1982,27 @@ const onLoad = () => {
     $("#alertAssembly").hide()  // hide this div
   })
 
+  // sets toggle for size ratio and handles status of this toggle
+  // this is used in "ratioSubmit" button
+  $("#toggleRatio").change(function () {   // jquery seems not to support es6
+    toggleRatioStatus = $(this).prop("checked")
+  })
+
+  // function that submits the selection made in the modal
+  $("#ratioSubmit").unbind("click").bind("click", () => {
+    event.preventDefault()
+    // $("#reset-links").click()
+    // $("#loading").show()
+    $("#scaleLegend").empty()
+    showDiv().then(
+      setTimeout( () => {
+        link_coloring(g, graphics, renderer, "size", toggleRatioStatus, totalNumberOfLinks)
+      }, 100)
+    )
+    // const readMode = false
+    // color_legend(readMode)
+  })
+
   /** control the visualization of multiple files for read mode
   * The default idea is that the first file in this readFilejson object is the
   * one to be loaded when uploading then everything else should use cycler
@@ -1985,7 +2013,6 @@ const onLoad = () => {
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
     list_gi = outArray[1][0]
-
   })
 
   $("#slideLeft").unbind("click").bind("click", () => {
