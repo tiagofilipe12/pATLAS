@@ -6,7 +6,7 @@
           size="32x32">
     <title>Plasmid Atlas</title>
     <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='bundle.js') }}"></script>
+            src="{{ url_for('static', filename='bundle.min.js') }}"></script>
     <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-3.1.1.js') }}"></script>-->
     <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-ui.js') }}"></script>-->
     <!--<link rel="stylesheet" href="{{ url_for('static', filename='dependencies/jquery/jquery-ui.css') }}">-->
@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/nouislider/nouislider.css') }}">
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/vivagraph/dist/vivagraph.js') }}"></script>
     <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">-->
-    <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
 
     <script language="javascript" type="text/javascript"
             src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.js') }}"></script>
@@ -737,34 +736,66 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Filter links with ratio between
-                    minimum and maximum size of pairs of plasmids
+                <h4 class="modal-title">Filter links by ratio size between
+                    pairs of plasmids
                 </h4>
             </div>
             <div class="modal-body" id="modal-body-ratio">
-                <div class="header_taxa">Ratio filter cutoff</div>
-                <div class="form-group" data-toggle="tooltip"
-                     title="Provide a value between 100 and 0">
-                    <input id="formRatio" type="text" class="form-control"
-                           placeholder="Default value = 30" value="30"/>
+                <div class="col-sm-4">
+                    <div class="header_taxa">Ratio filter cutoff</div>
+                    <div class="form-group" data-toggle="tooltip"
+                         title="Provide a value between 100 and 0">
+                        <input id="formRatio" type="text" class="form-control"
+                               placeholder="Default value = 30" value="30"/>
+                    </div>
                 </div>
-                <div>
-                <input data-toggle="toggle" type="checkbox"
-                       data-onstyle="success" data-offstyle="default"
-                       data-on="Remove links on"
-                       data-off="Remove links off"
-                       title="Switch between plasmid and accession search"
-                       id="toggleRatio">
+                <div class="col-sm-4">
+                    <div class="header_taxa">Pick a color</div>
+                    <div id="cp4"
+                         class="input-group colorpicker-component"
+                         title="Using color option">
+                        <input type="text" class="form-control"
+                               id="cp4Form"/>
+                        <span class="input-group-addon"><i></i></span>
+                    </div>
                 </div>
-                <div id="cp4"
-                     class="input-group colorpicker-component"
-                     title="Using color option">
-                    <input type="text" class="form-control input-lg"
-                           id="cp4Form"/>
-                    <span class="input-group-addon"><i></i></span>
+                <div class="col-sm-4">
+                    <div class="header_taxa">Remove links?</div>
+                    <div>
+                        <input data-toggle="toggle" type="checkbox"
+                               data-onstyle="success" data-offstyle="default"
+                               data-on="Remove links on"
+                               data-off="Remove links off"
+                               data-width="100%"
+                               id="toggleRatio">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-circle"
+                        data-toggle="popover"
+                        data-trigger="focus"
+                        data-original-title="Size ratio help"
+                        data-content="Here you can color or remove links based
+                        on the ratio between the size of two plasmids.
+                        <li>Ratio filter cutoff - This cutoff sets the minimum
+                        value for two plasmids to share a link. By default the
+                        smaller plasmid need to have 30% of the size of the
+                        larger plasmid
+                        </li>
+                        <li>Remove links? - This button allows to remove links
+                        or not. By default it is set to 'off'.
+                        </li>
+                        <li>Pick a color - allows the user to pick a color to
+                        highlight desired links. This is the default behavior
+                        of submit button, however if remove links is 'on', this
+                        will be ignored since links will be removed.</li>"
+                        data-html="true"
+                        aria-describedby="tooltip" style="position: absolute;
+                        left:2%;"
+                        id="questionRatio">
+                    <span class="glyphicon glyphicon-question-sign"></span>
+                </button>
                 <button type="submit" class="btn btn-default"
                         data-dismiss="modal" id="ratioSubmit">Submit</button>
             </div>
@@ -809,7 +840,6 @@
                                 data-selected-text-format="count" data-live-search="true"
                                 title="No items selected" id="familyList" data-size="15">
                             <!--populated by visualization_function.js-->
-
                         </select>
                     </div>
                     <!--dropdown for genus-->
@@ -822,7 +852,6 @@
                                 title="No items selected" id="genusList"
                                 data-size="15">
                             <!--populated by visualization_function.js-->
-
                         </select>
                     </div>
                     <!--dropdown for species-->
@@ -837,7 +866,6 @@
                                 title="No items selected" id="speciesList"
                                 data-size="15" data-hide-disabled="true">
                             <!--populated by visualization_function.js-->
-
                         </select>
                     </div>
                 </div>

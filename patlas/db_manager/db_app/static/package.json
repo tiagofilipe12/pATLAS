@@ -9,6 +9,7 @@
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.6",
     "style-loader": "^0.19.1",
+    "uglify": "^0.1.5",
     "url-loader": "^0.6.2"
   }
 }

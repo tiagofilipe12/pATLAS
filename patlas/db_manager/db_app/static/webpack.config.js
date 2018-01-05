@@ -1,7 +1,10 @@
+const webpack = require("webpack")
+
 module.exports = {
   entry: "./entry-point.js",
+  devtool: "source-map",
   output: {
-    filename: "bundle.js"
+    filename: 'bundle.min.js'
   },
   module: {
     rules: [
@@ -14,5 +17,11 @@ module.exports = {
         loader: "url-loader?limit=100000"
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      minimize: true
+    })
+  ]
 }

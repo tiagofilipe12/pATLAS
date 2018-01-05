@@ -2027,6 +2027,7 @@ const onLoad = () => {
   $("#questionPlots").popover()
   $("#questionTable").popover()
   $("#questionMap").popover()
+  $("#questionRatio").popover()
 
   $("#infoMap").popover( { container: "body" } )
   $("#infoMash").popover( { container: "body" } )
@@ -2047,6 +2048,7 @@ const onLoad = () => {
     $("#questionTable").popover("hide")
     $("#questionPlots").popover("hide")
     $("#questionMap").popover("hide")
+    $("#questionRatio").popover("hide")
     $("#infoMap").popover("hide")
     $("#infoMash").popover("hide")
     $("#infoAssembly").popover("hide")

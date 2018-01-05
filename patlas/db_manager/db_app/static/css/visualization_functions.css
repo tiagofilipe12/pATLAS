@@ -133,11 +133,6 @@
     overflow: auto;
 }
 
-#modal-body-ratio{
-    width: 400px;
-    overflow: auto;
-}
-
 /*changes headers of all modals*/
 .modal-header{
     color: white;
@@ -750,4 +745,14 @@ Careful when using this in other popovers in the future*/
 #youtubeFrame{
     display: block;
     margin: 2% auto;
+}
+
+/*Ratio modal related style*/
+#modal-body-ratio{
+    overflow: auto;
+    max-height: 500px;
+}
+
+#toggleRatio{
+    width: 100%;
 }
