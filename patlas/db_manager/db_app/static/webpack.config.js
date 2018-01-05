@@ -1,4 +1,5 @@
 const webpack = require("webpack")
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
   entry: "./entry-point.js",
@@ -19,9 +20,9 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
+    new UglifyJSPlugin({
       include: /\.min\.js$/,
-      minimize: true
+      // minimize: true
     })
   ]
 }

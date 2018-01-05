@@ -2067,3 +2067,9 @@ const onLoad = () => {
     initCallback(g, layout, devel)
   })
 } // closes onload
+
+/**
+ * Executed when body is loaded.
+ * Basically executes everythin that is custom scripts
+ */
+window.onload = onLoadWelcome(onLoad)

@@ -5,94 +5,85 @@
           href="{{ url_for('static', filename='images/pATLAS.png') }}"
           size="32x32">
     <title>Plasmid Atlas</title>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='bundle.min.js') }}"></script>
+    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='bundle.min.js') }}"></script>
     <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-3.1.1.js') }}"></script>-->
     <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-ui.js') }}"></script>-->
     <!--<link rel="stylesheet" href="{{ url_for('static', filename='dependencies/jquery/jquery-ui.css') }}">-->
     <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script>-->
     <!--<link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">-->
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/nouislider/nouislider.css') }}">
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/vivagraph/dist/vivagraph.js') }}"></script>
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='dependencies/nouislider/nouislider.css') }}">-->
+    <!--<script language="javascript" type="text/javascript"-->
+            <!--src="{{ url_for('static', filename='node_modules/vivagraphjs/dist/vivagraph.min.js') }}"></script>-->
     <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">-->
 
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.js') }}"></script>
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.css') }}">
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table-export.min.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='dependencies/bootstrap-table/tableExport.js') }}"></script>
+    <!--<script language="javascript" type="text/javascript"-->
+            <!--src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.js') }}"></script>-->
+    <!--<link rel="stylesheet"-->
+          <!--href="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.css') }}">-->
+    <!--<script language="javascript" type="text/javascript"-->
+            <!--src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table-export.min.js') }}"></script>-->
+    <!--<script language="javascript" type="text/javascript"-->
+            <!--src="{{ url_for('static', filename='dependencies/bootstrap-table/tableExport.min.js') }}"></script>-->
 
     <!--bootstrap select-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.css') }}">
+    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>-->
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.css') }}">-->
 
     <!--test toggle button-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-toggle/bootstrap-toggle.min.css') }}">
+    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>-->
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-toggle/bootstrap-toggle.min.css') }}">-->
 
     <!--load mousetrap for keyboard shortcuts-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/mousetrap.min.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/keyboard_shortcuts.js') }}"></script>
+    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/mousetrap.min.js') }}"></script>-->
+    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/keyboard_shortcuts.js') }}"></script>-->
 
     <!--chroma to generate colors for reads-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/chroma/chroma.min.js') }}"></script>
+    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/chroma/chroma.min.js') }}"></script>-->
 
     <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/async.min.js') }}"></script>-->
 
-    <!-- main js script -->
+    <!-- custom js scripts -->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/visualization_functions.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/alternative_loading.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/resetDisplayTaxaBox.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/taxaRequest.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/fileSliderHandler.js') }}"></script>
-    <!--custom js-->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/custom_colors.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/circle_nodes.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node_removal_taxa.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/toggle_nodes.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node-positioning.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='js/node_handling/popupControls.js') }}"></script>
-    <!--load reads-->
+    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/popupControls.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
-    <!--input files handler script-->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='js/input_file_handling/importJsonSamples.js') }}"></script>
+    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/importJsonSamples.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/zooming_control.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='js/input_file_handling/dropdownPopulation.js') }}"></script>
-
+    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/dropdownPopulation.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/abrPlusFamilies.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/makeHash.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/get-node-positions.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/overlay-graph.js') }}"></script>
-    <!-- stats -->
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
     <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/sort_array_by_value.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/histogram-bellcurve.js"></script>
-    <script src="https://code.highcharts.com/modules/heatmap.js"></script>
-    <script src="http://code.highcharts.com/modules/exporting.js"></script>
-    <script src="http://code.highcharts.com/modules/offline-exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/boost.js"></script>
+    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
 
-
+    <!--<script src="https://code.highcharts.com/highcharts.js"></script>-->
+    <!--<script src="https://code.highcharts.com/modules/histogram-bellcurve.js"></script>-->
+    <!--<script src="https://code.highcharts.com/modules/heatmap.js"></script>-->
+    <!--<script src="http://code.highcharts.com/modules/exporting.js"></script>-->
+    <!--<script src="http://code.highcharts.com/modules/offline-exporting.js"></script>-->
+    <!--<script src="https://code.highcharts.com/modules/boost.js"></script>-->
 
 </head>
 
-<body onload="onLoadWelcome(onLoad)">
-<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/nouislider/nouislider.js') }}"></script>
+<body>
+<script language="javascript" type="text/javascript"
+        src="{{ url_for('static', filename='node_modules/nouislider/distribute/nouislider.min.js') }}"></script>
 
 <div id="loading">
-    <img id="loading-image" src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..." ondblclick="alternative_loading()"/>
+    <img id="loading-image" src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..." ondblclick="alternativeLoading()"/>
     <!-- Cortesy of Mickael Silva -->
     <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
 </div>
@@ -781,11 +772,9 @@
                         <li>Ratio filter cutoff - This cutoff sets the minimum
                         value for two plasmids to share a link. By default the
                         smaller plasmid need to have 30% of the size of the
-                        larger plasmid
-                        </li>
+                        larger plasmid</li>
                         <li>Remove links? - This button allows to remove links
-                        or not. By default it is set to 'off'.
-                        </li>
+                        or not. By default it is set to 'off'.</li>
                         <li>Pick a color - allows the user to pick a color to
                         highlight desired links. This is the default behavior
                         of submit button, however if remove links is 'on', this
