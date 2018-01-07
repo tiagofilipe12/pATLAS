@@ -349,7 +349,7 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     "<span style='color: #468499'>Genbank Accession: </span>" +
     "<span id='pfGenbankPopSpan'></span>" +
     "</div>" +
-    "<div>Matching resistance genes information</div>" +
+    "<div>Matching genes information</div>" +
     "<div id='pfCoveragePop'>" +
     "<span style='color: #468499'>Coverage: </span>" +
     "<span id='pfCoveragePopSpan'></span>" +
@@ -380,7 +380,7 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     "<span style='color: #468499'>ARO accessions: </span>" +
     "<span id='cardAroPopSpan'></span>" +
     "</div>" +
-    "<div>Matching resistance genes information</div>" +
+    "<div>Matching genes information</div>" +
     "<div id='cardCoveragePop'>" +
     "<span style='color: #468499'>Coverage: </span>" +
     "<span id='cardCoveragePopSpan'></span>" +
@@ -406,7 +406,7 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     "<span style='color: #468499'>Genbank accession: </span>" +
     "<span id='resfinderGenbankPopSpan'></span>" +
     "</div>" +
-    "<div>Matching resistance genes information</div>" +
+    "<div>Matching genes information</div>" +
     "<div id='resfinderCoveragePop'>" +
     "<span style='color: #468499'>Coverage: </span>" +
     "<span id='resfinderCoveragePopSpan'></span>" +
