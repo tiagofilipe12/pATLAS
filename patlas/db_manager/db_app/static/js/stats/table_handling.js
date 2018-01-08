@@ -222,7 +222,7 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
                 sortable: true
               }, {
                 field: "percentage",
-                title: "Percentage coverage",
+                title: "Percentage",
                 sortable: true,
                 visible: false
               }, {
