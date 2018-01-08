@@ -5,16 +5,16 @@ import json
 import plotly
 import plotly.graph_objs as go
 
-def make_histogram(list):
+def make_histogram(trace_list):
     '''
     Function to make an histogram from a list
     Parameters
     ----------
-    list: list
+    trace_list: list
         A list with all entries to the histogram (entries should be float)
 
     '''
-    sorted_list = sorted(list, reverse=True)
+    sorted_list = sorted(trace_list, reverse=True)
     trace_lengths = go.Histogram(x=sorted_list,
                                  opacity=0.75,
                                  name="Histogram of the size ratio between "
@@ -68,9 +68,14 @@ def main():
                            max(parent_node_length, child_node_length))
         list_lengths.append(size_ratio)
         # write a line in output file
-        ofile.write("{};{};{};{};{};{}\n".format(parent_id, parent_node_length,
-                                              child_id, child_node_length,
-                                              distance, size_diff, size_ratio))
+        ofile.write(";".join([parent_id, parent_node_length, child_id,
+                              child_node_length, distance, size_diff,
+                              str(size_ratio)]) + "\n")
+        ofile.write("{};{};{};{};{};{};{}\n".format(parent_id,
+                                                    str(parent_node_length),
+                                                    child_id, child_node_length,
+                                                    distance, size_diff,
+                                                    str(size_ratio)))
         dict_refactored_json["links"].append({"parentId": parent_id,
                                               "childId": child_id,
                                               "distNSizes": {
