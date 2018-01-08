@@ -237,9 +237,9 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
  * @param {boolean} toggle - This render true or false depending if it
  * removes the links or not, respectively
  */
-const link_coloring = (g, graphics, renderer, mode, toggle) => {
-  promises = []
-  storeLinks = []
+const linkColoring = (g, graphics, renderer, mode, toggle) => {
+  const promises = []
+  const storeLinks = []
   g.forEachLink( (link) => {
     const linkUI = (link !== undefined) ? graphics.getLinkUI(link.id) : null
     let linkColor

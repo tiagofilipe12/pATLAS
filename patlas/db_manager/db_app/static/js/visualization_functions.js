@@ -292,11 +292,11 @@ const onLoad = () => {
     //* * This section controls the connection between the toggle button on the leftside ***//
     //* * and the dropdown on the right side **//
 
-    let toggle_status = false // default state
+    let toggleStatus = false // default state
     // $("#toggle-event").bootstrapToggle("off") // set to default off
     $("#toggle-event").change(function () {   // jquery seems not to support es6
-      toggle_status = $(this).prop("checked")
-      toggle_manager(toggle_status)
+      toggleStatus = $(this).prop("checked")
+      toggle_manager(toggleStatus)
     })
 
     //* *************//
@@ -531,7 +531,7 @@ const onLoad = () => {
       $("#pfTab").removeClass("active")
       $("#plasmidButton").removeClass("active")
       event.preventDefault()    // prevents page from reloading
-      if (toggle_status === false) {
+      if (toggleStatus === false) {
         // const query !==)
         const query = ($("#formValueId").val() === "") ? clickedHighchart :
           $("#formValueId").val().replace(".", "_")
@@ -1398,7 +1398,7 @@ const onLoad = () => {
       $("#loading").show()
       $("#scaleLegend").empty()
       showDiv().then(
-        link_coloring(g, graphics, renderer, "distance", toggleRatioStatus)
+        linkColoring(g, graphics, renderer, "distance", toggleRatioStatus)
       )
       // TODO add hide loading after this promise is resolved
       const readMode = false
@@ -1996,7 +1996,7 @@ const onLoad = () => {
     $("#scaleLegend").empty()
     showDiv().then(
       setTimeout( () => {
-        link_coloring(g, graphics, renderer, "size", toggleRatioStatus, totalNumberOfLinks)
+        linkColoring(g, graphics, renderer, "size", toggleRatioStatus, totalNumberOfLinks)
       }, 100)
     )
     // const readMode = false

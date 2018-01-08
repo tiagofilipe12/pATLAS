@@ -1,11 +1,11 @@
 const webpack = require("webpack")
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin")
 
 module.exports = {
   entry: "./entry-point.js",
   devtool: "source-map",
   output: {
-    filename: 'bundle.min.js'
+    filename: "bundle.min.js"
   },
   module: {
     rules: [
