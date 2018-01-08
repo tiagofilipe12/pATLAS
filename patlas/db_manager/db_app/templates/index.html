@@ -690,7 +690,7 @@
       </div>
       <div class="modal-body" id="modal-body-ratio">
         <div class="col-sm-4">
-          <div class="header_taxa">Ratio filter cutoff</div>
+          <div class="header_taxa">Max difference (%)</div>
           <div class="form-group" data-toggle="tooltip"
                title="Provide a value between 100 and 0">
             <input id="formRatio" type="text" class="form-control"
@@ -726,10 +726,11 @@
                 data-original-title="Size ratio help"
                 data-content="Here you can color or remove links based
                         on the ratio between the size of two plasmids.
-                        <li>Ratio filter cutoff - This cutoff sets the minimum
-                        value for two plasmids to share a link. By default the
-                        smaller plasmid need to have 30% of the size of the
-                        larger plasmid</li>
+                        <li>Max difference (%) - This cutoff sets the maximum
+                        percentage difference between two plasmids. By default the
+                        smaller plasmid need to have at least 70% of the size of the
+                        larger plasmid. All other links that does not respect this
+                        criteria will be highlighted or removed.</li>
                         <li>Remove links? - This button allows to remove links
                         or not. By default it is set to 'off'.</li>
                         <li>Pick a color - allows the user to pick a color to
