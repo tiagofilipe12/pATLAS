@@ -244,6 +244,9 @@ const onLoad = () => {
         areaSelection = true
         listGiFilter = [] //if selection is made listGiFilter should be empty
         resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        // also reset file handlers that interfere with Re_run
+        readFilejson = false
+        assemblyJson = false
       }
     })
     // event for shift key up
