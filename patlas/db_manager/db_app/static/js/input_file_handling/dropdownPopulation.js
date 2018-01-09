@@ -50,6 +50,22 @@ const pfRequest = (g, graphics, renderer, gene, currentColor) => {
   })
 }
 
+// function to query plasmidfinder database
+const virRequest = (g, graphics, renderer, gene, currentColor) => {
+  // return a promise for each query
+  const geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
+  // inside other genes such as ermc ermc1 and so on
+  return $.get("api/getaccessionvir/", {"gene": geneQuotes}, (data, status) => {
+    let listData = []
+    for (let object in data) {
+      if ({}.hasOwnProperty.call(data, object)) {
+        listData.push(data[object].plasmid_id)
+      }    }
+    colorNodes(g, graphics, renderer, listData, currentColor)
+    renderer.rerender()
+  })
+}
+
 const iterateSelectedArrays = (array, g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""
   for (let i in array) {
@@ -211,6 +227,75 @@ const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
           " style='background-color:#666370' ></button>&nbsp;unselected</li>"
         )
         $("#colorLegendBoxPf").show()
+      }
+      return legendInst
+    })
+}
+
+// function to display resistances after clicking resSubmit button
+const virSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
+  listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
+  // starts legend variable
+  let legendInst = false // by default legend is off
+  let storeLis = ""  // initiates storeLis to store the legend entries and colors
+  // now processes the current selection
+  const pfQuery = document.getElementById("p_Virulence").innerHTML
+  let selectedVir = pfQuery.replace("VFDB:", "").split(",").filter(Boolean)
+  // remove first char from selected* arrays
+  // selectedPf = removeFirstCharFromArray(selectedPf)
+  // check if arrays are empty
+  const promises = []
+  if (selectedVir.length !== 0) {
+    // if only card has selected entries
+    for (let i in selectedVir) {
+      if ({}.hasOwnProperty.call(selectedVir, i)) {
+        // establish current color to use
+        const currentColor = colorList[i].replace("#", "0x")
+        // variable with the selected gene
+        const gene = selectedVir[i].replace(" ", "")
+        // variable to store all lis for legend
+        if (storeLis === "undefined") {
+          storeLis = "<li" +
+            " class='centeredList'><button class='jscolor btn'" +
+            " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            "</li>"
+        } else {
+          storeLis = storeLis + "<li" +
+            " class='centeredList'><button class='jscolor btn'" +
+            " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            "</li>"
+        }
+        // after setting the legend make the actual request
+        promises.push(
+          virRequest(g, graphics, renderer, gene, currentColor)
+            .then( (results) => {
+              results.map( (request) => {
+                if (tempPageReRun === false) {
+                  listGiFilter.push(request.plasmid_id)
+                }
+              })
+            })
+        )
+      }
+    }
+    legendInst = true
+  } else {
+    // raise error message for the user
+    document.getElementById("alertId").style.display = "block"
+  }
+  // if legend is requested then execute this!
+  // shows legend
+  return Promise.all(promises)
+    .then( () => {
+      if (legendInst === true) {
+        $("#vir_label").show()
+        $("#colorLegendBoxVir").empty()
+        $("#colorLegendBoxVir").append(
+          storeLis +
+          "<li class='centeredList'><button class='jscolor btn btn-default'" +
+          " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+        )
+        $("#colorLegendBoxVir").show()
       }
       return legendInst
     })

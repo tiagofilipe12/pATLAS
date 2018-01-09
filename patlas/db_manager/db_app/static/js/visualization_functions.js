@@ -666,9 +666,6 @@ const onLoad = () => {
           showDownload.style.display = "block"
           showTable.style.display = "block"
           plotButton.style.display = "block"
-          // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         }
       })
     })
@@ -766,9 +763,6 @@ const onLoad = () => {
           showDownload.style.display = "block"
           showTable.style.display = "block"
           plotButton.style.display = "block"
-          // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         }
       })
     })
@@ -807,15 +801,15 @@ const onLoad = () => {
     }
 
     // setup clear button for plasmidfinder functions
-    $("#pfClear").unbind("click").bind("click", (event) => {
+    $("#virClear").unbind("click").bind("click", (event) => {
       document.getElementById("reset-sliders").click()
       // clear = true;
       event.preventDefault()
       // this needs an array for reusability purposes
-      resetDisplayTaxaBox(["p_Plasmidfinder"])
+      resetDisplayTaxaBox(["p_Virulence"])
 
       // resets dropdown selections
-      $("#plasmidFamiliesList").selectpicker("deselectAll")
+      $("#virList").selectpicker("deselectAll")
 
       slider.noUiSlider.set([min, max])
       node_color_reset(graphics, g, nodeColor, renderer)
@@ -837,7 +831,7 @@ const onLoad = () => {
       }
     })
 
-    $("#pfSubmit").unbind("click").bind("click", (event) => {
+    $("#virSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
       // clears previous selected nodes
       node_color_reset(graphics, g, nodeColor, renderer)
@@ -848,7 +842,7 @@ const onLoad = () => {
       $("#colorLegendBoxRes").empty()
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
-      pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+      virSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
         legendInst = results
         pageReRun = false
         // just show legend if any selection is made at all
@@ -859,9 +853,6 @@ const onLoad = () => {
           showDownload.style.display = "block"
           showTable.style.display = "block"
           plotButton.style.display = "block"
-          // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         }
       })
     })
