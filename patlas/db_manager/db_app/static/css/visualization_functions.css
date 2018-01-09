@@ -249,7 +249,7 @@
   overflow-y: scroll;
   overflow-x: hidden;
 }*/
-#order_dropdown, #famDropdown, #resDropdown, #cardDropdown{
+#order_dropdown, #famDropdown, #resDropdown, #cardDropdown, #virDropdown{
     text-align: center;
 }
 
@@ -290,7 +290,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
-#modal-body-taxa-1, #modalBodyFAM1, #modalBodyABR1{
+#modal-body-taxa-1, #modalBodyFAM1, #modalBodyABR1, #modalBodyVir1{
     margin-bottom: 5%;
 }
 
