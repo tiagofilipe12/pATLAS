@@ -352,6 +352,9 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   // empty and hide legend for plasmid families
   $("#pf_label").hide()
   $("#colorLegendBoxPf").empty()
+  // empty and hide legend for virulence factors
+  $("#vir_label").hide()
+  $("#colorLegendBoxVir").empty()
   // empty and hide distances legend
   // $("#distance_label").hide()
   // $("#scaleLegend").empty()
@@ -382,4 +385,10 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   $("#resList").selectpicker("deselectAll")
   forceSelectorFullRemoval("cardList")
   forceSelectorFullRemoval("resList")
+
+  // resets dropdown selections for virulence factors
+  resetDisplayTaxaBox(["p_Virulence"])
+  forceSelectorFullRemoval("virList")
+  // resets dropdown selections
+  $("#virList").selectpicker("deselectAll")
 }

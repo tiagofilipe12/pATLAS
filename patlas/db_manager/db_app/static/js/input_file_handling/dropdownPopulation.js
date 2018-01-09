@@ -240,7 +240,7 @@ const virSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const pfQuery = document.getElementById("p_Virulence").innerHTML
-  let selectedVir = pfQuery.replace("VFDB:", "").split(",").filter(Boolean)
+  let selectedVir = pfQuery.replace("Virulence:", "").split(",").filter(Boolean)
   // remove first char from selected* arrays
   // selectedPf = removeFirstCharFromArray(selectedPf)
   // check if arrays are empty
