@@ -756,3 +756,16 @@ Careful when using this in other popovers in the future*/
 #toggleRatio{
     width: 100%;
 }
+
+#alertPlotEntries{
+    display: none;
+    width: 500px;
+    position: absolute;
+    top: 5px;
+    text-align: center;
+    /* Decreases the height of the alert without changing font size */
+    margin-bottom: 1px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0px 30px;
+}

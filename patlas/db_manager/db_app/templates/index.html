@@ -995,6 +995,10 @@
                     data-target="#modalPlot"
                     id="pfamilyStats">Plasmid families
             </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="virStats">Virulence
+            </button>
           </ul>
           <ul class="list-group headerPanelGroup">Other
             <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
@@ -1362,12 +1366,20 @@
         <div class="alert alert-warning alert-dismissable fade in"
              id="alertPlot"
              style="display: none">
-          <button type="button" class="close" id="alertPlotClose"
+          <button type="button" class="close"
                   aria-hidden="true" data-hide="true"
                   onclick="this.parentNode.style.display = 'none'">
             &times;</button>
           <strong>Warning!</strong> All plasmids have same size.
           There is no sufficient data to plot an histogram.
+        </div>
+        <div class="alert alert-info alert-dismissable fade in"
+             id="alertPlotEntries">
+          <span id="spanEntries"></span>
+          <button type="button" class="close"
+                  aria-hidden="true" data-hide="true"
+                  onclick="this.parentNode.style.display = 'none'">
+            &times;</button>
         </div>
         <div>
           <button class="btn btn-info" id="sortGraph"

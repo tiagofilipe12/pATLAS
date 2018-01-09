@@ -151,6 +151,7 @@ const resetHighlight = (ch) => {
 const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
   $("#loadingImgPlots").hide()
   $("#alertPlot").hide()
+  // $("#alertPlotEntries").hide()
   // controls progress bar div
   $("#progressDiv").hide()
   $("#chartContainer1").show()
@@ -331,7 +332,7 @@ const layoutGet = (taxaType, length) => {
       panning: true     // allow paning of the graph when zommed
     },
     title: {
-      text: `${length} ${taxaType} in selection`
+      text: `${taxaType} plot`
     },
     yAxis: {
       title: {
@@ -353,17 +354,17 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
 
   $.post("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
-      const noUnknowns = tempList.length - results.length
-      for (let i=0; i < noUnknowns; i++) {
-        PFList.push("unknown")
-      }
+      // const noUnknowns = tempList.length - results.length
+      // for (let i=0; i < noUnknowns; i++) {
+      //   PFList.push("unknown")
+      // }
+
       results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
         //then if unknown can push directly to array
         if (pfName === "unknown") {
           PFList.push(pfName)
-          // counter += 1
         } else {
           // otherwise needs to parse the array into an array
           for (const i in pfName) {
@@ -375,13 +376,20 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
         }
 
       })
-      // EXECUTE STATS
-      if (PFList.length >= tempList.length) {
-        const layout = layoutGet(taxaType, [...new Set(PFList)].length)
-        statsParser(false, PFList, layout, taxaType, sortAlp, sortVal)
-      }
-    })
 
+      // show info on the nodes that are shown
+      $("#spanEntries").html(
+        `Displaying results for ${results.length} of ${tempList.length} (${((results.length/tempList.length) * 100).toFixed(1)}%) selected plasmids`
+      )
+      $("#alertPlotEntries").show()
+
+      // EXECUTE STATS
+      // if (PFList.length >= tempList.length) {
+
+      const layout = layoutGet(taxaType, [...new Set(PFList)].length)
+      statsParser(false, PFList, layout, taxaType, sortAlp, sortVal)
+      // }
+    })
   return PFList
 }
 
@@ -394,10 +402,10 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
   let resList = []
   $.post("api/getresistances/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
-      const noUnknowns = tempList.length - results.length
-      for (let i=0; i < noUnknowns; i++) {
-        resList.push("unknown")
-      }
+      // const noUnknowns = tempList.length - results.length
+      // for (let i=0; i < noUnknowns; i++) {
+      //   resList.push("unknown")
+      // }
       // resList = Array.from([...Array(noUnknowns)], () => "unknown")
       results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
@@ -413,11 +421,18 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
         }
 
       })
+
+      // show info on the nodes that are shown
+      $("#spanEntries").html(
+        `Displaying results for ${results.length} of ${tempList.length} (${((results.length/tempList.length) * 100).toFixed(1)}%) selected plasmids`
+      )
+      $("#alertPlotEntries").show()
+
       // EXECUTE STATS
-      if (resList.length >= tempList.length) {
-        const layout = layoutGet(taxaType, [...new Set(resList)].length)
-        statsParser(false, resList, layout, taxaType, sortAlp, sortVal)
-      }
+      // if (resList.length >= tempList.length) {
+      const layout = layoutGet(taxaType, [...new Set(resList)].length)
+      statsParser(false, resList, layout, taxaType, sortAlp, sortVal)
+      // }
     })
   return resList
 }
@@ -431,17 +446,17 @@ const getMetadataVir = (tempList, taxaType, sortAlp, sortVal) => {
   $.post("api/getvirulence/", { "accession": JSON.stringify(tempList) })
   // when all promises are gathered
     .then( (results) => {
-      const noUnknowns = tempList.length - results.length
-      for (let i=0; i < noUnknowns; i++) {
-        virList.push("unknown")
-      }
+      // const noUnknowns = tempList.length - results.length
+      // for (let i=0; i < noUnknowns; i++) {
+      //   console.log(results)
+      //   virList.push("unknown")
+      // }
       results.map( (data) => {
         const virName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
         //then if unknown can push directly to array
         if (virName === "unknown") {
           virList.push(virName)
-          // counter += 1
         } else {
           // otherwise needs to parse the array into an array
           for (const i in virName) {
@@ -452,11 +467,20 @@ const getMetadataVir = (tempList, taxaType, sortAlp, sortVal) => {
         }
 
       })
+
+      // show info on the nodes that are shown
+      $("#spanEntries").html(
+        `Displaying results for ${results.length} of ${tempList.length} (${((results.length/tempList.length) * 100).toFixed(1)}%) selected plasmids`
+      )
+      $("#alertPlotEntries").show()
+
       // EXECUTE STATS
-      if (virList.length >= tempList.length) {
-        const layout = layoutGet(taxaType, [...new Set(virList)].length)
-        statsParser(false, virList, layout, taxaType, sortAlp, sortVal)
-      }
+      // if (virList.length >= tempList.length) {
+      // checks whether virList is empty meaning that there are no virulence
+      // genes for this selection
+      const layout = layoutGet(taxaType, [...new Set(virList)].length)
+      statsParser(false, virList, layout, taxaType, sortAlp, sortVal)
+      // }
     })
 
   return virList
@@ -508,6 +532,13 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
           // not in db
         }
       })
+
+      // show info on the nodes that are shown
+      $("#spanEntries").html(
+        `Displaying results for ${results.length} of ${tempList.length} (${((results.length/tempList.length) * 100).toFixed(1)}%) selected plasmids`
+      )
+      $("#alertPlotEntries").show()
+
       // if (taxaType === "species") {
       const layout = layoutGet(taxaType, [...new Set(speciesList)].length)
       if (speciesList.length >= tempList.length) { statsParser(accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal) }
@@ -545,18 +576,21 @@ const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, g
 }
 
 const pfRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  $("#loadingImgPlots").show()
   const listPlots = (areaSelection === false) ? getMetadataPF(listGiFilter, clickerButton, false, false)
     : statsColor(g, graphics, clickerButton, false, false)
   return listPlots
 }
 
 const resRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  $("#loadingImgPlots").show()
   const listPlots = (areaSelection === false) ? getMetadataRes(listGiFilter, clickerButton, false, false)
     : statsColor(g, graphics, clickerButton, false, false)
   return listPlots
 }
 
 const virRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  $("#loadingImgPlots").show()
   const listPlots = (areaSelection === false) ? getMetadataVir(listGiFilter, clickerButton, false, false)
     : statsColor(g, graphics, clickerButton, false, false)
   return listPlots

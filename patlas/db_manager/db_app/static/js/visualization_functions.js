@@ -446,6 +446,13 @@ const onLoad = () => {
       }, 500)
     })
 
+    $("#virStats").unbind("click").bind("click", () => {
+      clickerButton = "virulence"
+      setTimeout( () => {
+        listPlots = virRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      }, 500)
+    })
+
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").unbind("click").bind("click", () => {
       clickerButton = "length"
