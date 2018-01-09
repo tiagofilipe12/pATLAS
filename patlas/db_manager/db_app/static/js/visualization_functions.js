@@ -774,96 +774,97 @@ const onLoad = () => {
     })
 
     //* ******************//
-    //* ***plasmidfinder Filters****//
+    //* ***Virulence Filters****//
     //* ******************//
 
-    // if (firstInstace === true && pageReload === false) {
-    //   getArrayVir().done( (json) => {
-    //     // first parse the json input file
-    //     const listPF = []
-    //     // iterate over the file
-    //     $.each(json, (accession, entry) => {
-    //       geneEntries = entry.gene
-    //       for (let i in geneEntries) {
-    //         if (listPF.indexOf(geneEntries[i]) < 0) {
-    //           listPF.push(geneEntries[i])
-    //         }
-    //       }
-    //     })
-    //     // populate the menus
-    //     singleDropdownPopulate("#plasmidFamiliesList", listPF, "PlasmidfinderClass")
-    //
-    //     $(".PlasmidfinderClass").on("click", function (e) {
-    //       // fill panel group displaying current selected taxa filters //
-    //       const stringClass = this.className.slice(0, -5)
-    //       const tempVar = this.firstChild.innerHTML
-    //       // checks if a taxon is already in display
-    //       const divStringClass = "#p_" + stringClass
-    //
-    //       filterDisplayer(tempVar, stringClass, divStringClass)
-    //     })
-    //   })
-    // }
-    //
-    // // setup clear button for plasmidfinder functions
-    // $("#pfClear").unbind("click").bind("click", (event) => {
-    //   document.getElementById("reset-sliders").click()
-    //   // clear = true;
-    //   event.preventDefault()
-    //   // this needs an array for reusability purposes
-    //   resetDisplayTaxaBox(["p_Plasmidfinder"])
-    //
-    //   // resets dropdown selections
-    //   $("#plasmidFamiliesList").selectpicker("deselectAll")
-    //
-    //   slider.noUiSlider.set([min, max])
-    //   node_color_reset(graphics, g, nodeColor, renderer)
-    //   if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-    //     showLegend.style.display = "none"
-    //     showRerun.style.display = "none"
-    //     showGoback.style.display = "none"
-    //     showDownload.style.display = "none"
-    //     showTable.style.display = "none"
-    //     plotButton.style.display = "none"
-    //   } else {
-    //     $("#colorLegendBox").empty()
-    //     document.getElementById("taxa_label").style.display = "none" // hide label
-    //     showRerun.style.display = "none"
-    //     showGoback.style.display = "none"
-    //     showDownload.style.display = "none"
-    //     showTable.style.display = "none"
-    //     plotButton.style.display = "none"
-    //   }
-    // })
-    //
-    // $("#pfSubmit").unbind("click").bind("click", (event) => {
-    //   event.preventDefault()
-    //   // clears previous selected nodes
-    //   node_color_reset(graphics, g, nodeColor, renderer)
-    //   // empties taxa and plasmidfinder legend
-    //   $("#taxa_label").hide()
-    //   $("#colorLegendBox").empty()
-    //   $("#res_label").hide()
-    //   $("#colorLegendBoxRes").empty()
-    //   // reset nodes before submitting new colors
-    //   const tempPageReRun = pageReRun
-    //   pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
-    //     legendInst = results
-    //     pageReRun = false
-    //     // just show legend if any selection is made at all
-    //     if (legendInst === true) {
-    //       showLegend.style.display = "block"
-    //       showRerun.style.display = "block"
-    //       showGoback.style.display = "block"
-    //       showDownload.style.display = "block"
-    //       showTable.style.display = "block"
-    //       plotButton.style.display = "block"
-    //       // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-    //       // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-    //       // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-    //     }
-    //   })
-    // })
+    if (firstInstace === true && pageReload === false) {
+      getArrayVir().done( (json) => {
+        // first parse the json input file
+        const listVir = []
+        // iterate over the file
+        $.each(json, (accession, entry) => {
+          geneEntries = entry.gene
+          for (let i in geneEntries) {
+            if (listVir.indexOf(geneEntries[i]) < 0) {
+              listVir.push(geneEntries[i])
+            }
+          }
+        })
+
+        // populate the menus
+        singleDropdownPopulate("#virList", listVir, "VirulenceClass")
+
+        $(".VirulenceClass").on("click", function (e) {
+          // fill panel group displaying current selected taxa filters //
+          const stringClass = this.className.slice(0, -5)
+          const tempVar = this.firstChild.innerHTML
+          // checks if a taxon is already in display
+          const divStringClass = "#p_" + stringClass
+
+          filterDisplayer(tempVar, stringClass, divStringClass)
+        })
+      })
+    }
+
+    // setup clear button for plasmidfinder functions
+    $("#pfClear").unbind("click").bind("click", (event) => {
+      document.getElementById("reset-sliders").click()
+      // clear = true;
+      event.preventDefault()
+      // this needs an array for reusability purposes
+      resetDisplayTaxaBox(["p_Plasmidfinder"])
+
+      // resets dropdown selections
+      $("#plasmidFamiliesList").selectpicker("deselectAll")
+
+      slider.noUiSlider.set([min, max])
+      node_color_reset(graphics, g, nodeColor, renderer)
+      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+        showLegend.style.display = "none"
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        showDownload.style.display = "none"
+        showTable.style.display = "none"
+        plotButton.style.display = "none"
+      } else {
+        $("#colorLegendBox").empty()
+        document.getElementById("taxa_label").style.display = "none" // hide label
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        showDownload.style.display = "none"
+        showTable.style.display = "none"
+        plotButton.style.display = "none"
+      }
+    })
+
+    $("#pfSubmit").unbind("click").bind("click", (event) => {
+      event.preventDefault()
+      // clears previous selected nodes
+      node_color_reset(graphics, g, nodeColor, renderer)
+      // empties taxa and plasmidfinder legend
+      $("#taxa_label").hide()
+      $("#colorLegendBox").empty()
+      $("#res_label").hide()
+      $("#colorLegendBoxRes").empty()
+      // reset nodes before submitting new colors
+      const tempPageReRun = pageReRun
+      pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+        legendInst = results
+        pageReRun = false
+        // just show legend if any selection is made at all
+        if (legendInst === true) {
+          showLegend.style.display = "block"
+          showRerun.style.display = "block"
+          showGoback.style.display = "block"
+          showDownload.style.display = "block"
+          showTable.style.display = "block"
+          plotButton.style.display = "block"
+          // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+          // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+          // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        }
+      })
+    })
 
 
     //* ******************//

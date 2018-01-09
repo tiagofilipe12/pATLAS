@@ -939,6 +939,11 @@
                     data-target="#resModal"
                     id="resistancesFilter" >Resistances
             </button>
+            <button class="button list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#virModal"
+                    id="virulenceFilter" >Virulence
+            </button>
           </ul>
         </div>
       </li>
@@ -1530,6 +1535,56 @@
                 data-dismiss="modal" id="pfSubmit">Submit</button>
         <button type="submit" class="btn btn-danger"
                 id="pfClear">Clear selection</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal for virulence factors-->
+<div id="virModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Filter plasmids by
+          virulence factor genes</h4>
+      </div>
+      <div class="modal-body" id="modalBodyVir">
+        <div class="row" id="modalBodyVir1">
+          <div class="dropdown col-sm-12 " id="virDropdown">
+            <div class="header_taxa">Virulence factors</div>
+            <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
+                    data-selected-text-format="count" data-live-search="true"
+                    title="No items selected"
+                    id="virList"
+                    data-size="15" data-hide-disabled="true">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
+        </div>
+        <div class="row" id="modalBodyVir2">
+          <div class='col-md-12'>
+            <div class="panel-group" id="displayCurrentVir">
+              <div class="panel panel-info" >
+                <div class="panel-heading">
+                  Selected genes</div>
+                <div class="panel-body"
+                     id="displayCurrentBoxVir">
+                  <!--Populated by visualization_functions.js-->
+                  <p id="p_virulence">VFDB:</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="virSubmit">Submit</button>
+        <button type="submit" class="btn btn-danger"
+                id="virClear">Clear selection</button>
       </div>
     </div>
 
