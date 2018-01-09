@@ -324,12 +324,12 @@ const resetProgressBar = () => {
 }
 
 // function to make layout
-const layoutGet = (taxaType, length) => {
+const layoutGet = (taxaType) => {
   return {
     chart: {
       zoomType: "x",
-      panKey: "ctrl",   //key used to navigate the graph when zommed
-      panning: true     // allow paning of the graph when zommed
+      panKey: "ctrl",   //key used to navigate the graph when zoomed
+      panning: true     // allow panning of the graph when zoomed
     },
     title: {
       text: `${taxaType} plot`
@@ -379,14 +379,16 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
 
       // show info on the nodes that are shown
       $("#spanEntries").html(
-        `Displaying results for ${results.length} of ${tempList.length} (${((results.length/tempList.length) * 100).toFixed(1)}%) selected plasmids`
+        `Displaying results for ${results.length} of ${tempList.length} 
+        (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
+        plasmids. The remaining ${tempList.length - results.length} are unknown.`
       )
       $("#alertPlotEntries").show()
 
       // EXECUTE STATS
       // if (PFList.length >= tempList.length) {
 
-      const layout = layoutGet(taxaType, [...new Set(PFList)].length)
+      const layout = layoutGet(taxaType)
       statsParser(false, PFList, layout, taxaType, sortAlp, sortVal)
       // }
     })
@@ -424,13 +426,15 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
 
       // show info on the nodes that are shown
       $("#spanEntries").html(
-        `Displaying results for ${results.length} of ${tempList.length} (${((results.length/tempList.length) * 100).toFixed(1)}%) selected plasmids`
+        `Displaying results for ${results.length} of ${tempList.length} 
+        (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
+        plasmids. The remaining ${tempList.length - results.length} are unknown.`
       )
       $("#alertPlotEntries").show()
 
       // EXECUTE STATS
       // if (resList.length >= tempList.length) {
-      const layout = layoutGet(taxaType, [...new Set(resList)].length)
+      const layout = layoutGet(taxaType)
       statsParser(false, resList, layout, taxaType, sortAlp, sortVal)
       // }
     })
@@ -470,7 +474,9 @@ const getMetadataVir = (tempList, taxaType, sortAlp, sortVal) => {
 
       // show info on the nodes that are shown
       $("#spanEntries").html(
-        `Displaying results for ${results.length} of ${tempList.length} (${((results.length/tempList.length) * 100).toFixed(1)}%) selected plasmids`
+        `Displaying results for ${results.length} of ${tempList.length} 
+        (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
+        plasmids. The remaining ${tempList.length - results.length} are unknown.`
       )
       $("#alertPlotEntries").show()
 
@@ -478,7 +484,7 @@ const getMetadataVir = (tempList, taxaType, sortAlp, sortVal) => {
       // if (virList.length >= tempList.length) {
       // checks whether virList is empty meaning that there are no virulence
       // genes for this selection
-      const layout = layoutGet(taxaType, [...new Set(virList)].length)
+      const layout = layoutGet(taxaType)
       statsParser(false, virList, layout, taxaType, sortAlp, sortVal)
       // }
     })
@@ -535,12 +541,14 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
 
       // show info on the nodes that are shown
       $("#spanEntries").html(
-        `Displaying results for ${results.length} of ${tempList.length} (${((results.length/tempList.length) * 100).toFixed(1)}%) selected plasmids`
+        `Displaying results for ${results.length} of ${tempList.length} 
+        (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
+        plasmids. The remaining ${tempList.length - results.length} are unknown.`
       )
       $("#alertPlotEntries").show()
 
       // if (taxaType === "species") {
-      const layout = layoutGet(taxaType, [...new Set(speciesList)].length)
+      const layout = layoutGet(taxaType)
       if (speciesList.length >= tempList.length) { statsParser(accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal) }
     })
     .catch( (error) => {
