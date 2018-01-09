@@ -4,14 +4,15 @@ from sqlalchemy import func
 
 try:
     from db_manager.db_app import db
-    from db_manager.db_app.models import Plasmid, Card, Database
+    from db_manager.db_app.models import Plasmid, Card, Database, Positive
 except ImportError:
     try:
         from db_app import db
-        from db_app.models import Plasmid, Card, Database
+        from db_app.models import Plasmid, Card, Database, Positive
     except ImportError:
         from patlas.db_manager.db_app import db
-        from patlas.db_manager.db_app.models import Plasmid, Card, Database
+        from patlas.db_manager.db_app.models import Plasmid, Card, Database, \
+            Positive
 #from flask import jsonify
 
 ## Defines response fields
@@ -101,11 +102,16 @@ class GetPlasmidFinder(Resource):
             Database.plasmid_id.in_(var_response)).all()
         return single_query
 
-# define more reqparse arguments for GetAccession classe resource
-
-#req_parser_2 = reqparse.RequestParser()
-#req_parser_2.add_argument("name", dest="name", type=str, help="taxa "
-#                                                              "to be queried")
+class GetVirulence(Resource):
+    @marshal_with(card_field)
+    def post(self):
+        # Put req_parser inside get function. Only this way it parses the request.
+        # args = req_parser.parse_args()
+        var_response = request.form["accession"].replace("[", "") \
+            .replace("]", "").replace('"', "").split(",")
+        single_query = db.session.query(Positive).filter(
+            Positive.plasmid_id.in_(var_response)).all()
+        return single_query
 
 class GetAccession(Resource):
     @marshal_with(entry_field)
@@ -118,13 +124,6 @@ class GetAccession(Resource):
             Plasmid.json_entry["name"].astext == args.name
         ).all()
         return records
-
-
-# define more reqparse arguments for GetAccession classe resource
-
-#req_parser_3 = reqparse.RequestParser()
-#req_parser_3.add_argument("gene", dest="gene", type=str, help="gene "
-#                                                              "to be queried")
 
 class GetAccessionRes(Resource):
     @marshal_with(entry_field)
@@ -154,10 +153,19 @@ class GetAccessionPF(Resource):
         # string
         return records
 
-#req_parser_4 = reqparse.RequestParser()
-#req_parser_4.add_argument("plasmid_name", dest="plasmid_name", type=str,
-        # help="plasmid name "
-#                                                              "to be queried")
+class GetAccessionVir(Resource):
+    @marshal_with(entry_field)
+    def get(self):
+        # Put req_parser inside get function. Only this way it parses the request.
+        args = req_parser.parse_args()
+        # This queries name object in json_entry and retrieves an array with
+        # all objects that matched the args (json_entry, plasmid_id)
+        records = db.session.query(Positive).filter(
+            Positive.json_entry["gene"].astext.contains(args.gene)
+        ).all()
+        # contains method allows us to query in array that is converted to a
+        # string
+        return records
 
 class GetPlasmidName(Resource):
     @marshal_with(entry_field)

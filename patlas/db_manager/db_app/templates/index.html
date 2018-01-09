@@ -90,9 +90,10 @@
       </div>
       <div>
         <a title="Web Analytics" href="http://statcounter.com/"
-           target="_blank"><img
-                src="//c.statcounter.com/11567956/0/ab4c856f/1/"
-                alt="Web Analytics" ></a>
+           target="_blank">
+          <img src="//c.statcounter.com/11567956/0/ab4c856f/1/"
+               alt="Web Analytics" >
+        </a>
       </div>
       <div class="modal-footer">
         <div id="counternclose"
@@ -1235,6 +1236,9 @@
       <li id="plasmidButton">
         <a data-toggle="tab" href="#pfTab">Plasmid finder</a>
       </li>
+      <li id="virButton">
+        <a data-toggle="tab" href="#virTab">Virulence</a>
+      </li>
     </ul>
     <div class="tab-content" id="popupTabs">
       <div id='pfTab' class="tab-pane fade">
@@ -1303,6 +1307,32 @@
         </div>
         <div id='resfinderRangePop'>
           <span style='color: #468499'>Range in plasmid: </span><span id='resfinderRangePopSpan'></span>
+        </div>
+      </div>
+      <div id='virTab' class="tab-pane fade">
+        <div id='virPop' class="popupHeaders">PlasmidFinder database</div>
+        <div style='border-top: 3px solid #4588ba; position: relative;
+                top: 10px; margin-bottom: 10px;'>
+        </div>
+        <div id='virGenePop'>
+          <span style='color: #468499'>Gene name: </span><span id='virGenePopSpan'></span>
+        </div>
+        <div id='virGenbankPop'>
+          <span style='color: #468499'>Genbank Accession: </span><span
+                id='virGenbankPopSpan'></span>
+        </div>
+        <div>Matching genes information</div>
+        <div id='virCoveragePop'>
+          <span style='color: #468499'>Coverage: </span><span
+                id='virCoveragePopSpan'></span>
+        </div>
+        <div id='virIdentityPop'>
+          <span style='color: #468499'>Identity: </span><span
+                id='virIdentityPopSpan'></span>
+        </div>
+        <div id='virRangePop'>
+          <span style='color: #468499'>Range in plasmid: </span><span
+                id='virRangePopSpan'></span>
         </div>
       </div>
     </div>
