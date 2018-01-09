@@ -2075,4 +2075,4 @@ const onLoad = () => {
  * Executed when body is loaded.
  * Basically executes everythin that is custom scripts
  */
-window.onload = onLoadWelcome(onLoad)
+// window.onload = onLoadWelcome(onLoad)
