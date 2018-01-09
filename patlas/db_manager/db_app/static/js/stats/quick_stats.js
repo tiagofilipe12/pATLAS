@@ -48,7 +48,8 @@ const colorsPlot = {
   cluster: "#DF565F",
   resistances: "#24CBE5",
   plasmidfamilies: "#64E572",
-  length: "#A9B3CE"
+  length: "#A9B3CE",
+  virulence: "#8773ff"
 }
 
 const highLightScatter = (el) => {
@@ -349,24 +350,8 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
   resetProgressBar()
 
   let PFList = []
-  // let counter = 0
-  // let promises = []
 
-  // for (const item in tempList) {
-  //   if ({}.hasOwnProperty.call(tempList, item)) {
-  //     const nodeId = tempList[item]
-  //     promises.push(
   $.post("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
-          // for each instance of item update progressBar
-          // progressBarControl(parseInt(item) + 1, tempList.length)
-        // })
-      // )
-    // }
-  // }
-
-
-  // when all promises are gathered
-  // Promise.all(promises)
     .then( (results) => {
       const noUnknowns = tempList.length - results.length
       for (let i=0; i < noUnknowns; i++) {
@@ -407,22 +392,7 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
   resetProgressBar()
 
   let resList = []
-  //let promises = []
-
-  // for (const item in tempList) {
-  //   if ({}.hasOwnProperty.call(tempList, item)) {
-  //     const nodeId = tempList[item]
-  //     promises.push(
   $.post("api/getresistances/", { "accession": JSON.stringify(tempList) })
-          // for each instance of item update progressBar
-  //         progressBarControl(parseInt(item) + 1, tempList.length)
-  //       })
-  //     )
-  //   }
-  // }
-
-  // when all promises are gathered
-  // Promise.all(promises)
     .then( (results) => {
       const noUnknowns = tempList.length - results.length
       for (let i=0; i < noUnknowns; i++) {
@@ -452,33 +422,54 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
   return resList
 }
 
+// function equivalent to getMetadata but for Database db (plasmidfinder db)
+const getMetadataVir = (tempList, taxaType, sortAlp, sortVal) => {
+  // resets progressBar
+  resetProgressBar()
+
+  let virList = []
+  $.post("api/getvirulence/", { "accession": JSON.stringify(tempList) })
+  // when all promises are gathered
+    .then( (results) => {
+      const noUnknowns = tempList.length - results.length
+      for (let i=0; i < noUnknowns; i++) {
+        virList.push("unknown")
+      }
+      results.map( (data) => {
+        const virName = (data.json_entry.gene === null) ?
+          "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+        //then if unknown can push directly to array
+        if (virName === "unknown") {
+          virList.push(virName)
+          // counter += 1
+        } else {
+          // otherwise needs to parse the array into an array
+          for (const i in virName) {
+            if ({}.hasOwnProperty.call(virName, i)) {
+              virList.push(virName[i])
+            }
+          }
+        }
+
+      })
+      // EXECUTE STATS
+      if (virList.length >= tempList.length) {
+        const layout = layoutGet(taxaType, [...new Set(virList)].length)
+        statsParser(false, virList, layout, taxaType, sortAlp, sortVal)
+      }
+    })
+
+  return virList
+}
+
 // metadata handler function
 
 const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
   let speciesList = []
-  //let promises = []
-  //console.log(JSON.stringify(tempList))
-  // const speciesObject = {}
-  // for (const item in tempList) {
-  //   if ({}.hasOwnProperty.call(tempList, item)) {
-  //     const nodeId = tempList[item]
-  //     promises.push(
-        // query used to push to promise the . there is no need for the
-        // function that parses the data and status but just to push data
-        // into the promises array
-  $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
-          // for each instance of item update progressBar
-          // progressBarControl(parseInt(item) + 1, tempList.length)
 
-        // })
-      // )
-    // }
-  // }
-  // waits for all promises to finish and then execute functions that will
-  // render the graph
-  //Promise.all(promises)
+  $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
       const accessionResultsList = []
       const noUnknowns = tempList.length - results.length
@@ -536,9 +527,10 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
     if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  const taxaList = (mode === "plasmid families") ? getMetadataPF(tempListAccessions, mode, sortAlp, sortVal)
-    : (mode === "resistances") ? getMetadataRes(tempListAccessions, mode, sortAlp, sortVal) :
-    getMetadata(tempListAccessions, mode, sortAlp, sortVal)
+  const taxaList = (mode === "plasmid families") ? getMetadataPF(tempListAccessions, mode, sortAlp, sortVal) :
+    (mode === "resistances") ? getMetadataRes(tempListAccessions, mode, sortAlp, sortVal) :
+      (mode === "virulence") ? getMetadataVir(tempListAccessions, mode, sortAlp, sortVal) :
+        getMetadata(tempListAccessions, mode, sortAlp, sortVal)
   return taxaList
 }
 
@@ -560,6 +552,12 @@ const pfRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g,
 
 const resRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
   const listPlots = (areaSelection === false) ? getMetadataRes(listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, clickerButton, false, false)
+  return listPlots
+}
+
+const virRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+  const listPlots = (areaSelection === false) ? getMetadataVir(listGiFilter, clickerButton, false, false)
     : statsColor(g, graphics, clickerButton, false, false)
   return listPlots
 }

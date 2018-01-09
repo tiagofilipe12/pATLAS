@@ -520,6 +520,11 @@ const onLoad = () => {
       listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
     })
 
+    $("#virPlot").unbind("click").bind("click", () => {
+      clickerButton = "virulence"
+      listPlots = virRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+    })
+
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
 
     // Buttons to control force play/pause using bootstrap navigation bar
