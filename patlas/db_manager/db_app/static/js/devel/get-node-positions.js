@@ -7,8 +7,13 @@ const downloadJSON = (text, name, type) => {
   a.click()
 }
 
-
-// function to get all node positions and write then to a file
+/**
+ * Function to get all node positions and write then to a file. It also
+ * calculates the ratio between the two linked nodes and adds it to last
+ * element for link { distance, nodeRatio }
+ * @param g
+ * @param layout
+ */
 const getPositions = (g, layout) => {
   let masterJSON = {
     "nodes": [],
@@ -28,11 +33,16 @@ const getPositions = (g, layout) => {
   // this doesn't filter for duplicated links
   g.forEachLink( (link) => {
     const currentHash = makeHash(link.fromId, link.toId)
+      // gets size of fromId and toId nodes and calculates the ratio between
+      // them
+    const fromSize = parseFloat(g.getNode(link.fromId).data.seq_length.split("</span>").slice(-1)[0])
+    const toSize = parseFloat(g.getNode(link.toId).data.seq_length.split("</span>").slice(-1)[0])
+    const sizeRatio = Math.min(fromSize, toSize) / Math.max(fromSize, toSize)
     if (hashStore.indexOf(currentHash) < 0) {
       masterJSON.links.push({
         "parentId": link.fromId,
         "childId": link.toId,
-        "distance": link.data.distance
+        "distNSizes": { "distance": link.data.distance, sizeRatio }
       })
       hashStore.push(currentHash)
     }
@@ -49,7 +59,8 @@ const getPositions = (g, layout) => {
 
 // devel session to get positions of each node
 const initCallback = (g, layout, devel) => {
-  if (devel === true && layout !== false) {
+  //if (devel === true && layout !== false) {
+  if (layout !== false) {
     //console.log("devel on")
     getPositions(g, layout)
   } //else {

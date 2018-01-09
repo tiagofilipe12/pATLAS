@@ -53,6 +53,10 @@ let clickedHighchart
 
 let graphSize
 
+let toggleRatioStatus = false
+
+let totalNumberOfLinks
+
 /**
  * load JSON file with taxa dictionary
  * @returns {Object} - return is an object that perform matches between taxa
@@ -186,7 +190,8 @@ const onLoad = () => {
     // rerun precomputes 500
     // const prerender = (devel === true || rerun === true) ? 500 : 0
     // version that doesn't rerun
-    const prerender = (devel === true) ? 500 : parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
+    const prerender = (devel === true) ? 500 :
+        parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
 
     renderer = Viva.Graph.View.renderer(g, {
       layout,
@@ -239,6 +244,9 @@ const onLoad = () => {
         areaSelection = true
         listGiFilter = [] //if selection is made listGiFilter should be empty
         resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        // also reset file handlers that interfere with Re_run
+        readFilejson = false
+        assemblyJson = false
       }
     })
     // event for shift key up
@@ -287,11 +295,11 @@ const onLoad = () => {
     //* * This section controls the connection between the toggle button on the leftside ***//
     //* * and the dropdown on the right side **//
 
-    toggle_status = false // default state
-    $("#toggle-event").bootstrapToggle("off") // set to default off
+    let toggleStatus = false // default state
+    // $("#toggle-event").bootstrapToggle("off") // set to default off
     $("#toggle-event").change(function () {   // jquery seems not to support es6
-      toggle_status = $(this).prop("checked")
-      toggle_manager(toggle_status)
+      toggleStatus = $(this).prop("checked")
+      toggle_manager(toggleStatus)
     })
 
     //* *************//
@@ -526,7 +534,7 @@ const onLoad = () => {
       $("#pfTab").removeClass("active")
       $("#plasmidButton").removeClass("active")
       event.preventDefault()    // prevents page from reloading
-      if (toggle_status === false) {
+      if (toggleStatus === false) {
         // const query !==)
         const query = ($("#formValueId").val() === "") ? clickedHighchart :
           $("#formValueId").val().replace(".", "_")
@@ -1389,11 +1397,13 @@ const onLoad = () => {
     //* *********************//
     $("#distancesSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      $("#reset-sliders").click()
       $("#loading").show()
       $("#scaleLegend").empty()
-      setTimeout(function () {
-        link_coloring(g, graphics, renderer)
-      }, 100)
+      showDiv().then(
+        linkColoring(g, graphics, renderer, "distance", toggleRatioStatus)
+      )
+      // TODO add hide loading after this promise is resolved
       const readMode = false
       color_legend(readMode)
       //document.getElementById("reset-links").disabled = ""
@@ -1599,7 +1609,7 @@ const onLoad = () => {
                 for (let i = 0; i < dict_dist.length; i++) {
                   const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
                   const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
-                  g.addLink(sequence, reference, {distance})
+                  g.addLink(sequence, reference, { distance })
                 }
               } else {
                 dict_dist = []
@@ -1651,16 +1661,18 @@ const onLoad = () => {
           }
 
           const addAllLinks = (json) => {
-            return new Promise((resolve, reject) => {
+            totalNumberOfLinks = json.length
+            return new Promise( (resolve, reject) => {
               for (const i in json) {
                 const array = json[i]
                 const sequence = array.parentId   // stores sequences
                 const reference = array.childId  // stores references
-                const distance = array.distance   // stores distances
+                const distNSizes = array.distNSizes   // stores distances
+                  // and sizeRatios
                 if (reference !== "") {
                   // here it adds only unique links because filtered.json file
                   // just stores unique links
-                  g.addLink(sequence, reference, { distance })
+                  g.addLink(sequence, reference, distNSizes)
                 } else {
                   // if there is no reference associated with sequence then
                   // there are no links
@@ -1973,6 +1985,27 @@ const onLoad = () => {
     $("#alertAssembly").hide()  // hide this div
   })
 
+  // sets toggle for size ratio and handles status of this toggle
+  // this is used in "ratioSubmit" button
+  $("#toggleRatio").change(function () {   // jquery seems not to support es6
+    toggleRatioStatus = $(this).prop("checked")
+  })
+
+  // function that submits the selection made in the modal
+  $("#ratioSubmit").unbind("click").bind("click", () => {
+    event.preventDefault()
+    // $("#reset-links").click()
+    // $("#loading").show()
+    $("#scaleLegend").empty()
+    showDiv().then(
+      setTimeout( () => {
+        linkColoring(g, graphics, renderer, "size", toggleRatioStatus, totalNumberOfLinks)
+      }, 100)
+    )
+    // const readMode = false
+    // color_legend(readMode)
+  })
+
   /** control the visualization of multiple files for read mode
   * The default idea is that the first file in this readFilejson object is the
   * one to be loaded when uploading then everything else should use cycler
@@ -1983,7 +2016,6 @@ const onLoad = () => {
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
     list_gi = outArray[1][0]
-
   })
 
   $("#slideLeft").unbind("click").bind("click", () => {
@@ -1998,6 +2030,7 @@ const onLoad = () => {
   $("#questionPlots").popover()
   $("#questionTable").popover()
   $("#questionMap").popover()
+  $("#questionRatio").popover()
 
   $("#infoMap").popover( { container: "body" } )
   $("#infoMash").popover( { container: "body" } )
@@ -2018,6 +2051,7 @@ const onLoad = () => {
     $("#questionTable").popover("hide")
     $("#questionPlots").popover("hide")
     $("#questionMap").popover("hide")
+    $("#questionRatio").popover("hide")
     $("#infoMap").popover("hide")
     $("#infoMash").popover("hide")
     $("#infoAssembly").popover("hide")
@@ -2036,3 +2070,9 @@ const onLoad = () => {
     initCallback(g, layout, devel)
   })
 } // closes onload
+
+/**
+ * Executed when body is loaded.
+ * Basically executes everythin that is custom scripts
+ */
+// window.onload = onLoadWelcome(onLoad)

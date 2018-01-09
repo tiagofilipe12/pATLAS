@@ -299,7 +299,7 @@
 }
 
 .header_taxa{
-    font-size: 70%;
+    font-size: 80%;
     color: #959595;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -624,7 +624,7 @@
     display: inline-block;
 }
 
-#headerTaxaGroup, #headerABRGroup, #headerOtherGroup {
+.headerPanelGroup {
     color: #fff;
     background-color: rgba(255,255,255,0.2);
 }
@@ -745,4 +745,14 @@ Careful when using this in other popovers in the future*/
 #youtubeFrame{
     display: block;
     margin: 2% auto;
+}
+
+/*Ratio modal related style*/
+#modal-body-ratio{
+    overflow: auto;
+    max-height: 500px;
+}
+
+#toggleRatio{
+    width: 100%;
 }

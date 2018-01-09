@@ -1,423 +1,372 @@
 <html>
 <head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" type="image/png"
-          href="{{ url_for('static', filename='images/pATLAS.png') }}"
-          size="32x32">
-    <title>Plasmid Atlas</title>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-3.1.1.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/jquery/jquery-ui.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/jquery/jquery-ui.css') }}">
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/js/bootstrap.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-3.3.7-dist/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/nouislider/nouislider.css') }}">
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/vivagraph/dist/vivagraph.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/visualization_functions.css') }}">
-    <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/png"
+        href="{{ url_for('static', filename='images/pATLAS.png') }}"
+        size="32x32">
+  <title>Plasmid Atlas</title>
+  <!--Import dependencies using yarn + webpack-->
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='bundle.min.js') }}"></script>
 
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.js') }}"></script>
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table.min.css') }}">
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='dependencies/bootstrap-table/bootstrap-table-export.min.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='dependencies/bootstrap-table/tableExport.js') }}"></script>
-
-    <!--bootstrap select-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-select-1.12.2/bootstrap-select.min.css') }}">
-
-    <!--test toggle button-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dependencies/bootstrap-toggle/bootstrap-toggle.min.css') }}">
-
-    <!--load mousetrap for keyboard shortcuts-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/mousetrap.min.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/keyboard_shortcuts.js') }}"></script>
-
-    <!--chroma to generate colors for reads-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/chroma/chroma.min.js') }}"></script>
-
-    <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/async.min.js') }}"></script>-->
-
-    <!-- main js script -->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/visualization_functions.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/alternative_loading.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/resetDisplayTaxaBox.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/taxaRequest.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/fileSliderHandler.js') }}"></script>
-    <!--custom js-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/custom_colors.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/circle_nodes.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node_removal_taxa.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/toggle_nodes.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node-positioning.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='js/node_handling/popupControls.js') }}"></script>
-    <!--load reads-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
-    <!--input files handler script-->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='js/input_file_handling/importJsonSamples.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/zooming_control.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='js/input_file_handling/dropdownPopulation.js') }}"></script>
-
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/abrPlusFamilies.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/makeHash.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/get-node-positions.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/overlay-graph.js') }}"></script>
-    <!-- stats -->
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
-    <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/sort_array_by_value.js') }}"></script>
-    <script language="javascript" type="text/javascript"
-            src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/histogram-bellcurve.js"></script>
-    <script src="https://code.highcharts.com/modules/heatmap.js"></script>
-    <script src="http://code.highcharts.com/modules/exporting.js"></script>
-    <script src="http://code.highcharts.com/modules/offline-exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/boost.js"></script>
-
-
+  <!-- custom js scripts -->
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/visualization_functions.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/alternative_loading.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/resetDisplayTaxaBox.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/taxaRequest.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/fileSliderHandler.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/custom_colors.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/circle_nodes.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node_removal_taxa.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/toggle_nodes.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node-positioning.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/popupControls.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/importJsonSamples.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/zooming_control.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/dropdownPopulation.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/abrPlusFamilies.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/makeHash.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/get-node-positions.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/overlay-graph.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/sort_array_by_value.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
 
 </head>
 
-<body onload="onLoadWelcome(onLoad)">
-<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dependencies/nouislider/nouislider.js') }}"></script>
+<body onload=onLoadWelcome(onLoad)>
 
 <div id="loading">
-    <img id="loading-image" src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..." ondblclick="alternative_loading()"/>
-    <!-- Cortesy of Mickael Silva -->
-    <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
+  <img id="loading-image" src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..." ondblclick="alternativeLoading()"/>
+  <!-- Courtesy of Mickael Silva -->
+  <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
 </div>
 
 <!-- welcome modal -->
 <div class="modal fade" id="welcomeModal" data-backdrop="static"
      role="dialog" tabindex="-1">
-    <div class="modal-dialog" id="welcomeDialog" style="width: 80%">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <img src="{{ url_for('static', filename='images/logo.png') }}"
-                     alt="pATLAS" style="width:30%;height:auto; display:block;
+  <div class="modal-dialog" id="welcomeDialog" style="width: 80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <img src="{{ url_for('static', filename='images/logo.png') }}"
+             alt="pATLAS" style="width:30%;height:auto; display:block;
                      margin:auto;"/>
-            </div>
-            <div class="modal-body">
-                <h1>Welcome to Plasmid Atlas</h1>
-                <p class="mainText">Plasmid Atlas is a web interface that allows
-                    users to
-                    browse plasmid sequences available in the NCBI refseq
-                    database. Here you can obtain metadata related with the
-                    available
-                    plasmid sequences, such as species in which
-                    they were described, antibiotic resistance information
-                    and much more.</p>
+      </div>
+      <div class="modal-body">
+        <h1>Welcome to Plasmid Atlas</h1>
+        <p class="mainText">Plasmid Atlas is a web interface that allows
+          users to
+          browse plasmid sequences available in the NCBI refseq
+          database. Here you can obtain metadata related with the
+          available
+          plasmid sequences, such as species in which
+          they were described, antibiotic resistance information
+          and much more.</p>
 
-                <p class="mainText"><b>Disclaimer:</b> We are always happy
-                    to improve user experience, so if you
-                    find any issues please report them to us. You can report
-                    them in
-                    <a href="https://github.com/tiagofilipe12/pATLAS/issues"
-                       target="_blank" style="color:#6292A9;">pATLAS github</a>
-                    or
-                    <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
-                        <img src="{{ url_for('static', filename='images/Lobby.png') }}"
-                             alt="gitter" style="width: auto; height: auto"/>
-                    </a>.
-                </p>
-                <p class="mainText"><b>Note:</b> pATLAS was tested for Google
-                    Chrome and Firefox, however
-                    we recommend using Google Chrome
-                    <img src="{{ url_for('static', filename='images/chrome_logo.png') }}"
-                        style="width: 30px; height: 30px"/> for a better experience.
-                    If you use other browser and find an issue please
-                    report it to us.
-                </p>
-            </div>
-            <div>
-                <a title="Web Analytics" href="http://statcounter.com/"
-                   target="_blank"><img
-                        src="//c.statcounter.com/11567956/0/ab4c856f/1/"
-                        alt="Web Analytics" ></a>
-            </div>
-            <div class="modal-footer">
-                <div id="counternclose"
-                     style="position: absolute; left:3%; bottom: 3%;">
-                <div id="counter" style="float: left">Closing in: 30s</div>
-                <button type="button" class="close" id="counterClose"
-                        style="float: right; margin-left: 4px; opacity: 1;">&times;
-                </button>
-                </div>
-                <button type="close" class="btn btn-default"
-                        data-dismiss="modal" id="welcomeDismiss">Dismiss
-                </button>
-            </div>
+        <p class="mainText"><b>Disclaimer:</b> We are always happy
+          to improve user experience, so if you
+          find any issues please report them to us. You can report
+          them in
+          <a href="https://github.com/tiagofilipe12/pATLAS/issues"
+             target="_blank" style="color:#6292A9;">pATLAS github</a>
+          or
+          <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
+            <img src="{{ url_for('static', filename='images/Lobby.png') }}"
+                 alt="gitter" style="width: auto; height: auto"/>
+          </a>.
+        </p>
+        <p class="mainText"><b>Note:</b> pATLAS was tested for Google
+          Chrome and Firefox, however
+          we recommend using Google Chrome
+          <img src="{{ url_for('static', filename='images/chrome_logo.png') }}"
+               style="width: 30px; height: 30px"/> for a better experience.
+          If you use other browser and find an issue please
+          report it to us.
+        </p>
+      </div>
+      <div>
+        <a title="Web Analytics" href="http://statcounter.com/"
+           target="_blank"><img
+                src="//c.statcounter.com/11567956/0/ab4c856f/1/"
+                alt="Web Analytics" ></a>
+      </div>
+      <div class="modal-footer">
+        <div id="counternclose"
+             style="position: absolute; left:3%; bottom: 3%;">
+          <div id="counter" style="float: left">Closing in: 30s</div>
+          <button type="button" class="close" id="counterClose"
+                  style="float: right; margin-left: 4px; opacity: 1;">&times;
+          </button>
         </div>
+        <button type="close" class="btn btn-default"
+                data-dismiss="modal" id="welcomeDismiss">Dismiss
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- about modal -->
 <div class="modal fade" id="aboutModal" data-backdrop="static"
      role="dialog" tabindex="-1">
-    <div class="modal-dialog" id="aboutDialog" style="width: 80%">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <img src="{{ url_for('static', filename='images/logo.png') }}"
-                     alt="pATLAS" style="width:30%;height:auto; display:block;
+  <div class="modal-dialog" id="aboutDialog" style="width: 80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <img src="{{ url_for('static', filename='images/logo.png') }}"
+             alt="pATLAS" style="width:30%;height:auto; display:block;
                      margin:auto;"/>
-            </div>
-            <div class="modal-body" id="aboutModalBody">
-                <h1><b>Plasmid Atlas</b></h1>
-                <p class="mainText">
-                    pATLAS is a web-based tool enabling searching for a
-                    specific plasmid (or plasmids) of interest, visualize the
-                    available plasmid database and to identify plasmids
-                    contained in High Throughput Sequencing data.
-                </p>
+      </div>
+      <div class="modal-body" id="aboutModalBody">
+        <h1><b>Plasmid Atlas</b></h1>
+        <p class="mainText">
+          pATLAS is a web-based tool enabling searching for a
+          specific plasmid (or plasmids) of interest, visualize the
+          available plasmid database and to identify plasmids
+          contained in High Throughput Sequencing data.
+        </p>
 
-                <h3><b>Version:</b> 1.0.0</h3>
-                <p class="mainText">
-                </p>
-                <h3><b>Last database update:</b> 15 December 2017</h3>
-                <p class="mainText">
-                </p>
-                <h3><b>Dev team</b></h3>
-                <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:tfjesus"
-                       target="_blank" style="color:#6292A9;">Tiago F. Jesus</a>
-                </li>
-                <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:bgoncalves"
-                       target="_blank" style="color:#6292A9;">Bruno F. R. Gonçalves</a>
-                </li>
-                <li>
-                    <a href="https://github.com/ODiogoSilva"
-                       target="_blank" style="color:#6292A9;">
-                    Diogo N. Silva
-                    </a>
-                </li>
-                <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:ramirez"
-                       target="_blank" style="color:#6292A9;">Mário Ramirez</a>
-                </li>
-                <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:jcarrico"
-                       target="_blank" style="color:#6292A9;">João A. Carriço</a>
-                </li>
-                <h3><b>Acknowledgements</b></h3>
-                <p class="mainText">
-                <li>FCT - "Fundação para a Ciência e a Tecnologia"and
-                    BacGenTrack (TUBITAK/0004/2014)
-                    <br>[FCT/ Scientific and
-                    Technological Research Council of Turkey (Türkiye Bilimsel
-                    ve Teknolojik Araşrrma Kurumu, TÜBİTAK)]</li>
-                <br>
-                <li><a href="https://fhs.mcmaster.ca/biochem/mcarthur_andrew.html"
-                       target="_blank" style="color:#6292A9;">Andrew McArthur</a>
-                </li>
-                <li><a href="https://genomeinformatics.github.io/people/phillippy/"
-                       target="_blank" style="color:#6292A9;">Adam Phillippy</a>
-                </li>
-                <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:cmendes"
-                       target="_blank" style="color:#6292A9;">Catarina Inês Mendes</a>
-                </li>
-                <li><a href="https://www.rug.nl/staff/n.monge.gomes.do.couto/"
-                       target="_blank" style="color:#6292A9;">Natacha Couto</a>
-                </li>
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="close" class="btn btn-default"
-                        data-dismiss="modal" id="aboutDismiss">Close
-                </button>
-            </div>
-        </div>
+        <h3><b>Version:</b> 1.0.0</h3>
+        <p class="mainText">
+        </p>
+        <h3><b>Last database update:</b> 15 December 2017</h3>
+        <p class="mainText">
+        </p>
+        <h3><b>Dev team</b></h3>
+        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:tfjesus"
+               target="_blank" style="color:#6292A9;">Tiago F. Jesus</a>
+        </li>
+        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:bgoncalves"
+               target="_blank" style="color:#6292A9;">Bruno F. R. Gonçalves</a>
+        </li>
+        <li>
+          <a href="https://github.com/ODiogoSilva"
+             target="_blank" style="color:#6292A9;">
+            Diogo N. Silva
+          </a>
+        </li>
+        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:ramirez"
+               target="_blank" style="color:#6292A9;">Mário Ramirez</a>
+        </li>
+        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:jcarrico"
+               target="_blank" style="color:#6292A9;">João A. Carriço</a>
+        </li>
+        <h3><b>Acknowledgements</b></h3>
+        <p class="mainText">
+        <li>FCT - "Fundação para a Ciência e a Tecnologia"and
+          BacGenTrack (TUBITAK/0004/2014)
+          <br>[FCT/ Scientific and
+          Technological Research Council of Turkey (Türkiye Bilimsel
+          ve Teknolojik Araşrrma Kurumu, TÜBİTAK)]</li>
+        <br>
+        <li><a href="https://fhs.mcmaster.ca/biochem/mcarthur_andrew.html"
+               target="_blank" style="color:#6292A9;">Andrew McArthur</a>
+        </li>
+        <li><a href="https://genomeinformatics.github.io/people/phillippy/"
+               target="_blank" style="color:#6292A9;">Adam Phillippy</a>
+        </li>
+        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:cmendes"
+               target="_blank" style="color:#6292A9;">Catarina Inês Mendes</a>
+        </li>
+        <li><a href="https://www.rug.nl/staff/n.monge.gomes.do.couto/"
+               target="_blank" style="color:#6292A9;">Natacha Couto</a>
+        </li>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="close" class="btn btn-default"
+                data-dismiss="modal" id="aboutDismiss">Close
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 <div class="modal fade" id="videoModal" data-backdrop="static"
      role="dialog" tabindex="-1">
-    <div class="modal-dialog" id="videoDialog" style="width: 60%">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                Video tutorial
-                <!--<img src="{{ url_for('static', filename='images/logo.png') }}"-->
-                     <!--alt="pATLAS" style="width:30%;height:auto; display:block;-->
-                     <!--margin:auto;"/>-->
-            </div>
-            <div class="modal-body" id="videoModalBody">
-                <!--<h2 align="center"><b>Video tutorial</b></h2>-->
-                <iframe width="640" height="360"
-                        src="https://www.youtube.com/embed/?listType=playlist&list=PLLfKDCSD5M06VJzT5e-_YFKvWwvHUOkFI"
-                        frameborder="0" gesture="media" allow="encrypted-media"
-                        allowfullscreen id="youtubeFrame">
-                </iframe>
-                Note: Use "CC" button on YouTube player to display subtitles
-            </div>
-            <div class="modal-footer">
-                <button type="close" class="btn btn-default"
-                        data-dismiss="modal" id="videoDismiss">Close
-                </button>
-            </div>
-        </div>
+  <div class="modal-dialog" id="videoDialog" style="width: 60%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        Video tutorial
+        <!--<img src="{{ url_for('static', filename='images/logo.png') }}"-->
+        <!--alt="pATLAS" style="width:30%;height:auto; display:block;-->
+        <!--margin:auto;"/>-->
+      </div>
+      <div class="modal-body" id="videoModalBody">
+        <!--<h2 align="center"><b>Video tutorial</b></h2>-->
+        <iframe width="640" height="360"
+                src="https://www.youtube.com/embed/?listType=playlist&list=PLLfKDCSD5M06VJzT5e-_YFKvWwvHUOkFI"
+                frameborder="0" gesture="media" allow="encrypted-media"
+                allowfullscreen id="youtubeFrame">
+        </iframe>
+        Note: Use "CC" button on YouTube player to display subtitles
+      </div>
+      <div class="modal-footer">
+        <button type="close" class="btn btn-default"
+                data-dismiss="modal" id="videoDismiss">Close
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Modal for table-->
 <div id="tableModal" class="modal fade" data-backdrop="static" role="dialog"
      tabindex="-1">
-    <div class="modal-dialog" style="width: 80%">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Table for selected plasmids
-                    metadata</h4>
+  <div class="modal-dialog" style="width: 80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Table for selected plasmids
+          metadata</h4>
+      </div>
+      <div class="modal-body table-responsive" id="modalTableBody">
+        <ul class="nav nav-tabs">
+          <li class="active"><a data-toggle="tab"
+                                href="#homeTable">Table
+          </a></li>
+          <li id="heatmapButtonTab" disabled
+          ><a data-toggle="tab" href="#heatmapTab">Heatmap</a></li>
+        </ul>
+        <div class="tab-content">
+          <div id="homeTable" class="tab-pane fade in active">
+            <div id="toolbar">
+              <button class="btn btn-default" id="downloadTable"
+                      type="button" data-toogle="tooptip"
+                      title="Download selection">
+                <span class="glyphicon glyphicon-download-alt"></span>
+              </button>
             </div>
-            <div class="modal-body table-responsive" id="modalTableBody">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab"
-                                          href="#homeTable">Table
-                    </a></li>
-                    <li id="heatmapButtonTab" disabled
-                    ><a data-toggle="tab" href="#heatmapTab">Heatmap</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div id="homeTable" class="tab-pane fade in active">
-                        <div id="toolbar">
-                            <button class="btn btn-default" id="downloadTable"
-                                    type="button" data-toogle="tooptip"
-                                    title="Download selection">
-                                <span class="glyphicon glyphicon-download-alt"></span>
-                            </button>
-                        </div>
-                        <table class="table" id="metadataTable"
-                               data-striped="true"
-                               data-search="true"
-                               data-show-toggle="true"
-                               data-show-columns="true"
-                               data-query-params="queryParams"
-                               data-pagination="true"
-                               data-height="550"
-                               data-show-export="true"
-                               data-click-to-select="true"
-                               data-toolbar="#toolbar">
-                        </table>
-                    </div>
-                    <div id="heatmapTab" class="tab-pane fade">
-                        <div id="chartContainer2">
-                            <b> Warning: </b>No information available. Please
-                            check that reads
-                            json files are imported, given that this options
-                            is used for comparison between samples.
-                        </div>
-                    </div>
-                </div>
+            <table class="table" id="metadataTable"
+                   data-striped="true"
+                   data-search="true"
+                   data-show-toggle="true"
+                   data-show-columns="true"
+                   data-query-params="queryParams"
+                   data-pagination="true"
+                   data-height="550"
+                   data-show-export="true"
+                   data-click-to-select="true"
+                   data-toolbar="#toolbar">
+            </table>
+          </div>
+          <div id="heatmapTab" class="tab-pane fade">
+            <div id="chartContainer2">
+              <b> Warning: </b>No information available. Please
+              check that reads
+              json files are imported, given that this options
+              is used for comparison between samples.
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-circle"
-                        data-toggle="popover" data-placement="right"
-                        data-trigger="focus"
-                        data-original-title="Plot controls"
-                        data-content="<li>Double left mouse click in cell -
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-circle"
+                data-toggle="popover" data-placement="right"
+                data-trigger="focus"
+                data-original-title="Plot controls"
+                data-content="<li>Double left mouse click in cell -
                         recenters graph on that plasmid</li>
                         <li>Single left mouse click in cell - selects row</li>"
-                        data-html="true"
-                        aria-describedby="tooltip" style="position: absolute;
+                data-html="true"
+                aria-describedby="tooltip" style="position: absolute;
                         left:2%"
-                        id="questionTable">
-                    <span class="glyphicon glyphicon-question-sign"></span>
-                </button>
-                <button type="submit" class="btn btn-default"
-                        data-dismiss="modal" id="tableSubmit"
-                        title="Highlight selected accessions on graph">Submit
-                </button>
-                <button class="btn btn-danger" id="cancelTable">Close
-                </button>
-            </div>
-        </div>
+                id="questionTable">
+          <span class="glyphicon glyphicon-question-sign"></span>
+        </button>
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="tableSubmit"
+                title="Highlight selected accessions on graph">Submit
+        </button>
+        <button class="btn btn-danger" id="cancelTable">Close
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- Modal for file loading-->
 <div id="fileModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
 
-        <!-- Modal content for file-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Select input file (mapping results)</h4>
-            </div>
-            <div class="modal-body" id="modal-body-file">
-                <div class="row uploadFile" id="uploadFile">
-                    <div class="input-group col-md-12">
-                        <label class="input-group-btn">
+    <!-- Modal content for file-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Select input file (mapping results)</h4>
+      </div>
+      <div class="modal-body" id="modal-body-file">
+        <div class="row uploadFile" id="uploadFile">
+          <div class="input-group col-md-12">
+            <label class="input-group-btn">
                     <span class="btn btn-info btn-file" id="span_1stFile">
                       Upload file&hellip;<input id="infile" type="file"
                                                 name="file" style="display:
                                                 none;" multiple>
                     </span>
-                        </label>
-                        <input type="text" class="form-control" id="file_text" readonly autocomplete="off">
-                    </div>
-                </div>
-                <!--checkbox-->
-                <div class="row uploadFileCheck" id="uploadFileCheck">
-                    <form>
-                        <div>
-                            <label class="label_file">
-                                <input type="checkbox" class="check_file"
-                                       autocomplete="off"/> Check for pairwise comparison mode
-                            </label>
-                        </div>
-                    </form>
-                    <div>
-                        <div class="form-group" id="cutoffFileCheck">Provide a
-                            value between 0 and 1. Tip: default is 0.6.
-                            <input id="cutoffValue" type="text" class="form-control"
-                                   placeholder="0.6"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-info">
-                    <div class="panel-heading">How to run</div>
-                    <div class="panel-body">
-                        <li>
-                            <a href="https://github.com/tiagofilipe12/PlasmidCoverage#how-to-install"
-                               target="_blank">Download and install
-                                instructions</a>
-                        </li>
-                        <li>
-                            Execute command:<br>
-                            <span style="color: grey">
+            </label>
+            <input type="text" class="form-control" id="file_text" readonly autocomplete="off">
+          </div>
+        </div>
+        <!--checkbox-->
+        <div class="row uploadFileCheck" id="uploadFileCheck">
+          <form>
+            <div>
+              <label class="label_file">
+                <input type="checkbox" class="check_file"
+                       autocomplete="off"/> Check for pairwise comparison mode
+              </label>
+            </div>
+          </form>
+          <div>
+            <div class="form-group" id="cutoffFileCheck">Provide a
+              value between 0 and 1. Tip: default is 0.6.
+              <input id="cutoffValue" type="text" class="form-control"
+                     placeholder="0.6"/>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-info">
+          <div class="panel-heading">How to run</div>
+          <div class="panel-body">
+            <li>
+              <a href="https://github.com/tiagofilipe12/PlasmidCoverage#how-to-install"
+                 target="_blank">Download and install
+                instructions</a>
+            </li>
+            <li>
+              Execute command:<br>
+              <span style="color: grey">
                                 PlasmidUNCover.py -idx
                                 &ltpath/to/indexes_folder&gt
                                 -r &ltpath/to/reads_folder&gt
                                 -t 1 -o &ltyour_output_name&gt
                                 -c 0.6
                             </span>
-                            <br>
-                            Note: You may check further options with the -h
-                            option.
-                        </li>
-                        <li>
-                            Import desired *.json results here.
-                        </li>
-                    </div>
-                </div>
-                <div class="sampleImportWrapperClass">
-                    <button type="submit" class="btn btn-sm sampleImportClass"
-                            data-dismiss="modal" id="sampleMapping"
-                            title="This will load an example dataset"
-                    >Load sample dataset...
-                    </button>
-                    <button type="button" class="btn btn-default btn-circle"
-                            data-toggle="popover"
-                            data-trigger="focus"
-                            data-original-title="Reference"
-                            data-content="<b>Citation:</b> Tacão, M., Tavares, R. dos S.,
+              <br>
+              Note: You may check further options with the -h
+              option.
+            </li>
+            <li>
+              Import desired *.json results here.
+            </li>
+          </div>
+        </div>
+        <div class="sampleImportWrapperClass">
+          <button type="submit" class="btn btn-sm sampleImportClass"
+                  data-dismiss="modal" id="sampleMapping"
+                  title="This will load an example dataset"
+          >Load sample dataset...
+          </button>
+          <button type="button" class="btn btn-default btn-circle"
+                  data-toggle="popover"
+                  data-trigger="focus"
+                  data-original-title="Reference"
+                  data-content="<b>Citation:</b> Tacão, M., Tavares, R. dos S.,
                             Teixeira, P., Roxo, I., Ramalheira, E., Ferreira,
                             S., & Henriques, I. (2017). Mcr-1 and blakpc-3in
                             <i>Escherichia coli</i> sequence type 744 after meropenem
@@ -425,22 +374,22 @@
                             Diseases, 23(8), 1419–1421.
                             <br>
                             <b>SRA accession:</b> SRR5201504"
-                            data-html="true"
-                            aria-describedby="tooltip"
-                            id="infoMap">
-                        <span class="glyphicon glyphicon-info-sign"></span>
-                    </button>
-                </div>
-            </div>
+                  data-html="true"
+                  aria-describedby="tooltip"
+                  id="infoMap">
+            <span class="glyphicon glyphicon-info-sign"></span>
+          </button>
+        </div>
+      </div>
 
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-default" data-dismiss="modal" id="fileSubmit">Ok</button>
-                <button class="btn btn-danger" id="cancel_infile">Clear selection</button>
-                <button type="button" class="btn btn-default btn-circle"
-                        data-toggle="popover"
-                        data-trigger="focus"
-                        data-original-title="Mappping import help"
-                        data-content="Here you have two modes:
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default" data-dismiss="modal" id="fileSubmit">Ok</button>
+        <button class="btn btn-danger" id="cancel_infile">Clear selection</button>
+        <button type="button" class="btn btn-default btn-circle"
+                data-toggle="popover"
+                data-trigger="focus"
+                data-original-title="Mappping import help"
+                data-content="Here you have two modes:
                         <li>Standard mode - in which you may import a file with
                         the coverage for a read file or files</li>
                         <li>Pairwise comparison mode - in which you import a file with
@@ -451,101 +400,101 @@
                         json that can be imported. This json has the difference
                         between the two libraries compared.
                         </li>"
-                        data-html="true"
-                        aria-describedby="tooltip" style="position: absolute;
+                data-html="true"
+                aria-describedby="tooltip" style="position: absolute;
                         left:2%;"
-                        id="questionMap">
-                    <span class="glyphicon glyphicon-question-sign"></span>
-                </button>
-            </div>
-        </div>
-
+                id="questionMap">
+          <span class="glyphicon glyphicon-question-sign"></span>
+        </button>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <!-- Modal for mash file loading-->
 <div id="mashModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
 
-        <!-- Modal content for file-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Select input file (mash results)</h4>
-            </div>
-            <div class="modal-body" id="modal-body-mash">
-                <div class="row uploadFile" id="uploadFileMash">
-                    <div class="input-group col-md-12">
-                        <label class="input-group-btn">
+    <!-- Modal content for file-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Select input file (mash results)</h4>
+      </div>
+      <div class="modal-body" id="modal-body-mash">
+        <div class="row uploadFile" id="uploadFileMash">
+          <div class="input-group col-md-12">
+            <label class="input-group-btn">
                     <span class="btn btn-info btn-file" id="span_1stFileMash">
                       Upload file&hellip;<input id="mashInfile"
                                                 type="file"
                                                 name="file"
                                                 style="display: none;" multiple>
                     </span>
-                        </label>
-                        <input type="text" class="form-control" id="file_text_mash"
-                               readonly
-                               autocomplete="off">
-                    </div>
-                </div>
-                <!--checkbox-->
-                <div class="row uploadFileCheck" id="uploadFileCheckMash">
-                    <!--<form>-->
-                        <!--<div>-->
-                            <!--<label class="label_file">-->
-                                <!--<input type="checkbox" class="check_file_mash"-->
-                                       <!--autocomplete="off"/> Check for pairwise comparison mode-->
-                            <!--</label>-->
-                        <!--</div>-->
-                    <!--</form>-->
-                    <div>
-                        <div class="form-group"
-                             id="cutoffFileCheckMash">Provide a
-                            value for the minimum identity to display. Tip: must be between 0
-                            and 1.
-                            <input id="cutoffValueMash" type="text" class="form-control"
-                                   placeholder="0.9"/>
-                        </div>
-                        <div class="form-group" id="copyNumberCheck">Provide an integer
-                            value for minimum copy number to represent. Tip: must be >= 2.
-                            <input id="copyNumberValue" type="text" class="form-control"
-                                   placeholder="2"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-info">
-                    <div class="panel-heading">How to run</div>
-                    <div class="panel-body">
-                        <li>
-                            <a href="https://github.com/tiagofilipe12/mash_wrapper/tree/master#installating"
-                               target="_blank">Download and install
-                                instructions</a>
-                        </li>
-                        <li>
-                            Execute command:<br>
-                            <span style="color: grey">
+            </label>
+            <input type="text" class="form-control" id="file_text_mash"
+                   readonly
+                   autocomplete="off">
+          </div>
+        </div>
+        <!--checkbox-->
+        <div class="row uploadFileCheck" id="uploadFileCheckMash">
+          <!--<form>-->
+          <!--<div>-->
+          <!--<label class="label_file">-->
+          <!--<input type="checkbox" class="check_file_mash"-->
+          <!--autocomplete="off"/> Check for pairwise comparison mode-->
+          <!--</label>-->
+          <!--</div>-->
+          <!--</form>-->
+          <div>
+            <div class="form-group"
+                 id="cutoffFileCheckMash">Provide a
+              value for the minimum identity to display. Tip: must be between 0
+              and 1.
+              <input id="cutoffValueMash" type="text" class="form-control"
+                     placeholder="0.9"/>
+            </div>
+            <div class="form-group" id="copyNumberCheck">Provide an integer
+              value for minimum copy number to represent. Tip: must be >= 2.
+              <input id="copyNumberValue" type="text" class="form-control"
+                     placeholder="2"/>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-info">
+          <div class="panel-heading">How to run</div>
+          <div class="panel-body">
+            <li>
+              <a href="https://github.com/tiagofilipe12/mash_wrapper/tree/master#installating"
+                 target="_blank">Download and install
+                instructions</a>
+            </li>
+            <li>
+              Execute command:<br>
+              <span style="color: grey">
                             mash_wrapper.py -rs
                             &ltassembly_reference.msh&gt -r
                             &ltyour_read(s)&gt -j -ms -o &ltyour_output_name&gt
                             </span>
-                        </li>
-                        <li>
-                            Import desired *.json results here.
-                        </li>
-                    </div>
-                </div>
-                <div class="sampleImportWrapperClass">
-                    <button type="submit" class="btn btn-sm sampleImportClass"
-                            data-dismiss="modal" id="sampleMash"
-                            title="This will load an example dataset"
-                    >Load sample dataset...
-                    </button>
-                    <button type="button" class="btn btn-default btn-circle"
-                            data-toggle="popover"
-                            data-trigger="focus"
-                            data-original-title="Reference"
-                            data-content="<b>Citation:</b> Tacão, M., Tavares, R. dos S.,
+            </li>
+            <li>
+              Import desired *.json results here.
+            </li>
+          </div>
+        </div>
+        <div class="sampleImportWrapperClass">
+          <button type="submit" class="btn btn-sm sampleImportClass"
+                  data-dismiss="modal" id="sampleMash"
+                  title="This will load an example dataset"
+          >Load sample dataset...
+          </button>
+          <button type="button" class="btn btn-default btn-circle"
+                  data-toggle="popover"
+                  data-trigger="focus"
+                  data-original-title="Reference"
+                  data-content="<b>Citation:</b> Tacão, M., Tavares, R. dos S.,
                             Teixeira, P., Roxo, I., Ramalheira, E., Ferreira,
                             S., & Henriques, I. (2017). Mcr-1 and blakpc-3in
                             <i>Escherichia coli</i> sequence type 744 after meropenem
@@ -553,82 +502,82 @@
                             Diseases, 23(8), 1419–1421.
                             <br>
                             <b>SRA accession:</b> SRR5201504"
-                            data-html="true"
-                            aria-describedby="tooltip"
-                            id="infoMash">
-                        <span class="glyphicon glyphicon-info-sign"></span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-
-                <button type="submit" class="btn btn-default" data-dismiss="modal"
-                        id="fileSubmit_mash">Ok</button>
-                <button class="btn btn-danger" id="cancel_infile_mash">Clear
-                    selection</button>
-            </div>
+                  data-html="true"
+                  aria-describedby="tooltip"
+                  id="infoMash">
+            <span class="glyphicon glyphicon-info-sign"></span>
+          </button>
         </div>
+      </div>
 
+      <div class="modal-footer">
+
+        <button type="submit" class="btn btn-default" data-dismiss="modal"
+                id="fileSubmit_mash">Ok</button>
+        <button class="btn btn-danger" id="cancel_infile_mash">Clear
+          selection</button>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <!-- Modal for file loading assembly-->
 <div id="assemblyModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
 
-        <!-- Modal content for lenght-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Select input file (sequence import)</h4>
-            </div>
-            <div class="modal-body" id="modal-body-fileAssembly">
-                <div class="row uploadFile" id="uploadFileAssembly">
-                    <div class="input-group col-md-12">
-                        <label class="input-group-btn">
+    <!-- Modal content for lenght-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Select input file (sequence import)</h4>
+      </div>
+      <div class="modal-body" id="modal-body-fileAssembly">
+        <div class="row uploadFile" id="uploadFileAssembly">
+          <div class="input-group col-md-12">
+            <label class="input-group-btn">
                     <span class="btn btn-info btn-file"
                           id="span_1stFileAssembly">
                       Upload file&hellip;<input id="assemblyfile" type="file"
                                                 name="file" style="display: none;"
                                                 multiple>
                     </span>
-                        </label>
-                        <input type="text" class="form-control" id="assembly_text" readonly autocomplete="off">
-                    </div>
-                </div>
-                <div class="panel panel-info">
-                    <div class="panel-heading">How to run</div>
-                    <div class="panel-body">
-                        <li>
-                            <a href="https://github.com/tiagofilipe12/mash_wrapper/tree/master#installating"
-                               target="_blank">Download and install
-                                instructions</a>
-                        </li>
-                        <li>
-                            Execute command:<br>
-                            <span style="color: grey">
+            </label>
+            <input type="text" class="form-control" id="assembly_text" readonly autocomplete="off">
+          </div>
+        </div>
+        <div class="panel panel-info">
+          <div class="panel-heading">How to run</div>
+          <div class="panel-body">
+            <li>
+              <a href="https://github.com/tiagofilipe12/mash_wrapper/tree/master#installating"
+                 target="_blank">Download and install
+                instructions</a>
+            </li>
+            <li>
+              Execute command:<br>
+              <span style="color: grey">
                             mash_wrapper.py -rs
                             &ltassembly_reference.msh&gt -a
                             &ltyour_fasta&gt -j -o &ltyour_output_folder&gt
                             </span>
-                        </li>
-                        <li>
-                            Import desired *.json results here.
-                        </li>
-                    </div>
-                </div>
-                <div class="sampleImportWrapperClass">
-                    <button type="submit" class="btn btn-sm sampleImportClass"
-                            data-dismiss="modal" id="sampleAssembly"
-                            title="This will load an example dataset"
-                    >Load sample dataset...
-                    </button>
-                    <button type="button" class="btn btn-default btn-circle"
-                            data-toggle="popover"
-                            data-trigger="focus"
-                            data-original-title="Reference"
-                            data-content="<b>Citation:</b> Stoesser, N.,
+            </li>
+            <li>
+              Import desired *.json results here.
+            </li>
+          </div>
+        </div>
+        <div class="sampleImportWrapperClass">
+          <button type="submit" class="btn btn-sm sampleImportClass"
+                  data-dismiss="modal" id="sampleAssembly"
+                  title="This will load an example dataset"
+          >Load sample dataset...
+          </button>
+          <button type="button" class="btn btn-default btn-circle"
+                  data-toggle="popover"
+                  data-trigger="focus"
+                  data-original-title="Reference"
+                  data-content="<b>Citation:</b> Stoesser, N.,
                             Sheppard, A. E., Peirano, G., Anson, L. W.,
                             Pankhurst, L., Sebra, R., Phan, H. T. T., Kasarskis,
                             A., Mathers, A. J., Peto, T. E. A., Bradford, P.,
@@ -638,859 +587,930 @@
                             Scientific Reports, 7(1), 1–11.
                             <br>
                             <b>Accession numbers:</b> LT599828.1; LT599827.1"
-                            data-html="true"
-                            aria-describedby="tooltip"
-                            id="infoAssembly">
-                        <span class="glyphicon glyphicon-info-sign"></span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-
-                <button type="submit" class="btn btn-default" data-dismiss="modal" id="assemblySubmit">Ok</button>
-                <button class="btn btn-danger" id="cancel_assembly">Clear selection</button>
-            </div>
+                  data-html="true"
+                  aria-describedby="tooltip"
+                  id="infoAssembly">
+            <span class="glyphicon glyphicon-info-sign"></span>
+          </button>
         </div>
+      </div>
 
+      <div class="modal-footer">
+
+        <button type="submit" class="btn btn-default" data-dismiss="modal" id="assemblySubmit">Ok</button>
+        <button class="btn btn-danger" id="cancel_assembly">Clear selection</button>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <!-- Modal for distances-->
 <div id="distancesModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
 
-        <!-- Modal content for lenght-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Display distances with a gradient of color?</h4>
-            </div>
-            <div class="modal-body" id="modal-body-scheme">
-                <div class="dropdown" id="color_scheme">
-                    <div class="header_taxa">Select a color scheme</div>
-                    <select class="selectpicker" data-dropup-auto="false"
-                            title="Green color scheme" id="colorForm"
-                            width="auto" data-size="7"
-                            data-header="Select a color">
-                        <option></option>
-                        <option data-content="<span class='label label-success'>Green color scheme</span">Green color scheme</option>
-                        <option data-divider="true"></option>
-                        <option data-content="<span class='label label-primary'>Blue color scheme</span">Blue color scheme</option>
-                        <option data-divider="true"></option>
-                        <option data-content="<span class='label label-danger'>Red color scheme</span">Red color scheme</option>
-                        <option></option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesSubmit">Yes</button>
-                <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesCancel">No</button>
-            </div>
+    <!-- Modal content for lenght-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Display distances with a gradient of color?</h4>
+      </div>
+      <div class="modal-body" id="modal-body-scheme">
+        <div class="dropdown" id="color_scheme">
+          <div class="header_taxa">Select a color scheme</div>
+          <select class="selectpicker" data-dropup-auto="false"
+                  title="Green color scheme" id="colorForm"
+                  width="auto" data-size="7"
+                  data-header="Select a color">
+            <option></option>
+            <option data-content="<span class='label label-success'>Green color scheme</span">Green color scheme</option>
+            <option data-divider="true"></option>
+            <option data-content="<span class='label label-primary'>Blue color scheme</span">Blue color scheme</option>
+            <option data-divider="true"></option>
+            <option data-content="<span class='label label-danger'>Red color scheme</span">Red color scheme</option>
+            <option></option>
+          </select>
         </div>
-
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesSubmit">Yes</button>
+        <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesCancel">No</button>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <!-- Modal for length-->
 <div id="lengthModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
 
-        <!-- Modal content for lenght-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Filter nodes by sequence length</h4>
-            </div>
-            <div class="modal-body" id="modal-body-length">
-                <div class="row">
-                    <div class='col-md-6' id="min-modal">
-                        <h6 class="header_taxa">Set minimum:</h6>
-                        <input id="slider_input_min" min="1" type="number" step="1000">
-                    </div>
-                    <div class='col-md-6' id="max-modal">
-                        <h6 class="header_taxa">Set maximum:</h6>
-                        <input id="slider_input_max" min="1" type="number" step="1000">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class='col-md-12'>
-                        <div class="sliders noUi-target" id="slider"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-default" data-dismiss="modal" id="lengthSubmit">Ok</button>
-            </div>
+    <!-- Modal content for lenght-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Filter nodes by sequence length</h4>
+      </div>
+      <div class="modal-body" id="modal-body-length">
+        <div class="row">
+          <div class='col-md-6' id="min-modal">
+            <h6 class="header_taxa">Set minimum:</h6>
+            <input id="slider_input_min" min="1" type="number" step="1000">
+          </div>
+          <div class='col-md-6' id="max-modal">
+            <h6 class="header_taxa">Set maximum:</h6>
+            <input id="slider_input_max" min="1" type="number" step="1000">
+          </div>
         </div>
-
+        <div class="row">
+          <div class='col-md-12'>
+            <div class="sliders noUi-target" id="slider"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default" data-dismiss="modal" id="lengthSubmit">Ok</button>
+      </div>
     </div>
+
+  </div>
+</div>
+
+
+<!-- Modal for length-->
+<div id="ratioModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+    <!-- Modal content for ratio-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Filter links by size ratio between
+          pairs of plasmids
+        </h4>
+      </div>
+      <div class="modal-body" id="modal-body-ratio">
+        <div class="col-sm-4">
+          <div class="header_taxa">Max difference (%)</div>
+          <div class="form-group" data-toggle="tooltip"
+               title="Provide a value between 100 and 0">
+            <input id="formRatio" type="text" class="form-control"
+                   placeholder="Default value = 30" value="30"/>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="header_taxa">Pick a color</div>
+          <div id="cp4"
+               class="input-group colorpicker-component"
+               title="Using color option">
+            <input type="text" class="form-control"
+                   id="cp4Form"/>
+            <span class="input-group-addon"><i></i></span>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="header_taxa">Remove links?</div>
+          <div>
+            <input data-toggle="toggle" type="checkbox"
+                   data-onstyle="success" data-offstyle="default"
+                   data-on="Remove links on"
+                   data-off="Remove links off"
+                   data-width="100%"
+                   id="toggleRatio">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-circle"
+                data-toggle="popover"
+                data-trigger="focus"
+                data-original-title="Size ratio help"
+                data-content="Here you can color or remove links based
+                        on the ratio between the size of two plasmids.
+                        <li>Max difference (%) - This cutoff sets the maximum
+                        percentage difference between two plasmids. By default the
+                        smaller plasmid need to have at least 70% of the size of the
+                        larger plasmid. All other links that does not respect this
+                        criteria will be highlighted or removed.</li>
+                        <li>Pick a color - allows the user to pick a color to
+                        highlight desired links. This is the default behavior
+                        of submit button, however if remove links is 'on', this
+                        will be ignored since links will be removed.</li>
+                        <li>Remove links? - This button allows to remove links
+                        or not. By default it is set to 'off'.</li>"
+                data-html="true"
+                aria-describedby="tooltip" style="position: absolute;
+                        left:2%;"
+                id="questionRatio">
+          <span class="glyphicon glyphicon-question-sign"></span>
+        </button>
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="ratioSubmit">Submit</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Modal for taxa-->
 <div id="taxaModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
 
-        <!-- Modal content for lenght-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Filter nodes by species taxa</h4>
-            </div>
-            <div class="modal-body" id="modal-body-taxa">
-                <div class="row" id="modal-body-taxa-1">
+    <!-- Modal content for lenght-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Filter nodes by species taxa</h4>
+      </div>
+      <div class="modal-body" id="modal-body-taxa">
+        <div class="row" id="modal-body-taxa-1">
 
-                    <!--dropdown for order-->
-                    <div class="dropdown col-sm-3" id="order_dropdown">
-                        <div class="header_taxa">Order filter</div>
+          <!--dropdown for order-->
+          <div class="dropdown col-sm-3" id="order_dropdown">
+            <div class="header_taxa">Order filter</div>
 
-                        <!--</ul> -->
-                        <select class="selectpicker" data-dropup-auto="false"
-                                multiple data-width="80%"
-                                data-selected-text-format="count"
-                                data-live-search="true"
-                                title="No items selected" id="orderList"
-                                data-size="15">
-                            <!--populated by visualization_function.js-->
-                            <div id="loadMore">Load more</div>
-                        </select>
-                    </div>
-                    <!--dropdown for family-->
-                    <div class="dropdown col-sm-3" id="family_dropdown">
-                        <div class="header_taxa">Family filter</div>
+            <!--</ul> -->
+            <select class="selectpicker" data-dropup-auto="false"
+                    multiple data-width="80%"
+                    data-selected-text-format="count"
+                    data-live-search="true"
+                    title="No items selected" id="orderList"
+                    data-size="15">
+              <!--populated by visualization_function.js-->
+              <div id="loadMore">Load more</div>
+            </select>
+          </div>
+          <!--dropdown for family-->
+          <div class="dropdown col-sm-3" id="family_dropdown">
+            <div class="header_taxa">Family filter</div>
 
-                        <!--</ul> -->
-                        <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
-                                data-selected-text-format="count" data-live-search="true"
-                                title="No items selected" id="familyList" data-size="15">
-                            <!--populated by visualization_function.js-->
+            <!--</ul> -->
+            <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
+                    data-selected-text-format="count" data-live-search="true"
+                    title="No items selected" id="familyList" data-size="15">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
+          <!--dropdown for genus-->
+          <div class="dropdown col-sm-3" id="genus_dropdown">
+            <div class="header_taxa">Genus filter</div>
 
-                        </select>
-                    </div>
-                    <!--dropdown for genus-->
-                    <div class="dropdown col-sm-3" id="genus_dropdown">
-                        <div class="header_taxa">Genus filter</div>
+            <select class="selectpicker" data-dropup-auto="false"
+                    multiple data-width="80%"
+                    data-selected-text-format="count" data-live-search="true"
+                    title="No items selected" id="genusList"
+                    data-size="15">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
+          <!--dropdown for species-->
 
-                        <select class="selectpicker" data-dropup-auto="false"
-                                multiple data-width="80%"
-                                data-selected-text-format="count" data-live-search="true"
-                                title="No items selected" id="genusList"
-                                data-size="15">
-                            <!--populated by visualization_function.js-->
+          <div class="dropdown col-sm-3 " id="species_dropdown">
+            <div class="header_taxa">Species filter</div>
 
-                        </select>
-                    </div>
-                    <!--dropdown for species-->
-
-                    <div class="dropdown col-sm-3 " id="species_dropdown">
-                        <div class="header_taxa">Species filter</div>
-
-                        <!--example select dropdown-->
-                        <select class="selectpicker" data-dropup-auto="false"
-                                multiple data-width="80%"
-                                data-selected-text-format="count" data-live-search="true"
-                                title="No items selected" id="speciesList"
-                                data-size="15" data-hide-disabled="true">
-                            <!--populated by visualization_function.js-->
-
-                        </select>
-                    </div>
-                </div>
-                <div class="row" id="modal-body-taxa-2">
-                    <div class='col-md-12'>
-                        <div class="panel-group" id="displayCurrent">
-                            <div class="panel panel-info" >
-                                <div class="panel-heading">Current filters</div>
-                                <div class="panel-body" id="displayCurrentBox">
-                                    <!--Populated by visualization_functions.js-->
-                                    <p id="p_Order">Order:</p>
-                                    <p id="p_Family">Family:</p>
-                                    <p id="p_Genus">Genus:</p>
-                                    <p id="p_Species">Species:</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-default"
-                        data-dismiss="modal" id="taxaModalSubmit">Submit</button>
-                <button type="submit" class="btn btn-danger"
-                        id="taxaModalClear">Clear selection</button>
-            </div>
+            <!--example select dropdown-->
+            <select class="selectpicker" data-dropup-auto="false"
+                    multiple data-width="80%"
+                    data-selected-text-format="count" data-live-search="true"
+                    title="No items selected" id="speciesList"
+                    data-size="15" data-hide-disabled="true">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
         </div>
-
+        <div class="row" id="modal-body-taxa-2">
+          <div class='col-md-12'>
+            <div class="panel-group" id="displayCurrent">
+              <div class="panel panel-info" >
+                <div class="panel-heading">Current filters</div>
+                <div class="panel-body" id="displayCurrentBox">
+                  <!--Populated by visualization_functions.js-->
+                  <p id="p_Order">Order:</p>
+                  <p id="p_Family">Family:</p>
+                  <p id="p_Genus">Genus:</p>
+                  <p id="p_Species">Species:</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="taxaModalSubmit">Submit</button>
+        <button type="submit" class="btn btn-danger"
+                id="taxaModalClear">Clear selection</button>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <!--Alert message when a file is too big to download-->
 <div class="alert alert-warning alert-dismissable fade in" id="alertNCBI"
      style="display: none">
-    <button type="button" class="close" id="alertCloseNCBI"
-            aria-hidden="true" data-hide="true">&times;</button>
-    <strong>Warning!</strong> File is too big, download will be split
-    into batches 100 sequences. Note that this behavior will open several
-    windows
+  <button type="button" class="close" id="alertCloseNCBI"
+          aria-hidden="true" data-hide="true">&times;</button>
+  <strong>Warning!</strong> File is too big, download will be split
+  into batches 100 sequences. Note that this behavior will open several
+  windows
 </div>
 
 <div class="alert alert-info alert-dismissable fade in" id="alertAssembly"
      style="display: none">
-    <button type="button" class="close" id="alertCloseAssembly"
-            aria-hidden="true" data-hide="true">&times;</button>
-    Use play button to let red nodes/circles converge with their related
-    plasmids (orange nodes/circles). They will converge with the orange nodes.
+  <button type="button" class="close" id="alertCloseAssembly"
+          aria-hidden="true" data-hide="true">&times;</button>
+  Use play button to let red nodes/circles converge with their related
+  plasmids (orange nodes/circles). They will converge with the orange nodes.
 </div>
 
 <!--Alert message to check that some selection is made-->
 <div class="alert alert-danger alert-dismissable fade in" id="alertId" style="display: none">
-    <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
-    <strong>Warning!</strong> No filters were selected. No changes will be made!
+  <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
+  <strong>Warning!</strong> No filters were selected. No changes will be made!
 </div>
 
 <!--Alert message to check that some selection is made-->
 <div class="alert alert-warning alert-dismissable fade in" id="alertId_multi" style="display: none">
-    <button type="button" class="close" id="alertClose_multi" aria-hidden="true" data-hide="true">&times;</button>
-    <strong>Attention!</strong> Multiple levels of taxa were selected. Output will highlight all selected taxa in  <font color="#f71735">red!</font>
+  <button type="button" class="close" id="alertClose_multi" aria-hidden="true" data-hide="true">&times;</button>
+  <strong>Attention!</strong> Multiple levels of taxa were selected. Output will highlight all selected taxa in  <font color="#f71735">red!</font>
 </div>
 
 <!--Alert message to check that some selection is made-->
 <div class="alert alert-warning alert-dismissable fade in" id="alertId_search"
      style="display: none">
-    <button type="button" class="close" id="alertClose_search"
-            aria-hidden="true" data-hide="true">&times;</button>
-    <strong>Warning!</strong> Are you sure this search is valid? Make sure
-    the toggle on the left is properly set.
+  <button type="button" class="close" id="alertClose_search"
+          aria-hidden="true" data-hide="true">&times;</button>
+  <strong>Warning!</strong> Are you sure this search is valid? Make sure
+  the toggle on the left is properly set.
 </div>
 
 <!--Alert message to check that some selection is made-->
 <div class="alert alert-danger alert-dismissable fade in" id="alertId_node" style="display: none">
-    <button type="button" class="close" id="alertClose_node" aria-hidden="true" data-hide="true">&times;</button>
-    <strong>Warning!</strong> To enable filter dropdown options, disable "Node mode on" on the leftside switcher!
+  <button type="button" class="close" id="alertClose_node" aria-hidden="true" data-hide="true">&times;</button>
+  <strong>Warning!</strong> To enable filter dropdown options, disable "Node mode on" on the leftside switcher!
 </div>
 
 <!--Alert message to check that some selection is made-->
 <div class="alert alert-danger alert-dismissable fade in" id="alertId_db"
      style="display: none">
-    <!--To be filled upon error handling -->
-    <button type="button" class="close" id="alertClose_db" aria-hidden="true"
-            data-hide="true">&times;</button>
+  <!--To be filled upon error handling -->
+  <button type="button" class="close" id="alertClose_db" aria-hidden="true"
+          data-hide="true">&times;</button>
 </div>
 
 <div id="wrapper" class="toggled">
-    <!-- Sidebar -->
-    <div id="sidebar-wrapper">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="pATLAS" style="width:100%;height:auto;"/>
-        <ul class="sidebar-nav" id="sidebar-menus">
-            <li class="sidebar-brand">
-                <!--unused space filled with img-->
-            </li>
-            <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
-                <a href="#">Browse</a>
-                <div id="collapse1" class="panel-collapse collapse">
-                    <ul class="list-group">
-                        <button class="list-group-item" href="#"
-                                data-toggle="modal" data-backdrop="static"
-                                data-target="#distancesModal" id="distances_filter">
-                            Distances</button>
-                        <button class="list-group-item" href="#"
-                                data-toggle="modal" data-backdrop="static"
-                                data-target="#lengthModal" id="length_filter">Length
-                        </button>
-                        <!--<button class="list-group-item" href="#"-->
-                                <!--data-toggle="modal" data-backdrop="static"-->
-                                <!--data-target="#taxaModal" id="taxa_filter">Taxa-->
-                        <!--</button>-->
-
-                        <!--</li>-->
-                    <!--</ul>-->
-                <!--</div>-->
-            <!--</li>-->
-            <!--<li data-toggle="collapse" data-target="#collapse2" class="collapse_groups">-->
-                <!--<a href="#">ABR</a>-->
-                <!--<div id="collapse2" class="panel-collapse collapse">-->
-                    <!--<ul class="list-group">-->
-                        <button class="button list-group-item" href="#"
-                                data-toggle="modal" data-backdrop="static"
-                                data-target="#plasmidFamiliesModal"
-                                id="familiesFilter" >Plasmid families
-                        </button>
-                        <button class="button list-group-item" href="#"
-                                data-toggle="modal" data-backdrop="static"
-                                data-target="#resModal"
-                                id="resistancesFilter" >Resistances
-                        </button>
-                        <button class="list-group-item" href="#"
-                                data-toggle="modal" data-backdrop="static"
-                                data-target="#taxaModal" id="taxa_filter">Taxa
-                        </button>
-                    </ul>
-                </div>
-            </li>
-            <li data-toggle="collapse" data-target="#collapse3" class="collapse_groups">
-                <a href="#">Import</a>
-                <div id="collapse3" class="panel-collapse collapse">
-                    <ul class="list-group">
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#fileModal" id="reads_filter">Mapping results
-                        </button>
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#mashModal" id="mash_filter">Mash
-                            results
-                        </button>
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#assemblyModal" id="assembly_filter">Sequence
-                        </button>
-                    </ul>
-                </div>
-            </li>
-            <li data-toggle="collapse" data-target="#collapse4"
-                class="collapse_groups">
-                <a href="#">Statistics</a>
-                <div id="collapse4" class="panel-collapse collapse">
-                    <ul class="list-group" id="headerTaxaGroup">Taxa
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#modalPlot"
-                                id="speciesStats">Species
-                        </button>
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#modalPlot"
-                                id="genusStats">Genera
-                        </button>
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#modalPlot"
-                                id="familyStats">Families
-                        </button>
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#modalPlot"
-                                id="orderStats">Orders
-                        </button>
-                    </ul>
-                    <ul class="list-group" id="headerABRGroup">Annotation
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#modalPlot"
-                                id="resistanceStats">Resistances
-                        </button>
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#modalPlot"
-                                id="pfamilyStats">Plasmid families
-                        </button>
-                    </ul>
-                    <ul class="list-group" id="headerOtherGroup">Other
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#modalPlot" id="lengthStats">Length
-                        </button>
-                        <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                                data-target="#modalPlot"
-                                id="clusterStats">Clusters
-                        </button>
-                    </ul>
-                </div>
-            </li>
-            <li class="collapse_groups">
-                <a href="https://tiagofilipe12.gitbooks.io/patlas/content/"
-                   target="_blank">Documentaion</a>
-            </li>
-            <li class="collapse_groups">
-                <a href="#" data-toggle="modal" data-backdrop="static"
-                   data-target="#videoModal">Video tutorial</a>
-            </li>
-            <li class="collapse_groups">
-                <a href="#" data-toggle="modal" data-backdrop="static"
-                   data-target="#aboutModal">About</a>
-            </li>
-        </ul>
-    </div>
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="pATLAS" style="width:100%;height:auto;"/>
+    <ul class="sidebar-nav" id="sidebar-menus">
+      <li class="sidebar-brand">
+        <!--unused space filled with img-->
+      </li>
+      <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
+        <a href="#">Browse</a>
+        <div id="collapse1" class="panel-collapse collapse">
+          <ul class="list-group headerPanelGroup">Metadata
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#distancesModal" id="distances_filter">
+              Distances</button>
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#lengthModal" id="length_filter">Length
+            </button>
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#ratioModal"
+                    id="ratio_filter">Size ratio
+            </button>
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#taxaModal" id="taxa_filter">Taxa
+            </button>
+          </ul>
+          <ul class="list-group headerPanelGroup">Annotation
+            <button class="button list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#plasmidFamiliesModal"
+                    id="familiesFilter" >Plasmid families
+            </button>
+            <button class="button list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#resModal"
+                    id="resistancesFilter" >Resistances
+            </button>
+          </ul>
+        </div>
+      </li>
+      <li data-toggle="collapse" data-target="#collapse3" class="collapse_groups">
+        <a href="#">Import</a>
+        <div id="collapse3" class="panel-collapse collapse">
+          <ul class="list-group">
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#fileModal" id="reads_filter">Mapping results
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#mashModal" id="mash_filter">Mash
+              results
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#assemblyModal" id="assembly_filter">Sequence
+            </button>
+          </ul>
+        </div>
+      </li>
+      <li data-toggle="collapse" data-target="#collapse4"
+          class="collapse_groups">
+        <a href="#">Statistics</a>
+        <div id="collapse4" class="panel-collapse collapse">
+          <ul class="list-group headerPanelGroup">Taxa
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="speciesStats">Species
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="genusStats">Genera
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="familyStats">Families
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="orderStats">Orders
+            </button>
+          </ul>
+          <ul class="list-group headerPanelGroup">Annotation
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="resistanceStats">Resistances
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="pfamilyStats">Plasmid families
+            </button>
+          </ul>
+          <ul class="list-group headerPanelGroup">Other
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot" id="lengthStats">Length
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="clusterStats">Clusters
+            </button>
+          </ul>
+        </div>
+      </li>
+      <li class="collapse_groups">
+        <a href="https://tiagofilipe12.gitbooks.io/patlas/content/"
+           target="_blank">Documentaion</a>
+      </li>
+      <li class="collapse_groups">
+        <a href="#" data-toggle="modal" data-backdrop="static"
+           data-target="#videoModal">Video tutorial</a>
+      </li>
+      <li class="collapse_groups">
+        <a href="#" data-toggle="modal" data-backdrop="static"
+           data-target="#aboutModal">About</a>
+      </li>
+    </ul>
+  </div>
 </div> <!--closes wrapper div-->
 
 <!-- Starts navigation bar -->
 <!--<nav class="navbar navbar-default navbar-fixed-top"> -->
 <div class="navbar navbar-default navbar-fixed-top" id="navigation_bar">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed"
-                    data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-                    aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed"
+              data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+              aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="#menu-toggle" id="menu-toggle" class="btn-lg">
+            <span class="glyphicon glyphicon-menu-hamburger"></span>
+          </a>
+        </li>
+      </ul>
+
+      <form class="navbar-form navbar-left">
+        <div class="btn-group">
+          <button class="btn btn-info" id="reset-sliders"
+                  type="button" data-toogle="tooptip"
+                  title="Reset all applied filters">Reset nodes</button>
+
+          <button class="btn btn-info" id="reset-links"
+                  type="button" data-toogle="tooptip"
+                  title="Reset all applied filters" autocomplete="off">Reset links</button>
+          <!--</form>-->
         </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="#menu-toggle" id="menu-toggle" class="btn-lg">
-                        <span class="glyphicon glyphicon-menu-hamburger"></span>
-                    </a>
-                </li>
-            </ul>
-
-            <form class="navbar-form navbar-left">
-                <div class="btn-group">
-                    <button class="btn btn-info" id="reset-sliders"
-                            type="button" data-toogle="tooptip"
-                            title="Reset all applied filters">Reset nodes</button>
-
-                    <button class="btn btn-info" id="reset-links"
-                            type="button" data-toogle="tooptip"
-                            title="Reset all applied filters" autocomplete="off">Reset links</button>
-                    <!--</form>-->
-                </div>
-
-                <!--<form class="navbar-form navbar-left">-->
-                <div class="btn-group">
-                    <button class="btn btn-default" id="go_back"
-                            type="button" data-toogle="tooptip"
-                            title="Return to full tree view" style="display: none">
-                        <span class="glyphicon glyphicon-home"></span></button>
-                    <button class="btn btn-default" id="Re_run"
-                            type="button" data-toogle="tooptip"
-                            title="Apply filters" style="display: none">
-                        <span class="glyphicon glyphicon-filter"></span></button>
-                    <!--for now this button is disabled since it does not have funcitonality-->
-                    <button class="btn btn-default" id="download_ds"
-                            type="button" data-toogle="tooptip"
-                            title="Download current selection" style="display: none">
-                        <span class="glyphicon glyphicon-save"></span></button>
-                    <button class="btn btn-default" id="tableShow"
-                            type="button" data-toogle="tooptip"
-                            title="Table with metadata" style="display:
+        <!--<form class="navbar-form navbar-left">-->
+        <div class="btn-group">
+          <button class="btn btn-default" id="go_back"
+                  type="button" data-toogle="tooptip"
+                  title="Return to full tree view" style="display: none">
+            <span class="glyphicon glyphicon-home"></span></button>
+          <button class="btn btn-default" id="Re_run"
+                  type="button" data-toogle="tooptip"
+                  title="Apply filters" style="display: none">
+            <span class="glyphicon glyphicon-filter"></span></button>
+          <!--for now this button is disabled since it does not have funcitonality-->
+          <button class="btn btn-default" id="download_ds"
+                  type="button" data-toogle="tooptip"
+                  title="Download current selection" style="display: none">
+            <span class="glyphicon glyphicon-save"></span></button>
+          <button class="btn btn-default" id="tableShow"
+                  type="button" data-toogle="tooptip"
+                  title="Table with metadata" style="display:
                             none">
-                        <span class="glyphicon glyphicon-list-alt"></span></button>
-                    <button class="btn btn-default"
-                            data-toggle="tooltip" type="button"
-                            title="Quick stats"
-                            id="plotButton" style="display: none">
-                        <span class="glyphicon glyphicon-stats"></span>
-                    </button>
+            <span class="glyphicon glyphicon-list-alt"></span></button>
+          <button class="btn btn-default"
+                  data-toggle="tooltip" type="button"
+                  title="Quick stats"
+                  id="plotButton" style="display: none">
+            <span class="glyphicon glyphicon-stats"></span>
+          </button>
 
-                    <!--<button class="btn btn-default" id="download_img"
-                            type="button" data-toogle="tooptip"
-                            title="Take a screenshot">
-                      <span class="glyphicon glyphicon-save"></span></button>-->
-                </div>
+          <!--<button class="btn btn-default" id="download_img"
+                  type="button" data-toogle="tooptip"
+                  title="Take a screenshot">
+            <span class="glyphicon glyphicon-save"></span></button>-->
+        </div>
 
-            </form>
-            <form class="navbar-form navbar-right">
-                <input checked data-toggle="toggle" type="checkbox"
-                       data-onstyle="success" data-offstyle="default"
-                       data-on="Plasmid name"
-                       data-off="Accession no"
-                       title="Switch between plasmid and accession search"
-                       id="toggle-event">
-                <div class="form-group" data-toggle="tooltip"
-                     title="e.g 'NZ_CP012658.1'">
-                    <input id="formValueId" type="text" class="form-control"
-                           placeholder="Search an accession number"/>
-                </div>
-                <div class="btn-group">
-                    <button id="submitButton" type="submit" data-toggle="tooltip"
-                            title="Centers at the provided accession corresponding node"
-                            class="btn btn-default">Go</button>
-                    <button id="clearButton" data-toggle="tooltip"
-                            title="Remove color for all selected species" type="button"
-                            class="btn btn-info">Clear</button>
-                </div>
-            </form>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+      </form>
+      <form class="navbar-form navbar-right">
+        <input data-toggle="toggle" type="checkbox"
+               data-onstyle="success" data-offstyle="default"
+               data-on="Plasmid name"
+               data-off="Accession no"
+               title="Switch between plasmid and accession search"
+               id="toggle-event">
+        <div class="form-group" data-toggle="tooltip"
+             title="e.g 'NZ_CP012658.1'">
+          <input id="formValueId" type="text" class="form-control"
+                 placeholder="Search an accession number"/>
+        </div>
+        <div class="btn-group">
+          <button id="submitButton" type="submit" data-toggle="tooltip"
+                  title="Centers at the provided accession corresponding node"
+                  class="btn btn-default">Go</button>
+          <button id="clearButton" data-toggle="tooltip"
+                  title="Remove color for all selected species" type="button"
+                  class="btn btn-info">Clear</button>
+        </div>
+      </form>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
 </div>
 
 
 <!-- /#wrapper -->
 <!-- Menu Toggle Script -->
-<script>
-  $("#menu-toggle").click(function(e) {
-    e.preventDefault()
-    $("#wrapper").toggleClass("toggled")
-  })
-</script>
+<!--<script>-->
+  <!--$("#menu-toggle").click(function(e) {-->
+    <!--e.preventDefault()-->
+    <!--$("#wrapper").toggleClass("toggled")-->
+  <!--})-->
+<!--</script>-->
 
 <div id="couve-flor">
-    <!--hidden div for color legend-->
-    <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">
-        <div class="panel panel-default" >
-            <div class="panel-heading">Color legend</div>
-            <div class="panel-body">
-                <!--Populated by visualization_functions.js-->
-                <label id="taxa_label" style="display: none">Taxa</label>
-                <ul class="legend" id="colorLegendBox"></ul>
-                <label id="res_label" style="display: none">Resistances</label>
-                <ul class="legend" id="colorLegendBoxRes"></ul>
-                <label id="pf_label" style="display: none">Plasmid Families</label>
-                <ul class="legend" id="colorLegendBoxPf"></ul>
-                <!--Populated by visualization_functions.js-->
-                <label id="distance_label" style="display: none">Distances scale</label>
-                <div class="gradient" id="scaleLegend"></div>
-                <div id="scaleString"></div>
-                <!--Populated by visualization_functions.js-->
-                <label id="read_label" style="display: none">Read scale</label>
-                <div class="gradient" id="readLegend"></div>
-                <div id="readString"></div>
-                <label id="assemblyLabel" style="display: none">Assembly</label>
-                <div class="legend" id="assemblyLegend"></div>
-            </div>
-        </div>
+  <!--hidden div for color legend-->
+  <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">
+    <div class="panel panel-default" >
+      <div class="panel-heading">Color legend</div>
+      <div class="panel-body">
+        <!--Populated by visualization_functions.js-->
+        <label id="taxa_label" style="display: none">Taxa</label>
+        <ul class="legend" id="colorLegendBox"></ul>
+        <label id="res_label" style="display: none">Resistances</label>
+        <ul class="legend" id="colorLegendBoxRes"></ul>
+        <label id="pf_label" style="display: none">Plasmid Families</label>
+        <ul class="legend" id="colorLegendBoxPf"></ul>
+        <!--Populated by visualization_functions.js-->
+        <label id="distance_label" style="display: none">Distances scale</label>
+        <div class="gradient" id="scaleLegend"></div>
+        <div id="scaleString"></div>
+        <!--Populated by visualization_functions.js-->
+        <label id="read_label" style="display: none">Read scale</label>
+        <div class="gradient" id="readLegend"></div>
+        <div id="readString"></div>
+        <label id="assemblyLabel" style="display: none">Assembly</label>
+        <div class="legend" id="assemblyLegend"></div>
+      </div>
     </div>
+  </div>
 
-    <div id="buttonStuff">
-        <div class="btn-group">
+  <div id="buttonStuff">
+    <div class="btn-group">
 
-            <!-- Buttons that overlay the graph and interact with it -->
-            <button id="playpauseButton" data-toggle="tooltip"
-                    title="Play/Pause" type="button"
-                    class="btn btn-default">
-                <span class="glyphicon glyphicon-play"></span>
-            </button>
+      <!-- Buttons that overlay the graph and interact with it -->
+      <button id="playpauseButton" data-toggle="tooltip"
+              title="Play/Pause" type="button"
+              class="btn btn-default">
+        <span class="glyphicon glyphicon-play"></span>
+      </button>
 
-            <button class="btn btn-default" data-toggle="tooltip"
-                    title="Trigger area selection (uses shift key)"
-                    type="button"
-                    id="refreshButton">
-                <span class="glyphicon glyphicon-screenshot"></span>
-            </button>
+      <button class="btn btn-default" data-toggle="tooltip"
+              title="Trigger area selection (uses shift key)"
+              type="button"
+              id="refreshButton">
+        <span class="glyphicon glyphicon-screenshot"></span>
+      </button>
 
-        </div>
-        <!--zoom buttons-->
-        <div class="btn-group">
-            <button id="zoom_in" class="zoom in btn btn-default"
-                    data-toggle="tooltip" title="Zoom in"
-                    type="button">
-                <span class="glyphicon glyphicon-zoom-in"></span>
-            </button>
-            <button id="zoom_out" class="zoom out btn btn-default"
-                    data-toggle="tooltip" title="Zoom out"
-                    type="button">
-                <span class="glyphicon glyphicon-zoom-out"></span>
-            </button>
-        </div>
-        <!-- slider buttons -->
-        <div class="btn-group">
-            <button id="slideLeft" class="btn btn-default"
-                    data-toggle="tooltip" title="Change file"
-                    type="button" disabled>
-                <span class="glyphicon glyphicon-chevron-left"></span>
-            </button>
-            <button id="slideRight" class="btn btn-default"
-                    data-toggle="tooltip" title="Change file"
-                    type="button" disabled>
-                <span class="glyphicon glyphicon-chevron-right"></span>
-            </button>
-        </div>
-        <div id="fileNameDiv"></div>
-
-        <!-- End buttons -->
     </div>
-    <div id="popup_description" style="display: none">
-        <button id='closePop' class='close' type='button'>&times;</button>
-        <button class='btn btn-default' id='downloadCsv'
-                type='button' data-toogle='tooptip'
-                title='Export as csv'>
-            <span class='glyphicon glyphicon-save-file'></span>
-        </button>
-        <div class="popupHeaders">General sequence info</div>
+    <!--zoom buttons-->
+    <div class="btn-group">
+      <button id="zoom_in" class="zoom in btn btn-default"
+              data-toggle="tooltip" title="Zoom in"
+              type="button">
+        <span class="glyphicon glyphicon-zoom-in"></span>
+      </button>
+      <button id="zoom_out" class="zoom out btn btn-default"
+              data-toggle="tooltip" title="Zoom out"
+              type="button">
+        <span class="glyphicon glyphicon-zoom-out"></span>
+      </button>
+    </div>
+    <!-- slider buttons -->
+    <div class="btn-group">
+      <button id="slideLeft" class="btn btn-default"
+              data-toggle="tooltip" title="Change file"
+              type="button" disabled>
+        <span class="glyphicon glyphicon-chevron-left"></span>
+      </button>
+      <button id="slideRight" class="btn btn-default"
+              data-toggle="tooltip" title="Change file"
+              type="button" disabled>
+        <span class="glyphicon glyphicon-chevron-right"></span>
+      </button>
+    </div>
+    <div id="fileNameDiv"></div>
+
+    <!-- End buttons -->
+  </div>
+  <div id="popup_description" style="display: none">
+    <button id='closePop' class='close' type='button'>&times;</button>
+    <button class='btn btn-default' id='downloadCsv'
+            type='button' data-toogle='tooptip'
+            title='Export as csv'>
+      <span class='glyphicon glyphicon-save-file'></span>
+    </button>
+    <div class="popupHeaders">General sequence info</div>
+    <div style='border-top: 3px solid #4588ba; position: relative;
+                top: 10px; margin-bottom: 10px;'>
+    </div>
+    <div id='accessionPop'></div>
+    <div id='speciesNamePop'><span style='color: #468499'>Species:</span><span id='speciesNamePopSpan'></span>
+    </div>
+    <div id='lengthPop'></div>
+    <div id='plasmidNamePop'>
+      <span style='color: #468499'>Plasmid: </span><span id="plasmidNamePopSpan"></span>
+    </div>
+    <div id='clusterIdPop'>
+      <span style='color: #468499'>Cluster no.: </span><span
+            id="clusterIdPopSpan"></span>
+    </div>
+    <div id='percentagePop'><span style='color: #468499'>Percentage:</span><span id="percentagePopSpan"></span>
+    </div>
+    <div id='copyNumberPop'><span style='color: #468499'>Relative copy number:</span><span id="copyNumberPopSpan"></span>
+    </div>
+    <br />
+
+    <!--<div class="table-responsive">-->
+    <ul class="nav nav-tabs" style="display: flex; justify-content: center;">
+      <li id="resButton">
+        <a data-toggle="tab" href="#resTab">Resistances</a>
+      </li>
+      <li id="plasmidButton">
+        <a data-toggle="tab" href="#pfTab">Plasmid finder</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="popupTabs">
+      <div id='pfTab' class="tab-pane fade">
+        <div id='pfPop' class="popupHeaders">PlasmidFinder database</div>
         <div style='border-top: 3px solid #4588ba; position: relative;
                 top: 10px; margin-bottom: 10px;'>
         </div>
-        <div id='accessionPop'></div>
-        <div id='speciesNamePop'><span style='color: #468499'>Species:</span><span id='speciesNamePopSpan'></span>
+        <div id='pfGenePop'>
+          <span style='color: #468499'>Gene name: </span><span id='pfGenePopSpan'></span>
         </div>
-        <div id='lengthPop'></div>
-        <div id='plasmidNamePop'>
-            <span style='color: #468499'>Plasmid: </span><span id="plasmidNamePopSpan"></span>
+        <div id='pfGenbankPop'>
+          <span style='color: #468499'>Genbank Accession: </span><span id='pfGenbankPopSpan'></span>
         </div>
-        <div id='clusterIdPop'>
-            <span style='color: #468499'>Cluster no.: </span><span
-                id="clusterIdPopSpan"></span>
+        <div>Matching genes information</div>
+        <div id='pfCoveragePop'>
+          <span style='color: #468499'>Coverage: </span><span id='pfCoveragePopSpan'></span>
         </div>
-        <div id='percentagePop'><span style='color: #468499'>Percentage:</span><span id="percentagePopSpan"></span>
+        <div id='pfIdentityPop'>
+          <span style='color: #468499'>Identity: </span><span id='pfIdentityPopSpan'></span>
         </div>
-        <div id='copyNumberPop'><span style='color: #468499'>Relative copy number:</span><span id="copyNumberPopSpan"></span>
+        <div id='pfRangePop'>
+          <span style='color: #468499'>Range in plasmid: </span><span id='pfRangePopSpan'></span>
         </div>
-        <br />
-
-        <!--<div class="table-responsive">-->
-        <ul class="nav nav-tabs" style="display: flex; justify-content: center;">
-            <li id="resButton">
-                <a data-toggle="tab" href="#resTab">Resistances</a>
-            </li>
-            <li id="plasmidButton">
-                <a data-toggle="tab" href="#pfTab">Plasmid finder</a>
-            </li>
-        </ul>
-        <div class="tab-content" id="popupTabs">
-            <div id='pfTab' class="tab-pane fade">
-                <div id='pfPop' class="popupHeaders">PlasmidFinder database</div>
-                <div style='border-top: 3px solid #4588ba; position: relative;
+      </div>
+      <div id='resTab' class="tab-pane fade">
+        <div id='cardPop' class="popupHeaders">CARD database</div>
+        <div style='border-top: 3px solid #4588ba; position: relative;
                 top: 10px; margin-bottom: 10px;'>
-                </div>
-                <div id='pfGenePop'>
-                    <span style='color: #468499'>Gene name: </span><span id='pfGenePopSpan'></span>
-                </div>
-                <div id='pfGenbankPop'>
-                    <span style='color: #468499'>Genbank Accession: </span><span id='pfGenbankPopSpan'></span>
-                </div>
-                <div>Matching genes information</div>
-                <div id='pfCoveragePop'>
-                    <span style='color: #468499'>Coverage: </span><span id='pfCoveragePopSpan'></span>
-                </div>
-                <div id='pfIdentityPop'>
-                    <span style='color: #468499'>Identity: </span><span id='pfIdentityPopSpan'></span>
-                </div>
-                <div id='pfRangePop'>
-                    <span style='color: #468499'>Range in plasmid: </span><span id='pfRangePopSpan'></span>
-                </div>
-            </div>
-            <div id='resTab' class="tab-pane fade">
-                <div id='cardPop' class="popupHeaders">CARD database</div>
-                <div style='border-top: 3px solid #4588ba; position: relative;
-                top: 10px; margin-bottom: 10px;'>
-                </div>
-                <div id='cardGenePop'>
-                    <span style='color: #468499'>Gene name: </span><span id='cardGenePopSpan'></span>
-                </div>
-                <div id='cardGenbankPop'>
-                    <span style='color: #468499'>Genbank accession: </span><span id='cardGenbankPopSpan'></span>
-                </div>
-                <div id='cardAroPop'>
-                    <span style='color: #468499'>ARO accessions: </span><span id='cardAroPopSpan'></span>
-                </div>
-                <div>Matching genes information</div>
-                <div id='cardCoveragePop'>
-                    <span style='color: #468499'>Coverage: </span><span id='cardCoveragePopSpan'></span>
-                </div>
-                <div id='cardIdPop'>
-                    <span style='color: #468499'>Identity: </span><span id='cardIdPopSpan'></span>
-                </div>
-                <div id='cardRangePop'>
-                    <span style='color: #468499'>Range in plasmid: </span><span id='cardRangePopSpan'></span>
-                </div>
-                <div id='resfinderPop' class="popupHeaders">ResFinder database
-                </div>
-                <div style='border-top: 3px solid #4588ba; position: relative;
+        </div>
+        <div id='cardGenePop'>
+          <span style='color: #468499'>Gene name: </span><span id='cardGenePopSpan'></span>
+        </div>
+        <div id='cardGenbankPop'>
+          <span style='color: #468499'>Genbank accession: </span><span id='cardGenbankPopSpan'></span>
+        </div>
+        <div id='cardAroPop'>
+          <span style='color: #468499'>ARO accessions: </span><span id='cardAroPopSpan'></span>
+        </div>
+        <div>Matching genes information</div>
+        <div id='cardCoveragePop'>
+          <span style='color: #468499'>Coverage: </span><span id='cardCoveragePopSpan'></span>
+        </div>
+        <div id='cardIdPop'>
+          <span style='color: #468499'>Identity: </span><span id='cardIdPopSpan'></span>
+        </div>
+        <div id='cardRangePop'>
+          <span style='color: #468499'>Range in plasmid: </span><span id='cardRangePopSpan'></span>
+        </div>
+        <div id='resfinderPop' class="popupHeaders">ResFinder database
+        </div>
+        <div style='border-top: 3px solid #4588ba; position: relative;
             top: 10px; margin-bottom: 10px;'>
-                </div>
-                <div id='resfinderGenePop'>
-                    <span style='color: #468499'>Gene name: </span><span id='resfinderGenePopSpan'></span>
-                </div>
-                <div id='resfinderGenbankPop'>
-                    <span style='color: #468499'>Genbank accession: </span><span id='resfinderGenbankPopSpan'></span>
-                </div>
-                <div>Matching genes information</div>
-                <div id='resfinderCoveragePop'>
-                    <span style='color: #468499'>Coverage: </span><span id='resfinderCoveragePopSpan'></span>
-                </div>
-                <div id='resfinderIdPop'>
-                    <span style='color: #468499'>Identity: </span><span id='resfinderIdPopSpan'></span>
-                </div>
-                <div id='resfinderRangePop'>
-                    <span style='color: #468499'>Range in plasmid: </span><span id='resfinderRangePopSpan'></span>
-                </div>
-            </div>
         </div>
-        <!--</div>-->
+        <div id='resfinderGenePop'>
+          <span style='color: #468499'>Gene name: </span><span id='resfinderGenePopSpan'></span>
+        </div>
+        <div id='resfinderGenbankPop'>
+          <span style='color: #468499'>Genbank accession: </span><span id='resfinderGenbankPopSpan'></span>
+        </div>
+        <div>Matching genes information</div>
+        <div id='resfinderCoveragePop'>
+          <span style='color: #468499'>Coverage: </span><span id='resfinderCoveragePopSpan'></span>
+        </div>
+        <div id='resfinderIdPop'>
+          <span style='color: #468499'>Identity: </span><span id='resfinderIdPopSpan'></span>
+        </div>
+        <div id='resfinderRangePop'>
+          <span style='color: #468499'>Range in plasmid: </span><span id='resfinderRangePopSpan'></span>
+        </div>
+      </div>
     </div>
+    <!--</div>-->
+  </div>
 </div>
 
 <div class="graph-overlay"></div>
 <span style="color: white; margin: 10px;">Use mouse to draw rectangle and select nodes</span>
 
 <div id="modalPlot" class="modal fade" role="dialog" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-        <!-- Modal content for file-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Quick statistics histograms</h4>
-            </div>
-            <div class="modal-body" id="modal-body-plot">
-                <div class="alert alert-warning alert-dismissable fade in"
-                     id="alertPlot"
-                     style="display: none">
-                    <button type="button" class="close" id="alertPlotClose"
-                            aria-hidden="true" data-hide="true"
-                            onclick="this.parentNode.style.display = 'none'">
-                        &times;</button>
-                    <strong>Warning!</strong> All plasmids have same size.
-                    There is no sufficient data to plot an histogram.
-                </div>
-                <div>
-                    <button class="btn btn-info" id="sortGraph"
-                            type="button" data-toogle="tooptip"
-                            title="Sort graph">
-                        <span class="glyphicon glyphicon-sort-by-attributes-alt"></span>
-                    </button>
-                    <button class="btn btn-info" id="sortGraphAlp"
-                            type="button" data-toogle="tooptip"
-                            title="Sort graph">
-                        <span class="glyphicon glyphicon-sort-by-alphabet"></span>
-                    </button>
-
-                </div>
-                <div id="progressDiv">
-                    <div id="plotWait">Please wait...
-                        <img id="loadingImgPlots"
-                             src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..."/>
-                        <!--loading bar div-->
-                        <!--<div class="progress" id="progressBar">-->
-                        <!--<div class="progress-bar progress-bar-success progress-bar-striped"-->
-                        <!--role="progressbar" id="actualProgress">-->
-                        <!--0% complete-->
-                        <!--</div>-->
-                        <!--</div>-->
-                    </div>
-                </div>
-                <!--div to put the plot-->
-                <div id="chartContainer1"></div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-circle"
-                        data-toggle="popover" data-placement="right"
-                        data-trigger="focus"
-                        data-original-title="Plot controls"
-                        data-content="<li>Ctrl + left mouse click - enables panning</li><li>Left mouse click + dragging - enables zooming</li>"
-                        data-html="true"
-                        aria-describedby="tooltip" style="position: absolute;
-                        left:2%" id="questionPlots"
-                        >
-                    <span class="glyphicon glyphicon-question-sign"></span>
-                </button>
-                <button class="btn btn-default"  id="speciesPlot">Species
-                </button>
-                <button class="btn btn-default"  id="genusPlot">Genera
-                </button>
-                <button class="btn btn-default"  id="familyPlot">Families
-                </button>
-                <button class="btn btn-default"  id="orderPlot">Orders
-                </button>
-                <button class="btn btn-default" id="lengthPlot">Length
-                </button>
-                <button class="btn btn-default"  id="clusterPlot">Clusters
-                </button>
-                <button class="btn btn-default" id="resPlot">Resistances
-                </button>
-                <button class="btn btn-default" id="pfPlot">Plasmid Families
-                </button>
-            </div>
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content for file-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Quick statistics histograms</h4>
+      </div>
+      <div class="modal-body" id="modal-body-plot">
+        <div class="alert alert-warning alert-dismissable fade in"
+             id="alertPlot"
+             style="display: none">
+          <button type="button" class="close" id="alertPlotClose"
+                  aria-hidden="true" data-hide="true"
+                  onclick="this.parentNode.style.display = 'none'">
+            &times;</button>
+          <strong>Warning!</strong> All plasmids have same size.
+          There is no sufficient data to plot an histogram.
         </div>
+        <div>
+          <button class="btn btn-info" id="sortGraph"
+                  type="button" data-toogle="tooptip"
+                  title="Sort graph">
+            <span class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+          </button>
+          <button class="btn btn-info" id="sortGraphAlp"
+                  type="button" data-toogle="tooptip"
+                  title="Sort graph">
+            <span class="glyphicon glyphicon-sort-by-alphabet"></span>
+          </button>
 
+        </div>
+        <div id="progressDiv">
+          <div id="plotWait">Please wait...
+            <img id="loadingImgPlots"
+                 src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..."/>
+            <!--loading bar div-->
+            <!--<div class="progress" id="progressBar">-->
+            <!--<div class="progress-bar progress-bar-success progress-bar-striped"-->
+            <!--role="progressbar" id="actualProgress">-->
+            <!--0% complete-->
+            <!--</div>-->
+            <!--</div>-->
+          </div>
+        </div>
+        <!--div to put the plot-->
+        <div id="chartContainer1"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-circle"
+                data-toggle="popover" data-placement="right"
+                data-trigger="focus"
+                data-original-title="Plot controls"
+                data-content="<li>Ctrl + left mouse click - enables panning</li><li>Left mouse click + dragging - enables zooming</li>"
+                data-html="true"
+                aria-describedby="tooltip" style="position: absolute;
+                        left:2%" id="questionPlots"
+        >
+          <span class="glyphicon glyphicon-question-sign"></span>
+        </button>
+        <button class="btn btn-default"  id="speciesPlot">Species
+        </button>
+        <button class="btn btn-default"  id="genusPlot">Genera
+        </button>
+        <button class="btn btn-default"  id="familyPlot">Families
+        </button>
+        <button class="btn btn-default"  id="orderPlot">Orders
+        </button>
+        <button class="btn btn-default" id="lengthPlot">Length
+        </button>
+        <button class="btn btn-default"  id="clusterPlot">Clusters
+        </button>
+        <button class="btn btn-default" id="resPlot">Resistances
+        </button>
+        <button class="btn btn-default" id="pfPlot">Plasmid Families
+        </button>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <!-- Modal for resistances-->
 <div id="resModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
 
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Filter plasmids by
-                    resistance genes</h4>
-            </div>
-            <div class="modal-body" id="modalBodyABR">
-                <div class="row" id="modalBodyABR1">
-                    <div class="dropdown col-sm-6 " id="resDropdown">
-                        <div class="header_taxa">ResFinder</div>
-                        <select class="selectpicker" data-dropup-auto="false"
-                                multiple data-width="80%"
-                                data-selected-text-format="count" data-live-search="true"
-                                title="No items selected" id="resList"
-                                data-size="15" data-hide-disabled="true">
-                            <!--populated by visualization_function.js-->
-                        </select>
-                    </div>
-                    <div class="dropdown col-sm-6 " id="cardDropdown">
-                        <div class="header_taxa">Card</div>
-                        <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
-                                data-selected-text-format="count" data-live-search="true"
-                                title="No items selected" id="cardList"
-                                data-size="15" data-hide-disabled="true">
-                            <!--populated by visualization_function.js-->
-                        </select>
-                    </div>
-                </div>
-                <div class="row" id="modalBodyABR2">
-                    <div class='col-md-12'>
-                        <div class="panel-group" id="displayCurrentABR">
-                            <div class="panel panel-info" >
-                                <div class="panel-heading">
-                                    Selected genes</div>
-                                <div class="panel-body"
-                                     id="displayCurrentBoxABR">
-                                    <!--Populated by visualization_functions.js-->
-                                    <p id="p_Card">Card:</p>
-                                    <p id="p_Resfinder">Resfinder:</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-default"
-                        data-dismiss="modal" id="resSubmit">Submit</button>
-                <button type="submit" class="btn btn-danger"
-                        id="resClear">Clear selection</button>
-            </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Filter plasmids by
+          resistance genes</h4>
+      </div>
+      <div class="modal-body" id="modalBodyABR">
+        <div class="row" id="modalBodyABR1">
+          <div class="dropdown col-sm-6 " id="resDropdown">
+            <div class="header_taxa">ResFinder</div>
+            <select class="selectpicker" data-dropup-auto="false"
+                    multiple data-width="80%"
+                    data-selected-text-format="count" data-live-search="true"
+                    title="No items selected" id="resList"
+                    data-size="15" data-hide-disabled="true">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
+          <div class="dropdown col-sm-6 " id="cardDropdown">
+            <div class="header_taxa">Card</div>
+            <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
+                    data-selected-text-format="count" data-live-search="true"
+                    title="No items selected" id="cardList"
+                    data-size="15" data-hide-disabled="true">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
         </div>
-
+        <div class="row" id="modalBodyABR2">
+          <div class='col-md-12'>
+            <div class="panel-group" id="displayCurrentABR">
+              <div class="panel panel-info" >
+                <div class="panel-heading">
+                  Selected genes</div>
+                <div class="panel-body"
+                     id="displayCurrentBoxABR">
+                  <!--Populated by visualization_functions.js-->
+                  <p id="p_Card">Card:</p>
+                  <p id="p_Resfinder">Resfinder:</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="resSubmit">Submit</button>
+        <button type="submit" class="btn btn-danger"
+                id="resClear">Clear selection</button>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <!-- Modal for families-->
 <div id="plasmidFamiliesModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
+  <div class="modal-dialog">
 
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Filter plasmids by
-                    plasmid family genes</h4>
-            </div>
-            <div class="modal-body" id="modalBodyFAM">
-                <div class="row" id="modalBodyFAM1">
-                    <div class="dropdown col-sm-12 " id="famDropdown">
-                        <div class="header_taxa">PlasmidFinder</div>
-                        <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
-                                data-selected-text-format="count" data-live-search="true"
-                                title="No items selected"
-                                id="plasmidFamiliesList"
-                                data-size="15" data-hide-disabled="true">
-                            <!--populated by visualization_function.js-->
-                        </select>
-                    </div>
-                </div>
-                <div class="row" id="modalBodyFAM2">
-                    <div class='col-md-12'>
-                        <div class="panel-group" id="displayCurrentFAM">
-                            <div class="panel panel-info" >
-                                <div class="panel-heading">
-                                    Selected genes</div>
-                                <div class="panel-body"
-                                     id="displayCurrentBoxFAM">
-                                    <!--Populated by visualization_functions.js-->
-                                    <p id="p_Plasmidfinder">Plasmidfinder:</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-default"
-                        data-dismiss="modal" id="pfSubmit">Submit</button>
-                <button type="submit" class="btn btn-danger"
-                        id="pfClear">Clear selection</button>
-            </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Filter plasmids by
+          plasmid family genes</h4>
+      </div>
+      <div class="modal-body" id="modalBodyFAM">
+        <div class="row" id="modalBodyFAM1">
+          <div class="dropdown col-sm-12 " id="famDropdown">
+            <div class="header_taxa">PlasmidFinder</div>
+            <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
+                    data-selected-text-format="count" data-live-search="true"
+                    title="No items selected"
+                    id="plasmidFamiliesList"
+                    data-size="15" data-hide-disabled="true">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
         </div>
-
+        <div class="row" id="modalBodyFAM2">
+          <div class='col-md-12'>
+            <div class="panel-group" id="displayCurrentFAM">
+              <div class="panel panel-info" >
+                <div class="panel-heading">
+                  Selected genes</div>
+                <div class="panel-body"
+                     id="displayCurrentBoxFAM">
+                  <!--Populated by visualization_functions.js-->
+                  <p id="p_Plasmidfinder">Plasmidfinder:</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="pfSubmit">Submit</button>
+        <button type="submit" class="btn btn-danger"
+                id="pfClear">Clear selection</button>
+      </div>
     </div>
+
+  </div>
 </div>
+
+<!-- scripts that need to be loaded inside the body-->
+<script language="javascript" type="text/javascript"
+        src="{{ url_for('static', filename='node_modules/nouislider/distribute/nouislider.min.js') }}"></script>
+<script language="javascript" type="text/javascript"
+        src="{{ url_for('static', filename='js/menu-toggle.js') }}"></script>
 
 </body>
 

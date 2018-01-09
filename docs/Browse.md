@@ -39,6 +39,21 @@ the slider and the boxes for minimum and maximum limits which will change the
  ![](gitbook/images/lenght_example.png)
 
 
+## Size ratio
+
+This option allows users to filter links that have plasmids with very different
+sizes. E.g. some plasmids may have a high mash dist (> 0.9) but one of the
+plasmids may be a lot smaller than the other. This ratio allows
+to specify a percentage between the smaller and the larger plasmid,
+connected by a link:
+
+`Size Ratio = 1 - (smaller plasmid length / larger plasmid length)`
+
+The cutoff that the user should provide in this popup, is the maximum
+percentage difference between the two plasmids. So, if we set it
+to 30 (30% in fact) this will tell pATLAS to highlight or remove all the connections that
+have more than 30% difference in size between pairs of plasmids.
+
 ## Taxa
 
 In this option you may select a multitude of taxa filters ranging from order,

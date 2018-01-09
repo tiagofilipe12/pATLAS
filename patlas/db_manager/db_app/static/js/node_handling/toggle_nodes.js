@@ -5,7 +5,6 @@
  * @param {boolean} toggle_status - a boolean to control the status of the
  * toggle for plasmid name or accession number search box
  */
-
 const toggle_manager = (toggle_status) => {
   // if node mode on disable dropdown and retrieve an alert whenever the dropdown is clicked in this instance
   if (toggle_status === true) {
@@ -20,7 +19,14 @@ const toggle_manager = (toggle_status) => {
   }
 }
 
-// call the requests
+/**
+ * Function that handles the request of a single node click opening the
+ * top-right side popup, with metadata about a plasmid
+ * @param {Object} node - object that stores the id, links and data for that
+ * node.
+ * @param {function} setupPopupDisplay - function that should be executed
+ * inside this function.
+ */
 const requestPlasmidTable = (node, setupPopupDisplay) => {
   // if statement to check if node is in database or is a new import
   // from mapping
@@ -53,7 +59,30 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
   }
 }
 
-// function that iterates all nodes and when it finds a match recenters the dom
+/**
+ * function that iterates all nodes and when it finds a match recenters the dom
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {String}  query - the string with the accession number of the node
+ * to be queried
+ * @param {Boolean|String} currentQueryNode - this variable may be a boolean
+ * when there is no nodes queried before and the popup is closed. When,
+ * there is already a popup set, this will have stored a string with the
+ * accession number of the previously stored node.
+ * @param {Boolean} clickedPopupButtonCard - checks if Card button was
+ * previously clicked
+ * @param {Boolean} clickedPopupButtonRes - checks if ResFinder section of
+ * the popup was previously set
+ * @param {Boolean} clickedPopupButtonFamily - checks if plasmid finder
+ * button was previosuly opened
+ * @param {Function} requestPlasmidTable - function that executes the
+ * request for plasmid table and then handle the popup display
+ * @returns {String} currentQueryNode - returns currentQueryNode to be
+ * stored globally for future executions of this functions
+ */
 const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
                            clickedPopupButtonCard, clickedPopupButtonRes,
                            clickedPopupButtonFamily, requestPlasmidTable) => {
@@ -102,6 +131,27 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
 
 // function to search plasmidnames when toggle is on
 // async function returns a promise which results can then be parsed by .then()
+/**
+ * Function to search plasmid names when toggle is on. This function is
+ * async and returns a promise which results can then be parsed by .then()
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Boolean|String} currentQueryNode - this variable may be a boolean
+ * when there is no nodes queried before and the popup is closed. When,
+ * there is already a popup set, this will have stored a string with the
+ * accession number of the previously stored node.
+ * @param {Boolean} clickedPopupButtonCard - checks if Card button was
+ * previously clicked
+ * @param {Boolean} clickedPopupButtonRes - checks if ResFinder section of
+ * the popup was previously set
+ * @param {Boolean} clickedPopupButtonFamily - checks if plasmid finder
+ * button was previosuly opened
+ * @returns {Promise<String|*>} currentQueryNode - returns currentQueryNode to be
+ * stored globally for future executions of this functions
+ */
 const toggleOnSearch = async (g, graphics, renderer, currentQueryNode,
                               clickedPopupButtonCard, clickedPopupButtonRes,
                               clickedPopupButtonFamily) => {
