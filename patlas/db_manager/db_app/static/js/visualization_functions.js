@@ -653,6 +653,8 @@ const onLoad = () => {
       $("#colorLegendBox").empty()
       $("#res_label").hide()
       $("#colorLegendBoxRes").empty()
+      $("#vir_label").hide()
+      $("#colorLegendBoxVir").empty()
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
       pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
@@ -750,6 +752,8 @@ const onLoad = () => {
       $("#colorLegendBox").empty()
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
+      $("#vir_label").hide()
+      $("#colorLegendBoxVir").empty()
       // same should be done for taxa filters submit button
       const tempPageReRun = pageReRun
       resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
@@ -840,6 +844,8 @@ const onLoad = () => {
       $("#colorLegendBox").empty()
       $("#res_label").hide()
       $("#colorLegendBoxRes").empty()
+      $("#pf_label").hide()
+      $("#colorLegendBoxPf").empty()
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
       virSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
