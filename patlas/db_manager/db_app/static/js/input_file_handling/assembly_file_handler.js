@@ -1,4 +1,22 @@
+/**
+ * Function to handle the assembly import file.
+ * @param {Array} listGi - An array of all accession numbers represented
+ * with nodes in pATLAS.
+ * @param {Object} assemblyFile - Stores all the files as keys and values as
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Array} masterReadArray - The array that will store everything
+ * that passes the cutoffs, which in this case it will be everything
+ * imported by assemblyJson
+ * @param {Array} listGiFilter - Array that stores the selected nodes that
+ * is used in many other features throughout pATLAS.
+ * @returns {Array} listGiFilter - Array that stores the selected nodes that
+ * is used in many other features throughout pATLAS.
+ */
 const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilter) => {
+  console.log(assemblyFile, masterReadArray)
   // iterate through all entries in assembly file
   for (const i in assemblyFile) {
     if (assemblyFile.hasOwnProperty(i)) {
