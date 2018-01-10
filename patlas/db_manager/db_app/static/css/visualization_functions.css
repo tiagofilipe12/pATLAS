@@ -652,6 +652,10 @@
     height: 34px;
 }
 
+#go_back, #Re_run, #download_ds, #tableShow, #heatmapButtonTab, #plotButton{
+    height: 34px;
+}
+
 #fileNameDiv{
     margin-top: 5px;
     padding: 5px;
