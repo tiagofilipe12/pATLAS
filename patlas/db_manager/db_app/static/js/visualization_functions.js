@@ -175,6 +175,7 @@ const onLoad = () => {
     showDownload = document.getElementById("download_ds"),
     showLegend = document.getElementById("colorLegend"),
     showTable = document.getElementById("tableShow"),
+    heatMap = document.getElementById("heatmapButtonTab"),
     plotButton = document.getElementById("plotButton")
 
 
@@ -247,6 +248,7 @@ const onLoad = () => {
         showGoback.style.display = "block"
         showDownload.style.display = "block"
         showTable.style.display = "block"
+        heatMap.style.display = "block"
         plotButton.style.display = "block"
         // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
@@ -644,6 +646,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
@@ -652,6 +655,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       }
     })
@@ -679,6 +683,7 @@ const onLoad = () => {
           showGoback.style.display = "block"
           showDownload.style.display = "block"
           showTable.style.display = "block"
+          heatMap.style.display = "block"
           plotButton.style.display = "block"
         }
       })
@@ -744,6 +749,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
@@ -752,6 +758,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       }
     })
@@ -778,6 +785,7 @@ const onLoad = () => {
           showGoback.style.display = "block"
           showDownload.style.display = "block"
           showTable.style.display = "block"
+          heatMap.style.display = "block"
           plotButton.style.display = "block"
         }
       })
@@ -835,6 +843,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
@@ -843,6 +852,7 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       }
     })
@@ -870,6 +880,7 @@ const onLoad = () => {
           showGoback.style.display = "block"
           showDownload.style.display = "block"
           showTable.style.display = "block"
+          heatMap.style.display = "block"
           plotButton.style.display = "block"
         }
       })
@@ -953,6 +964,7 @@ const onLoad = () => {
         //document.getElementById("go_back").className += " disabled"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
@@ -962,6 +974,7 @@ const onLoad = () => {
         //document.getElementById("go_back").className += " disabled"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       }
     })
@@ -1173,6 +1186,7 @@ const onLoad = () => {
               showGoback.style.display = "block"
               showDownload.style.display = "block"
               showTable.style.display = "block"
+              heatMap.style.display = "block"
               plotButton.style.display = "block"
             })
         })
@@ -1286,6 +1300,7 @@ const onLoad = () => {
                   showGoback.style.display = "block"
                   showDownload.style.display = "block"
                   showTable.style.display = "block"
+                  heatMap.style.display = "block"
                   plotButton.style.display = "block"
                 })
             }) // ends showDiv
@@ -1937,6 +1952,8 @@ const onLoad = () => {
 
   // function to display heatmap dataset selected in table
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
+    console.log("test")
+    $("#heatmapModal").modal()
     // transform internal accession numbers to ncbi acceptable accesions
     if (readFilejson !== false) {
       heatmapMaker(masterReadArray, readFilejson)
@@ -1968,6 +1985,7 @@ const onLoad = () => {
     showGoback.style.display = "block"
     showDownload.style.display = "block"
     showTable.style.display = "block"
+    heatMap.style.display = "block"
     plotButton.style.display = "block"
     // sets listGiFilter to the selected nodes
     listGiFilter = bootstrapTableList
@@ -1979,7 +1997,7 @@ const onLoad = () => {
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
     // $("#metadataTable").bootstrapTable("destroy")
-    $(".nav-tabs a[href='#homeTable']").tab("show")
+    // $(".nav-tabs a[href='#homeTable']").tab("show")
     showDiv()
       .then( () => {
         previousTableList = makeTable(areaSelection, listGiFilter,

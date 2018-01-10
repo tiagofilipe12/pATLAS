@@ -186,6 +186,9 @@
     </div>
   </div>
 </div>
+
+<!--modal for video tutorials-->
+
 <div class="modal fade" id="videoModal" data-backdrop="static"
      role="dialog" tabindex="-1">
   <div class="modal-dialog" id="videoDialog" style="width: 60%">
@@ -215,6 +218,47 @@
   </div>
 </div>
 
+<!-- Modal for heatmap-->
+<div id="heatmapModal" class="modal fade" data-backdrop="static" role="dialog"
+     tabindex="-1">
+  <div class="modal-dialog" style="width: 80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Heatmap for all imported samples</h4>
+      </div>
+      <div class="modal-body table-responsive" id="modalHeatBody">
+        <div id="chartContainer2">
+          <b> Warning: </b>No information available. Please
+          check that reads
+          json files are imported, given that this options
+          is used for comparison between samples.
+        </div>
+      </div>
+    <!--</div>-->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default btn-circle"
+              data-toggle="popover" data-placement="right"
+              data-trigger="focus"
+              data-original-title="Plot controls"
+              data-content="Test"
+              data-html="true"
+              aria-describedby="tooltip" style="position: absolute;
+                        left:2%"
+              id="questionHeatmap">
+        <span class="glyphicon glyphicon-question-sign"></span>
+      </button>
+      <button type="submit" class="btn btn-default"
+              data-dismiss="modal" id="heatSubmit"
+      >Ok
+      </button>
+      <!--<button class="btn btn-danger" id="cancelTable">Close-->
+      <!--</button>-->
+    </div>
+  </div>
+</div>
+</div>
+
 <!-- Modal for table-->
 <div id="tableModal" class="modal fade" data-backdrop="static" role="dialog"
      tabindex="-1">
@@ -226,45 +270,28 @@
           metadata</h4>
       </div>
       <div class="modal-body table-responsive" id="modalTableBody">
-        <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab"
-                                href="#homeTable">Table
-          </a></li>
-          <li id="heatmapButtonTab" disabled
-          ><a data-toggle="tab" href="#heatmapTab">Heatmap</a></li>
-        </ul>
-        <div class="tab-content">
-          <div id="homeTable" class="tab-pane fade in active">
-            <div id="toolbar">
-              <button class="btn btn-default" id="downloadTable"
-                      type="button" data-toogle="tooptip"
-                      title="Download selection">
-                <span class="glyphicon glyphicon-download-alt"></span>
-              </button>
-            </div>
-            <table class="table" id="metadataTable"
-                   data-striped="true"
-                   data-search="true"
-                   data-show-toggle="true"
-                   data-show-columns="true"
-                   data-query-params="queryParams"
-                   data-pagination="true"
-                   data-height="550"
-                   data-show-export="true"
-                   data-click-to-select="true"
-                   data-toolbar="#toolbar">
-            </table>
-          </div>
-          <div id="heatmapTab" class="tab-pane fade">
-            <div id="chartContainer2">
-              <b> Warning: </b>No information available. Please
-              check that reads
-              json files are imported, given that this options
-              is used for comparison between samples.
-            </div>
-          </div>
+        <div id="toolbar">
+          <button class="btn btn-default" id="downloadTable"
+                  type="button" data-toogle="tooptip"
+                  title="Download selection">
+            <span class="glyphicon glyphicon-download-alt"></span>
+          </button>
         </div>
+        <table class="table" id="metadataTable"
+               data-striped="true"
+               data-search="true"
+               data-show-toggle="true"
+               data-show-columns="true"
+               data-query-params="queryParams"
+               data-pagination="true"
+               data-page-list = "10, 25, 50, 100, ALL"
+               data-height="550"
+               data-show-export="true"
+               data-click-to-select="true"
+               data-toolbar="#toolbar">
+        </table>
       </div>
+      <!--</div>-->
       <div class="modal-footer">
         <button type="button" class="btn btn-default btn-circle"
                 data-toggle="popover" data-placement="right"
@@ -1085,6 +1112,12 @@
                   title="Table with metadata" style="display:
                             none">
             <span class="glyphicon glyphicon-list-alt"></span></button>
+          <button class="btn btn-default" id="heatmapButtonTab"
+                  type="button" data-toogle="tooptip"
+                  title="Heatmap for multiple import comparison" style="display:
+                            none">
+            <span class="glyphicon glyphicon-th"></span>
+          </button>
           <button class="btn btn-default"
                   data-toggle="tooltip" type="button"
                   title="Quick stats"

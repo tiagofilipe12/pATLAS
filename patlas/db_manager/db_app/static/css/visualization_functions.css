@@ -648,7 +648,7 @@
     /*background: #ccc;*/
 }
 
-#modalTableBody > .tab-content > .tab-pane > .bootstrap-table > .fixed-table-toolbar > .columns > .btn{
+#modalTableBody > .bootstrap-table > .fixed-table-toolbar > .columns > .btn{
     height: 34px;
 }
 

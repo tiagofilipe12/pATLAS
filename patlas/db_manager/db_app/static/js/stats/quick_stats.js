@@ -425,6 +425,7 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
       })
 
       // show info on the nodes that are shown
+      // TODO put this in a function that checks for 0 and 1 and corrects the sentence
       $("#spanEntries").html(
         `Displaying results for ${results.length} of ${tempList.length} 
         (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
