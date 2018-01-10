@@ -1,4 +1,15 @@
-// convertes a given range to valies between c and 1
+/**
+ * Function that convert a given range of values between oldMin and oldMax
+ * to newMin and newMax
+ * @param {number} x - the value to be converted
+ * @param {number} oldMin - the old min value set for the interval range
+ * where x was present
+ * @param {number} oldMax - the old max value set for the interval range
+ * where x was present
+ * @param {number} newMin - The new min value to change x to
+ * @param {number} newMax - The new max value to change x to
+ * @returns {number} y - the changed x value within the new range
+ */
 const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
   // initial range is between 0 and 1
   // newMax should be 1
@@ -8,22 +19,51 @@ const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
   return y
 }
 
-// TODO this three functions could be merged
-// function to get value from cutoffValue
+/**
+ * Function to check if the user set a cutoff value for mapping results
+ * coverage percentage and if none is provided a default will be set here.
+ * @returns {number}
+ */
 const cutoffParser = () => {
   return ($("#cutoffValue").val() !== "") ? parseFloat($("#cutoffValue").val()) : 0.6
 }
 
-// function to get value from cutoffValue
+/**
+ * Function to check if the user set a cutoff value for mash screen results
+ * percentage and if none is defined set a default value
+ * @returns {number} - The cutoff percentage cutoff value for mash import
+ */
 const cutoffParserMash = () => {
   return ($("#cutoffValueMash").val() !== "") ? parseFloat($("#cutoffValueMash").val()) : 0.9
 }
 
+/**
+ * Function to check if the user set a new copy number cutoff and if none is
+ * provided set a default value
+ * @returns {number} - The copy number cutoff value
+ */
 const copyNumberCutoff = () => {
   return ($("#copyNumberValue").val() !== "") ? parseFloat($("#copyNumberValue").val()) : 2
 }
 
 // function to iterate through nodes
+/**
+ * Function to iterate through all nodes and add percentages and copy number
+ * of a single plasmid to pATLAS
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {number} readColor - The actual color to be added to the plasmid
+ * being queried.
+ * @param {String} gi - The accession number to be queried and for which the
+ * color should change
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {number} perc - the percentage value that is associated with this
+ * plasmid
+ * @param {number} copyNumber - The copy number value associated with this
+ * plasmid that came from mash screen results. Other modules will not have
+ * copy number for now
+ */
 const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
   g.forEachNode( (node) => {
     // when filter removes all nodes and then adds them again. Looks like g
@@ -48,8 +88,18 @@ const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
   })
 }
 
-// get pallete
+/**
+ * Function that allows pATLAs to select the proper color palette for the
+ * desired mode
+ * @param {Function} scale - the function that defines the scale generated
+ * by the module chroma
+ * @param {number} x - the number of ticks that will be displayed in legend,
+ * which will result in the actual number of colors present in the gradient
+ * @param {boolean} readMode - boolean used to control if we are dealing
+ * with imports from files or with distance or size ratio modes
+ */
 const palette = (scale, x, readMode) => { // x is the number of colors
+  console.log(scale)
 // to the
 // gradient
   showLegend = document.getElementById("colorLegend") // global variable to
@@ -83,9 +133,25 @@ const palette = (scale, x, readMode) => { // x is the number of colors
   }
 }
 
-// single read displayer
-// This function colors each node present in input read json file
-
+/**
+ * A function to color each node present in input json files, either they
+ * are from mapping, mash screen or even sequence import features. Note that
+ * this function only reads one file at a time
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Array} listGi - array that stores all accession numbers of the
+ * nodes present in default vivagraph instance
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {String} readString - a string with the accession number for the
+ * current read file
+ * @returns {*[]} [listGi, listGiFilter]- returns the updated listGi which may
+ * become legacy in
+ * future implementation given that singletons are no longer absent from the
+ * initial network. It also returns listGiFilter, the list of accession
+ * numbers that is used by many other features throughout pATLAS.
+ */
 const readColoring = (g, listGi, graphics, renderer, readString) => {
   const readMode = true
   let listGiFilter = []
@@ -97,39 +163,11 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
     const perc = readString[string]
 
     // adds node if it doesn't have links
-    // TODO singletons were removed in order to avoid misleading users
-    // if (list_gi.indexOf(gi) <= -1) {
-    //   g.addNode(gi, {
-    //     sequence: "<span style='color:#468499'>Accession: </span><a " +
-    //     "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split("_").slice(0, 2).join("_") + "' target='_blank'>" + gi + "</a>",
-    //     log_length: 10
-    //     // percentage: "<font color='#468499'>percentage: </font>" + perc
-    //   })
-    //   list_gi.push(gi)
-    // }
-    // checks if it is an array --> enabling mash mode
+
     if (perc.constructor === Array) {
       const identity = parseFloat(perc[0])
       const copyNumber = perc[1]
-      // TODO removed previous implementation of comparison between mash
-      // samples
-      // if (document.getElementsByClassName("check_file_mash").checked) {
-      //   if (identity >= 0.5) {
-      //     // perc values had to be normalized to the percentage value between 0
-      //     // and 1
-      //     const readColor = chroma.mix("#eacc00", "maroon", (identity - 0.5) * 2).hex()
-      //       .replace("#", "0x")
-      //     node_iter(g, readColor, gi, graphics, identity, copyNumber)
-      //     listGiFilter.push(gi)
-      //   } else {
-      //     const readColor = chroma.mix("blue", "#eacc00", identity * 2).hex()
-      //       .replace("#", "0x")
-      //     node_iter(g, readColor, gi, graphics, identity, copyNumber)
-      //     listGiFilter.push(gi)
-      //   }
-      //   const scale = chroma.scale(["blue", "#eacc00", "maroon"])
-      //   palette(scale, 10, readMode)
-      // } else {
+
         if (identity >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
           const newPerc = rangeConverter(identity, cutoffParserMash(), 1, 0, 1)
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
@@ -287,6 +325,14 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
 }
 
 // option to return links to their default color
+/**
+ * A function to reset the color of all links to default color scheme.
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ */
 const reset_link_color = (g, graphics, renderer) => {
   g.forEachLink(function (link) {
     const linkUI = graphics.getLinkUI(link.id)
@@ -299,6 +345,13 @@ const reset_link_color = (g, graphics, renderer) => {
 // *** color scale legend *** //
 // for distances
 
+/**
+ * Function to define color legend scale depending on the color scheme
+ * selected for link distances,
+ * @param {boolean} readMode - here it is set to false in order to provide
+ * it to child palette function, which will use it to selct a different
+ * color scheme for this link coloring mode.
+ */
 const color_legend = (readMode) => {
   const scale = (document.getElementById("colorForm").value === "Green" +
     " color scheme") ? chroma.scale(["#65B661", "#CAE368"]) :
@@ -315,7 +368,18 @@ const forceSelectorFullRemoval = (selector) => {
 }
 
 // Clear nodes function for reset-sliders button
-
+/**
+ * Function to clear all nodes to default state, storing previous color in
+ * backupColor
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {number} nodeColor - a variable that stores the hex code in
+ * vivagraph readable style: 0xrrggbb.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Array} idsArrays - array that store ids names for taxa related labels
+ */
 const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   // first iters nodes to get nodeColor (default color)
   node_color_reset(graphics, g, nodeColor, renderer)
