@@ -16,7 +16,6 @@
  * is used in many other features throughout pATLAS.
  */
 const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilter) => {
-  console.log(assemblyFile, masterReadArray)
   // iterate through all entries in assembly file
   for (const i in assemblyFile) {
     if (assemblyFile.hasOwnProperty(i)) {

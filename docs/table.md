@@ -66,6 +66,18 @@ export as:
 * SQL
 * MS-Excel
 
+#### Export full table
+
+In order to export the full table users must select `ALL` in the
+dropdown below the table, which allows to show more rows at once:
+
+![](gitbook/images/table_exportall.png)
+
+And then you can export the table in the desired format as usually.
+
+If `ALL` is not selected, users may end up with a partial table, since
+these export features only are able to export what is shown in the table.
+
 ### Double click on a cell
 
 Double clicking on a cell will trigger an event that will pass almost
