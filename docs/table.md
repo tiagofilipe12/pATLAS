@@ -25,7 +25,7 @@ Many column allow to sort by clicking on the respective column header.
 
 On the left of each row there are checkboxes that allow to make
 selections with that entries, that will allow many other commands (e.g.
-download selected checboxes sequences from NCBI eutils)
+download selected checkboxes sequences from NCBI eutils)
 
 ### Download button
 

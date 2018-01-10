@@ -2073,7 +2073,6 @@ const onLoad = () => {
 
   // plasmid finder button control
   $("#plasmidButton").unbind("click").bind("click", () => {
-    console.log("test")
     clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
   })
 

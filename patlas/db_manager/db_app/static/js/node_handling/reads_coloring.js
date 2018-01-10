@@ -99,7 +99,6 @@ const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
  * with imports from files or with distance or size ratio modes
  */
 const palette = (scale, x, readMode) => { // x is the number of colors
-  console.log(scale)
 // to the
 // gradient
   showLegend = document.getElementById("colorLegend") // global variable to

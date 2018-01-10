@@ -293,7 +293,6 @@ const parseReadObj = (readObjects, masterReadArray) => {
  * and their percentage values to the respective file.
  */
 const heatmapMaker = (masterReadArray, readObjects) => {
-  console.log(masterReadArray, readObjects)
   // clear heatmap div
   $("#chartContainer2").empty()
   const tripleArray = parseReadObj(readObjects, masterReadArray)
