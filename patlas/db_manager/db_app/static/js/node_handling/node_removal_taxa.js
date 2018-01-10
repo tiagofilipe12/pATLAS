@@ -204,6 +204,8 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           // which checks the divs that contain the species, color the as if
           // the button was clicked and makes the legends
           $("#taxaModalSubmit").click()
+        } else if ($("#p_Virulence").html() !== "Virulence:") {
+          $("#virSubmit").click()
         } else {
           colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
           // color for area selection

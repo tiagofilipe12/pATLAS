@@ -664,8 +664,6 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   return speciesList // this is returned async but there is no problem
 }
 
-// stats using node colors... if listGiFilter is empty
-
 /**
  * Function that searches for area selection highlighted nodes
  * @param {Object} g - graph related functions that iterate through nodes

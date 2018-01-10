@@ -662,6 +662,16 @@ const onLoad = () => {
 
     $("#pfSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      resetDisplayTaxaBox(
+        ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
+      )
+      $("#orderList").selectpicker("deselectAll")
+      $("#familyList").selectpicker("deselectAll")
+      $("#genusList").selectpicker("deselectAll")
+      $("#speciesList").selectpicker("deselectAll")
+      $("#resList").selectpicker("deselectAll")
+      $("#cardList").selectpicker("deselectAll")
+      $("#virList").selectpicker("deselectAll")
       // clears previous selected nodes
       node_color_reset(graphics, g, nodeColor, renderer)
       // empties taxa and plasmidfinder legend
@@ -764,6 +774,16 @@ const onLoad = () => {
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      resetDisplayTaxaBox(
+        ["p_Plasmidfinder", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
+      )
+      $("#orderList").selectpicker("deselectAll")
+      $("#familyList").selectpicker("deselectAll")
+      $("#genusList").selectpicker("deselectAll")
+      $("#speciesList").selectpicker("deselectAll")
+      $("#plasmidFamiliesList").selectpicker("deselectAll")
+      $("#virList").selectpicker("deselectAll")
+
       // clears previously selected nodes
       node_color_reset(graphics, g, nodeColor, renderer)
       // empties taxa and plasmidfinder legend
@@ -859,6 +879,16 @@ const onLoad = () => {
 
     $("#virSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      resetDisplayTaxaBox(
+        ["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Order", "p_Family", "p_Genus", "p_Species"]
+      )
+      $("#orderList").selectpicker("deselectAll")
+      $("#familyList").selectpicker("deselectAll")
+      $("#genusList").selectpicker("deselectAll")
+      $("#speciesList").selectpicker("deselectAll")
+      $("#resList").selectpicker("deselectAll")
+      $("#cardList").selectpicker("deselectAll")
+      $("#plasmidFamiliesList").selectpicker("deselectAll")
       // clears previous selected nodes
       node_color_reset(graphics, g, nodeColor, renderer)
       // empties taxa and plasmidfinder legend
@@ -990,6 +1020,11 @@ const onLoad = () => {
       $("#readLegend").empty()
       $("#read_label").hide()
       event.preventDefault()
+      resetDisplayTaxaBox(["p_PlasmidFinder", "p_Resfinder", "p_Card", "p_Virulence"])
+      $("#plasmidFamiliesList").selectpicker("deselectAll")
+      $("#resList").selectpicker("deselectAll")
+      $("#cardList").selectpicker("deselectAll")
+      $("#virList").selectpicker("deselectAll")
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
       // noLegend = false // sets legend to hidden state by default
@@ -1099,6 +1134,8 @@ const onLoad = () => {
       $("#colorLegendBoxRes").empty()
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
+      $("#vir_label").hide()
+      $("#colorLegendBoxVir").empty()
 
       // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
