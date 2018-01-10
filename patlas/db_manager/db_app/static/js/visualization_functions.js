@@ -1355,6 +1355,7 @@ const onLoad = () => {
     $("#fileSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
       masterReadArray = []
+      assemblyJson = false
       // feeds the first file
       const readString = JSON.parse(Object.values(readFilejson)[0])
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
@@ -1387,6 +1388,8 @@ const onLoad = () => {
 
     $("#sampleMapping").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      masterReadArray = []
+      assemblyJson = false
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
@@ -1417,6 +1420,7 @@ const onLoad = () => {
 
     $("#fileSubmit_mash").unbind("click").bind("click", (event) => {
       masterReadArray = []
+      assemblyJson = false
       readFilejson = mashJson // converts mash_json into readFilejson to
       readString = JSON.parse(Object.values(mashJson)[0])
       $("#fileNameDiv").html(Object.keys(mashJson)[0])
@@ -1452,6 +1456,8 @@ const onLoad = () => {
 
     $("#sampleMash").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      masterReadArray = []
+      assemblyJson = false
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
@@ -1462,7 +1468,7 @@ const onLoad = () => {
           // puts to readFilejson object that may store many files
           mashJson = {
             // has to be stringifyed to be passed to pushToMasterReadArray
-            "mapping_sample1": JSON.stringify(result)
+            "mash_sample1": JSON.stringify(result)
           }
           readFilejson = mashJson
           const outLists = readColoring(g, list_gi, graphics, renderer, result)
@@ -1483,6 +1489,7 @@ const onLoad = () => {
     $("#assemblySubmit").unbind("click").bind("click", (event) => {
       $("#alertAssembly").show()
       masterReadArray = []
+      readFilejson = false
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       areaSelection = false
@@ -1492,7 +1499,6 @@ const onLoad = () => {
       // }, 100)
       setTimeout( () => {
         renderer.rerender()
-        // TODO raise a warning for users to press play if they want
       }, 100)
 
       // }
@@ -1508,8 +1514,9 @@ const onLoad = () => {
 
     $("#sampleAssembly").unbind("click").bind("click", (event) => {
       $("#alertAssembly").show()
-      masterReadArray = []
       event.preventDefault()
+      masterReadArray = []
+      readFilejson = false
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       areaSelection = false
       $("#loading").show()
@@ -2157,6 +2164,7 @@ const onLoad = () => {
   // changes the behavior of tooltip to show only on click
   $("#questionPlots").popover()
   $("#questionTable").popover()
+  $("#questionHeatmap").popover()
   $("#questionMap").popover()
   $("#questionRatio").popover()
 
@@ -2177,6 +2185,7 @@ const onLoad = () => {
     // this force question buttons to close if tableModal and modalPlot are
     // closed
     $("#questionTable").popover("hide")
+    $("#questionHeatmap").popover("hide")
     $("#questionPlots").popover("hide")
     $("#questionMap").popover("hide")
     $("#questionRatio").popover("hide")

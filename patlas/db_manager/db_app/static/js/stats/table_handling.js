@@ -301,7 +301,16 @@ const parseReadObj = (readObjects, masterReadArray) => {
   return [xCategories, positionsMap, valuesArray]
 }
 
+/**
+ * Function to construct an heatmap that allows users to compare multiple
+ * samples in a single and effective manner
+ * @param {Array} masterReadArray - An array with all accesion number of the
+ * plasmids highlighted on the graph.
+ * @param {Object} readObjects - An object that maps each accession number
+ * and their percentage values to the respective file.
+ */
 const heatmapMaker = (masterReadArray, readObjects) => {
+  console.log(masterReadArray, readObjects)
   // clear heatmap div
   $("#chartContainer2").empty()
   const tripleArray = parseReadObj(readObjects, masterReadArray)
