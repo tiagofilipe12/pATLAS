@@ -1362,6 +1362,7 @@ const onLoad = () => {
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      areaSelection = false
       $("#loading").show()
       setTimeout( () => {
         // colors each node for first element of readFilejson
@@ -1389,6 +1390,7 @@ const onLoad = () => {
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      areaSelection = false
       $("#loading").show()
       setTimeout( () => {
         getArrayMapping().done((result) => {
@@ -1423,6 +1425,7 @@ const onLoad = () => {
       readIndex += 1
       // it and use the same function (readColoring)
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      areaSelection = false
       event.preventDefault()
       $("#loading").show()
       setTimeout( () => {
@@ -1452,6 +1455,7 @@ const onLoad = () => {
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      areaSelection = false
       $("#loading").show()
       setTimeout( () => {
         getArrayMash().done((result) => {
@@ -1481,6 +1485,7 @@ const onLoad = () => {
       masterReadArray = []
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      areaSelection = false
       $("#loading").show()
       // setTimeout( () => {
       listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
@@ -1506,6 +1511,7 @@ const onLoad = () => {
       masterReadArray = []
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      areaSelection = false
       $("#loading").show()
       // setTimeout( () => {
       getArrayAssembly().then( (results) => {
