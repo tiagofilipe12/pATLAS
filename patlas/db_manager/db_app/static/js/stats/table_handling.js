@@ -281,18 +281,37 @@ const parseReadObj = (readObjects, masterReadArray) => {
           // both depending if it is an import from mapping or mash respectively
           const percValue = (typeof(fileEntries[i2]) === "number") ?
             fileEntries[i2] : parseFloat(fileEntries[i2][0])
-          if (percValue >= cutoffParser()) {
-            // checks if it is already in y labels (containing plasmid accessions
-            if (masterReadArray.indexOf(i2) < 0) {
-              plasmidIndex = masterReadArray.indexOf(i2)
-              coverageValue = Math.round(percValue * 100)
-              valuesArray.push(coverageValue)
-            } else {
-              plasmidIndex = masterReadArray.indexOf(i2)
-              coverageValue = Math.round(percValue * 100)
-              valuesArray.push(coverageValue)
+          // checks if it is an import from Mash file
+          if (fileEntries[i2].constructor !== Array) {
+            if (percValue >= cutoffParser()) {
+              // checks if it is already in y labels (containing plasmid accessions
+              if (masterReadArray.indexOf(i2) < 0) {
+                plasmidIndex = masterReadArray.indexOf(i2)
+                coverageValue = Math.round(percValue * 100)
+                valuesArray.push(coverageValue)
+              } else {
+                plasmidIndex = masterReadArray.indexOf(i2)
+                coverageValue = Math.round(percValue * 100)
+                valuesArray.push(coverageValue)
+              }
+              positionsMap.push([fileIndex, plasmidIndex, coverageValue])
             }
-            positionsMap.push([fileIndex, plasmidIndex, coverageValue])
+          } else {
+            // executes for mash files
+            const copyNumber = parseFloat(fileEntries[i2][1])
+            if (percValue >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
+              // checks if it is already in y labels (containing plasmid accessions
+              if (masterReadArray.indexOf(i2) < 0) {
+                plasmidIndex = masterReadArray.indexOf(i2)
+                coverageValue = Math.round(percValue * 100)
+                valuesArray.push(coverageValue)
+              } else {
+                plasmidIndex = masterReadArray.indexOf(i2)
+                coverageValue = Math.round(percValue * 100)
+                valuesArray.push(coverageValue)
+              }
+              positionsMap.push([fileIndex, plasmidIndex, coverageValue])
+            }
           }
         }
       }
@@ -319,7 +338,8 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       type: "heatmap",
       marginTop: 50,
       plotBorderWidth: 1,
-      height: masterReadArray.length * 25, // size is relative to array size
+      height: 200 + masterReadArray.length * 20, // size is relative to array
+      // size
       //width: tripleArray[0].length * 200
     },
     title: {
@@ -350,7 +370,7 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       margin: 0,
       verticalAlign: "top",
       y: 25,
-      symbolHeight: 400
+      symbolHeight: 200
     },
     tooltip: {
       formatter: function () {

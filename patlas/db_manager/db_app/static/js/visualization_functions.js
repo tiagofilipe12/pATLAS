@@ -1330,27 +1330,6 @@ const onLoad = () => {
     //* ************//
     //* ***READS****//
     //* ************//
-    const pushToMasterReadArray = (readFilejson) => {
-      const returnArray = []
-      // iterate for all files and save to masterReadArray to use in heatmap
-      for (const i in readFilejson) {
-        if (readFilejson.hasOwnProperty(i)) {
-          const fileEntries = JSON.parse(readFilejson[i])
-          // iterate each accession number
-          for (const i2 in fileEntries) {
-            if (fileEntries.hasOwnProperty(i2)) {
-              // if not in masterReadArray then add it
-              const percValue = (typeof(fileEntries[i2]) === "number") ?
-                fileEntries[i2] : parseFloat(fileEntries[i2][0])
-              if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParser()) {
-                returnArray.push(i2)
-              }
-            }
-          }
-        }
-      }
-      return returnArray
-    }
 
     $("#fileSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
@@ -1464,7 +1443,7 @@ const onLoad = () => {
       areaSelection = false
       $("#loading").show()
       setTimeout( () => {
-        getArrayMash().done((result) => {
+        getArrayMash().done( (result) => {
           // puts to readFilejson object that may store many files
           mashJson = {
             // has to be stringifyed to be passed to pushToMasterReadArray
@@ -1965,7 +1944,6 @@ const onLoad = () => {
 
   // function to display heatmap dataset selected in table
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
-    console.log("test")
     $("#heatmapModal").modal()
     // transform internal accession numbers to ncbi acceptable accesions
     if (readFilejson !== false) {

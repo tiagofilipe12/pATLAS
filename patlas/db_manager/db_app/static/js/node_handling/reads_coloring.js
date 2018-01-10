@@ -394,3 +394,38 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   // resets dropdown selections
   $("#virList").selectpicker("deselectAll")
 }
+/**
+ * Function to push value to masterReadArray
+ * @param {Object} readFilejson - the object that contains the files to be
+ * loaded and their respective jsons as values.
+ * @returns {Array} returnArray - returns an array with all the accession
+ * numbers that match the defined criteria
+ */
+const pushToMasterReadArray = (readFilejson) => {
+  const returnArray = []
+  // iterate for all files and save to masterReadArray to use in heatmap
+  for (const i in readFilejson) {
+    if (readFilejson.hasOwnProperty(i)) {
+      const fileEntries = JSON.parse(readFilejson[i])
+      // iterate each accession number
+      for (const i2 in fileEntries) {
+        if (fileEntries.hasOwnProperty(i2)) {
+          // if not in masterReadArray then add it
+          const percValue = (typeof(fileEntries[i2]) === "number") ?
+            fileEntries[i2] : parseFloat(fileEntries[i2][0])
+          if (fileEntries[i2].constructor !== Array) {
+            if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParser()) {
+              returnArray.push(i2)
+            }
+          } else {
+            const copyNumber = parseFloat(fileEntries[i2][1])
+            if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
+              returnArray.push(i2)
+            }
+          }
+        }
+      }
+    }
+  }
+  return returnArray
+}
