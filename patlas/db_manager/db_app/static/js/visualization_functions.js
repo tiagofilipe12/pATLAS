@@ -1968,6 +1968,7 @@ const onLoad = () => {
     .on("dbl-click-cell.bs.table", (field, value, row, element) => {
       recenterDOM(renderer, layout, [element.id, false])
       requestPlasmidTable(g.getNode(element.id), setupPopupDisplay)
+      currentQueryNode = element.id
     })
 
   // function to download dataset selected in table
@@ -2024,8 +2025,6 @@ const onLoad = () => {
   // function to create table
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
-    // $("#metadataTable").bootstrapTable("destroy")
-    // $(".nav-tabs a[href='#homeTable']").tab("show")
     showDiv()
       .then( () => {
         previousTableList = makeTable(areaSelection, listGiFilter,
