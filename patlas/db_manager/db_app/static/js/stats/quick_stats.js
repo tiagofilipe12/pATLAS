@@ -53,7 +53,6 @@ const arraytoHighcharts = (array) => {
  * @param {String} font - type of font to be applied (normal/bold)
  */
 const axisHighlight = (that, index, color, font) => {
-  console.log(that, index, color, font)
   const newAxis = {
     title: {
       style: {

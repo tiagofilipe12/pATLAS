@@ -70,6 +70,7 @@ const promiseGather = async (listGiFilter) => {
   request.sequences = await $.post("api/getspecies/", {"accession": JSON.stringify(listGiFilter)})
   request.resistances = await $.post("api/getresistances/", {"accession": JSON.stringify(listGiFilter)})
   request.pfamilies = await $.post("api/getplasmidfinder/", {"accession": JSON.stringify(listGiFilter)})
+  request.virulence = await $.post("api/getvirulence/", {"accession": JSON.stringify(listGiFilter)})
   return request
 }
 
@@ -146,8 +147,16 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
               break
             }
           }
+          for (let virulenceRequests of requests.virulence) {
+            if (virulenceRequests.plasmid_id === accession) {
+              entry.virGenes = virulenceRequests.json_entry.gene.replace(/['u"\[\]]/g, "")
+              // loops must be break because there must be only one entry
+              break
+            }
+          }
           entry.resGenes = (entry.resGenes === "") ? "N/A" : entry.resGenes
           entry.pfGenes = (entry.pfGenes === "") ? "N/A" : entry.pfGenes
+          entry.virGenes = (entry.virGenes === "") ? "N/A" : entry.virGenes
           promises.push(entry)
         }
 
@@ -193,6 +202,11 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
               }, {
                 field: "pfGenes",
                 title: "Plasmid families",
+                visible: false,
+                sortable: true
+              }, {
+                field: "virGenes",
+                title: "Virulence genes",
                 visible: false,
                 sortable: true
               }, {
