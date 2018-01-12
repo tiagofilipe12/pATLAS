@@ -480,6 +480,8 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
  */
 const showDiv = () => {
   return new Promise( (resolve) => {
+    // disables this button group
+    $("#toolButtonGroup button").attr("disabled", "disabled")
     resolve($("#loading").show())
   })
 }

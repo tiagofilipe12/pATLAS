@@ -683,19 +683,24 @@ const onLoad = () => {
       $("#colorLegendBoxVir").empty()
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
-      pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
-        legendInst = results
-        pageReRun = false
-        // just show legend if any selection is made at all
-        if (legendInst === true) {
-          showLegend.style.display = "block"
-          showRerun.style.display = "block"
-          showGoback.style.display = "block"
-          showDownload.style.display = "block"
-          showTable.style.display = "block"
-          heatMap.style.display = "block"
-          plotButton.style.display = "block"
-        }
+      showDiv().then( () => {
+        pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+          legendInst = results
+          pageReRun = false
+          // just show legend if any selection is made at all
+          if (legendInst === true) {
+            showLegend.style.display = "block"
+            showRerun.style.display = "block"
+            showGoback.style.display = "block"
+            showDownload.style.display = "block"
+            showTable.style.display = "block"
+            heatMap.style.display = "block"
+            plotButton.style.display = "block"
+          }
+          // enables button group again
+          $("#toolButtonGroup button").removeAttr("disabled")
+          $("#loading").hide()
+        })
       })
     })
 
@@ -795,19 +800,24 @@ const onLoad = () => {
       $("#colorLegendBoxVir").empty()
       // same should be done for taxa filters submit button
       const tempPageReRun = pageReRun
-      resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
-        legendInst = results
-        pageReRun = false
-        // just show legend if any selection is made at all
-        if (legendInst === true) {
-          showLegend.style.display = "block"
-          showRerun.style.display = "block"
-          showGoback.style.display = "block"
-          showDownload.style.display = "block"
-          showTable.style.display = "block"
-          heatMap.style.display = "block"
-          plotButton.style.display = "block"
-        }
+      showDiv().then( () => {
+        resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
+          legendInst = results
+          pageReRun = false
+          // just show legend if any selection is made at all
+          if (legendInst === true) {
+            showLegend.style.display = "block"
+            showRerun.style.display = "block"
+            showGoback.style.display = "block"
+            showDownload.style.display = "block"
+            showTable.style.display = "block"
+            heatMap.style.display = "block"
+            plotButton.style.display = "block"
+          }
+          // enables button group again
+          $("#toolButtonGroup button").removeAttr("disabled")
+          $("#loading").hide()
+        })
       })
     })
 
@@ -900,19 +910,24 @@ const onLoad = () => {
       $("#colorLegendBoxPf").empty()
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
-      virSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
-        legendInst = results
-        pageReRun = false
-        // just show legend if any selection is made at all
-        if (legendInst === true) {
-          showLegend.style.display = "block"
-          showRerun.style.display = "block"
-          showGoback.style.display = "block"
-          showDownload.style.display = "block"
-          showTable.style.display = "block"
-          heatMap.style.display = "block"
-          plotButton.style.display = "block"
-        }
+      showDiv().then( () => {
+        virSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+          legendInst = results
+          pageReRun = false
+          // just show legend if any selection is made at all
+          if (legendInst === true) {
+            showLegend.style.display = "block"
+            showRerun.style.display = "block"
+            showGoback.style.display = "block"
+            showDownload.style.display = "block"
+            showTable.style.display = "block"
+            heatMap.style.display = "block"
+            plotButton.style.display = "block"
+          }
+          // enables button group again
+          $("#toolButtonGroup button").removeAttr("disabled")
+          $("#loading").hide()
+        })
       })
     })
 
@@ -1225,6 +1240,8 @@ const onLoad = () => {
               showTable.style.display = "block"
               heatMap.style.display = "block"
               plotButton.style.display = "block"
+              // enables button group again
+              $("#toolButtonGroup button").removeAttr("disabled")
             })
         })
       }
@@ -1339,6 +1356,8 @@ const onLoad = () => {
                   showTable.style.display = "block"
                   heatMap.style.display = "block"
                   plotButton.style.display = "block"
+                  // enables button group again
+                  $("#toolButtonGroup button").removeAttr("disabled")
                 })
             }) // ends showDiv
 
@@ -1562,13 +1581,13 @@ const onLoad = () => {
       $("#reset-sliders").click()
       $("#loading").show()
       $("#scaleLegend").empty()
-      showDiv().then(
+      showDiv().then( () => {
         linkColoring(g, graphics, renderer, "distance", toggleRatioStatus)
-      )
-      // TODO add hide loading after this promise is resolved
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+      })
       const readMode = false
       color_legend(readMode)
-      //document.getElementById("reset-links").disabled = ""
     })
 
     $("#reset-links").unbind("click").bind("click", (event) => {
@@ -1691,6 +1710,8 @@ const onLoad = () => {
         setTimeout( () => {
           actualRemoval(g, graphics, onLoad, false)
           freezeShift = true
+          // enables button group again
+          $("#toolButtonGroup button").removeAttr("disabled")
         }, 100)
       })
     })
@@ -1708,6 +1729,9 @@ const onLoad = () => {
         // removes nodes and forces adding same nodes
         setTimeout( () => {
           actualRemoval(g, graphics, onLoad, true)
+          // enables button group again
+          console.log("test")
+          $("#toolButtonGroup button").removeAttr("disabled")
         }, 100)
       })
     })
@@ -2008,18 +2032,25 @@ const onLoad = () => {
       recenterDOM(renderer, layout, [bootstrapTableList[0], false])
       requestPlasmidTable(g.getNode(bootstrapTableList[0]), setupPopupDisplay)
     }
-    colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
-    // handles hidden buttons
-    showRerun.style.display = "block"
-    showGoback.style.display = "block"
-    showDownload.style.display = "block"
-    showTable.style.display = "block"
-    heatMap.style.display = "block"
-    plotButton.style.display = "block"
-    // sets listGiFilter to the selected nodes
-    listGiFilter = bootstrapTableList
-    bootstrapTableList = []
-    renderer.rerender()
+    showDiv().then( () => {
+      console.log("color")
+      colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
+
+      // handles hidden buttons
+      showRerun.style.display = "block"
+      showGoback.style.display = "block"
+      showDownload.style.display = "block"
+      showTable.style.display = "block"
+      heatMap.style.display = "block"
+      plotButton.style.display = "block"
+      // sets listGiFilter to the selected nodes
+      listGiFilter = bootstrapTableList
+      bootstrapTableList = []
+      // enables button group again
+      $("#toolButtonGroup button").removeAttr("disabled")
+      $("#loading").hide()
+      renderer.rerender()
+    })
   })
 
   // function to create table
@@ -2029,6 +2060,8 @@ const onLoad = () => {
       .then( () => {
         previousTableList = makeTable(areaSelection, listGiFilter,
           previousTableList, g, graphics, graphSize)
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
       })
   })
 
@@ -2148,6 +2181,8 @@ const onLoad = () => {
     showDiv().then(
       setTimeout( () => {
         linkColoring(g, graphics, renderer, "size", toggleRatioStatus, totalNumberOfLinks)
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     )
     // const readMode = false
