@@ -191,7 +191,7 @@ const resetHighlight = (ch) => {
  * @param {boolean} sortVal - variable that controls if array is to be
  * sorted in descending order.
  */
-const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
+const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal, associativeObj) => {
   $("#loadingImgPlots").hide()
   $("#alertPlot").hide()
   // $("#alertPlotEntries").hide()
@@ -213,7 +213,23 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       data: doubleArray[0],
       name: "No. of plasmids",
       showInLegend: false,
-      color: colorsPlot[taxaType.replace(" ", "")]
+      color: colorsPlot[taxaType.replace(" ", "")],
+      point: {
+        events: {
+          click() {
+            // highlights nodes in vivagraph
+            // uses the same color as areaSelection
+            const currentColor = 0x23A900
+            // resets nodes before making the requests and changing the
+            // color again
+            $("#reset-sliders").click()
+            console.log(this.name)
+            colorNodes(g, graphics, renderer, associativeObj[this.name], currentColor)
+            // this is necessary to allow for the plot to be reset again
+            areaSelection = true
+          }
+        }
+      }
     }]
     // this options allows column plots to show more than 10k plasmids
     layout.plotOptions = {
@@ -221,6 +237,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
         turboThreshold: 0
       }
     }
+
     // enable sort buttons again
     $("#sortGraph").removeAttr("disabled")
     $("#sortGraphAlp").removeAttr("disabled")
@@ -267,7 +284,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       },
       point: {
         events: {
-          click: function () {
+          click() {
             clickedHighchart = this.category
             $("#submitButton").click()
             highlightHist(this)
@@ -333,6 +350,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
         point: {
           events: {
             click() {
+              // highlights the scatter on bar click
               highLightScatter(this)
             }
           }
@@ -397,6 +415,20 @@ const layoutGet = (taxaType) => {
     }
   }
 }
+/**
+ * A function to create an object which associates plot x labels with
+ * accession numbers
+ * @param {Object} obj -
+ * @param {String} queryAccession - the accession number being queried
+ * @param {String} tagName - the taxa or genes to be the key of the object
+ */
+const associativeObjAssigner = (obj, queryAccession, tagName) => {
+  if (obj.hasOwnProperty(tagName)) {
+    obj[tagName].push(queryAccession)
+  } else {
+    obj[tagName] = [queryAccession]
+  }
+}
 
 /**
  * This function is similar to getMetadata but uses 'database' psql table to
@@ -412,10 +444,10 @@ const layoutGet = (taxaType) => {
  * values from the psql table for each of the queried accession number given
  * a taxaType.
  */
-const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
+const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
-
+  let associativeObj = {}
   let PFList = []
 
   $.post("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
@@ -436,13 +468,13 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
           for (const i in pfName) {
             if ({}.hasOwnProperty.call(pfName, i)) {
               PFList.push(pfName[i])
+              associativeObjAssigner(associativeObj, data.plasmid_id, pfName[i])
               // counter += 1
             }
           }
         }
 
       })
-
       // show info on the nodes that are shown
       $("#spanEntries").html(
         `Displaying results for ${results.length} of ${tempList.length} 
@@ -455,7 +487,7 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
       // if (PFList.length >= tempList.length) {
 
       const layout = layoutGet(taxaType)
-      statsParser(false, PFList, layout, taxaType, sortAlp, sortVal)
+      statsParser(g, graphics, renderer, false, PFList, layout, taxaType, sortAlp, sortVal, associativeObj)
       // }
     })
   return PFList
@@ -475,10 +507,11 @@ const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
  * values from the psql table for each of the queried accession number given
  * a taxaType.
  */
-const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
+const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
   // TODO this should plot resfinder and card seperately
   // resets progressBar
   resetProgressBar()
+  let associativeObj = {}
 
   let resList = []
   $.post("api/getresistances/", { "accession": JSON.stringify(tempList) })
@@ -498,6 +531,7 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
           // otherwise needs to parse the array into an array
           for (const i in pfName) {
             resList.push(pfName[i])
+            associativeObjAssigner(associativeObj, data.plasmid_id, pfName[i])
           }
         }
 
@@ -515,7 +549,7 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
       // EXECUTE STATS
       // if (resList.length >= tempList.length) {
       const layout = layoutGet(taxaType)
-      statsParser(false, resList, layout, taxaType, sortAlp, sortVal)
+      statsParser(g, graphics, renderer, false, resList, layout, taxaType, sortAlp, sortVal, associativeObj)
       // }
     })
   return resList
@@ -535,9 +569,10 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
  * values from the psql table for each of the queried accession number given
  * a taxaType.
  */
-const getMetadataVir = (tempList, taxaType, sortAlp, sortVal) => {
+const getMetadataVir = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
+  let associativeObj = {}
 
   let virList = []
   $.post("api/getvirulence/", { "accession": JSON.stringify(tempList) })
@@ -559,6 +594,7 @@ const getMetadataVir = (tempList, taxaType, sortAlp, sortVal) => {
           for (const i in virName) {
             if ({}.hasOwnProperty.call(virName, i)) {
               virList.push(virName[i])
+              associativeObjAssigner(associativeObj, data.plasmid_id, pfName[i])
             }
           }
         }
@@ -578,7 +614,7 @@ const getMetadataVir = (tempList, taxaType, sortAlp, sortVal) => {
       // checks whether virList is empty meaning that there are no virulence
       // genes for this selection
       const layout = layoutGet(taxaType)
-      statsParser(false, virList, layout, taxaType, sortAlp, sortVal)
+      statsParser(g, graphics, renderer, false, virList, layout, taxaType, sortAlp, sortVal, associativeObj)
       // }
     })
 
@@ -600,10 +636,11 @@ const getMetadataVir = (tempList, taxaType, sortAlp, sortVal) => {
  * values from the psql table for each of the queried accession number given
  * a taxaType.
  */
-const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
+const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
   let speciesList = []
+  let associativeObj = {}
 
   $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
@@ -619,22 +656,28 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
             const speciesName = (result.json_entry.name === null) ? "unknown" : result.json_entry.name.split("_").join(" ")
             // push to main list to control the final of the loop
             speciesList.push(speciesName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, speciesName)
           } else if (taxaType === "genus") {
             const genusName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[0].replace(/['[]/g, "")
             // push to main list to control the final of the loop
             speciesList.push(genusName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, genusName)
           } else if (taxaType === "family") {
             const familyName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[1].replace(/[']/g, "")
             speciesList.push(familyName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, familyName)
           } else if (taxaType === "order") {
             const orderName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[2].replace(/['\]]/g, "")
             speciesList.push(orderName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, orderName)
           } else if (taxaType === "cluster") {
-            const clusterName = (result.json_entry.cluster === null) ? "unknown" : result.json_entry.cluster
+            const clusterName = (result.json_entry.cluster === null) ? "singleton" : result.json_entry.cluster
             speciesList.push(clusterName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, clusterName)
           } else {
             const speciesLength = (result.json_entry.length === null) ? "unknown" : result.json_entry.length
             speciesList.push(speciesLength)
+            // associativeObjAssigner(associativeObj, result.plasmid_id, speciesLength)
             accessionResultsList.push(result.plasmid_id)
             // assumes that it is length by default
           }
@@ -655,7 +698,7 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
 
       // if (taxaType === "species") {
       const layout = layoutGet(taxaType)
-      if (speciesList.length >= tempList.length) { statsParser(accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal) }
+      if (speciesList.length >= tempList.length) { statsParser(g, graphics, renderer, accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal, associativeObj) }
     })
     .catch( (error) => {
       console.log("Error: ", error)
@@ -677,17 +720,18 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
  * @returns {Array} - returns an array similar to listGiFilter that will be
  * used to construct the plot array
  */
-const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
+const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
+  console.log(mode)
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
     if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  const taxaList = (mode === "plasmid families") ? getMetadataPF(tempListAccessions, mode, sortAlp, sortVal) :
-    (mode === "resistances") ? getMetadataRes(tempListAccessions, mode, sortAlp, sortVal) :
-      (mode === "virulence") ? getMetadataVir(tempListAccessions, mode, sortAlp, sortVal) :
-        getMetadata(tempListAccessions, mode, sortAlp, sortVal)
+  const taxaList = (mode === "plasmid families") ? getMetadataPF(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
+    (mode === "resistances") ? getMetadataRes(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
+      (mode === "virulence") ? getMetadataVir(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
+        getMetadata(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal)
   return taxaList
 }
 
@@ -696,7 +740,7 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
  * particularly for taxa and length associated plots
  * @param {boolean} areaSelection
  * @param {Array} listGiFilter
- * @param {String} clickerButton
+ * @param {String} clickerButtonsliders
  * @param g - graph related functions that iterate through nodes
  * and links.
  * @param graphics - vivagraph functions related with node and link
@@ -704,11 +748,11 @@ const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
  * @returns {Array} - returns the list of plasmid to be plotted (accession
  * numbers at this strage)
  */
-const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
   const listPlots = (areaSelection === false) ?
-    getMetadata(listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, clickerButton, false, false)
+    getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, renderer, clickerButton, false, false)
   return listPlots
 }
 
@@ -725,10 +769,10 @@ const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, g
  * @returns {Array} - returns the list of plasmid to be plotted (accession
  * numbers at this stage)
  */
-const pfRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  const listPlots = (areaSelection === false) ? getMetadataPF(listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, clickerButton, false, false)
+  const listPlots = (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, renderer, clickerButton, false, false)
   return listPlots
 }
 
@@ -745,10 +789,10 @@ const pfRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g,
  * @returns {Array} - returns the list of plasmid to be plotted (accession
  * numbers at this stage)
  */
-const resRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+const resRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  const listPlots = (areaSelection === false) ? getMetadataRes(listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, clickerButton, false, false)
+  const listPlots = (areaSelection === false) ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, renderer, clickerButton, false, false)
   return listPlots
 }
 
@@ -765,9 +809,9 @@ const resRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g
  * @returns {Array} - returns the list of plasmid to be plotted (accession
  * numbers at this stage)
  */
-const virRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+const virRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  const listPlots = (areaSelection === false) ? getMetadataVir(listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, clickerButton, false, false)
+  const listPlots = (areaSelection === false) ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+    : statsColor(g, graphics, renderer, clickerButton, false, false)
   return listPlots
 }

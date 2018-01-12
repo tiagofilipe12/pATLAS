@@ -402,56 +402,56 @@ const onLoad = () => {
         // otherwise maintain listGiFilter untouched
         listGiFilter
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#speciesStats").unbind("click").bind("click", () => {
       clickerButton = "species"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       },500)
     })
 
     $("#genusStats").unbind("click").bind("click", () => {
       clickerButton = "genus"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#familyStats").unbind("click").bind("click", () => {
       clickerButton = "family"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#orderStats").unbind("click").bind("click", () => {
       clickerButton = "order"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#resistanceStats").unbind("click").bind("click", () => {
       clickerButton = "resistances"
       setTimeout( () => {
-        listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = resRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#pfamilyStats").unbind("click").bind("click", () => {
       clickerButton = "plasmid families"
       setTimeout( () => {
-        listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = pfRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#virStats").unbind("click").bind("click", () => {
       clickerButton = "virulence"
       setTimeout( () => {
-        listPlots = virRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = virRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
@@ -459,14 +459,14 @@ const onLoad = () => {
     $("#lengthStats").unbind("click").bind("click", () => {
       clickerButton = "length"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#clusterStats").unbind("click").bind("click", () => {
       clickerButton = "cluster"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
@@ -474,14 +474,14 @@ const onLoad = () => {
     $("#sortGraph").unbind("click").bind("click", () => {
       const sortVal = true
       const layoutPlot = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(false, listPlots, layoutPlot, clickerButton, false, sortVal) }
+      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").unbind("click").bind("click", () => {
       const sortAlp = true
       const layoutPlot = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(false, listPlots, layoutPlot, clickerButton, sortAlp, false) }
+      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, sortAlp, false) }
     })
 
     // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -491,47 +491,47 @@ const onLoad = () => {
     $("#lengthPlot").unbind("click").bind("click", () => {
       clickerButton = "length"
       // TODO save previous plotly generated graphs before rendering the new ones
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#speciesPlot").unbind("click").bind("click", () => {
       clickerButton = "species"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#genusPlot").unbind("click").bind("click", () => {
       clickerButton = "genus"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#familyPlot").unbind("click").bind("click", () => {
       clickerButton = "family"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#orderPlot").unbind("click").bind("click", () => {
       clickerButton = "order"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#clusterPlot").unbind("click").bind("click", () => {
       clickerButton = "cluster"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#resPlot").unbind("click").bind("click", () => {
       clickerButton = "resistances"
-      listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = resRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#pfPlot").unbind("click").bind("click", () => {
       clickerButton = "plasmid families"
-      listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = pfRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#virPlot").unbind("click").bind("click", () => {
       clickerButton = "virulence"
-      listPlots = virRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = virRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
