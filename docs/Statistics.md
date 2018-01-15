@@ -65,4 +65,10 @@ the information on resistances and plasmid families.
             * JPEG
             * PDF
             * SVG
+    * Clear highlights - This button will clear all highlights made in plots.
+    * Highlight on plasmid network - This button will be available for
+    bar plots when the user clicks on one or several bars. This will allow
+    users to filter the previous graph interaction for the selected bars,
+    i.e., this button will update the selection made in the plasmid network
+    so that it will only highlight in **green** the selected plasmids.
 
