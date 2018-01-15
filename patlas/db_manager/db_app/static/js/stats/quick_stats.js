@@ -177,8 +177,88 @@ const resetHighlight = (ch) => {
 }
 
 /**
+ * Function to highlight a single bar on click for bar plots. If bar color
+ * is already red then it will put it back to default color. If bar is not
+ * red then it will put it red to show the selected bars that can be further
+ * applied to the plasmid network.
+ * @param {Object} bar - the bar that was clicked
+ * @param {String} resetColor - hex code of the color to reset nodes bars.
+ * This depends on the plot that is being executed, thus having different
+ * default values for each plot
+ * @param {Object} objectHighlights - The object that stores the accession
+ * numbers associated with a given file. When the bar is removed the
+ * property of that bar will be removed from this object in this function
+ * @ param {Array} associativeObjArray - This contains the array for the
+ * clicked bar that as the accession numbers that should be associated with
+ * that bar element
+ */
+const highlightBar = (bar, resetColor, objectHighlights, associativeObjArray) => {
+  if (bar.color !== "#930200") {
+    bar.color = "#930200"
+    objectHighlights[bar.name] = associativeObjArray
+  } else {
+    bar.color = resetColor
+    delete objectHighlights[bar.name]
+  }
+  bar.update()
+}
+
+/**
+ * Function to reset all bars for all bar plots
+ * @param {Object} chartElement - the element of the chart that contains all
+ * the bars info
+ * @param {String} defaultColor - hex code of the color to reset nodes bars.
+ * This depends on the plot that is being executed, thus having different
+ * default values for each plot
+ */
+const resetAllBars = (chartElement, defaultColor) => {
+  const bars = chartElement.series[0].data
+  const resetBars = []
+  for ( const i in bars ) {
+    resetBars.push({"color": defaultColor})
+  }
+
+  chartElement.series[0].update({data: resetBars})
+}
+
+/**
+ * Funtion to highlight selection on vivagraph on click event on button
+ * after clicking on the desired bar
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Object} objectHighlight - The object that contains the accession
+ * numbers to be highlighted in vivagraph. This will collect an array for
+ * each property in this object and execute colorNodes function that will
+ * color nodes in green as used in area selection.
+ */
+const highlightVivagraph = (g, graphics, renderer, objectHighlight) => {
+  // highlights nodes in vivagraph
+  // uses the same color as areaSelection
+  const currentColor = 0x23A900
+  // resets nodes before making the requests and changing the
+  // color again
+  $("#reset-sliders").click()
+  // iterates through values in object to reset all selected colors
+  Object.values(objectHighlight).map( (arr) => {
+    colorNodes(g, graphics, renderer, arr, currentColor)
+  })
+  // after close modal
+  $("#modalPlot").modal("toggle")
+  // this is necessary to allow for the plot to be reset again
+  areaSelection = true
+}
+
+/**
  * Function that actually parse list to a plot and that actually renders the
  * plot
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @param {Array} accessionResultsList - an Empty array to be used within
  * the scope of file generation. This array is then stored for other functions
  * @param {Array} masterObj - The array of elements to be counted for the plots
@@ -199,6 +279,8 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
   $("#progressDiv").hide()
   $("#chartContainer1").show()
 
+  let objectHighlights = {}
+
   // parse the final array
   // here it assures that sorts are made just once
   const finalArray = (sortAlp === true) ? masterObj.sort() : (sortVal === true) ? arraytByValue(masterObj) : masterObj
@@ -212,25 +294,41 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
       type: "column",
       data: doubleArray[0],
       name: "No. of plasmids",
+      cursor: "pointer",
       showInLegend: false,
       color: colorsPlot[taxaType.replace(" ", "")],
       point: {
         events: {
           click() {
-            // highlights nodes in vivagraph
-            // uses the same color as areaSelection
-            const currentColor = 0x23A900
-            // resets nodes before making the requests and changing the
-            // color again
-            $("#reset-sliders").click()
-            console.log(this.name)
-            colorNodes(g, graphics, renderer, associativeObj[this.name], currentColor)
-            // this is necessary to allow for the plot to be reset again
-            areaSelection = true
+            highlightBar(this, colorsPlot[taxaType.replace(" ", "")], objectHighlights, associativeObj[this.name])
           }
         }
       }
     }]
+    // adds button to highlight nodes on vivagraph
+    layout.exporting = {
+      buttons: {
+        highlight: {
+          text: "Highlight on plasmid network",
+          onclick() { highlightVivagraph(g, graphics, renderer, objectHighlights) },
+          buttonSpacing: 8,
+          theme: {
+            stroke: "#313131"
+          }
+        },
+        clearHighlight: {
+          text: "Clear highlights",
+          onclick() { resetAllBars(this, colorsPlot[taxaType.replace(" ", "")]) }, // TODO add a function to remove
+          // all highlighted
+          // bars
+          buttonSpacing: 8,
+          theme: {
+            stroke: "#313131"
+          }
+        }
+      }
+    }
+
     // this options allows column plots to show more than 10k plasmids
     layout.plotOptions = {
       column: {
@@ -418,7 +516,8 @@ const layoutGet = (taxaType) => {
 /**
  * A function to create an object which associates plot x labels with
  * accession numbers
- * @param {Object} obj -
+ * @param {Object} obj - the object to make the association between the
+ * x labels and the accession numbers.
  * @param {String} queryAccession - the accession number being queried
  * @param {String} tagName - the taxa or genes to be the key of the object
  */
@@ -433,6 +532,11 @@ const associativeObjAssigner = (obj, queryAccession, tagName) => {
 /**
  * This function is similar to getMetadata but uses 'database' psql table to
  * retrieve plasmid finder associated genes
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @param {Array} tempList - The array of accession numbers to be queried
  * @param {String} taxaType - A string that are defined on button click and
  * that defines which parsing is needed to plot
@@ -496,6 +600,11 @@ const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortV
 /**
  * This function is similar to getMetadata but uses 'card' psql table to
  * retrieve card and resfinder associated genes
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @param {Array} tempList - The array of accession numbers to be queried
  * @param {String} taxaType - A string that are defined on button click and
  * that defines which parsing is needed to plot
@@ -558,6 +667,11 @@ const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
 /**
  * This function is similar to getMetadata but uses 'positive' psql table to
  * retrieve virulence associated genes
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @param {Array} tempList - The array of accession numbers to be queried
  * @param {String} taxaType - A string that are defined on button click and
  * that defines which parsing is needed to plot
@@ -625,6 +739,11 @@ const getMetadataVir = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
  * Function to query the database, starting with a list of accession
  * numbers. this queries the plasmids psql table and retrieves everything
  * that is associated with taxa and length.
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @param {Array} tempList - The array of accession numbers to be queried
  * @param {String} taxaType - A string that are defined on button click and
  * that defines which parsing is needed to plot
@@ -708,10 +827,11 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
 
 /**
  * Function that searches for area selection highlighted nodes
- * @param {Object} g - graph related functions that iterate through nodes
+ * @param g - graph related functions that iterate through nodes
  * and links.
  * @param {Object} graphics - vivagraph functions related with node and link
  * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @param {String} mode - this variable sets the kind of stats to be queried
  * @param {boolean} sortAlp - variable that controls if array is to be
  * sorted alphabetically and therefore render the graph in the same manner
@@ -721,7 +841,6 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
  * used to construct the plot array
  */
 const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
-  console.log(mode)
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
@@ -738,6 +857,11 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
 /**
  * Function that is used in several buttons that trigger the graph,
  * particularly for taxa and length associated plots
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @param {boolean} areaSelection
  * @param {Array} listGiFilter
  * @param {String} clickerButtonsliders
@@ -759,6 +883,11 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
 /**
  * Function that is used in several buttons that trigger the graph,
  * for plasmid finder associated plot
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @param {boolean} areaSelection
  * @param {Array} listGiFilter
  * @param {String} clickerButton
@@ -778,7 +907,12 @@ const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFi
 
 /**
  * Function that is used in several buttons that trigger the graph,
- * for resistance associated plot
+ * for resistance associated
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @param {boolean} areaSelection
  * @param {Array} listGiFilter
  * @param {String} clickerButton
@@ -804,8 +938,9 @@ const resRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiF
  * @param {String} clickerButton
  * @param g - graph related functions that iterate through nodes
  * and links.
- * @param graphics - vivagraph functions related with node and link
+ * @param {Object} graphics - vivagraph functions related with node and link
  * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
  * @returns {Array} - returns the list of plasmid to be plotted (accession
  * numbers at this stage)
  */
