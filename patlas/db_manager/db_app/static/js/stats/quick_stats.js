@@ -766,7 +766,7 @@ const getMetadataVir = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
           for (const i in virName) {
             if ({}.hasOwnProperty.call(virName, i)) {
               virList.push(virName[i])
-              associativeObjAssigner(associativeObj, data.plasmid_id, pfName[i])
+              associativeObjAssigner(associativeObj, data.plasmid_id, virName[i])
             }
           }
         }
@@ -827,7 +827,6 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
       //   speciesList.push("unknown")
       // }
       results.map( (result) => {
-        console.log(result.plasmid_id)
         // checks if plasmid is present in db
         if (result.plasmid_id !== null) {
           if (taxaType === "species") {
@@ -935,6 +934,11 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
 const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false) {
+    const listPlots = (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton, false, false)
+    previousTableList = listGiFilter
+    return listPlots
+  } else if (selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
     const listPlots = (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
     previousTableList = listGiFilter
