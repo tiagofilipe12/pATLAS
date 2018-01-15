@@ -2,18 +2,57 @@
 // PLOTS  //
 //********//
 
-// object defining colors for each type of plot
-const colorsPlot = {
-  species: "#058DC7",
-  genus: "#50B432",
-  family: "#ED561B",
-  order: "#DDDF00",
-  cluster: "#DF565F",
-  resistances: "#24CBE5",
-  plasmidfamilies: "#64E572",
-  length: "#A9B3CE",
-  virulence: "#8773ff"
+// object that controls colors and divs for contained depending on the
+// selected clickerButton
+const selector = {
+  species: {
+    color: "#058DC7",
+    div: "chartContainerSpecies",
+    state: false
+  },
+  genus: {
+    color: "#50B432",
+    div: "chartContainerGenus",
+    state: false
+  },
+  family: {
+    color: "#ED561B",
+    div: "chartContainerFamily",
+    state: false
+  },
+  order: {
+    color: "#DDDF00",
+    div: "chartContainerOrder",
+    state: false
+  },
+  cluster: {
+    color: "#DF565F",
+    div: "chartContainerCluster",
+    state: false
+  },
+  resistances: {
+    color:"#24CBE5",
+    div: "chartContainerResistance",
+    state: false
+  },
+  plasmidfamilies: {
+    color: "#64E572",
+    div: "chartContainerPlasmidFamilies",
+    state: false
+  },
+  length: {
+    color: "#A9B3CE",
+    div: "chartContainerLength",
+    state: false
+  },
+  virulence: {
+    color: "#8773ff",
+    div: "chartContainerVirulence",
+    state: false
+  }
 }
+
+let previousListPlots = ""
 
 /**
  * Function that prepeares array to be ready for highcharts histograms
@@ -105,7 +144,7 @@ const highLightScatter = (el) => {
     if ( b.index === el.index ) {
       modifiedBar.push({"color": "#4A6EAD"})
     } else {
-      modifiedBar.push({"color": colorsPlot.length})
+      modifiedBar.push({"color": selector.length.color})
     }
   }
   el.series.chart.series[0].update({
@@ -132,7 +171,7 @@ const highlightHist = (el) => {
     if ( b.x <= yval && yval < b.x2 ) {
       modifiedBars.push({"color": "#4A6EAD"})
     } else {
-      modifiedBars.push({"color": colorsPlot.length})
+      modifiedBars.push({"color": selector.length.color})
     }
   }
   el.series.chart.series[0].update({data: modifiedBars})
@@ -168,7 +207,7 @@ const resetHighlight = (ch) => {
   }
 
   for ( const b of bars ) {
-    resetBars.push({"color": colorsPlot.length})
+    resetBars.push({"color": selector.length.color})
   }
 
   ch.series[1].update({data: resetPoints})
@@ -249,6 +288,8 @@ const highlightVivagraph = (g, graphics, renderer, objectHighlight) => {
   $("#modalPlot").modal("toggle")
   // this is necessary to allow for the plot to be reset again
   areaSelection = true
+  previousTableList = []
+  Object.keys(selector).map( (el) => { selector[el].state = false })
 }
 
 /**
@@ -277,7 +318,6 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
   // $("#alertPlotEntries").hide()
   // controls progress bar div
   $("#progressDiv").hide()
-  $("#chartContainer1").show()
 
   let objectHighlights = {}
 
@@ -296,11 +336,11 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
       name: "No. of plasmids",
       cursor: "pointer",
       showInLegend: false,
-      color: colorsPlot[taxaType.replace(" ", "")],
+      color: selector[taxaType.replace(" ", "")].color,
       point: {
         events: {
           click() {
-            highlightBar(this, colorsPlot[taxaType.replace(" ", "")], objectHighlights, associativeObj[this.name])
+            highlightBar(this, selector[taxaType.replace(" ", "")].color, objectHighlights, associativeObj[this.name])
           }
         }
       }
@@ -318,7 +358,7 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
         },
         clearHighlight: {
           text: "Clear highlights",
-          onclick() { resetAllBars(this, colorsPlot[taxaType.replace(" ", "")]) }, // TODO add a function to remove
+          onclick() { resetAllBars(this, selector[taxaType.replace(" ", "")].color) }, // TODO add a function to remove
           // all highlighted
           // bars
           buttonSpacing: 8,
@@ -434,7 +474,7 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
         xAxis: 1,
         yAxis: 1,
         baseSeries: 1,
-        color: colorsPlot[taxaType.replace(" ", "")],
+        color: selector[taxaType.replace(" ", "")].color,
         zIndex: -1,
         cursor: "pointer",
         events: {
@@ -473,7 +513,23 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
     $("#sortGraph").attr("disabled", true)
     $("#sortGraphAlp").attr("disabled", true)
   }
-  Highcharts.chart("chartContainer1", layout)
+  // Highcharts.chart(selector[taxaType.replace(" ", "").div], layout)
+  Highcharts.chart(selector[taxaType.replace(" ", "")].div, layout)
+  $(`#${selector[taxaType.replace(" ", "")].div}`).show()
+  // state is set to true telling that the a graph is already present in
+  // this container
+  selector[taxaType.replace(" ", "")].state = true
+}
+
+/**
+ * Function that forces all containers to hide before rendering the new
+ * plot, avoiding that multiple plots are shown in the modalPlot
+ */
+const hideAllOtherPlots = () => {
+  // first force every contained that is true to be removed from the modal
+  Object.keys(selector).map( (el) => {
+      $(`#${selector[el].div}`).hide()
+  })
 }
 
 /**
@@ -481,8 +537,10 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
  */
 const resetProgressBar = () => {
   // resets progressBar
+  // first force every contained that is true to be removed from the modal
+  hideAllOtherPlots()
   $("#progressDiv").show()
-  $("#chartContainer1").hide()
+  // $(`#${chartDivId}`).hide()
 }
 
 // function to make layout
@@ -874,10 +932,20 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
  */
 const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  const listPlots = (areaSelection === false) ?
-    getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, renderer, clickerButton, false, false)
-  return listPlots
+  console.log(listGiFilter, previousTableList)
+  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false) {
+    const listPlots = (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton, false, false)
+    previousTableList = listGiFilter
+    return listPlots
+  } else {
+    // this code prevents plot from being queried again, since it is already
+    // stored in a div it is just a matter of hidding all other and showing
+    // this one
+    hideAllOtherPlots()
+    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
+    return
+  }
 }
 
 /**
@@ -900,9 +968,9 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
  */
 const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  const listPlots = (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, renderer, clickerButton, false, false)
-  return listPlots
+    const listPlots = (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton, false, false)
+    return listPlots
 }
 
 /**

@@ -242,7 +242,7 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
  * defined cutoffs by cutOffParse() and cutOffParserMash() + copyNumberCutoff()
  * @param {Object} readObjects - An object that maps each accession number
  * and their percentage values to the respective file.
- * @param {Array} masterReadArray - An array with all accesion number of the
+ * @param {Array} masterReadArray - An array with all accession number of the
  * plasmids highlighted on the graph.
  * @returns {*[]}
  */

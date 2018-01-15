@@ -255,6 +255,12 @@ const onLoad = () => {
         // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         areaSelection = true
         listGiFilter = [] //if selection is made listGiFilter should be empty
+        previousTableList = []
+        // transform selector object that handles plots and hide their
+        // respective divs
+        Object.keys(selector).map( (el) => { selector[el].state = false })
+        hideAllOtherPlots()
+        console.log(selector)
         resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
         // also reset file handlers that interfere with Re_run
         readFilejson = false
@@ -1684,6 +1690,11 @@ const onLoad = () => {
     // resets the slider
     $("#reset-sliders").unbind("click").bind("click", () => {
       listGiFilter = [] //resets listGiFilter
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
       areaSelection = false
       readFilejson = false // makes file selection empty again
       assemblyJson = false
