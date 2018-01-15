@@ -260,7 +260,6 @@ const onLoad = () => {
         // respective divs
         Object.keys(selector).map( (el) => { selector[el].state = false })
         hideAllOtherPlots()
-        console.log(selector)
         resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
         // also reset file handlers that interfere with Re_run
         readFilejson = false
@@ -646,6 +645,12 @@ const onLoad = () => {
 
       slider.noUiSlider.set([min, max])
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
         showLegend.style.display = "none"
         showRerun.style.display = "none"
@@ -680,6 +685,12 @@ const onLoad = () => {
       $("#virList").selectpicker("deselectAll")
       // clears previous selected nodes
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       // empties taxa and plasmidfinder legend
       $("#taxa_label").hide()
       $("#colorLegendBox").empty()
@@ -764,6 +775,12 @@ const onLoad = () => {
 
       slider.noUiSlider.set([min, max])
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
         showLegend.style.display = "none"
         showRerun.style.display = "none"
@@ -797,6 +814,12 @@ const onLoad = () => {
 
       // clears previously selected nodes
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       // empties taxa and plasmidfinder legend
       $("#taxa_label").hide()
       $("#colorLegendBox").empty()
@@ -873,6 +896,12 @@ const onLoad = () => {
 
       slider.noUiSlider.set([min, max])
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
         showLegend.style.display = "none"
         showRerun.style.display = "none"
@@ -907,6 +936,12 @@ const onLoad = () => {
       $("#plasmidFamiliesList").selectpicker("deselectAll")
       // clears previous selected nodes
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       // empties taxa and plasmidfinder legend
       $("#taxa_label").hide()
       $("#colorLegendBox").empty()
@@ -1008,6 +1043,12 @@ const onLoad = () => {
 
       slider.noUiSlider.set([min, max])
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
         showLegend.style.display = "none"
         showRerun.style.display = "none"
@@ -1150,6 +1191,12 @@ const onLoad = () => {
 
       // first restores all nodes to default color
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       // empties taxa and plasmidfinder legend
       $("#res_label").hide()
       $("#colorLegendBoxRes").empty()
@@ -1404,6 +1451,11 @@ const onLoad = () => {
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
       setTimeout( () => {
@@ -1434,6 +1486,11 @@ const onLoad = () => {
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
       setTimeout( () => {
@@ -1470,6 +1527,11 @@ const onLoad = () => {
       readIndex += 1
       // it and use the same function (readColoring)
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
       areaSelection = false
       event.preventDefault()
       $("#loading").show()
@@ -1502,6 +1564,11 @@ const onLoad = () => {
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
       setTimeout( () => {
@@ -1533,6 +1600,11 @@ const onLoad = () => {
       readFilejson = false
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
       // setTimeout( () => {
@@ -1559,6 +1631,11 @@ const onLoad = () => {
       masterReadArray = []
       readFilejson = false
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
       // setTimeout( () => {
@@ -1702,6 +1779,11 @@ const onLoad = () => {
       currentQueryNode = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
     })
     // runs the re run operation for the selected species
     $("#Re_run").unbind("click").bind("click", () => {
@@ -2206,6 +2288,12 @@ const onLoad = () => {
   */
   $("#slideRight").unbind("click").bind("click", () => {
     resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
     const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
@@ -2214,6 +2302,12 @@ const onLoad = () => {
 
   $("#slideLeft").unbind("click").bind("click", () => {
     resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
     const outArray = slideToLeft(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
