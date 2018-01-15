@@ -8,51 +8,58 @@ const selector = {
   species: {
     color: "#058DC7",
     div: "chartContainerSpecies",
-    state: false
+    state: false,
+    alertString: false
   },
   genus: {
     color: "#50B432",
     div: "chartContainerGenus",
-    state: false
+    state: false,
+    alertString: false
   },
   family: {
     color: "#ED561B",
     div: "chartContainerFamily",
-    state: false
+    state: false,
+    alertString: false
   },
   order: {
     color: "#DDDF00",
     div: "chartContainerOrder",
-    state: false
+    state: false,
+    alertString: false
   },
   cluster: {
     color: "#DF565F",
     div: "chartContainerCluster",
-    state: false
+    state: false,
+    alertString: false
   },
   resistances: {
     color:"#24CBE5",
     div: "chartContainerResistance",
-    state: false
+    state: false,
+    alertString: false
   },
   plasmidfamilies: {
     color: "#64E572",
     div: "chartContainerPlasmidFamilies",
-    state: false
+    state: false,
+    alertString: false
   },
   length: {
     color: "#A9B3CE",
     div: "chartContainerLength",
-    state: false
+    state: false,
+    alertString: false
   },
   virulence: {
     color: "#8773ff",
     div: "chartContainerVirulence",
-    state: false
+    state: false,
+    alertString: false
   }
 }
-
-let previousListPlots = ""
 
 /**
  * Function that prepeares array to be ready for highcharts histograms
@@ -638,11 +645,12 @@ const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortV
 
       })
       // show info on the nodes that are shown
-      $("#spanEntries").html(
-        `Displaying results for ${results.length} of ${tempList.length} 
+
+      selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
         (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
         plasmids. The remaining ${tempList.length - results.length} are unknown.`
-      )
+
+      $("#spanEntries").html(selector[taxaType].alertString)
       $("#alertPlotEntries").show()
 
       // EXECUTE STATS
@@ -701,16 +709,15 @@ const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
             associativeObjAssigner(associativeObj, data.plasmid_id, pfName[i])
           }
         }
-
       })
 
       // show info on the nodes that are shown
       // TODO put this in a function that checks for 0 and 1 and corrects the sentence
-      $("#spanEntries").html(
-        `Displaying results for ${results.length} of ${tempList.length} 
+      selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
         (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
         plasmids. The remaining ${tempList.length - results.length} are unknown.`
-      )
+
+      $("#spanEntries").html(selector[taxaType].alertString)
       $("#alertPlotEntries").show()
 
       // EXECUTE STATS
@@ -774,11 +781,11 @@ const getMetadataVir = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
       })
 
       // show info on the nodes that are shown
-      $("#spanEntries").html(
-        `Displaying results for ${results.length} of ${tempList.length} 
+      selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
         (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
         plasmids. The remaining ${tempList.length - results.length} are unknown.`
-      )
+
+      $("#spanEntries").html(selector[taxaType].alertString)
       $("#alertPlotEntries").show()
 
       // EXECUTE STATS
@@ -867,11 +874,11 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
       })
 
       // show info on the nodes that are shown
-      $("#spanEntries").html(
-        `Displaying results for ${results.length} of ${tempList.length} 
+      selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
         (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
         plasmids. The remaining ${tempList.length - results.length} are unknown.`
-      )
+
+      $("#spanEntries").html(selector[taxaType].alertString)
       $("#alertPlotEntries").show()
 
       // if (taxaType === "species") {
@@ -906,7 +913,7 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
     if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  const taxaList = (mode === "plasmid families") ? getMetadataPF(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
+  const taxaList = (mode === "plasmidfamilies") ? getMetadataPF(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
     (mode === "resistances") ? getMetadataRes(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
       (mode === "virulence") ? getMetadataVir(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
         getMetadata(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal)
@@ -933,12 +940,8 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
  */
 const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false) {
-    const listPlots = (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-      : statsColor(g, graphics, renderer, clickerButton, false, false)
-    previousTableList = listGiFilter
-    return listPlots
-  } else if (selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
+    || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
     const listPlots = (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
     previousTableList = listGiFilter
@@ -949,6 +952,8 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
     // this one
     hideAllOtherPlots()
     $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
+    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
+    $("#alertPlotEntries").show()
     return
   }
 }
@@ -973,9 +978,23 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
  */
 const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
+  console.log(clickerButton.replace(" ", ""))
+  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton.replace(" ", "")].state === false
+    || selector[clickerButton.replace(" ", "")].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
     const listPlots = (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-      : statsColor(g, graphics, renderer, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton.replace(" ", ""), false, false)
+    previousTableList = listGiFilter
     return listPlots
+  } else {
+    // this code prevents plot from being queried again, since it is already
+    // stored in a div it is just a matter of hidding all other and showing
+    // this one
+    hideAllOtherPlots()
+    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
+    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
+    $("#alertPlotEntries").show()
+    return
+  }
 }
 
 /**
@@ -998,9 +1017,22 @@ const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFi
  */
 const resRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  const listPlots = (areaSelection === false) ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, renderer, clickerButton, false, false)
-  return listPlots
+  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
+    || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    const listPlots = (areaSelection === false) ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton, false, false)
+    previousTableList = listGiFilter
+    return listPlots
+  } else {
+    // this code prevents plot from being queried again, since it is already
+    // stored in a div it is just a matter of hidding all other and showing
+    // this one
+    hideAllOtherPlots()
+    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
+    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
+    $("#alertPlotEntries").show()
+    return
+  }
 }
 
 /**
@@ -1019,7 +1051,19 @@ const resRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiF
  */
 const virRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  const listPlots = (areaSelection === false) ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, renderer, clickerButton, false, false)
-  return listPlots
+  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
+  || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    const listPlots = (areaSelection === false) ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton, false, false)
+    return listPlots
+  } else {
+    // this code prevents plot from being queried again, since it is already
+    // stored in a div it is just a matter of hidding all other and showing
+    // this one
+    hideAllOtherPlots()
+    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
+    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
+    $("#alertPlotEntries").show()
+    return
+  }
 }
