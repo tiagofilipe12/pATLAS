@@ -822,11 +822,12 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
   $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
       const accessionResultsList = []
-      const noUnknowns = tempList.length - results.length
-      for (let i=0; i < noUnknowns; i++) {
-        speciesList.push("unknown")
-      }
+      // const noUnknowns = tempList.length - results.length
+      // for (let i=0; i < noUnknowns; i++) {
+      //   speciesList.push("unknown")
+      // }
       results.map( (result) => {
+        console.log(result.plasmid_id)
         // checks if plasmid is present in db
         if (result.plasmid_id !== null) {
           if (taxaType === "species") {
@@ -859,6 +860,7 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
             // assumes that it is length by default
           }
         } else {
+          // TODO I think this is never ran
           // this adds in the case of singletons
           speciesList.push("singletons") // have no way to know since it is
           // not in db
@@ -875,7 +877,7 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
 
       // if (taxaType === "species") {
       const layout = layoutGet(taxaType)
-      if (speciesList.length >= tempList.length) { statsParser(g, graphics, renderer, accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal, associativeObj) }
+      statsParser(g, graphics, renderer, accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal, associativeObj)
     })
     .catch( (error) => {
       console.log("Error: ", error)
@@ -932,7 +934,6 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
  */
 const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  console.log(listGiFilter, previousTableList)
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false) {
     const listPlots = (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
