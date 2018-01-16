@@ -5,7 +5,7 @@
     virRepetitivePlotFunction, statsParser, node_color_reset,
      resetDisplayTaxaBox, showDiv, pfSubmitFunction, layoutGet,
       centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
-       filterDisplayer, slider */
+       filterDisplayer, slider, resSubmitFunction, virSubmitFunction */
 
 /**
 * A bunch of global functions to be used throughout patlas
