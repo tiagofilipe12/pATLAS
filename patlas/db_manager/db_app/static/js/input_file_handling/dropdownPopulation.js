@@ -165,7 +165,6 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   // shows legend
   // return Promise.all(promises)
   //   .then( () => {
-  console.log(storeLis)
   if (legendInst === true) {
     $("#res_label").show()
     $("#colorLegendBoxRes").empty()
