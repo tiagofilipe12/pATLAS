@@ -209,11 +209,11 @@ const resetHighlight = (ch) => {
   let resetPoints = []
   let resetBars = []
 
-  for ( const p of points ) {
+  for (const p of points) {
     resetPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3}})
   }
 
-  for ( const b of bars ) {
+  for (i = 0; i < bars.length; i++) {
     resetBars.push({"color": selector.length.color})
   }
 
@@ -260,7 +260,8 @@ const highlightBar = (bar, resetColor, objectHighlights, associativeObjArray) =>
 const resetAllBars = (chartElement, defaultColor) => {
   const bars = chartElement.series[0].data
   const resetBars = []
-  for ( const i in bars ) {
+  for (i = 0; i < bars.length; i++) {
+  // for (const i in bars) {
     resetBars.push({"color": defaultColor})
   }
 
