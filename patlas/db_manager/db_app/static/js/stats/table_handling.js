@@ -1,3 +1,13 @@
+/* globals Highcharts */
+
+/**
+ * Function to compare two arrays and check if they are equal, i.e. if they
+ * have the same elements present in both.
+ * @param {Array} arr1 - one of the arrays to be compared
+ * @param {Array} arr2 - the other array to be compared
+ * @returns {boolean} - returns false when both arrays are different,
+ * otherwise it returns true.
+ */
 const arraysEqual = (arr1, arr2) => {
   if (arr2.length === 0) {
     return false
@@ -13,6 +23,13 @@ const arraysEqual = (arr1, arr2) => {
   return true
 }
 
+/**
+ * Function to format link to cell
+ * @param {string} value - the accession number
+ * @param {undefined} row
+ * @param {undefined} index
+ * @returns {string} - a element for html link
+ */
 const linkFormatter = (value, row, index) => {
   const reducedAccession = value.split("_").slice(0, 2).join("_")
   const cleanAccession = reducedAccession + "." + value.split("_").slice(2)
@@ -44,7 +61,7 @@ const getTableWithAreaSelection = (g, graphics) => {
  * Function that gathers the results for querying the main, resistance and
  * plasmidfinder databases in psql for patlas
  * @param {Array} listGiFilter - a list with all accession numbers required
- * do query the databsae
+ * do query the database
  * @returns {Object} An object with all the requests made to
  * the database with three keys: sequences, where the main database entries
  * are stored; resistances, where the resistance database entries are stored;
@@ -55,6 +72,7 @@ const promiseGather = async (listGiFilter) => {
   request.sequences = await $.post("api/getspecies/", {"accession": JSON.stringify(listGiFilter)})
   request.resistances = await $.post("api/getresistances/", {"accession": JSON.stringify(listGiFilter)})
   request.pfamilies = await $.post("api/getplasmidfinder/", {"accession": JSON.stringify(listGiFilter)})
+  request.virulence = await $.post("api/getvirulence/", {"accession": JSON.stringify(listGiFilter)})
   return request
 }
 
@@ -78,71 +96,9 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
   if (arraysEqual(listGiFilter, previousTableList) === false) {
     $("#metadataTable").bootstrapTable("destroy")
     previousTableList = listGiFilter
-    // for (const i in listGiFilter) {
-      // if ({}.hasOwnProperty.call(listGiFilter, i)) {
-        // gets info for every node and puts it in a line
-        // const accession = listGiFilter[i]
-        // if (g.getNode(accession)) {
-        //   const nodeData = g.getNode(accession).data
-        //   const seqPercentage = (nodeData.percentage) ? nodeData.percentage : "N/A" // this may be
-          // undefined
-          // depending if input file is provided or not
 
-          // const seqLength = (nodeData.seq_length) ? nodeData.seq_length.split(">")[2] : "N/A"
-          // querying database is required before this
-          // promises.push(
-          // const promiseGather = async () => {
-            // starts entry variable
-            // const entry = {
-            //   "id": "",
-            //   "length": "",
-            //   "percentage": "",
-            //   "speciesName": "",
-            //   "plasmidName": "",
-            //   "resGenes": "",
-            //   "pfGenes": ""
-            // }
-            // sequence of promises that are executed sequentially
-            // await  $.get("api/getspecies/", {"accession": listGiFilter})
-              // if (data.plasmid_id) {
-                // const species = data.json_entry.name.split("_").join(" ")
-                // const plasmid = data.json_entry.plasmid_name
-                // const clusterId = data.json_entry.cluster
-
-                // // then add all to the object
-                // entry.id = accession
-                // entry.length = seqLength
-                // entry.percentage = seqPercentage
-                // entry.speciesName = species
-                // entry.plasmidName = plasmid
-                // entry.cluster = clusterId
-              // }
-            // })
-
-            // await $.get("api/getresistances/", {"accession": listGiFilter})
-              // const resistances = (data.plasmid_id) ? data.json_entry.gene.replace(/['u"\[\]]/g, "") : "N/A"
-              // add to entry
-              // entry.resGenes = resistances
-            // })
-
-            // await $.get("api/getplasmidfinder/", {"accession": listGiFilter})
-              // const plasmidfinder = (data.plasmid_id) ? data.json_entry.gene.replace(/['u"\[\]]/g, "") : "N/A"
-              // entry.pfGenes = plasmidfinder
-            // })
-            // async function must return the desired entry to push to dataArray
-            // return entry // returns promise
-
-          // }
-          // collect every promise for each accession number
-          // promises.push(promiseGather())
-        // }
-
-        // for every loop instance entries could be added to array, each entry
-        // in dataArray should be a single row
-      // }
-    // }
-    // waits for all promises before constructing full table
-    // Promise.all(promises)
+    // executes promiseGather function and then executes the remaining code,
+    // resulting in a list of entries that will be Promise.all
     promiseGather(listGiFilter)
       .then( (requests) => {
         // let promises = []
@@ -193,11 +149,27 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
               break
             }
           }
-          entry.resGenes = (entry.resGenes === "") ? "N/A" : entry.resGenes
-          entry.pfGenes = (entry.pfGenes === "") ? "N/A" : entry.pfGenes
+          for (let virulenceRequests of requests.virulence) {
+            if (virulenceRequests.plasmid_id === accession) {
+              entry.virGenes = virulenceRequests.json_entry.gene.replace(/['u"\[\]]/g, "")
+              // loops must be break because there must be only one entry
+              break
+            }
+          }
+          // since not allways the response is an empty string and sometimes
+          // it returns undefined... this check is to prevent showing empty
+          // columns in table
+          entry.resGenes = (entry.resGenes === "" || entry.resGenes === undefined) ?
+            "N/A" : entry.resGenes
+          entry.pfGenes = (entry.pfGenes === "" || entry.pfGenes === undefined) ?
+            "N/A" : entry.pfGenes
+          entry.virGenes = (entry.virGenes === "" || entry.virGenes === undefined) ?
+            "N/A" : entry.virGenes
           promises.push(entry)
         }
 
+        // after everyt entry has been added to promises array it will
+        // generate the table itself
         Promise.all(promises)
           .then( (entry) => {
             // table is just returned in the end before that a json should be
@@ -241,6 +213,11 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
                 visible: false,
                 sortable: true
               }, {
+                field: "virGenes",
+                title: "Virulence genes",
+                visible: false,
+                sortable: true
+              }, {
                 field: "cluster",
                 title: "Cluster no.",
                 visible: false,
@@ -262,6 +239,15 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
   return previousTableList
 }
 
+/**
+ * Parses the read object to store only the entries that are within the
+ * defined cutoffs by cutOffParse() and cutOffParserMash() + copyNumberCutoff()
+ * @param {Object} readObjects - An object that maps each accession number
+ * and their percentage values to the respective file.
+ * @param {Array} masterReadArray - An array with all accession number of the
+ * plasmids highlighted on the graph.
+ * @returns {*[]}
+ */
 const parseReadObj = (readObjects, masterReadArray) => {
   const xCategories = []
   const positionsMap = []
@@ -281,18 +267,37 @@ const parseReadObj = (readObjects, masterReadArray) => {
           // both depending if it is an import from mapping or mash respectively
           const percValue = (typeof(fileEntries[i2]) === "number") ?
             fileEntries[i2] : parseFloat(fileEntries[i2][0])
-          if (percValue >= cutoffParser()) {
-            // checks if it is already in y labels (containing plasmid accessions
-            if (masterReadArray.indexOf(i2) < 0) {
-              plasmidIndex = masterReadArray.indexOf(i2)
-              coverageValue = Math.round(percValue * 100)
-              valuesArray.push(coverageValue)
-            } else {
-              plasmidIndex = masterReadArray.indexOf(i2)
-              coverageValue = Math.round(percValue * 100)
-              valuesArray.push(coverageValue)
+          // checks if it is an import from Mash file
+          if (fileEntries[i2].constructor !== Array) {
+            if (percValue >= cutoffParser()) {
+              // checks if it is already in y labels (containing plasmid accessions
+              if (masterReadArray.indexOf(i2) < 0) {
+                plasmidIndex = masterReadArray.indexOf(i2)
+                coverageValue = Math.round(percValue * 100)
+                valuesArray.push(coverageValue)
+              } else {
+                plasmidIndex = masterReadArray.indexOf(i2)
+                coverageValue = Math.round(percValue * 100)
+                valuesArray.push(coverageValue)
+              }
+              positionsMap.push([fileIndex, plasmidIndex, coverageValue])
             }
-            positionsMap.push([fileIndex, plasmidIndex, coverageValue])
+          } else {
+            // executes for mash files
+            const copyNumber = parseFloat(fileEntries[i2][1])
+            if (percValue >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
+              // checks if it is already in y labels (containing plasmid accessions
+              if (masterReadArray.indexOf(i2) < 0) {
+                plasmidIndex = masterReadArray.indexOf(i2)
+                coverageValue = Math.round(percValue * 100)
+                valuesArray.push(coverageValue)
+              } else {
+                plasmidIndex = masterReadArray.indexOf(i2)
+                coverageValue = Math.round(percValue * 100)
+                valuesArray.push(coverageValue)
+              }
+              positionsMap.push([fileIndex, plasmidIndex, coverageValue])
+            }
           }
         }
       }
@@ -301,6 +306,14 @@ const parseReadObj = (readObjects, masterReadArray) => {
   return [xCategories, positionsMap, valuesArray]
 }
 
+/**
+ * Function to construct an heatmap that allows users to compare multiple
+ * samples in a single and effective manner
+ * @param {Array} masterReadArray - An array with all accesion number of the
+ * plasmids highlighted on the graph.
+ * @param {Object} readObjects - An object that maps each accession number
+ * and their percentage values to the respective file.
+ */
 const heatmapMaker = (masterReadArray, readObjects) => {
   // clear heatmap div
   $("#chartContainer2").empty()
@@ -310,7 +323,8 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       type: "heatmap",
       marginTop: 50,
       plotBorderWidth: 1,
-      height: masterReadArray.length * 25, // size is relative to array size
+      height: 200 + masterReadArray.length * 20, // size is relative to array
+      // size
       //width: tripleArray[0].length * 200
     },
     title: {
@@ -341,10 +355,10 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       margin: 0,
       verticalAlign: "top",
       y: 25,
-      symbolHeight: 400
+      symbolHeight: 200
     },
     tooltip: {
-      formatter: function () {
+      formatter() {
         return "<b>" + this.series.xAxis.categories[this.point.x] + "</b>" +
           " file" + " <br><b>" + this.point.value +
           "</b> % coverage <br><b>" +

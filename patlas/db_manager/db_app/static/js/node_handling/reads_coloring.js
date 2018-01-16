@@ -1,4 +1,17 @@
-// convertes a given range to valies between c and 1
+/* globals listGiFilter, resetDisplayTaxaBox, chroma, showLegend */
+
+/**
+ * Function that convert a given range of values between oldMin and oldMax
+ * to newMin and newMax
+ * @param {number} x - the value to be converted
+ * @param {number} oldMin - the old min value set for the interval range
+ * where x was present
+ * @param {number} oldMax - the old max value set for the interval range
+ * where x was present
+ * @param {number} newMin - The new min value to change x to
+ * @param {number} newMax - The new max value to change x to
+ * @returns {number} y - the changed x value within the new range
+ */
 const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
   // initial range is between 0 and 1
   // newMax should be 1
@@ -8,23 +21,52 @@ const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
   return y
 }
 
-// TODO this three functions could be merged
-// function to get value from cutoffValue
+/**
+ * Function to check if the user set a cutoff value for mapping results
+ * coverage percentage and if none is provided a default will be set here.
+ * @returns {number}
+ */
 const cutoffParser = () => {
   return ($("#cutoffValue").val() !== "") ? parseFloat($("#cutoffValue").val()) : 0.6
 }
 
-// function to get value from cutoffValue
+/**
+ * Function to check if the user set a cutoff value for mash screen results
+ * percentage and if none is defined set a default value
+ * @returns {number} - The cutoff percentage cutoff value for mash import
+ */
 const cutoffParserMash = () => {
   return ($("#cutoffValueMash").val() !== "") ? parseFloat($("#cutoffValueMash").val()) : 0.9
 }
 
+/**
+ * Function to check if the user set a new copy number cutoff and if none is
+ * provided set a default value
+ * @returns {number} - The copy number cutoff value
+ */
 const copyNumberCutoff = () => {
   return ($("#copyNumberValue").val() !== "") ? parseFloat($("#copyNumberValue").val()) : 2
 }
 
 // function to iterate through nodes
-const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
+/**
+ * Function to iterate through all nodes and add percentages and copy number
+ * of a single plasmid to pATLAS
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {number} readColor - The actual color to be added to the plasmid
+ * being queried.
+ * @param {String} gi - The accession number to be queried and for which the
+ * color should change
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {number} perc - the percentage value that is associated with this
+ * plasmid
+ * @param {number} copyNumber - The copy number value associated with this
+ * plasmid that came from mash screen results. Other modules will not have
+ * copy number for now
+ */
+const nodeIter = (g, readColor, gi, graphics, perc, copyNumber) => {
   g.forEachNode( (node) => {
     // when filter removes all nodes and then adds them again. Looks like g
     // was somehow affected.
@@ -48,7 +90,16 @@ const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
   })
 }
 
-// get pallete
+/**
+ * Function that allows pATLAs to select the proper color palette for the
+ * desired mode
+ * @param {Function} scale - the function that defines the scale generated
+ * by the module chroma
+ * @param {number} x - the number of ticks that will be displayed in legend,
+ * which will result in the actual number of colors present in the gradient
+ * @param {boolean} readMode - boolean used to control if we are dealing
+ * with imports from files or with distance or size ratio modes
+ */
 const palette = (scale, x, readMode) => { // x is the number of colors
 // to the
 // gradient
@@ -56,17 +107,17 @@ const palette = (scale, x, readMode) => { // x is the number of colors
   // be reset by the button reset-filters
   showLegend.style.display = "block"
   const tmpArray = new Array(x)// create an empty array with length x
-  const style_width = 100 / x
+  const styleWidth = 100 / x
   // enters this statement for coloring the links and not the nodes
   if (readMode !== true) {
     $("#scaleLegend").empty()
     $("#scaleString").empty()
     // this loop should be reversed since the higher values will have a lighter color
     for (let i = tmpArray.length - 1; i >= 0; i--) {
-      const color_element = scale(i / x).hex()
+      const colorElement = scale(i / x).hex()
       $("#scaleLegend").append("<span class='grad-step'" +
-        " style='background-color:" + color_element + "; width:" +
-        style_width + "%'></span>")
+        " style='background-color:" + colorElement + "; width:" +
+        styleWidth + "%'></span>")
     }
     $("#scaleString").append("<div class='min'>0.1</div>")
     $("#scaleString").append("<div class='med'>0.05</div>")
@@ -76,16 +127,32 @@ const palette = (scale, x, readMode) => { // x is the number of colors
     $("#readLegend").empty()
     $("#readString").empty()
     for (let i = 0; i < tmpArray.length; i++) {
-      const color_element = scale(i / x).hex()
+      const colorElement = scale(i / x).hex()
       $("#readLegend").append("<span class='grad-step' style='background-color:"
-         + color_element + "; width:" + style_width + "%'></span>")
+         + colorElement + "; width:" + styleWidth + "%'></span>")
     }
   }
 }
 
-// single read displayer
-// This function colors each node present in input read json file
-
+/**
+ * A function to color each node present in input json files, either they
+ * are from mapping, mash screen or even sequence import features. Note that
+ * this function only reads one file at a time
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Array} listGi - array that stores all accession numbers of the
+ * nodes present in default vivagraph instance
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {String} readString - a string with the accession number for the
+ * current read file
+ * @returns {*[]} [listGi, listGiFilter]- returns the updated listGi which may
+ * become legacy in
+ * future implementation given that singletons are no longer absent from the
+ * initial network. It also returns listGiFilter, the list of accession
+ * numbers that is used by many other features throughout pATLAS.
+ */
 const readColoring = (g, listGi, graphics, renderer, readString) => {
   const readMode = true
   let listGiFilter = []
@@ -97,45 +164,17 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
     const perc = readString[string]
 
     // adds node if it doesn't have links
-    // TODO singletons were removed in order to avoid misleading users
-    // if (list_gi.indexOf(gi) <= -1) {
-    //   g.addNode(gi, {
-    //     sequence: "<span style='color:#468499'>Accession: </span><a " +
-    //     "href='https://www.ncbi.nlm.nih.gov/nuccore/" + gi.split("_").slice(0, 2).join("_") + "' target='_blank'>" + gi + "</a>",
-    //     log_length: 10
-    //     // percentage: "<font color='#468499'>percentage: </font>" + perc
-    //   })
-    //   list_gi.push(gi)
-    // }
-    // checks if it is an array --> enabling mash mode
+
     if (perc.constructor === Array) {
       const identity = parseFloat(perc[0])
       const copyNumber = perc[1]
-      // TODO removed previous implementation of comparison between mash
-      // samples
-      // if (document.getElementsByClassName("check_file_mash").checked) {
-      //   if (identity >= 0.5) {
-      //     // perc values had to be normalized to the percentage value between 0
-      //     // and 1
-      //     const readColor = chroma.mix("#eacc00", "maroon", (identity - 0.5) * 2).hex()
-      //       .replace("#", "0x")
-      //     node_iter(g, readColor, gi, graphics, identity, copyNumber)
-      //     listGiFilter.push(gi)
-      //   } else {
-      //     const readColor = chroma.mix("blue", "#eacc00", identity * 2).hex()
-      //       .replace("#", "0x")
-      //     node_iter(g, readColor, gi, graphics, identity, copyNumber)
-      //     listGiFilter.push(gi)
-      //   }
-      //   const scale = chroma.scale(["blue", "#eacc00", "maroon"])
-      //   palette(scale, 10, readMode)
-      // } else {
+
         if (identity >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
           const newPerc = rangeConverter(identity, cutoffParserMash(), 1, 0, 1)
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
-          node_iter(g, readColor, gi, graphics, identity, copyNumber)
+          nodeIter(g, readColor, gi, graphics, identity, copyNumber)
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
@@ -159,14 +198,14 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           // and 1
           const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
             .replace("#", "0x")
-          node_iter(g, readColor, gi, graphics, perc)
+          nodeIter(g, readColor, gi, graphics, perc)
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
         } else {
           const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
             .replace("#", "0x")
-          node_iter(g, readColor, gi, graphics, perc)
+          nodeIter(g, readColor, gi, graphics, perc)
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
@@ -179,7 +218,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
-          node_iter(g, readColor, gi, graphics, perc)
+          nodeIter(g, readColor, gi, graphics, perc)
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
@@ -209,11 +248,13 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
   let showGoback = document.getElementById("go_back")
   let showDownload = document.getElementById("download_ds")
   let showTable = document.getElementById("tableShow")
+  let heatMap = document.getElementById("heatmapButtonTab")
   let plotButton = document.getElementById("plotButton")
   showRerun.style.display = "block"
   showGoback.style.display = "block"
   showDownload.style.display = "block"
   showTable.style.display = "block"
+  heatMap.style.display = "block"
   plotButton.style.display = "block"
   renderer.rerender()
   $("#loading").hide()
@@ -285,6 +326,14 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
 }
 
 // option to return links to their default color
+/**
+ * A function to reset the color of all links to default color scheme.
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ */
 const reset_link_color = (g, graphics, renderer) => {
   g.forEachLink(function (link) {
     const linkUI = graphics.getLinkUI(link.id)
@@ -297,7 +346,14 @@ const reset_link_color = (g, graphics, renderer) => {
 // *** color scale legend *** //
 // for distances
 
-const color_legend = (readMode) => {
+/**
+ * Function to define color legend scale depending on the color scheme
+ * selected for link distances,
+ * @param {boolean} readMode - here it is set to false in order to provide
+ * it to child palette function, which will use it to selct a different
+ * color scheme for this link coloring mode.
+ */
+const colorLegendFunction = (readMode) => {
   const scale = (document.getElementById("colorForm").value === "Green" +
     " color scheme") ? chroma.scale(["#65B661", "#CAE368"]) :
     (document.getElementById("colorForm").value === "") ?
@@ -313,7 +369,18 @@ const forceSelectorFullRemoval = (selector) => {
 }
 
 // Clear nodes function for reset-sliders button
-
+/**
+ * Function to clear all nodes to default state, storing previous color in
+ * backupColor
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {number} nodeColor - a variable that stores the hex code in
+ * vivagraph readable style: 0xrrggbb.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Array} idsArrays - array that store ids names for taxa related labels
+ */
 const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   // first iters nodes to get nodeColor (default color)
   node_color_reset(graphics, g, nodeColor, renderer)
@@ -352,6 +419,9 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   // empty and hide legend for plasmid families
   $("#pf_label").hide()
   $("#colorLegendBoxPf").empty()
+  // empty and hide legend for virulence factors
+  $("#vir_label").hide()
+  $("#colorLegendBoxVir").empty()
   // empty and hide distances legend
   // $("#distance_label").hide()
   // $("#scaleLegend").empty()
@@ -382,4 +452,45 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   $("#resList").selectpicker("deselectAll")
   forceSelectorFullRemoval("cardList")
   forceSelectorFullRemoval("resList")
+
+  // resets dropdown selections for virulence factors
+  resetDisplayTaxaBox(["p_Virulence"])
+  forceSelectorFullRemoval("virList")
+  // resets dropdown selections
+  $("#virList").selectpicker("deselectAll")
+}
+/**
+ * Function to push value to masterReadArray
+ * @param {Object} readFilejson - the object that contains the files to be
+ * loaded and their respective jsons as values.
+ * @returns {Array} returnArray - returns an array with all the accession
+ * numbers that match the defined criteria
+ */
+const pushToMasterReadArray = (readFilejson) => {
+  const returnArray = []
+  // iterate for all files and save to masterReadArray to use in heatmap
+  for (const i in readFilejson) {
+    if (readFilejson.hasOwnProperty(i)) {
+      const fileEntries = JSON.parse(readFilejson[i])
+      // iterate each accession number
+      for (const i2 in fileEntries) {
+        if (fileEntries.hasOwnProperty(i2)) {
+          // if not in masterReadArray then add it
+          const percValue = (typeof(fileEntries[i2]) === "number") ?
+            fileEntries[i2] : parseFloat(fileEntries[i2][0])
+          if (fileEntries[i2].constructor !== Array) {
+            if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParser()) {
+              returnArray.push(i2)
+            }
+          } else {
+            const copyNumber = parseFloat(fileEntries[i2][1])
+            if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
+              returnArray.push(i2)
+            }
+          }
+        }
+      }
+    }
+  }
+  return returnArray
 }

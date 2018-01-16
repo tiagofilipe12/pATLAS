@@ -1,7 +1,77 @@
+/* globals colorNodes, areaSelection, previousTableList, Highcharts,
+ arraysEqual, clickedHighchart, arraytByValue */
+
 //********//
 // PLOTS  //
 //********//
 
+// object that controls colors and divs for contained depending on the
+// selected clickerButton
+const selector = {
+  species: {
+    color: "#058DC7",
+    div: "chartContainerSpecies",
+    state: false,
+    alertString: false
+  },
+  genus: {
+    color: "#50B432",
+    div: "chartContainerGenus",
+    state: false,
+    alertString: false
+  },
+  family: {
+    color: "#ED561B",
+    div: "chartContainerFamily",
+    state: false,
+    alertString: false
+  },
+  order: {
+    color: "#DDDF00",
+    div: "chartContainerOrder",
+    state: false,
+    alertString: false
+  },
+  cluster: {
+    color: "#DF565F",
+    div: "chartContainerCluster",
+    state: false,
+    alertString: false
+  },
+  resistances: {
+    color:"#24CBE5",
+    div: "chartContainerResistance",
+    state: false,
+    alertString: false
+  },
+  plasmidfamilies: {
+    color: "#64E572",
+    div: "chartContainerPlasmidFamilies",
+    state: false,
+    alertString: false
+  },
+  length: {
+    color: "#A9B3CE",
+    div: "chartContainerLength",
+    state: false,
+    alertString: false
+  },
+  virulence: {
+    color: "#8773ff",
+    div: "chartContainerVirulence",
+    state: false,
+    alertString: false
+  }
+}
+
+/**
+ * Function that prepeares array to be ready for highcharts histograms
+ * @param {Array} array - an array with all the entries to be parsed to the
+ * histogram
+ * @returns {Array} [exportArray, categories] - two arrays that contain the
+ * categories array for the X axis and the exportArray that contains the
+ * counts each one of these categories.
+ */
 const arraytoHighcharts = (array) => {
   const report = {}
   const exportArray = []
@@ -24,6 +94,13 @@ const arraytoHighcharts = (array) => {
   return [exportArray, categories]
 }
 
+/**
+ * Function to highlight axis
+ * @param {Object} that - axis object
+ * @param {number} index - index of the axis to be highlighted
+ * @param {String} color - color to be applied
+ * @param {String} font - type of font to be applied (normal/bold)
+ */
 const axisHighlight = (that, index, color, font) => {
   const newAxis = {
     title: {
@@ -39,18 +116,12 @@ const axisHighlight = (that, index, color, font) => {
     xAxis: (index === 1) ? [{}, newAxis] : [newAxis, {}]
   })
 }
-// object defining colors for each type of plot
-const colorsPlot = {
-  species: "#058DC7",
-  genus: "#50B432",
-  family: "#ED561B",
-  order: "#DDDF00",
-  cluster: "#DF565F",
-  resistances: "#24CBE5",
-  plasmidfamilies: "#64E572",
-  length: "#A9B3CE"
-}
 
+/**
+ * Function to highlight scatter plot points that correspond to a given bar
+ * in the histogram
+ * @param {Object} el - histogram bar that was clicked
+ */
 const highLightScatter = (el) => {
 
   const cat = [el.x, el.x2]
@@ -80,10 +151,10 @@ const highLightScatter = (el) => {
   // Highlight currently selected bar
   let modifiedBar = []
   for (const b of el.series.chart.series[0].data) {
-    if ( b.index === el.index ) {
+    if (b.index === el.index) {
       modifiedBar.push({"color": "#4A6EAD"})
     } else {
-      modifiedBar.push({"color": colorsPlot.length})
+      modifiedBar.push({"color": selector.length.color})
     }
   }
   el.series.chart.series[0].update({
@@ -91,6 +162,10 @@ const highLightScatter = (el) => {
   })
 }
 
+/**
+ * Function to highlight histogram on scatter point click event
+ * @param {Object} el - scatter plot point
+ */
 const highlightHist = (el) => {
 
   const yval = el.y
@@ -102,18 +177,18 @@ const highlightHist = (el) => {
   }
 
   let modifiedBars = []
-  for ( const b of bars ){
-    if ( b.x <= yval && yval < b.x2 ) {
+  for (const b of bars){
+    if (b.x <= yval && yval < b.x2) {
       modifiedBars.push({"color": "#4A6EAD"})
     } else {
-      modifiedBars.push({"color": colorsPlot.length})
+      modifiedBars.push({"color": selector.length.color})
     }
   }
   el.series.chart.series[0].update({data: modifiedBars})
 
   let modifiedPoints = []
-  for ( const p of points ) {
-    if ( p.index === el.index ) {
+  for (const p of points) {
+    if (p.index === el.index) {
       modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#EF626C", radius: 5, lineColor: "#F9D6EB", lineWidth: 1}})
     } else {
       modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3, lineWidth: 0}})
@@ -125,6 +200,10 @@ const highlightHist = (el) => {
 
 }
 
+/**
+ * function to handle the reset of the highlights made to chart
+ * @param {Object} ch - chart object that handles the Clear highlights button
+ */
 const resetHighlight = (ch) => {
 
   let points = ch.series[1].data
@@ -133,12 +212,12 @@ const resetHighlight = (ch) => {
   let resetPoints = []
   let resetBars = []
 
-  for ( const p of points ) {
+  for (const p of points) {
     resetPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3}})
   }
 
-  for ( const b of bars ) {
-    resetBars.push({"color": colorsPlot.length})
+  for (let i = 0; i < bars.length; i++) {
+    resetBars.push({"color": selector.length.color})
   }
 
   ch.series[1].update({data: resetPoints})
@@ -146,13 +225,112 @@ const resetHighlight = (ch) => {
 
 }
 
-// function to parse stats //
-const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal) => {
+/**
+ * Function to highlight a single bar on click for bar plots. If bar color
+ * is already red then it will put it back to default color. If bar is not
+ * red then it will put it red to show the selected bars that can be further
+ * applied to the plasmid network.
+ * @param {Object} bar - the bar that was clicked
+ * @param {String} resetColor - hex code of the color to reset nodes bars.
+ * This depends on the plot that is being executed, thus having different
+ * default values for each plot
+ * @param {Object} objectHighlights - The object that stores the accession
+ * numbers associated with a given file. When the bar is removed the
+ * property of that bar will be removed from this object in this function
+ * @ param {Array} associativeObjArray - This contains the array for the
+ * clicked bar that as the accession numbers that should be associated with
+ * that bar element
+ */
+const highlightBar = (bar, resetColor, objectHighlights, associativeObjArray) => {
+  if (bar.color !== "#930200") {
+    bar.color = "#930200"
+    objectHighlights[bar.name] = associativeObjArray
+  } else {
+    bar.color = resetColor
+    delete objectHighlights[bar.name]
+  }
+  bar.update()
+}
+
+/**
+ * Function to reset all bars for all bar plots
+ * @param {Object} chartElement - the element of the chart that contains all
+ * the bars info
+ * @param {String} defaultColor - hex code of the color to reset nodes bars.
+ * This depends on the plot that is being executed, thus having different
+ * default values for each plot
+ */
+const resetAllBars = (chartElement, defaultColor) => {
+  const bars = chartElement.series[0].data
+  const resetBars = []
+  for (let i = 0; i < bars.length; i++) {
+  // for (const i in bars) {
+    resetBars.push({"color": defaultColor})
+  }
+
+  chartElement.series[0].update({data: resetBars})
+}
+
+/**
+ * Funtion to highlight selection on vivagraph on click event on button
+ * after clicking on the desired bar
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Object} objectHighlight - The object that contains the accession
+ * numbers to be highlighted in vivagraph. This will collect an array for
+ * each property in this object and execute colorNodes function that will
+ * color nodes in green as used in area selection.
+ */
+const highlightVivagraph = (g, graphics, renderer, objectHighlight) => {
+  // highlights nodes in vivagraph
+  // uses the same color as areaSelection
+  const currentColor = 0x23A900
+  // resets nodes before making the requests and changing the
+  // color again
+  $("#reset-sliders").click()
+  // iterates through values in object to reset all selected colors
+  Object.values(objectHighlight).map( (arr) => {
+    colorNodes(g, graphics, renderer, arr, currentColor)
+  })
+  // after close modal
+  $("#modalPlot").modal("toggle")
+  // this is necessary to allow for the plot to be reset again
+  areaSelection = true
+  previousTableList = []
+  Object.keys(selector).map( (el) => { selector[el].state = false })
+}
+
+/**
+ * Function that actually parse list to a plot and that actually renders the
+ * plot
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Array} accessionResultsList - an Empty array to be used within
+ * the scope of file generation. This array is then stored for other functions
+ * @param {Array} masterObj - The array of elements to be counted for the plots
+ * @param {Object} layout - The default layout, common to all plots
+ * available here
+ * @param {String} taxaType - a string with the type of plot to be ploted
+ * that will be used to generate the plot title
+ * @param {boolean} sortAlp - variable that controls if array is to be
+ * sorted alphabetically and therefore render the graph in the same manner
+ * @param {boolean} sortVal - variable that controls if array is to be
+ * sorted in descending order.
+ */
+const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal, associativeObj) => {
   $("#loadingImgPlots").hide()
   $("#alertPlot").hide()
+  // $("#alertPlotEntries").hide()
   // controls progress bar div
   $("#progressDiv").hide()
-  $("#chartContainer1").show()
+
+  let objectHighlights = {}
 
   // parse the final array
   // here it assures that sorts are made just once
@@ -167,15 +345,48 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       type: "column",
       data: doubleArray[0],
       name: "No. of plasmids",
+      cursor: "pointer",
       showInLegend: false,
-      color: colorsPlot[taxaType.replace(" ", "")]
+      color: selector[taxaType.replace(" ", "")].color,
+      point: {
+        events: {
+          click() {
+            highlightBar(this, selector[taxaType.replace(" ", "")].color, objectHighlights, associativeObj[this.name])
+          }
+        }
+      }
     }]
+    // adds button to highlight nodes on vivagraph
+    layout.exporting = {
+      buttons: {
+        highlight: {
+          text: "Highlight on plasmid network",
+          onclick() { highlightVivagraph(g, graphics, renderer, objectHighlights) },
+          buttonSpacing: 8,
+          theme: {
+            stroke: "#313131"
+          }
+        },
+        clearHighlight: {
+          text: "Clear highlights",
+          onclick() { resetAllBars(this, selector[taxaType.replace(" ", "")].color) }, // TODO add a function to remove
+          // all highlighted
+          // bars
+          buttonSpacing: 8,
+          theme: {
+            stroke: "#313131"
+          }
+        }
+      }
+    }
+
     // this options allows column plots to show more than 10k plasmids
     layout.plotOptions = {
       column: {
         turboThreshold: 0
       }
     }
+
     // enable sort buttons again
     $("#sortGraph").removeAttr("disabled")
     $("#sortGraphAlp").removeAttr("disabled")
@@ -213,16 +424,16 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
         radius: 3
       },
       events: {
-        mouseOver: function () {
+        mouseOver() {
           axisHighlight(this, 0, "black", "bold")
         },
-        mouseOut: function () {
+        mouseOut() {
           axisHighlight(this, 0, "#666666", "normal")
         },
       },
       point: {
         events: {
-          click: function () {
+          click() {
             clickedHighchart = this.category
             $("#submitButton").click()
             highlightHist(this)
@@ -235,7 +446,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       buttons: {
         clearHighlight: {
           text: "Clear highlights",
-          onclick: function () { resetHighlight(this) },
+          onclick() { resetHighlight(this) },
           buttonSpacing: 8,
           theme: {
             stroke: "#313131"
@@ -258,7 +469,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       // tooltip that enables different tooltips on each series
       // series.name is here used to return different tooltips for each
       layout.tooltip = {
-        formatter: function () {
+        formatter() {
           if (this.series.name === "Individual plasmids") {
             return "<b>Accession no.: </b>" +
               this.x + "<br><b>Size (bp): </b>" + this.y
@@ -274,20 +485,21 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
         xAxis: 1,
         yAxis: 1,
         baseSeries: 1,
-        color: colorsPlot[taxaType.replace(" ", "")],
+        color: selector[taxaType.replace(" ", "")].color,
         zIndex: -1,
         cursor: "pointer",
         events: {
-          mouseOver: function () {
+          mouseOver() {
             axisHighlight(this, 1, "black", "bold")
           },
-          mouseOut: function () {
+          mouseOut() {
             axisHighlight(this, 1, "#666666", "normal")
           }
         },
         point: {
           events: {
-            click: function () {
+            click() {
+              // highlights the scatter on bar click
               highLightScatter(this)
             }
           }
@@ -299,7 +511,7 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
       layout.xAxis = defaultXAxis
       layout.yAxis = defaultYAxis
       layout.tooltip = {
-        formatter: function () {
+        formatter() {
           if (this.series.name === "Individual plasmids") {
             return "<b>Accession no.: </b>" +
               this.x + "<br><b>Size (bp): </b>" + this.y
@@ -312,25 +524,53 @@ const statsParser = (accessionResultsList, masterObj, layout, taxaType, sortAlp,
     $("#sortGraph").attr("disabled", true)
     $("#sortGraphAlp").attr("disabled", true)
   }
-  Highcharts.chart("chartContainer1", layout)
+  // Highcharts.chart(selector[taxaType.replace(" ", "").div], layout)
+  Highcharts.chart(selector[taxaType.replace(" ", "")].div, layout)
+  $(`#${selector[taxaType.replace(" ", "")].div}`).show()
+  // state is set to true telling that the a graph is already present in
+  // this container
+  selector[taxaType.replace(" ", "")].state = true
 }
 
+/**
+ * Function that forces all containers to hide before rendering the new
+ * plot, avoiding that multiple plots are shown in the modalPlot
+ */
+const hideAllOtherPlots = () => {
+  // first force every contained that is true to be removed from the modal
+  Object.keys(selector).map( (el) => {
+      $(`#${selector[el].div}`).hide()
+  })
+}
+
+/**
+ * Function to show a loading screen while the graph is being prepared
+ */
 const resetProgressBar = () => {
   // resets progressBar
+  // first force every contained that is true to be removed from the modal
+  hideAllOtherPlots()
   $("#progressDiv").show()
-  $("#chartContainer1").hide()
+  // $(`#${chartDivId}`).hide()
 }
 
 // function to make layout
-const layoutGet = (taxaType, length) => {
+/**
+ * Function to make a default layout that can be used to every plot made by
+ * stats module
+ * @param {String} taxaType - a string with the type of plot to be ploted
+ * that will be used to generate the plot title
+ * @returns {{chart: {zoomType: string, panKey: string, panning: boolean}, title: {text: string}, yAxis: {title: {text: string}}, exporting: {sourceWidth: number}}}
+ */
+const layoutGet = (taxaType) => {
   return {
     chart: {
       zoomType: "x",
-      panKey: "ctrl",   //key used to navigate the graph when zommed
-      panning: true     // allow paning of the graph when zommed
+      panKey: "ctrl",   //key used to navigate the graph when zoomed
+      panning: true     // allow panning of the graph when zoomed
     },
     title: {
-      text: `${length} ${taxaType} in selection`
+      text: `${taxaType} plot`
     },
     yAxis: {
       title: {
@@ -342,92 +582,123 @@ const layoutGet = (taxaType, length) => {
     }
   }
 }
+/**
+ * A function to create an object which associates plot x labels with
+ * accession numbers
+ * @param {Object} obj - the object to make the association between the
+ * x labels and the accession numbers.
+ * @param {String} queryAccession - the accession number being queried
+ * @param {String} tagName - the taxa or genes to be the key of the object
+ */
+const associativeObjAssigner = (obj, queryAccession, tagName) => {
+  if (obj.hasOwnProperty(tagName)) {
+    obj[tagName].push(queryAccession)
+  } else {
+    obj[tagName] = [queryAccession]
+  }
+}
 
-// function equivalent to getMetadata but for Database db (plasmidfinder db)
-const getMetadataPF = (tempList, taxaType, sortAlp, sortVal) => {
+/**
+ * This function is similar to getMetadata but uses 'database' psql table to
+ * retrieve plasmid finder associated genes
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Array} tempList - The array of accession numbers to be queried
+ * @param {String} taxaType - A string that are defined on button click and
+ * that defines which parsing is needed to plot
+ * @param {boolean} sortAlp - variable that controls if array is to be
+ * sorted alphabetically and therefore render the graph in the same manner
+ * @param {boolean} sortVal - variable that controls if array is to be
+ * sorted in descending order.
+ * @returns {Array} virList - an array which contain the retrieved
+ * values from the psql table for each of the queried accession number given
+ * a taxaType.
+ */
+const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
-
+  let associativeObj = {}
   let PFList = []
-  // let counter = 0
-  // let promises = []
 
-  // for (const item in tempList) {
-  //   if ({}.hasOwnProperty.call(tempList, item)) {
-  //     const nodeId = tempList[item]
-  //     promises.push(
   $.post("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
-          // for each instance of item update progressBar
-          // progressBarControl(parseInt(item) + 1, tempList.length)
-        // })
-      // )
-    // }
-  // }
-
-
-  // when all promises are gathered
-  // Promise.all(promises)
     .then( (results) => {
-      const noUnknowns = tempList.length - results.length
-      for (let i=0; i < noUnknowns; i++) {
-        PFList.push("unknown")
-      }
+      // const noUnknowns = tempList.length - results.length
+      // for (let i=0; i < noUnknowns; i++) {
+      //   PFList.push("unknown")
+      // }
+
       results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
         //then if unknown can push directly to array
         if (pfName === "unknown") {
           PFList.push(pfName)
-          // counter += 1
         } else {
           // otherwise needs to parse the array into an array
           for (const i in pfName) {
             if ({}.hasOwnProperty.call(pfName, i)) {
               PFList.push(pfName[i])
+              associativeObjAssigner(associativeObj, data.plasmid_id, pfName[i])
               // counter += 1
             }
           }
         }
 
       })
-      // EXECUTE STATS
-      if (PFList.length >= tempList.length) {
-        const layout = layoutGet(taxaType, [...new Set(PFList)].length)
-        statsParser(false, PFList, layout, taxaType, sortAlp, sortVal)
-      }
-    })
+      // show info on the nodes that are shown
 
+      selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
+        (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
+        plasmids. The remaining ${tempList.length - results.length} are unknown.`
+
+      $("#spanEntries").html(selector[taxaType].alertString)
+      $("#alertPlotEntries").show()
+
+      // EXECUTE STATS
+      // if (PFList.length >= tempList.length) {
+
+      const layout = layoutGet(taxaType)
+      statsParser(g, graphics, renderer, false, PFList, layout, taxaType, sortAlp, sortVal, associativeObj)
+      // }
+    })
   return PFList
 }
 
-// function equivalent to getMetadata but for Card db
-const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
+/**
+ * This function is similar to getMetadata but uses 'card' psql table to
+ * retrieve card and resfinder associated genes
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Array} tempList - The array of accession numbers to be queried
+ * @param {String} taxaType - A string that are defined on button click and
+ * that defines which parsing is needed to plot
+ * @param {boolean} sortAlp - variable that controls if array is to be
+ * sorted alphabetically and therefore render the graph in the same manner
+ * @param {boolean} sortVal - variable that controls if array is to be
+ * sorted in descending order.
+ * @returns {Array} resList - an array which contain the retrieved
+ * values from the psql table for each of the queried accession number given
+ * a taxaType.
+ */
+const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
   // TODO this should plot resfinder and card seperately
   // resets progressBar
   resetProgressBar()
+  let associativeObj = {}
 
   let resList = []
-  //let promises = []
-
-  // for (const item in tempList) {
-  //   if ({}.hasOwnProperty.call(tempList, item)) {
-  //     const nodeId = tempList[item]
-  //     promises.push(
   $.post("api/getresistances/", { "accession": JSON.stringify(tempList) })
-          // for each instance of item update progressBar
-  //         progressBarControl(parseInt(item) + 1, tempList.length)
-  //       })
-  //     )
-  //   }
-  // }
-
-  // when all promises are gathered
-  // Promise.all(promises)
     .then( (results) => {
-      const noUnknowns = tempList.length - results.length
-      for (let i=0; i < noUnknowns; i++) {
-        resList.push("unknown")
-      }
+      // const noUnknowns = tempList.length - results.length
+      // for (let i=0; i < noUnknowns; i++) {
+      //   resList.push("unknown")
+      // }
       // resList = Array.from([...Array(noUnknowns)], () => "unknown")
       results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
@@ -439,52 +710,133 @@ const getMetadataRes = (tempList, taxaType, sortAlp, sortVal) => {
           // otherwise needs to parse the array into an array
           for (const i in pfName) {
             resList.push(pfName[i])
+            associativeObjAssigner(associativeObj, data.plasmid_id, pfName[i])
           }
         }
-
       })
+
+      // show info on the nodes that are shown
+      // TODO put this in a function that checks for 0 and 1 and corrects the sentence
+      selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
+        (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
+        plasmids. The remaining ${tempList.length - results.length} are unknown.`
+
+      $("#spanEntries").html(selector[taxaType].alertString)
+      $("#alertPlotEntries").show()
+
       // EXECUTE STATS
-      if (resList.length >= tempList.length) {
-        const layout = layoutGet(taxaType, [...new Set(resList)].length)
-        statsParser(false, resList, layout, taxaType, sortAlp, sortVal)
-      }
+      // if (resList.length >= tempList.length) {
+      const layout = layoutGet(taxaType)
+      statsParser(g, graphics, renderer, false, resList, layout, taxaType, sortAlp, sortVal, associativeObj)
+      // }
     })
   return resList
 }
 
-// metadata handler function
+/**
+ * This function is similar to getMetadata but uses 'positive' psql table to
+ * retrieve virulence associated genes
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Array} tempList - The array of accession numbers to be queried
+ * @param {String} taxaType - A string that are defined on button click and
+ * that defines which parsing is needed to plot
+ * @param {boolean} sortAlp - variable that controls if array is to be
+ * sorted alphabetically and therefore render the graph in the same manner
+ * @param {boolean} sortVal - variable that controls if array is to be
+ * sorted in descending order.
+ * @returns {Array} virList - an array which contain the retrieved
+ * values from the psql table for each of the queried accession number given
+ * a taxaType.
+ */
+const getMetadataVir = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
+  // resets progressBar
+  resetProgressBar()
+  let associativeObj = {}
 
-const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
+  let virList = []
+  $.post("api/getvirulence/", { "accession": JSON.stringify(tempList) })
+  // when all promises are gathered
+    .then( (results) => {
+      // const noUnknowns = tempList.length - results.length
+      // for (let i=0; i < noUnknowns; i++) {
+      //   console.log(results)
+      //   virList.push("unknown")
+      // }
+      results.map( (data) => {
+        const virName = (data.json_entry.gene === null) ?
+          "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+        //then if unknown can push directly to array
+        if (virName === "unknown") {
+          virList.push(virName)
+        } else {
+          // otherwise needs to parse the array into an array
+          for (const i in virName) {
+            if ({}.hasOwnProperty.call(virName, i)) {
+              virList.push(virName[i])
+              associativeObjAssigner(associativeObj, data.plasmid_id, virName[i])
+            }
+          }
+        }
+
+      })
+
+      // show info on the nodes that are shown
+      selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
+        (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
+        plasmids. The remaining ${tempList.length - results.length} are unknown.`
+
+      $("#spanEntries").html(selector[taxaType].alertString)
+      $("#alertPlotEntries").show()
+
+      // EXECUTE STATS
+      // if (virList.length >= tempList.length) {
+      // checks whether virList is empty meaning that there are no virulence
+      // genes for this selection
+      const layout = layoutGet(taxaType)
+      statsParser(g, graphics, renderer, false, virList, layout, taxaType, sortAlp, sortVal, associativeObj)
+      // }
+    })
+
+  return virList
+}
+
+/**
+ * Function to query the database, starting with a list of accession
+ * numbers. this queries the plasmids psql table and retrieves everything
+ * that is associated with taxa and length.
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Array} tempList - The array of accession numbers to be queried
+ * @param {String} taxaType - A string that are defined on button click and
+ * that defines which parsing is needed to plot
+ * @param {boolean} sortAlp - variable that controls if array is to be
+ * sorted alphabetically and therefore render the graph in the same manner
+ * @param {boolean} sortVal - variable that controls if array is to be
+ * sorted in descending order.
+ * @returns {Array} speciesList - an array which contain the retrieved
+ * values from the psql table for each of the queried accession number given
+ * a taxaType.
+ */
+const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
   let speciesList = []
-  //let promises = []
-  //console.log(JSON.stringify(tempList))
-  // const speciesObject = {}
-  // for (const item in tempList) {
-  //   if ({}.hasOwnProperty.call(tempList, item)) {
-  //     const nodeId = tempList[item]
-  //     promises.push(
-        // query used to push to promise the . there is no need for the
-        // function that parses the data and status but just to push data
-        // into the promises array
-  $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
-          // for each instance of item update progressBar
-          // progressBarControl(parseInt(item) + 1, tempList.length)
+  let associativeObj = {}
 
-        // })
-      // )
-    // }
-  // }
-  // waits for all promises to finish and then execute functions that will
-  // render the graph
-  //Promise.all(promises)
+  $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
       const accessionResultsList = []
-      const noUnknowns = tempList.length - results.length
-      for (let i=0; i < noUnknowns; i++) {
-        speciesList.push("unknown")
-      }
+      // const noUnknowns = tempList.length - results.length
+      // for (let i=0; i < noUnknowns; i++) {
+      //   speciesList.push("unknown")
+      // }
       results.map( (result) => {
         // checks if plasmid is present in db
         if (result.plasmid_id !== null) {
@@ -492,34 +844,50 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
             const speciesName = (result.json_entry.name === null) ? "unknown" : result.json_entry.name.split("_").join(" ")
             // push to main list to control the final of the loop
             speciesList.push(speciesName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, speciesName)
           } else if (taxaType === "genus") {
             const genusName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[0].replace(/['[]/g, "")
             // push to main list to control the final of the loop
             speciesList.push(genusName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, genusName)
           } else if (taxaType === "family") {
             const familyName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[1].replace(/[']/g, "")
             speciesList.push(familyName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, familyName)
           } else if (taxaType === "order") {
             const orderName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[2].replace(/['\]]/g, "")
             speciesList.push(orderName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, orderName)
           } else if (taxaType === "cluster") {
-            const clusterName = (result.json_entry.cluster === null) ? "unknown" : result.json_entry.cluster
+            const clusterName = (result.json_entry.cluster === null) ? "singleton" : result.json_entry.cluster
             speciesList.push(clusterName)
+            associativeObjAssigner(associativeObj, result.plasmid_id, clusterName)
           } else {
             const speciesLength = (result.json_entry.length === null) ? "unknown" : result.json_entry.length
             speciesList.push(speciesLength)
+            // associativeObjAssigner(associativeObj, result.plasmid_id, speciesLength)
             accessionResultsList.push(result.plasmid_id)
             // assumes that it is length by default
           }
         } else {
+          // TODO I think this is never ran
           // this adds in the case of singletons
           speciesList.push("singletons") // have no way to know since it is
           // not in db
         }
       })
+
+      // show info on the nodes that are shown
+      selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
+        (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
+        plasmids. The remaining ${tempList.length - results.length} are unknown.`
+
+      $("#spanEntries").html(selector[taxaType].alertString)
+      $("#alertPlotEntries").show()
+
       // if (taxaType === "species") {
-      const layout = layoutGet(taxaType, [...new Set(speciesList)].length)
-      if (speciesList.length >= tempList.length) { statsParser(accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal) }
+      const layout = layoutGet(taxaType)
+      statsParser(g, graphics, renderer, accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal, associativeObj)
     })
     .catch( (error) => {
       console.log("Error: ", error)
@@ -527,39 +895,178 @@ const getMetadata = (tempList, taxaType, sortAlp, sortVal) => {
   return speciesList // this is returned async but there is no problem
 }
 
-// stats using node colors... if listGiFilter is empty
-
-const statsColor = (g, graphics, mode, sortAlp, sortVal) => {
+/**
+ * Function that searches for area selection highlighted nodes
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {String} mode - this variable sets the kind of stats to be queried
+ * @param {boolean} sortAlp - variable that controls if array is to be
+ * sorted alphabetically and therefore render the graph in the same manner
+ * @param {boolean} sortVal - variable that controls if array is to be
+ * sorted in descending order.
+ * @returns {Array} - returns an array similar to listGiFilter that will be
+ * used to construct the plot array
+ */
+const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
     if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  const taxaList = (mode === "plasmid families") ? getMetadataPF(tempListAccessions, mode, sortAlp, sortVal)
-    : (mode === "resistances") ? getMetadataRes(tempListAccessions, mode, sortAlp, sortVal) :
-    getMetadata(tempListAccessions, mode, sortAlp, sortVal)
+  const taxaList = (mode === "plasmidfamilies") ? getMetadataPF(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
+    (mode === "resistances") ? getMetadataRes(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
+      (mode === "virulence") ? getMetadataVir(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
+        getMetadata(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal)
   return taxaList
 }
 
-// repetitive function that is often called by main js
-// (visualization_functions.js)
-const repetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
+/**
+ * Function that is used in several buttons that trigger the graph,
+ * particularly for taxa and length associated plots
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {boolean} areaSelection
+ * @param {Array} listGiFilter
+ * @param {String} clickerButtonsliders
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param graphics - vivagraph functions related with node and link
+ * data.
+ * @returns {Array} - returns the list of plasmid to be plotted (accession
+ * numbers at this strage)
+ */
+const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  const listPlots = (areaSelection === false) ?
-    getMetadata(listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, clickerButton, false, false)
-  return listPlots
+  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
+    || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    const listPlots = (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton, false, false)
+    previousTableList = listGiFilter
+    return listPlots
+  } else {
+    // this code prevents plot from being queried again, since it is already
+    // stored in a div it is just a matter of hidding all other and showing
+    // this one
+    hideAllOtherPlots()
+    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
+    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
+    $("#alertPlotEntries").show()
+    return
+  }
 }
 
-const pfRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
-  const listPlots = (areaSelection === false) ? getMetadataPF(listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, clickerButton, false, false)
-  return listPlots
+/**
+ * Function that is used in several buttons that trigger the graph,
+ * for plasmid finder associated plot
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {boolean} areaSelection
+ * @param {Array} listGiFilter
+ * @param {String} clickerButton
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param graphics - vivagraph functions related with node and link
+ * data.
+ * @returns {Array} - returns the list of plasmid to be plotted (accession
+ * numbers at this stage)
+ */
+const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
+  $("#loadingImgPlots").show()
+  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton.replace(" ", "")].state === false
+    || selector[clickerButton.replace(" ", "")].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    const listPlots = (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton.replace(" ", ""), false, false)
+    previousTableList = listGiFilter
+    return listPlots
+  } else {
+    // this code prevents plot from being queried again, since it is already
+    // stored in a div it is just a matter of hidding all other and showing
+    // this one
+    hideAllOtherPlots()
+    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
+    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
+    $("#alertPlotEntries").show()
+    return
+  }
 }
 
-const resRepetitivePlotFunction = (areaSelection, listGiFilter, clickerButton, g, graphics) => {
-  const listPlots = (areaSelection === false) ? getMetadataRes(listGiFilter, clickerButton, false, false)
-    : statsColor(g, graphics, clickerButton, false, false)
-  return listPlots
+/**
+ * Function that is used in several buttons that trigger the graph,
+ * for resistance associated
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {boolean} areaSelection
+ * @param {Array} listGiFilter
+ * @param {String} clickerButton
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param graphics - vivagraph functions related with node and link
+ * data.
+ * @returns {Array} - returns the list of plasmid to be plotted (accession
+ * numbers at this stage)
+ */
+const resRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
+  $("#loadingImgPlots").show()
+  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
+    || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    const listPlots = (areaSelection === false) ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton, false, false)
+    previousTableList = listGiFilter
+    return listPlots
+  } else {
+    // this code prevents plot from being queried again, since it is already
+    // stored in a div it is just a matter of hidding all other and showing
+    // this one
+    hideAllOtherPlots()
+    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
+    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
+    $("#alertPlotEntries").show()
+    return
+  }
+}
+
+/**
+ * Function that is used in several buttons that trigger the graph,
+ * for virulence associated plot
+ * @param {boolean} areaSelection
+ * @param {Array} listGiFilter
+ * @param {String} clickerButton
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @returns {Array} - returns the list of plasmid to be plotted (accession
+ * numbers at this stage)
+ */
+const virRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
+  $("#loadingImgPlots").show()
+  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
+  || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    const listPlots = (areaSelection === false) ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+      : statsColor(g, graphics, renderer, clickerButton, false, false)
+    return listPlots
+  } else {
+    // this code prevents plot from being queried again, since it is already
+    // stored in a div it is just a matter of hidding all other and showing
+    // this one
+    hideAllOtherPlots()
+    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
+    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
+    $("#alertPlotEntries").show()
+    return
+  }
 }

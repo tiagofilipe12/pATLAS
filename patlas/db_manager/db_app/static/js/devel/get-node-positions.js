@@ -1,3 +1,5 @@
+/* globals makeHash */
+
 // function used to download file from json object
 const downloadJSON = (text, name, type) => {
   const a = document.createElement("a")

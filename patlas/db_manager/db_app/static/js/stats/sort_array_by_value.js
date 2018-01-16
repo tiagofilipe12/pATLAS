@@ -17,7 +17,7 @@ const arraytByValue = (startingArray) => {
   // each entry in object
   const sortable = [];
   for (const x in arrayToObject ) {
-    sortable.push([x, arrayToObject[x]]);
+    sortable.push([x, arrayToObject[x]])
   }
 
   // sorts array by second element in every pairs array

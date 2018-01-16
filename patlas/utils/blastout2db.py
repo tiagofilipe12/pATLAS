@@ -69,7 +69,7 @@ def output_json(dict_main_json, blast_out, selected_class, id_param, perc_cov_pa
                 dict_main_json[NCBI_accession].append(list_json_entries)
             else:
                 dict_main_json[NCBI_accession] = list_json_entries
-                
+
     return dict_main_json
 
 def json_dumping(dict_main_json, model_class):

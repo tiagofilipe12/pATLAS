@@ -1,3 +1,12 @@
+/* globals Viva, recenterDOM, resetAllNodes, storeRecenterDom,
+ buildCircleNodeShader, requestPlasmidTable, WebglCircle, selector,
+  hideAllOtherPlots, toggleManager, repetitivePlotFunction,
+   resRepetitivePlotFunction, pfRepetitivePlotFunction,
+    virRepetitivePlotFunction, statsParser, node_color_reset,
+     resetDisplayTaxaBox, showDiv, pfSubmitFunction, layoutGet,
+      centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
+       filterDisplayer, slider, resSubmitFunction, virSubmitFunction */
+
 /**
 * A bunch of global functions to be used throughout patlas
 */
@@ -10,7 +19,7 @@ const devel = false
 let rerun = false
 
 // helps set menu to close status
-let first_click_menu = true
+let firstClickMenu = true
 
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
@@ -24,6 +33,7 @@ let pageReRun = false
 let clickedPopupButtonRes = false
 let clickedPopupButtonCard = false
 let clickedPopupButtonFamily = false
+let clickedPopupButtonVir = false
 
 // variable to control stats displayer
 let areaSelection = false
@@ -57,6 +67,10 @@ let toggleRatioStatus = false
 
 let totalNumberOfLinks
 
+let multiSelectOverlayObj
+
+let legendInst
+
 /**
  * load JSON file with taxa dictionary
  * @returns {Object} - return is an object that perform matches between taxa
@@ -82,6 +96,15 @@ const getArray_res = () => {
  */
 const getArray_pf = () => {
   return $.getJSON("/plasmidfinder")
+}
+
+/**
+ * load JSON file with virulence dictionary
+ * @returns {Object} - returns an object that allows virulence menus
+ * to be populated
+ */
+const getArrayVir = () => {
+  return $.getJSON("/virulence")
 }
 
 // list used to store for re-run button (apply filters)
@@ -140,7 +163,7 @@ const onLoad = () => {
 
   let list = []   // list to store references already ploted as nodes
   // links between accession numbers
-  let list_lengths = [] // list to store the lengths of all nodes
+  let listLengths = [] // list to store the lengths of all nodes
 
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
@@ -165,6 +188,7 @@ const onLoad = () => {
     showDownload = document.getElementById("download_ds"),
     showLegend = document.getElementById("colorLegend"),
     showTable = document.getElementById("tableShow"),
+    heatMap = document.getElementById("heatmapButtonTab"),
     plotButton = document.getElementById("plotButton")
 
 
@@ -182,7 +206,7 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
-      nodeSize = minNodeSize * node.data.log_length
+      let nodeSize = minNodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
 
@@ -237,12 +261,18 @@ const onLoad = () => {
         showGoback.style.display = "block"
         showDownload.style.display = "block"
         showTable.style.display = "block"
+        heatMap.style.display = "block"
         plotButton.style.display = "block"
         // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         areaSelection = true
         listGiFilter = [] //if selection is made listGiFilter should be empty
+        previousTableList = []
+        // transform selector object that handles plots and hide their
+        // respective divs
+        Object.keys(selector).map( (el) => { selector[el].state = false })
+        hideAllOtherPlots()
         resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
         // also reset file handlers that interfere with Re_run
         readFilejson = false
@@ -299,7 +329,7 @@ const onLoad = () => {
     // $("#toggle-event").bootstrapToggle("off") // set to default off
     $("#toggle-event").change(function () {   // jquery seems not to support es6
       toggleStatus = $(this).prop("checked")
-      toggle_manager(toggleStatus)
+      toggleManager(toggleStatus)
     })
 
     //* *************//
@@ -307,7 +337,6 @@ const onLoad = () => {
     //* *************//
 
     const events = Viva.Graph.webglInputEvents(graphics, g)
-    store_nodes = []  // list used to store nodes
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
@@ -316,28 +345,30 @@ const onLoad = () => {
       $("#resButton").removeClass("active")
       $("#pfTab").removeClass("active")
       $("#plasmidButton").removeClass("active")
+      $("#virButton").removeClass("active")
+      $("#virTab").removeClass("active")
       // this resets previous selected node to previous color
       if (currentQueryNode) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
       }
       // then starts making new changes to the newly geerated node
       currentQueryNode = node.id
-      nodeUI_1 = graphics.getNodeUI(node.id)
+      let nodeUI1 = graphics.getNodeUI(node.id)
       const domPos = {
-        x: nodeUI_1.position.x,
-        y: nodeUI_1.position.y
+        x: nodeUI1.position.x,
+        y: nodeUI1.position.y
       }
       // if statement used to check if backup color is set
-      if (nodeUI_1.backupColor) { nodeUI_1.backupColor = nodeUI_1.color }
+      if (nodeUI1.backupColor) { nodeUI1.backupColor = nodeUI1.color }
 
-      nodeUI_1.color = 0xFFC300
+      nodeUI1.color = 0xFFC300
       renderer.rerender()
 
       // allows the control of the click appearing and locking
 
       // And ask graphics to transform it to DOM coordinates:
       graphics.transformGraphToClientCoordinates(domPos)
-      domPos.x = (domPos.x + nodeUI_1.size) + "px"
+      domPos.x = (domPos.x + nodeUI1.size) + "px"
       domPos.y = (domPos.y) + "px"
 
       // this sets the popup internal buttons to allow them to run,
@@ -388,49 +419,56 @@ const onLoad = () => {
         // otherwise maintain listGiFilter untouched
         listGiFilter
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#speciesStats").unbind("click").bind("click", () => {
       clickerButton = "species"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       },500)
     })
 
     $("#genusStats").unbind("click").bind("click", () => {
       clickerButton = "genus"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#familyStats").unbind("click").bind("click", () => {
       clickerButton = "family"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#orderStats").unbind("click").bind("click", () => {
       clickerButton = "order"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#resistanceStats").unbind("click").bind("click", () => {
       clickerButton = "resistances"
       setTimeout( () => {
-        listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = resRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#pfamilyStats").unbind("click").bind("click", () => {
       clickerButton = "plasmid families"
       setTimeout( () => {
-        listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = pfRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
+      }, 500)
+    })
+
+    $("#virStats").unbind("click").bind("click", () => {
+      clickerButton = "virulence"
+      setTimeout( () => {
+        listPlots = virRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
@@ -438,14 +476,14 @@ const onLoad = () => {
     $("#lengthStats").unbind("click").bind("click", () => {
       clickerButton = "length"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
     $("#clusterStats").unbind("click").bind("click", () => {
       clickerButton = "cluster"
       setTimeout( () => {
-        listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
     })
 
@@ -453,14 +491,14 @@ const onLoad = () => {
     $("#sortGraph").unbind("click").bind("click", () => {
       const sortVal = true
       const layoutPlot = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(false, listPlots, layoutPlot, clickerButton, false, sortVal) }
+      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, false, sortVal) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").unbind("click").bind("click", () => {
       const sortAlp = true
       const layoutPlot = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(false, listPlots, layoutPlot, clickerButton, sortAlp, false) }
+      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, sortAlp, false) }
     })
 
     // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -470,48 +508,53 @@ const onLoad = () => {
     $("#lengthPlot").unbind("click").bind("click", () => {
       clickerButton = "length"
       // TODO save previous plotly generated graphs before rendering the new ones
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#speciesPlot").unbind("click").bind("click", () => {
       clickerButton = "species"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#genusPlot").unbind("click").bind("click", () => {
       clickerButton = "genus"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#familyPlot").unbind("click").bind("click", () => {
       clickerButton = "family"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#orderPlot").unbind("click").bind("click", () => {
       clickerButton = "order"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#clusterPlot").unbind("click").bind("click", () => {
       clickerButton = "cluster"
-      listPlots = repetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#resPlot").unbind("click").bind("click", () => {
       clickerButton = "resistances"
-      listPlots = resRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = resRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#pfPlot").unbind("click").bind("click", () => {
       clickerButton = "plasmid families"
-      listPlots = pfRepetitivePlotFunction(areaSelection, listGiFilter, clickerButton, g, graphics)
+      listPlots = pfRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
+    })
+
+    $("#virPlot").unbind("click").bind("click", () => {
+      clickerButton = "virulence"
+      listPlots = virRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
 
     // Buttons to control force play/pause using bootstrap navigation bar
-    paused = true
+    let paused = true
     $("#playpauseButton").unbind("click").bind("click", () => {
       $("#playpauseButton").empty()
       if (paused === true) {
@@ -533,6 +576,9 @@ const onLoad = () => {
       $("#resButton").removeClass("active")
       $("#pfTab").removeClass("active")
       $("#plasmidButton").removeClass("active")
+      $("#virTab").removeClass("active")
+      $("#virButton").removeClass("active")
+
       event.preventDefault()    // prevents page from reloading
       if (toggleStatus === false) {
         // const query !==)
@@ -546,7 +592,7 @@ const onLoad = () => {
         // executed for plasmid search
         toggleOnSearch(g, graphics, renderer,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-          clickedPopupButtonFamily)
+          clickedPopupButtonFamily, requestPlasmidTable)
           // then is here used to parse the results from async/await function
           .then( (result) => {
             currentQueryNode = result
@@ -559,6 +605,7 @@ const onLoad = () => {
       clickedPopupButtonCard = true
       clickedPopupButtonRes = true
       clickedPopupButtonFamily = true
+      clickedPopupButtonVir = true
     })
     // Button to clear the selected nodes by form
     $("#clearButton").unbind("click").bind("click", () => {
@@ -575,7 +622,7 @@ const onLoad = () => {
         const listPF = []
         // iterate over the file
         $.each(json, (accession, entry) => {
-          geneEntries = entry.gene
+          const geneEntries = entry.gene
           for (let i in geneEntries) {
             if (listPF.indexOf(geneEntries[i]) < 0) {
               listPF.push(geneEntries[i])
@@ -610,12 +657,19 @@ const onLoad = () => {
 
       slider.noUiSlider.set([min, max])
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
         showLegend.style.display = "none"
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
@@ -624,36 +678,58 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       }
     })
 
     $("#pfSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      resetDisplayTaxaBox(
+        ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
+      )
+      $("#orderList").selectpicker("deselectAll")
+      $("#familyList").selectpicker("deselectAll")
+      $("#genusList").selectpicker("deselectAll")
+      $("#speciesList").selectpicker("deselectAll")
+      $("#resList").selectpicker("deselectAll")
+      $("#cardList").selectpicker("deselectAll")
+      $("#virList").selectpicker("deselectAll")
       // clears previous selected nodes
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       // empties taxa and plasmidfinder legend
       $("#taxa_label").hide()
       $("#colorLegendBox").empty()
       $("#res_label").hide()
       $("#colorLegendBoxRes").empty()
+      $("#vir_label").hide()
+      $("#colorLegendBoxVir").empty()
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
-      pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
-        legendInst = results
-        pageReRun = false
-        // just show legend if any selection is made at all
-        if (legendInst === true) {
-          showLegend.style.display = "block"
-          showRerun.style.display = "block"
-          showGoback.style.display = "block"
-          showDownload.style.display = "block"
-          showTable.style.display = "block"
-          plotButton.style.display = "block"
-          // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        }
+      showDiv().then( () => {
+        pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+          legendInst = results
+          pageReRun = false
+          // just show legend if any selection is made at all
+          if (legendInst === true) {
+            showLegend.style.display = "block"
+            showRerun.style.display = "block"
+            showGoback.style.display = "block"
+            showDownload.style.display = "block"
+            showTable.style.display = "block"
+            heatMap.style.display = "block"
+            plotButton.style.display = "block"
+          }
+          // enables button group again
+          $("#toolButtonGroup button").removeAttr("disabled")
+          $("#loading").hide()
+        })
       })
     })
 
@@ -668,8 +744,8 @@ const onLoad = () => {
           listRes = []
         // iterate over the file
         $.each(json, (accession, entry) => {
-          databaseEntries = entry.database
-          geneEntries = entry.gene
+          const databaseEntries = entry.database
+          const geneEntries = entry.gene
           for (let i in databaseEntries) {
             if (databaseEntries[i] === "card" && listCard.indexOf(geneEntries[i]) < 0) {
               listCard.push(geneEntries[i])
@@ -711,12 +787,19 @@ const onLoad = () => {
 
       slider.noUiSlider.set([min, max])
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
         showLegend.style.display = "none"
         showRerun.style.display = "none"
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
@@ -725,35 +808,179 @@ const onLoad = () => {
         showGoback.style.display = "none"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       }
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      resetDisplayTaxaBox(
+        ["p_Plasmidfinder", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
+      )
+      $("#orderList").selectpicker("deselectAll")
+      $("#familyList").selectpicker("deselectAll")
+      $("#genusList").selectpicker("deselectAll")
+      $("#speciesList").selectpicker("deselectAll")
+      $("#plasmidFamiliesList").selectpicker("deselectAll")
+      $("#virList").selectpicker("deselectAll")
+
       // clears previously selected nodes
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       // empties taxa and plasmidfinder legend
       $("#taxa_label").hide()
       $("#colorLegendBox").empty()
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
+      $("#vir_label").hide()
+      $("#colorLegendBoxVir").empty()
       // same should be done for taxa filters submit button
       const tempPageReRun = pageReRun
-      resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
-        legendInst = results
-        pageReRun = false
-        // just show legend if any selection is made at all
-        if (legendInst === true) {
-          showLegend.style.display = "block"
-          showRerun.style.display = "block"
-          showGoback.style.display = "block"
-          showDownload.style.display = "block"
-          showTable.style.display = "block"
-          plotButton.style.display = "block"
-          // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-          // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        }
+      showDiv().then( () => {
+        resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
+          legendInst = results
+          pageReRun = false
+          // just show legend if any selection is made at all
+          if (legendInst === true) {
+            showLegend.style.display = "block"
+            showRerun.style.display = "block"
+            showGoback.style.display = "block"
+            showDownload.style.display = "block"
+            showTable.style.display = "block"
+            heatMap.style.display = "block"
+            plotButton.style.display = "block"
+          }
+          // enables button group again
+          $("#toolButtonGroup button").removeAttr("disabled")
+          $("#loading").hide()
+        })
+      })
+    })
+
+    //* ******************//
+    //* ***Virulence Filters****//
+    //* ******************//
+
+    if (firstInstace === true && pageReload === false) {
+      getArrayVir().done( (json) => {
+        // first parse the json input file
+        const listVir = []
+        // iterate over the file
+        $.each(json, (accession, entry) => {
+          const geneEntries = entry.gene
+          for (let i in geneEntries) {
+            if (listVir.indexOf(geneEntries[i]) < 0) {
+              listVir.push(geneEntries[i])
+            }
+          }
+        })
+
+        // populate the menus
+        singleDropdownPopulate("#virList", listVir, "VirulenceClass")
+
+        $(".VirulenceClass").on("click", function (e) {
+          // fill panel group displaying current selected taxa filters //
+          const stringClass = this.className.slice(0, -5)
+          const tempVar = this.firstChild.innerHTML
+          // checks if a taxon is already in display
+          const divStringClass = "#p_" + stringClass
+
+          filterDisplayer(tempVar, stringClass, divStringClass)
+        })
+      })
+    }
+
+    // setup clear button for plasmidfinder functions
+    $("#virClear").unbind("click").bind("click", (event) => {
+      document.getElementById("reset-sliders").click()
+      // clear = true;
+      event.preventDefault()
+      // this needs an array for reusability purposes
+      resetDisplayTaxaBox(["p_Virulence"])
+
+      // resets dropdown selections
+      $("#virList").selectpicker("deselectAll")
+
+      slider.noUiSlider.set([min, max])
+      node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
+      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+        showLegend.style.display = "none"
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        showDownload.style.display = "none"
+        showTable.style.display = "none"
+        heatMap.style.display = "none"
+        plotButton.style.display = "none"
+      } else {
+        $("#colorLegendBox").empty()
+        document.getElementById("taxa_label").style.display = "none" // hide label
+        showRerun.style.display = "none"
+        showGoback.style.display = "none"
+        showDownload.style.display = "none"
+        showTable.style.display = "none"
+        heatMap.style.display = "none"
+        plotButton.style.display = "none"
+      }
+    })
+
+    $("#virSubmit").unbind("click").bind("click", (event) => {
+      event.preventDefault()
+      resetDisplayTaxaBox(
+        ["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Order", "p_Family", "p_Genus", "p_Species"]
+      )
+      $("#orderList").selectpicker("deselectAll")
+      $("#familyList").selectpicker("deselectAll")
+      $("#genusList").selectpicker("deselectAll")
+      $("#speciesList").selectpicker("deselectAll")
+      $("#resList").selectpicker("deselectAll")
+      $("#cardList").selectpicker("deselectAll")
+      $("#plasmidFamiliesList").selectpicker("deselectAll")
+      // clears previous selected nodes
+      node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
+      // empties taxa and plasmidfinder legend
+      $("#taxa_label").hide()
+      $("#colorLegendBox").empty()
+      $("#res_label").hide()
+      $("#colorLegendBoxRes").empty()
+      $("#pf_label").hide()
+      $("#colorLegendBoxPf").empty()
+      // reset nodes before submitting new colors
+      const tempPageReRun = pageReRun
+      showDiv().then( () => {
+        virSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+          legendInst = results
+          pageReRun = false
+          // just show legend if any selection is made at all
+          if (legendInst === true) {
+            showLegend.style.display = "block"
+            showRerun.style.display = "block"
+            showGoback.style.display = "block"
+            showDownload.style.display = "block"
+            showTable.style.display = "block"
+            heatMap.style.display = "block"
+            plotButton.style.display = "block"
+          }
+          // enables button group again
+          $("#toolButtonGroup button").removeAttr("disabled")
+          $("#loading").hide()
+        })
       })
     })
 
@@ -828,6 +1055,12 @@ const onLoad = () => {
 
       slider.noUiSlider.set([min, max])
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
         showLegend.style.display = "none"
         showRerun.style.display = "none"
@@ -835,6 +1068,7 @@ const onLoad = () => {
         //document.getElementById("go_back").className += " disabled"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
@@ -844,6 +1078,7 @@ const onLoad = () => {
         //document.getElementById("go_back").className += " disabled"
         showDownload.style.display = "none"
         showTable.style.display = "none"
+        heatMap.style.display = "none"
         plotButton.style.display = "none"
       }
     })
@@ -859,6 +1094,11 @@ const onLoad = () => {
       $("#readLegend").empty()
       $("#read_label").hide()
       event.preventDefault()
+      resetDisplayTaxaBox(["p_PlasmidFinder", "p_Resfinder", "p_Card", "p_Virulence"])
+      $("#plasmidFamiliesList").selectpicker("deselectAll")
+      $("#resList").selectpicker("deselectAll")
+      $("#cardList").selectpicker("deselectAll")
+      $("#virList").selectpicker("deselectAll")
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
       // noLegend = false // sets legend to hidden state by default
@@ -963,11 +1203,19 @@ const onLoad = () => {
 
       // first restores all nodes to default color
       node_color_reset(graphics, g, nodeColor, renderer)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       // empties taxa and plasmidfinder legend
       $("#res_label").hide()
       $("#colorLegendBoxRes").empty()
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
+      $("#vir_label").hide()
+      $("#colorLegendBoxVir").empty()
 
       // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
@@ -988,7 +1236,7 @@ const onLoad = () => {
             const tempArray = assocOrderGenus[currentSelectionOrder[i]]
             for (const sp in tempArray) {
               promises.push(
-                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                   .then( (results) => {
                     results.map( (request) => {
                       listGiFilter.push(request.plasmid_id)
@@ -1004,7 +1252,7 @@ const onLoad = () => {
             const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
             for (const sp in tempArray) {
               promises.push(
-                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                   .then( (results) => {
                     results.map( (request) => {
                       listGiFilter.push(request.plasmid_id)
@@ -1020,7 +1268,7 @@ const onLoad = () => {
             const tempArray = assocGenus[currentSelectionGenus[i]]
             for (const sp in tempArray) {
               promises.push(
-                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                   .then( (results) => {
                     results.map( (request) => {
                       listGiFilter.push(request.plasmid_id)
@@ -1034,7 +1282,7 @@ const onLoad = () => {
           let currentSelectionSpecies = alertArrays.species
           for (const i in currentSelectionSpecies) {
             promises.push(
-              taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor, reloadAccessionList)//, changed_nodes)
+              taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)//, reloadAccessionList)//, changed_nodes)
                 .then( (results) => {
                   results.map( (request) => {
                     listGiFilter.push(request.plasmid_id)
@@ -1055,7 +1303,10 @@ const onLoad = () => {
               showGoback.style.display = "block"
               showDownload.style.display = "block"
               showTable.style.display = "block"
+              heatMap.style.display = "block"
               plotButton.style.display = "block"
+              // enables button group again
+              $("#toolButtonGroup button").removeAttr("disabled")
             })
         })
       }
@@ -1083,7 +1334,7 @@ const onLoad = () => {
                   // executres node function for family and orders
                   for (const sp in tempArray) {
                     promises.push(
-                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                         .then((results) => {
                           results.map((request) => {
                             listGiFilter.push(request.plasmid_id)
@@ -1104,7 +1355,7 @@ const onLoad = () => {
                   // executres node function for family
                   for (const sp in tempArray) {
                     promises.push(
-                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                         .then((results) => {
                           results.map((request) => {
                             listGiFilter.push(request.plasmid_id)
@@ -1126,7 +1377,7 @@ const onLoad = () => {
                   // respective nodes
                   for (const sp in tempArray) {
                     promises.push(
-                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                         .then((results) => {
                           results.map((request) => {
                             listGiFilter.push(request.plasmid_id)
@@ -1146,7 +1397,7 @@ const onLoad = () => {
                   // requests taxa associated accession from db and colors
                   // respective nodes
                   promises.push(
-                    taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)
+                    taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, reloadAccessionList)
                     // })//, changed_nodes)
                       .then((results) => {
                         results.map(request => {
@@ -1168,7 +1419,10 @@ const onLoad = () => {
                   showGoback.style.display = "block"
                   showDownload.style.display = "block"
                   showTable.style.display = "block"
+                  heatMap.style.display = "block"
                   plotButton.style.display = "block"
+                  // enables button group again
+                  $("#toolButtonGroup button").removeAttr("disabled")
                 })
             }) // ends showDiv
 
@@ -1197,31 +1451,11 @@ const onLoad = () => {
     //* ************//
     //* ***READS****//
     //* ************//
-    const pushToMasterReadArray = (readFilejson) => {
-      const returnArray = []
-      // iterate for all files and save to masterReadArray to use in heatmap
-      for (const i in readFilejson) {
-        if (readFilejson.hasOwnProperty(i)) {
-          const fileEntries = JSON.parse(readFilejson[i])
-          // iterate each accession number
-          for (const i2 in fileEntries) {
-            if (fileEntries.hasOwnProperty(i2)) {
-              // if not in masterReadArray then add it
-              const percValue = (typeof(fileEntries[i2]) === "number") ?
-                fileEntries[i2] : parseFloat(fileEntries[i2][0])
-              if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParser()) {
-                returnArray.push(i2)
-              }
-            }
-          }
-        }
-      }
-      return returnArray
-    }
 
     $("#fileSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
       masterReadArray = []
+      assemblyJson = false
       // feeds the first file
       const readString = JSON.parse(Object.values(readFilejson)[0])
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
@@ -1229,6 +1463,12 @@ const onLoad = () => {
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       $("#loading").show()
       setTimeout( () => {
         // colors each node for first element of readFilejson
@@ -1253,9 +1493,17 @@ const onLoad = () => {
 
     $("#sampleMapping").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      masterReadArray = []
+      assemblyJson = false
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       $("#loading").show()
       setTimeout( () => {
         getArrayMapping().done((result) => {
@@ -1282,6 +1530,7 @@ const onLoad = () => {
 
     $("#fileSubmit_mash").unbind("click").bind("click", (event) => {
       masterReadArray = []
+      assemblyJson = false
       readFilejson = mashJson // converts mash_json into readFilejson to
       readString = JSON.parse(Object.values(mashJson)[0])
       $("#fileNameDiv").html(Object.keys(mashJson)[0])
@@ -1290,6 +1539,12 @@ const onLoad = () => {
       readIndex += 1
       // it and use the same function (readColoring)
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       event.preventDefault()
       $("#loading").show()
       setTimeout( () => {
@@ -1316,16 +1571,24 @@ const onLoad = () => {
 
     $("#sampleMash").unbind("click").bind("click", (event) => {
       event.preventDefault()
+      masterReadArray = []
+      assemblyJson = false
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       $("#loading").show()
       setTimeout( () => {
-        getArrayMash().done((result) => {
+        getArrayMash().done( (result) => {
           // puts to readFilejson object that may store many files
           mashJson = {
             // has to be stringifyed to be passed to pushToMasterReadArray
-            "mapping_sample1": JSON.stringify(result)
+            "mash_sample1": JSON.stringify(result)
           }
           readFilejson = mashJson
           const outLists = readColoring(g, list_gi, graphics, renderer, result)
@@ -1346,15 +1609,21 @@ const onLoad = () => {
     $("#assemblySubmit").unbind("click").bind("click", (event) => {
       $("#alertAssembly").show()
       masterReadArray = []
+      readFilejson = false
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       $("#loading").show()
       // setTimeout( () => {
       listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
       // }, 100)
       setTimeout( () => {
         renderer.rerender()
-        // TODO raise a warning for users to press play if they want
       }, 100)
 
       // }
@@ -1370,9 +1639,16 @@ const onLoad = () => {
 
     $("#sampleAssembly").unbind("click").bind("click", (event) => {
       $("#alertAssembly").show()
-      masterReadArray = []
       event.preventDefault()
+      masterReadArray = []
+      readFilejson = false
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      areaSelection = false
       $("#loading").show()
       // setTimeout( () => {
       getArrayAssembly().then( (results) => {
@@ -1400,13 +1676,13 @@ const onLoad = () => {
       $("#reset-sliders").click()
       $("#loading").show()
       $("#scaleLegend").empty()
-      showDiv().then(
+      showDiv().then( () => {
         linkColoring(g, graphics, renderer, "distance", toggleRatioStatus)
-      )
-      // TODO add hide loading after this promise is resolved
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+      })
       const readMode = false
-      color_legend(readMode)
-      //document.getElementById("reset-links").disabled = ""
+      colorLegendFunction(readMode)
     })
 
     $("#reset-links").unbind("click").bind("click", (event) => {
@@ -1451,8 +1727,8 @@ const onLoad = () => {
     // this is only triggered on first instance because we only want to get
     // the limits of all plasmids once
     if (sliderMinMax.length === 0) {
-      sliderMinMax = [Math.log(Math.min.apply(null, list_lengths)),
-        Math.log(Math.max.apply(null, list_lengths))]
+      sliderMinMax = [Math.log(Math.min.apply(null, listLengths)),
+        Math.log(Math.max.apply(null, listLengths))]
       // generates and costumizes slider itself
       const slider = document.getElementById("slider")
 
@@ -1503,6 +1779,11 @@ const onLoad = () => {
     // resets the slider
     $("#reset-sliders").unbind("click").bind("click", () => {
       listGiFilter = [] //resets listGiFilter
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
       areaSelection = false
       readFilejson = false // makes file selection empty again
       assemblyJson = false
@@ -1510,6 +1791,11 @@ const onLoad = () => {
       currentQueryNode = false
       slider.noUiSlider.set(sliderMinMax)
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
     })
     // runs the re run operation for the selected species
     $("#Re_run").unbind("click").bind("click", () => {
@@ -1529,6 +1815,8 @@ const onLoad = () => {
         setTimeout( () => {
           actualRemoval(g, graphics, onLoad, false)
           freezeShift = true
+          // enables button group again
+          $("#toolButtonGroup button").removeAttr("disabled")
         }, 100)
       })
     })
@@ -1540,12 +1828,15 @@ const onLoad = () => {
       pageReload = true
       list = []
       list_gi = []
-      list_lengths = []
+      listLengths = []
       listGiFilter = []
       showDiv().then( () => {
         // removes nodes and forces adding same nodes
         setTimeout( () => {
           actualRemoval(g, graphics, onLoad, true)
+          // enables button group again
+          console.log("test")
+          $("#toolButtonGroup button").removeAttr("disabled")
         }, 100)
       })
     })
@@ -1579,15 +1870,15 @@ const onLoad = () => {
       // is way less efficient than the non development session.
       if (devel === true) {
         getArray.done(function (json) {
-          $.each(json, function (sequence_info, dict_dist) {
+          $.each(json, function (sequenceInfo, dictDist) {
             counter++
             // next we need to retrieve each information type independently
-            const sequence = sequence_info.split("_").slice(0, 3).join("_")
+            const sequence = sequenceInfo.split("_").slice(0, 3).join("_")
 
             // and continues
-            const seqLength = sequence_info.split("_").slice(-1).join("")
+            const seqLength = sequenceInfo.split("_").slice(-1).join("")
             const log_length = Math.log(parseInt(seqLength)) //ln seq length
-            list_lengths.push(seqLength); // appends all lengths to this list
+            listLengths.push(seqLength); // appends all lengths to this list
             list_gi.push(sequence)
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
             if (list.indexOf(sequence) < 0) {
@@ -1604,19 +1895,20 @@ const onLoad = () => {
               })
               list.push(sequence)
 
-              if (dict_dist !== null) {
+              if (dictDist !== null) {
                 // loops between all arrays of array pairing sequence and distances
-                for (let i = 0; i < dict_dist.length; i++) {
-                  const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
-                  const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
+                for (let i = 0; i < dictDist.length; i++) {
+                  const reference = Object.keys(dictDist[i])[0]  // stores
+                  // references in a unique variable
+                  const distance = Object.values(dictDist[i])[0].distance   // stores distances in a unique variable
                   g.addLink(sequence, reference, { distance })
                 }
               } else {
-                dict_dist = []
+                dictDist = []
               }
             }
             // centers on node with more links
-            storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
+            storeMasterNode = storeRecenterDom(storeMasterNode, dictDist, sequence, counter)
           })
           // precompute before rendering
           renderGraph(graphics)
@@ -1635,7 +1927,7 @@ const onLoad = () => {
                 const sequence = array.id
                 const seqLength = array.length
                 const log_length = Math.log(parseInt(seqLength))
-                list_lengths.push(seqLength)
+                listLengths.push(seqLength)
                 list_gi.push(sequence)
 
                 if (list.indexOf(sequence) < 0) {
@@ -1748,12 +2040,12 @@ const onLoad = () => {
   //* ****************************** *//
 
   $("#menu-toggle").on("click", function (e) {
-    if (first_click_menu === true) {
+    if (firstClickMenu === true) {
       $("#menu-toggle").css( {"color": "#fff"} )
-      first_click_menu = false
+      firstClickMenu = false
     } else {
       $("#menu-toggle").css( {"color": "#999999"} )
-      first_click_menu = true
+      firstClickMenu = true
     }
   })
 
@@ -1806,6 +2098,7 @@ const onLoad = () => {
     .on("dbl-click-cell.bs.table", (field, value, row, element) => {
       recenterDOM(renderer, layout, [element.id, false])
       requestPlasmidTable(g.getNode(element.id), setupPopupDisplay)
+      currentQueryNode = element.id
     })
 
   // function to download dataset selected in table
@@ -1819,6 +2112,7 @@ const onLoad = () => {
 
   // function to display heatmap dataset selected in table
   $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
+    $("#heatmapModal").modal()
     // transform internal accession numbers to ncbi acceptable accesions
     if (readFilejson !== false) {
       heatmapMaker(masterReadArray, readFilejson)
@@ -1844,28 +2138,36 @@ const onLoad = () => {
       recenterDOM(renderer, layout, [bootstrapTableList[0], false])
       requestPlasmidTable(g.getNode(bootstrapTableList[0]), setupPopupDisplay)
     }
-    colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
-    // handles hidden buttons
-    showRerun.style.display = "block"
-    showGoback.style.display = "block"
-    showDownload.style.display = "block"
-    showTable.style.display = "block"
-    plotButton.style.display = "block"
-    // sets listGiFilter to the selected nodes
-    listGiFilter = bootstrapTableList
-    bootstrapTableList = []
-    renderer.rerender()
+    showDiv().then( () => {
+      console.log("color")
+      colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
+
+      // handles hidden buttons
+      showRerun.style.display = "block"
+      showGoback.style.display = "block"
+      showDownload.style.display = "block"
+      showTable.style.display = "block"
+      heatMap.style.display = "block"
+      plotButton.style.display = "block"
+      // sets listGiFilter to the selected nodes
+      listGiFilter = bootstrapTableList
+      bootstrapTableList = []
+      // enables button group again
+      $("#toolButtonGroup button").removeAttr("disabled")
+      $("#loading").hide()
+      renderer.rerender()
+    })
   })
 
   // function to create table
   $("#tableShow").unbind("click").bind("click", (e) => {
     $("#tableModal").modal()
-    // $("#metadataTable").bootstrapTable("destroy")
-    $(".nav-tabs a[href='#homeTable']").tab("show")
     showDiv()
       .then( () => {
         previousTableList = makeTable(areaSelection, listGiFilter,
           previousTableList, g, graphics, graphSize)
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
       })
   })
 
@@ -1941,32 +2243,17 @@ const onLoad = () => {
 
   // resistance button control //
   $("#resButton").unbind("click").bind("click", () => {
-    // $("#resTab").show()
-    // if (clickedPopupButtonCard === true) {
-    // $("#pfTab").hide()
-    // $("#popupTabs").show()
     clickedPopupButtonCard = resGetter(currentQueryNode)
-    // $("#pfTab").empty()
-    // } else {
-    // when it is already queried and we are just cycling b/w the two divs
-    // (tabs) then just show and hide the respective divs
-    // $("#resTab").show()
-
-    // }
   })
 
+  // plasmid finder button control
   $("#plasmidButton").unbind("click").bind("click", () => {
-    // $("#pfTab").show()
-    // if (clickedPopupButtonFamily === true) {
-    // $("#popupTabs").show()
-    // $("#resTab").hide()
     clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
-    // $("#resTab").empty()
-    // } else {
-    // when it is already queried and we are just cycling b/w the two divs
-    // (tabs) then just show and hide the respective divs
-    // $("#pfTab").show()
-    // }
+  })
+
+  // plasmid finder button control
+  $("#virButton").unbind("click").bind("click", () => {
+    clickedPopupButtonVir = virulenceGetter(currentQueryNode)
   })
 
   // control the alertClose button
@@ -1994,12 +2281,16 @@ const onLoad = () => {
   // function that submits the selection made in the modal
   $("#ratioSubmit").unbind("click").bind("click", () => {
     event.preventDefault()
+    // clears all links before doing this
+    $("#reset-links").click()
     // $("#reset-links").click()
     // $("#loading").show()
     $("#scaleLegend").empty()
     showDiv().then(
       setTimeout( () => {
         linkColoring(g, graphics, renderer, "size", toggleRatioStatus, totalNumberOfLinks)
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     )
     // const readMode = false
@@ -2012,6 +2303,12 @@ const onLoad = () => {
   */
   $("#slideRight").unbind("click").bind("click", () => {
     resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
     const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
@@ -2020,6 +2317,12 @@ const onLoad = () => {
 
   $("#slideLeft").unbind("click").bind("click", () => {
     resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
     const outArray = slideToLeft(readFilejson, readIndex, g, list_gi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
@@ -2029,6 +2332,7 @@ const onLoad = () => {
   // changes the behavior of tooltip to show only on click
   $("#questionPlots").popover()
   $("#questionTable").popover()
+  $("#questionHeatmap").popover()
   $("#questionMap").popover()
   $("#questionRatio").popover()
 
@@ -2049,6 +2353,7 @@ const onLoad = () => {
     // this force question buttons to close if tableModal and modalPlot are
     // closed
     $("#questionTable").popover("hide")
+    $("#questionHeatmap").popover("hide")
     $("#questionPlots").popover("hide")
     $("#questionMap").popover("hide")
     $("#questionRatio").popover("hide")
@@ -2070,9 +2375,3 @@ const onLoad = () => {
     initCallback(g, layout, devel)
   })
 } // closes onload
-
-/**
- * Executed when body is loaded.
- * Basically executes everythin that is custom scripts
- */
-// window.onload = onLoadWelcome(onLoad)

@@ -130,7 +130,8 @@ class DbInsertion(Abricate):
 
     @staticmethod
     def db_dump(temp_dict, db_type):
-        '''This function just dumps a dict to psql database
+        '''This function just dumps a dict to psql database, depending on
+        the database type provided to argparse it will output to different dbs.
 
         :param temp_dict: dict, dictionary with reworked entries to properly
         add to psql db
@@ -147,6 +148,11 @@ class DbInsertion(Abricate):
                     )
             elif db_type == "plasmidfinder":
                 row = models.Database(
+                    plasmid_id = k,
+                    json_entry = v
+                )
+            elif db_type == "virulence":
+                row = models.Positive(
                     plasmid_id = k,
                     json_entry = v
                 )
@@ -207,7 +213,7 @@ def main():
                                                              "file in the "
                                                              "case of resistances")
     parser.add_argument("-db", "--db", dest="output_psql_db",
-        choices=["resistance", "plasmidfinder"], required=True,
+        choices=["resistance", "plasmidfinder", "virulence"], required=True,
         help="Provide the db to output in psql models.")
     parser.add_argument("-id", "--identity", dest="identity",
                          default="90", help="minimum identity to be "

@@ -1,3 +1,20 @@
+/**
+ * Function to handle the assembly import file.
+ * @param {Array} listGi - An array of all accession numbers represented
+ * with nodes in pATLAS.
+ * @param {Object} assemblyFile - Stores all the files as keys and values as
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Array} masterReadArray - The array that will store everything
+ * that passes the cutoffs, which in this case it will be everything
+ * imported by assemblyJson
+ * @param {Array} listGiFilter - Array that stores the selected nodes that
+ * is used in many other features throughout pATLAS.
+ * @returns {Array} listGiFilter - Array that stores the selected nodes that
+ * is used in many other features throughout pATLAS.
+ */
 const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilter) => {
   // iterate through all entries in assembly file
   for (const i in assemblyFile) {
@@ -64,13 +81,16 @@ const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilt
   let showGoback = document.getElementById("go_back")
   let showDownload = document.getElementById("download_ds")
   let showTable = document.getElementById("tableShow")
+  let heatMap = document.getElementById("heatmapButtonTab")
   let showLegend = document.getElementById("colorLegend")
   let plotButton = document.getElementById("plotButton")
   showRerun.style.display = "block"
   showGoback.style.display = "block"
   showDownload.style.display = "block"
   showTable.style.display = "block"
+  heatMap.style.display = "block"
   showLegend.style.display = "block"
+
   plotButton.style.display = "block"
   $("#readString").empty()
   $("#assemblyLabel").show()

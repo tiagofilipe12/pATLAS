@@ -4,17 +4,20 @@ try:
     from db_manager.db_app import app
     from db_manager.db_app.resources import GetSpecies, GetAccession, \
         GetResistances, \
-        GetPlasmidFinder, GetAccessionRes, GetAccessionPF, GetPlasmidName
+        GetPlasmidFinder, GetAccessionRes, GetAccessionPF, GetPlasmidName, \
+        GetAccessionVir, GetVirulence
 except ImportError:
     try:
         from db_app import app
         from db_app.resources import GetSpecies, GetAccession, \
             GetResistances, \
-            GetPlasmidFinder, GetAccessionRes, GetAccessionPF, GetPlasmidName
+            GetPlasmidFinder, GetAccessionRes, GetAccessionPF, GetPlasmidName, \
+            GetAccessionVir, GetVirulence
     except ImportError:
         from patlas.db_manager.db_app import app
         from patlas.db_manager.db_app.resources import GetSpecies, GetAccession, \
-            GetResistances, GetPlasmidFinder, GetAccessionRes, GetAccessionPF, GetPlasmidName
+            GetResistances, GetPlasmidFinder, GetAccessionRes, \
+            GetAccessionPF, GetPlasmidName, GetAccessionVir, GetVirulence
 
 ## start api
 api = Api(app)
@@ -28,6 +31,9 @@ api.add_resource(GetPlasmidName, "/api/getplasmidname/", endpoint="get_plasmidna
 api.add_resource(GetResistances, "/api/getresistances/",
                  endpoint="get_resistances")
 
+api.add_resource(GetVirulence, "/api/getvirulence/",
+                 endpoint="get_virulence")
+
 api.add_resource(GetPlasmidFinder, "/api/getplasmidfinder/",
                  endpoint="get_plasmidfinder")
 
@@ -38,3 +44,6 @@ api.add_resource(GetAccessionRes, "/api/getaccessionres/",
 
 api.add_resource(GetAccessionPF, "/api/getaccessionpf/",
 endpoint="get_accessionpf")
+
+api.add_resource(GetAccessionVir, "/api/getaccessionvir/",
+endpoint="get_accessionvir")

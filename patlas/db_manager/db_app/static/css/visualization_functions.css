@@ -249,7 +249,7 @@
   overflow-y: scroll;
   overflow-x: hidden;
 }*/
-#order_dropdown, #famDropdown, #resDropdown, #cardDropdown{
+#order_dropdown, #famDropdown, #resDropdown, #cardDropdown, #virDropdown{
     text-align: center;
 }
 
@@ -290,7 +290,7 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
-#modal-body-taxa-1, #modalBodyFAM1, #modalBodyABR1{
+#modal-body-taxa-1, #modalBodyFAM1, #modalBodyABR1, #modalBodyVir1{
     margin-bottom: 5%;
 }
 
@@ -592,14 +592,9 @@
 /* plot stuff */
 
 #modal-body-plot{
-    width: 800px;
-    height: 500px;
-    margin: auto;
-}
-
-#chartContainer1{
     width: 100%;
-    height: 95%;
+    max-height: 600px;
+    margin: auto;
 }
 
 #chartContainer2{
@@ -653,7 +648,11 @@
     /*background: #ccc;*/
 }
 
-#modalTableBody > .tab-content > .tab-pane > .bootstrap-table > .fixed-table-toolbar > .columns > .btn{
+#modalTableBody > .bootstrap-table > .fixed-table-toolbar > .columns > .btn{
+    height: 34px;
+}
+
+#go_back, #Re_run, #download_ds, #tableShow, #heatmapButtonTab, #plotButton{
     height: 34px;
 }
 
@@ -755,4 +754,17 @@ Careful when using this in other popovers in the future*/
 
 #toggleRatio{
     width: 100%;
+}
+
+#alertPlotEntries{
+    display: none;
+    width: 700px;
+    position: absolute;
+    top: 5px;
+    text-align: center;
+    /* Decreases the height of the alert without changing font size */
+    margin-bottom: 1px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0px 30px;
 }

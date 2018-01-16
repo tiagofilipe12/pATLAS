@@ -1,3 +1,6 @@
+/* globals makeHash, reloadAccessionList, assembly, listGiFilter,
+ colorNodes, readColoring */
+
 // function that adds links, avoiding duplication below on reAddNode function
 const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
   const currentHash = makeHash(sequence, linkAccession)
@@ -138,6 +141,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
     // vivagraph.... and only then precompute the graph.
     //Promise.all(promises)
       .then( (results) => {
+        let plasmidName, speciesName, reAddNodeList
         for (const data of results) {
           // if request rtaeturn no speciesName or plasmidName
           // sometimes plasmids have no descriptor for one of these or both
@@ -188,7 +192,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
         if (readString !== false) {
           readColoring(g, list_gi, graphics, renderer, readString)
         } else if (assemblyJson !== false) {
-          masterReadArray = [] //needs to reset this array for the assembly
+          let masterReadArray = [] //needs to reset this array for the assembly
           // function to be successful
           listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
         } else if ($("#p_Card").html() !== "Card:" ||
@@ -204,6 +208,8 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           // which checks the divs that contain the species, color the as if
           // the button was clicked and makes the legends
           $("#taxaModalSubmit").click()
+        } else if ($("#p_Virulence").html() !== "Virulence:") {
+          $("#virSubmit").click()
         } else {
           colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
           // color for area selection
@@ -248,6 +254,8 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     "<ul class='legend' id='colorLegendBoxRes'></ul>" +
     "<label id='pf_label' style='display: none'>Plasmid Families</label>" +
     "<ul class='legend' id='colorLegendBoxPf'></ul>" +
+    "<label id='vir_label' style='display: none'>Virulence factors</label>" +
+    "<ul class='legend' id='colorLegendBoxVir'></ul>" +
     "<!--Populated by visualization_functions.js-->\n" +
     "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
     "<div class='gradient' id='scaleLegend'></div>\n" +
@@ -334,6 +342,9 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     "<li id='plasmidButton'>" +
     "<a data-toggle='tab' href='#pfTab'>Plasmid finder</a>" +
     "</li>" +
+    "<li id='virButton'>" +
+    "<a data-toggle='tab' href='#virTab'>Virulence</a>" +
+    "</li>" +
     "</ul>" +
     "<div class='tab-content' id='popupTabs'>" +
     "<div id='pfTab' class='tab-pane fade'>" +
@@ -418,7 +429,35 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     "<div id='resfinderRangePop'>" +
     "<span style='color: #468499'>Range in plasmid: </span>" +
     "<span id='resfinderRangePopSpan'></span>" +
-    "</div></div></div></div></div>"
+    "</div></div>" +
+    "<div id='virTab' class='tab-pane fade'>" +
+    "<div id='virPop' class='popupHeaders'>Virulence database</div>" +
+    "<div style='border-top: 3px solid #4588ba; position: relative;" +
+    "top: 10px; margin-bottom: 10px;'>" +
+    "</div>" +
+    "<div id='virGenePop'>" +
+    "<span style='color: #468499'>Gene name: </span><span" +
+    " id='virGenePopSpan'></span>" +
+    "</div>" +
+    "<div id='virGenbankPop'>" +
+    "<span style='color: #468499'>Genbank Accession: </span>" +
+    "<span id='virGenbankPopSpan'></span>" +
+    "</div>" +
+    "<div>Matching genes information</div>" +
+    "<div id='virCoveragePop'>" +
+    "<span style='color: #468499'>Coverage: </span>" +
+    "<span id='virCoveragePopSpan'></span>" +
+    "</div>" +
+    "<div id='virIdentityPop'>" +
+    "<span style='color: #468499'>Identity: </span>" +
+    "<span id='virIdentityPopSpan'></span>" +
+    "</div>" +
+    "<div id='virRangePop'>" +
+    "<span style='color: #468499'>Range in plasmid: </span>" +
+    "<span id='virRangePopSpan'></span>" +
+    "</div>" +
+    "</div>" +
+    "</div></div></div>"
   )
 
   // should be executed when listGiFilter is empty ... mainly for area selection
@@ -445,6 +484,8 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
  */
 const showDiv = () => {
   return new Promise( (resolve) => {
+    // disables this button group
+    $("#toolButtonGroup button").attr("disabled", "disabled")
     resolve($("#loading").show())
   })
 }

@@ -25,6 +25,7 @@ require("highcharts/modules/histogram-bellcurve")(Highcharts)
 require("highcharts/modules/heatmap")(Highcharts)
 require("highcharts/modules/exporting")(Highcharts)
 require("highcharts/modules/offline-exporting")(Highcharts)
+require("highcharts/modules/no-data-to-display")(Highcharts)
 require("highcharts/modules/boost")(Highcharts)
 //require("nouislider") // nouislider needs to be loaded in body...
 

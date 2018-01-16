@@ -90,9 +90,10 @@
       </div>
       <div>
         <a title="Web Analytics" href="http://statcounter.com/"
-           target="_blank"><img
-                src="//c.statcounter.com/11567956/0/ab4c856f/1/"
-                alt="Web Analytics" ></a>
+           target="_blank">
+          <img src="//c.statcounter.com/11567956/0/ab4c856f/1/"
+               alt="Web Analytics" >
+        </a>
       </div>
       <div class="modal-footer">
         <div id="counternclose"
@@ -133,7 +134,7 @@
         <h3><b>Version:</b> 1.0.0</h3>
         <p class="mainText">
         </p>
-        <h3><b>Last database update:</b> 15 December 2017</h3>
+        <h3><b>Last database update:</b> 11 January 2017</h3>
         <p class="mainText">
         </p>
         <h3><b>Dev team</b></h3>
@@ -185,6 +186,9 @@
     </div>
   </div>
 </div>
+
+<!--modal for video tutorials-->
+
 <div class="modal fade" id="videoModal" data-backdrop="static"
      role="dialog" tabindex="-1">
   <div class="modal-dialog" id="videoDialog" style="width: 60%">
@@ -214,6 +218,47 @@
   </div>
 </div>
 
+<!-- Modal for heatmap-->
+<div id="heatmapModal" class="modal fade" data-backdrop="static" role="dialog"
+     tabindex="-1">
+  <div class="modal-dialog" style="width: 80%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Heatmap for all imported samples</h4>
+      </div>
+      <div class="modal-body table-responsive" id="modalHeatBody">
+        <div id="chartContainer2">
+          <b> Warning: </b>No information available. Please
+          check that reads
+          json files are imported, given that this options
+          is used for comparison between samples.
+        </div>
+      </div>
+    <!--</div>-->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default btn-circle"
+              data-toggle="popover" data-placement="right"
+              data-trigger="focus"
+              data-original-title="Heatmap controls"
+              data-content="Test"
+              data-html="true"
+              aria-describedby="tooltip" style="position: absolute;
+                        left:2%"
+              id="questionHeatmap">
+        <span class="glyphicon glyphicon-question-sign"></span>
+      </button>
+      <button type="submit" class="btn btn-default"
+              data-dismiss="modal" id="heatSubmit"
+      >Ok
+      </button>
+      <!--<button class="btn btn-danger" id="cancelTable">Close-->
+      <!--</button>-->
+    </div>
+  </div>
+</div>
+</div>
+
 <!-- Modal for table-->
 <div id="tableModal" class="modal fade" data-backdrop="static" role="dialog"
      tabindex="-1">
@@ -225,50 +270,33 @@
           metadata</h4>
       </div>
       <div class="modal-body table-responsive" id="modalTableBody">
-        <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab"
-                                href="#homeTable">Table
-          </a></li>
-          <li id="heatmapButtonTab" disabled
-          ><a data-toggle="tab" href="#heatmapTab">Heatmap</a></li>
-        </ul>
-        <div class="tab-content">
-          <div id="homeTable" class="tab-pane fade in active">
-            <div id="toolbar">
-              <button class="btn btn-default" id="downloadTable"
-                      type="button" data-toogle="tooptip"
-                      title="Download selection">
-                <span class="glyphicon glyphicon-download-alt"></span>
-              </button>
-            </div>
-            <table class="table" id="metadataTable"
-                   data-striped="true"
-                   data-search="true"
-                   data-show-toggle="true"
-                   data-show-columns="true"
-                   data-query-params="queryParams"
-                   data-pagination="true"
-                   data-height="550"
-                   data-show-export="true"
-                   data-click-to-select="true"
-                   data-toolbar="#toolbar">
-            </table>
-          </div>
-          <div id="heatmapTab" class="tab-pane fade">
-            <div id="chartContainer2">
-              <b> Warning: </b>No information available. Please
-              check that reads
-              json files are imported, given that this options
-              is used for comparison between samples.
-            </div>
-          </div>
+        <div id="toolbar">
+          <button class="btn btn-default" id="downloadTable"
+                  type="button" data-toogle="tooptip"
+                  title="Download selection">
+            <span class="glyphicon glyphicon-download-alt"></span>
+          </button>
         </div>
+        <table class="table" id="metadataTable"
+               data-striped="true"
+               data-search="true"
+               data-show-toggle="true"
+               data-show-columns="true"
+               data-query-params="queryParams"
+               data-pagination="true"
+               data-page-list = "10, 25, 50, 100, ALL"
+               data-height="550"
+               data-show-export="true"
+               data-click-to-select="true"
+               data-toolbar="#toolbar">
+        </table>
       </div>
+      <!--</div>-->
       <div class="modal-footer">
         <button type="button" class="btn btn-default btn-circle"
                 data-toggle="popover" data-placement="right"
                 data-trigger="focus"
-                data-original-title="Plot controls"
+                data-original-title="Table controls"
                 data-content="<li>Double left mouse click in cell -
                         recenters graph on that plasmid</li>
                         <li>Single left mouse click in cell - selects row</li>"
@@ -475,7 +503,7 @@
               Execute command:<br>
               <span style="color: grey">
                             mash_wrapper.py -rs
-                            &ltassembly_reference.msh&gt -r
+                            &ltpatlas.msh&gt -r
                             &ltyour_read(s)&gt -j -ms -o &ltyour_output_name&gt
                             </span>
             </li>
@@ -558,7 +586,7 @@
               Execute command:<br>
               <span style="color: grey">
                             mash_wrapper.py -rs
-                            &ltassembly_reference.msh&gt -a
+                            &ltpatlas.msh&gt -a
                             &ltyour_fasta&gt -j -o &ltyour_output_folder&gt
                             </span>
             </li>
@@ -938,6 +966,11 @@
                     data-target="#resModal"
                     id="resistancesFilter" >Resistances
             </button>
+            <button class="button list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#virModal"
+                    id="virulenceFilter" >Virulence
+            </button>
           </ul>
         </div>
       </li>
@@ -988,6 +1021,10 @@
             <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                     data-target="#modalPlot"
                     id="pfamilyStats">Plasmid families
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="virStats">Virulence
             </button>
           </ul>
           <ul class="list-group headerPanelGroup">Other
@@ -1056,7 +1093,7 @@
         </div>
 
         <!--<form class="navbar-form navbar-left">-->
-        <div class="btn-group">
+        <div class="btn-group" id="toolButtonGroup">
           <button class="btn btn-default" id="go_back"
                   type="button" data-toogle="tooptip"
                   title="Return to full tree view" style="display: none">
@@ -1075,6 +1112,12 @@
                   title="Table with metadata" style="display:
                             none">
             <span class="glyphicon glyphicon-list-alt"></span></button>
+          <button class="btn btn-default" id="heatmapButtonTab"
+                  type="button" data-toogle="tooptip"
+                  title="Heatmap for multiple import comparison" style="display:
+                            none">
+            <span class="glyphicon glyphicon-th"></span>
+          </button>
           <button class="btn btn-default"
                   data-toggle="tooltip" type="button"
                   title="Quick stats"
@@ -1137,6 +1180,8 @@
         <ul class="legend" id="colorLegendBoxRes"></ul>
         <label id="pf_label" style="display: none">Plasmid Families</label>
         <ul class="legend" id="colorLegendBoxPf"></ul>
+        <label id="vir_label" style="display: none">Virulence factors</label>
+        <ul class="legend" id="colorLegendBoxVir"></ul>
         <!--Populated by visualization_functions.js-->
         <label id="distance_label" style="display: none">Distances scale</label>
         <div class="gradient" id="scaleLegend"></div>
@@ -1235,6 +1280,9 @@
       <li id="plasmidButton">
         <a data-toggle="tab" href="#pfTab">Plasmid finder</a>
       </li>
+      <li id="virButton">
+        <a data-toggle="tab" href="#virTab">Virulence</a>
+      </li>
     </ul>
     <div class="tab-content" id="popupTabs">
       <div id='pfTab' class="tab-pane fade">
@@ -1305,6 +1353,32 @@
           <span style='color: #468499'>Range in plasmid: </span><span id='resfinderRangePopSpan'></span>
         </div>
       </div>
+      <div id='virTab' class="tab-pane fade">
+        <div id='virPop' class="popupHeaders">Virulence database</div>
+        <div style='border-top: 3px solid #4588ba; position: relative;
+                top: 10px; margin-bottom: 10px;'>
+        </div>
+        <div id='virGenePop'>
+          <span style='color: #468499'>Gene name: </span><span id='virGenePopSpan'></span>
+        </div>
+        <div id='virGenbankPop'>
+          <span style='color: #468499'>Genbank Accession: </span><span
+                id='virGenbankPopSpan'></span>
+        </div>
+        <div>Matching genes information</div>
+        <div id='virCoveragePop'>
+          <span style='color: #468499'>Coverage: </span><span
+                id='virCoveragePopSpan'></span>
+        </div>
+        <div id='virIdentityPop'>
+          <span style='color: #468499'>Identity: </span><span
+                id='virIdentityPopSpan'></span>
+        </div>
+        <div id='virRangePop'>
+          <span style='color: #468499'>Range in plasmid: </span><span
+                id='virRangePopSpan'></span>
+        </div>
+      </div>
     </div>
     <!--</div>-->
   </div>
@@ -1313,8 +1387,9 @@
 <div class="graph-overlay"></div>
 <span style="color: white; margin: 10px;">Use mouse to draw rectangle and select nodes</span>
 
-<div id="modalPlot" class="modal fade" role="dialog" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+<div id="modalPlot" class="modal fade" role="dialog" tabindex="-1"
+     data-backdrop="static">
+  <div class="modal-dialog" style="width: 70%">
     <!-- Modal content for file-->
     <div class="modal-content">
       <div class="modal-header">
@@ -1325,12 +1400,20 @@
         <div class="alert alert-warning alert-dismissable fade in"
              id="alertPlot"
              style="display: none">
-          <button type="button" class="close" id="alertPlotClose"
+          <button type="button" class="close"
                   aria-hidden="true" data-hide="true"
                   onclick="this.parentNode.style.display = 'none'">
             &times;</button>
           <strong>Warning!</strong> All plasmids have same size.
           There is no sufficient data to plot an histogram.
+        </div>
+        <div class="alert alert-info alert-dismissable fade in"
+             id="alertPlotEntries">
+          <span id="spanEntries"></span>
+          <button type="button" class="close"
+                  aria-hidden="true" data-hide="true"
+                  onclick="this.parentNode.style.display = 'none'">
+            &times;</button>
         </div>
         <div>
           <button class="btn btn-info" id="sortGraph"
@@ -1359,7 +1442,15 @@
           </div>
         </div>
         <!--div to put the plot-->
-        <div id="chartContainer1"></div>
+        <div id="chartContainerSpecies"></div>
+        <div id="chartContainerOrder"></div>
+        <div id="chartContainerFamily"></div>
+        <div id="chartContainerGenus"></div>
+        <div id="chartContainerLength"></div>
+        <div id="chartContainerResistance"></div>
+        <div id="chartContainerCluster"></div>
+        <div id="chartContainerPlasmidFamilies"></div>
+        <div id="chartContainerVirulence"></div>
       </div>
 
       <div class="modal-footer">
@@ -1367,7 +1458,11 @@
                 data-toggle="popover" data-placement="right"
                 data-trigger="focus"
                 data-original-title="Plot controls"
-                data-content="<li>Ctrl + left mouse click - enables panning</li><li>Left mouse click + dragging - enables zooming</li>"
+                data-content="<li>Ctrl + left mouse click - enables panning</li>
+                <li>Left mouse click + dragging - enables zooming</li>
+                <li>Click on bars will enable selections of their associated
+                datasets through the 'Highlight on plasmid network button (bar
+                plots only)</li>"
                 data-html="true"
                 aria-describedby="tooltip" style="position: absolute;
                         left:2%" id="questionPlots"
@@ -1389,6 +1484,8 @@
         <button class="btn btn-default" id="resPlot">Resistances
         </button>
         <button class="btn btn-default" id="pfPlot">Plasmid Families
+        </button>
+        <button class="btn btn-default" id="virPlot">Virulence
         </button>
       </div>
     </div>
@@ -1500,6 +1597,56 @@
                 data-dismiss="modal" id="pfSubmit">Submit</button>
         <button type="submit" class="btn btn-danger"
                 id="pfClear">Clear selection</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal for virulence factors-->
+<div id="virModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Filter plasmids by
+          virulence factor genes</h4>
+      </div>
+      <div class="modal-body" id="modalBodyVir">
+        <div class="row" id="modalBodyVir1">
+          <div class="dropdown col-sm-12 " id="virDropdown">
+            <div class="header_taxa">Virulence factors</div>
+            <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
+                    data-selected-text-format="count" data-live-search="true"
+                    title="No items selected"
+                    id="virList"
+                    data-size="15" data-hide-disabled="true">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
+        </div>
+        <div class="row" id="modalBodyVir2">
+          <div class='col-md-12'>
+            <div class="panel-group" id="displayCurrentVir">
+              <div class="panel panel-info" >
+                <div class="panel-heading">
+                  Selected genes</div>
+                <div class="panel-body"
+                     id="displayCurrentBoxVir">
+                  <!--Populated by visualization_functions.js-->
+                  <p id="p_Virulence">Virulence:</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="virSubmit">Submit</button>
+        <button type="submit" class="btn btn-danger"
+                id="virClear">Clear selection</button>
       </div>
     </div>
 

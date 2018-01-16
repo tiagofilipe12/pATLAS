@@ -193,3 +193,67 @@ const plasmidFamilyGetter = (nodeId) => {
     }
   })
 }
+
+const virPopupPopulate = (queryArrayVirGenes, queryArrayVirAccession,
+                         queryArrayVirCoverage, queryArrayVirIdentity,
+                         queryArrayVirRange) => {
+
+  $("#virGenePopSpan").html(queryArrayVirGenes.toString().replace(/["]+/g, ""))
+  $("#virGenbankPopSpan").html(queryArrayVirAccession.toString())
+  $("#virCoveragePopSpan").html(queryArrayVirCoverage.toString())
+  $("#virIdentityPopSpan").html(queryArrayVirIdentity.toString())
+  $("#virRangePopSpan").html(queryArrayVirRange.toString())
+}
+
+const virulenceGetter = (nodeId) => {
+  // here in this function there is no need to parse the
+  // data.json_entry.database entry since it is a single database
+  $.post("api/getvirulence/", {"accession": JSON.stringify([nodeId])}, (data, status) => {
+    // first we need to gather all information in a format that may be
+    // passed to jquery to append to popup_descriptions div
+    // set of arrays for card db
+    const queryArrayVirGenes = []
+    const queryArrayVirAccession = []
+    const queryArrayVirCoverage = []
+    const queryArrayVirIdentity = []
+    const queryArrayVirRange = []
+
+    try{
+      // totalLength array corresponds to gene names
+      const totalLength = data[0].json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+      const accessionList = data[0].json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
+      const coverageList = data[0].json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
+      const identityList = data[0].json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
+      const rangeList = data[0].json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
+      for (const i in totalLength) {
+        if ({}.hasOwnProperty.call(totalLength, i)) {
+          const num = (parseFloat(i) + 1).toString()
+          const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
+            rangeList[i].replace(" ", "").replace(",", ":") :
+            (rangeList[i] + "]").replace(", ", ":")
+          queryArrayVirGenes.push(num + ": " + totalLength[i])
+          // card retrieves some odd numbers after the accession... that
+          // prevent to form a linkable item to genbank
+          queryArrayVirAccession.push(num + ": " +
+            makeItClickable(accessionList[i].split(":")[0]))
+          queryArrayVirCoverage.push(num + ": " + coverageList[i])
+          queryArrayVirIdentity.push(num + ": " + identityList[i])
+          queryArrayVirRange.push(num + ": " + rangeEntry)
+        }
+      }
+      // then actually add it to popup_description div
+      virPopupPopulate(queryArrayVirGenes, queryArrayVirAccession,
+        queryArrayVirCoverage, queryArrayVirIdentity, queryArrayVirRange)
+    } catch (error) {
+      document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
+        " This sequence has no Virulence information available in database."
+      $("#alertId_db").show()
+      $("#alertClose_db").click( () => {
+        $("#alertId_db").hide()  // hide this div
+      })
+      virPopupPopulate("N/A", "N/A", "N/A", "N/A", "N/A")
+      // hides the div after 5 seconds
+      window.setTimeout( () => { $("#alertId_db").hide() }, 5000)
+    }
+  })
+}
