@@ -71,6 +71,13 @@ let multiSelectOverlayObj
 
 let legendInst
 
+// object that lets collect plot data and that enable to click on bars and
+// retrieve selected nodes in vivagraph
+let associativeObj = {}
+
+// globals to control plot instances
+let clickerButton, listPlots
+
 /**
  * load JSON file with taxa dictionary
  * @returns {Object} - return is an object that perform matches between taxa
@@ -404,8 +411,6 @@ const onLoad = () => {
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
 
-    let clickerButton, listPlots
-
     // Button to open modal for plots
     // all these buttons require that the modalPlot modal opens before
     // executing the function and that is the reason why they wait half a
@@ -490,15 +495,19 @@ const onLoad = () => {
     // sort by values
     $("#sortGraph").unbind("click").bind("click", () => {
       const sortVal = true
-      const layoutPlot = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, false, sortVal) }
+      selector[clickerButton.replace(" ", "")].state = false
+      listPlots = selector[clickerButton.replace(" ", "")].listPlots
+      const layoutPlot = layoutGet(clickerButton)
+      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, false, sortVal, associativeObj) }
     })
 
     // sort alphabetically
     $("#sortGraphAlp").unbind("click").bind("click", () => {
       const sortAlp = true
-      const layoutPlot = layoutGet(clickerButton, [...new Set(listPlots)].length)
-      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, sortAlp, false) }
+      selector[clickerButton.replace(" ", "")].state = false
+      listPlots = selector[clickerButton.replace(" ", "")].listPlots
+      const layoutPlot = layoutGet(clickerButton)
+      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, sortAlp, false, associativeObj) }
     })
 
     // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -507,7 +516,6 @@ const onLoad = () => {
 
     $("#lengthPlot").unbind("click").bind("click", () => {
       clickerButton = "length"
-      // TODO save previous plotly generated graphs before rendering the new ones
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 

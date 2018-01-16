@@ -1,5 +1,5 @@
 /* globals colorNodes, areaSelection, previousTableList, Highcharts,
- arraysEqual, clickedHighchart, arraytByValue */
+ arraysEqual, clickedHighchart, arraytByValue, associativeObj */
 
 //********//
 // PLOTS  //
@@ -245,6 +245,7 @@ const highlightBar = (bar, resetColor, objectHighlights, associativeObjArray) =>
   if (bar.color !== "#930200") {
     bar.color = "#930200"
     objectHighlights[bar.name] = associativeObjArray
+
   } else {
     bar.color = resetColor
     delete objectHighlights[bar.name]
@@ -322,6 +323,8 @@ const highlightVivagraph = (g, graphics, renderer, objectHighlight) => {
  * sorted alphabetically and therefore render the graph in the same manner
  * @param {boolean} sortVal - variable that controls if array is to be
  * sorted in descending order.
+ * @param {Object} associativeObj - An object that makes an association
+ * between x labels and their matching accession numbers
  */
 const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal, associativeObj) => {
   $("#loadingImgPlots").hide()
@@ -530,6 +533,9 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
   // state is set to true telling that the a graph is already present in
   // this container
   selector[taxaType.replace(" ", "")].state = true
+
+  // stores listPlots so that it can be used by sort buttons
+  selector[taxaType.replace(" ", "")]["listPlots"] = masterObj
 }
 
 /**
@@ -558,7 +564,7 @@ const resetProgressBar = () => {
 /**
  * Function to make a default layout that can be used to every plot made by
  * stats module
- * @param {String} taxaType - a string with the type of plot to be ploted
+ * @param {String} taxaType - a string with the type of plot to be plotted
  * that will be used to generate the plot title
  * @returns {{chart: {zoomType: string, panKey: string, panning: boolean}, title: {text: string}, yAxis: {title: {text: string}}, exporting: {sourceWidth: number}}}
  */
@@ -591,9 +597,13 @@ const layoutGet = (taxaType) => {
  * @param {String} tagName - the taxa or genes to be the key of the object
  */
 const associativeObjAssigner = (obj, queryAccession, tagName) => {
-  if (obj.hasOwnProperty(tagName)) {
+  // checks if property already exists and if query accession is already in
+  // the array of that property
+  if (obj.hasOwnProperty(tagName) && obj[tagName].indexOf(queryAccession) < 0) {
     obj[tagName].push(queryAccession)
   } else {
+    // if property doesn't exist inject property and start array with that
+    // accession
     obj[tagName] = [queryAccession]
   }
 }
@@ -620,7 +630,6 @@ const associativeObjAssigner = (obj, queryAccession, tagName) => {
 const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
-  let associativeObj = {}
   let PFList = []
 
   $.post("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
@@ -690,7 +699,7 @@ const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
   // TODO this should plot resfinder and card seperately
   // resets progressBar
   resetProgressBar()
-  let associativeObj = {}
+  // let associativeObj = {}
 
   let resList = []
   $.post("api/getresistances/", { "accession": JSON.stringify(tempList) })
@@ -755,7 +764,7 @@ const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
 const getMetadataVir = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
   // resets progressBar
   resetProgressBar()
-  let associativeObj = {}
+  // let associativeObj = {}
 
   let virList = []
   $.post("api/getvirulence/", { "accession": JSON.stringify(tempList) })
@@ -828,7 +837,7 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
   // resets progressBar
   resetProgressBar()
   let speciesList = []
-  let associativeObj = {}
+  // let associativeObj = {}
 
   $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
