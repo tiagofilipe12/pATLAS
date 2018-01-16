@@ -23,7 +23,9 @@ const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
   return $.get("api/getaccession/", {"name": taxaDb}, (data, status) => {
     let listData = []
     for (let object in data) {
-      listData.push(data[object].plasmid_id)
+      if ({}.hasOwnProperty.call(data, object)) {
+        listData.push(data[object].plasmid_id)
+      }
     }
     colorNodes(g, graphics, renderer, listData, currentColor)
     //return listData

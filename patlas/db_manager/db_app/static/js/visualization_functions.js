@@ -1,5 +1,11 @@
 /* globals Viva, recenterDOM, resetAllNodes, storeRecenterDom,
- buildCircleNodeShader, requestPlasmidTable, WebglCircle */
+ buildCircleNodeShader, requestPlasmidTable, WebglCircle, selector,
+  hideAllOtherPlots, toggleManager, repetitivePlotFunction,
+   resRepetitivePlotFunction, pfRepetitivePlotFunction,
+    virRepetitivePlotFunction, statsParser, node_color_reset,
+     resetDisplayTaxaBox, showDiv, pfSubmitFunction, layoutGet,
+      centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
+       filterDisplayer, slider */
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -62,6 +68,8 @@ let toggleRatioStatus = false
 let totalNumberOfLinks
 
 let multiSelectOverlayObj
+
+let legendInst
 
 /**
  * load JSON file with taxa dictionary
@@ -546,7 +554,7 @@ const onLoad = () => {
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
 
     // Buttons to control force play/pause using bootstrap navigation bar
-    paused = true
+    let paused = true
     $("#playpauseButton").unbind("click").bind("click", () => {
       $("#playpauseButton").empty()
       if (paused === true) {
@@ -614,7 +622,7 @@ const onLoad = () => {
         const listPF = []
         // iterate over the file
         $.each(json, (accession, entry) => {
-          geneEntries = entry.gene
+          const geneEntries = entry.gene
           for (let i in geneEntries) {
             if (listPF.indexOf(geneEntries[i]) < 0) {
               listPF.push(geneEntries[i])
@@ -736,8 +744,8 @@ const onLoad = () => {
           listRes = []
         // iterate over the file
         $.each(json, (accession, entry) => {
-          databaseEntries = entry.database
-          geneEntries = entry.gene
+          const databaseEntries = entry.database
+          const geneEntries = entry.gene
           for (let i in databaseEntries) {
             if (databaseEntries[i] === "card" && listCard.indexOf(geneEntries[i]) < 0) {
               listCard.push(geneEntries[i])
@@ -864,7 +872,7 @@ const onLoad = () => {
         const listVir = []
         // iterate over the file
         $.each(json, (accession, entry) => {
-          geneEntries = entry.gene
+          const geneEntries = entry.gene
           for (let i in geneEntries) {
             if (listVir.indexOf(geneEntries[i]) < 0) {
               listVir.push(geneEntries[i])
@@ -1228,7 +1236,7 @@ const onLoad = () => {
             const tempArray = assocOrderGenus[currentSelectionOrder[i]]
             for (const sp in tempArray) {
               promises.push(
-                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                   .then( (results) => {
                     results.map( (request) => {
                       listGiFilter.push(request.plasmid_id)
@@ -1244,7 +1252,7 @@ const onLoad = () => {
             const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
             for (const sp in tempArray) {
               promises.push(
-                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                   .then( (results) => {
                     results.map( (request) => {
                       listGiFilter.push(request.plasmid_id)
@@ -1260,7 +1268,7 @@ const onLoad = () => {
             const tempArray = assocGenus[currentSelectionGenus[i]]
             for (const sp in tempArray) {
               promises.push(
-                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                   .then( (results) => {
                     results.map( (request) => {
                       listGiFilter.push(request.plasmid_id)
@@ -1274,7 +1282,7 @@ const onLoad = () => {
           let currentSelectionSpecies = alertArrays.species
           for (const i in currentSelectionSpecies) {
             promises.push(
-              taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor, reloadAccessionList)//, changed_nodes)
+              taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)//, reloadAccessionList)//, changed_nodes)
                 .then( (results) => {
                   results.map( (request) => {
                     listGiFilter.push(request.plasmid_id)
@@ -1326,7 +1334,7 @@ const onLoad = () => {
                   // executres node function for family and orders
                   for (const sp in tempArray) {
                     promises.push(
-                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                         .then((results) => {
                           results.map((request) => {
                             listGiFilter.push(request.plasmid_id)
@@ -1347,7 +1355,7 @@ const onLoad = () => {
                   // executres node function for family
                   for (const sp in tempArray) {
                     promises.push(
-                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                         .then((results) => {
                           results.map((request) => {
                             listGiFilter.push(request.plasmid_id)
@@ -1369,7 +1377,7 @@ const onLoad = () => {
                   // respective nodes
                   for (const sp in tempArray) {
                     promises.push(
-                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor, reloadAccessionList)//, changed_nodes)
+                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
                         .then((results) => {
                           results.map((request) => {
                             listGiFilter.push(request.plasmid_id)
@@ -1389,7 +1397,7 @@ const onLoad = () => {
                   // requests taxa associated accession from db and colors
                   // respective nodes
                   promises.push(
-                    taxaRequest(g, graphics, renderer, currentSelection[i], currentColor, reloadAccessionList)
+                    taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, reloadAccessionList)
                     // })//, changed_nodes)
                       .then((results) => {
                         results.map(request => {
@@ -2273,6 +2281,8 @@ const onLoad = () => {
   // function that submits the selection made in the modal
   $("#ratioSubmit").unbind("click").bind("click", () => {
     event.preventDefault()
+    // clears all links before doing this
+    $("#reset-links").click()
     // $("#reset-links").click()
     // $("#loading").show()
     $("#scaleLegend").empty()

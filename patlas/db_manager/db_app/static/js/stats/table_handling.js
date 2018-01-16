@@ -61,7 +61,7 @@ const getTableWithAreaSelection = (g, graphics) => {
  * Function that gathers the results for querying the main, resistance and
  * plasmidfinder databases in psql for patlas
  * @param {Array} listGiFilter - a list with all accession numbers required
- * do query the databsae
+ * do query the database
  * @returns {Object} An object with all the requests made to
  * the database with three keys: sequences, where the main database entries
  * are stored; resistances, where the resistance database entries are stored;
