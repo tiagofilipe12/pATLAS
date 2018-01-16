@@ -46,7 +46,8 @@ const pfRequest = (g, graphics, renderer, gene, currentColor) => {
     for (let object in data) {
       if ({}.hasOwnProperty.call(data, object)) {
         listData.push(data[object].plasmid_id)
-      }    }
+      }
+    }
     colorNodes(g, graphics, renderer, listData, currentColor)
     renderer.rerender()
   })
@@ -62,13 +63,14 @@ const virRequest = (g, graphics, renderer, gene, currentColor) => {
     for (let object in data) {
       if ({}.hasOwnProperty.call(data, object)) {
         listData.push(data[object].plasmid_id)
-      }    }
+      }
+    }
     colorNodes(g, graphics, renderer, listData, currentColor)
     renderer.rerender()
   })
 }
 
-const iterateSelectedArrays = (array, g, graphics, renderer, tempPageReRun) => {
+const iterateSelectedArrays = async (array, g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""
   for (let i in array) {
     if ({}.hasOwnProperty.call(array, i)) {
@@ -82,21 +84,26 @@ const iterateSelectedArrays = (array, g, graphics, renderer, tempPageReRun) => {
         " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
         "</li>"
 
-      resRequest(g, graphics, renderer, gene, currentColor)
-        .then( (results) => {
-          results.map( (request) => {
-            if (tempPageReRun === false) {
-              listGiFilter.push(request.plasmid_id)
-            }
-          })
-        })
+      const resHandle = await resRequest(g, graphics, renderer, gene, currentColor)
+      resHandle.map( (request) => {
+        if (tempPageReRun === false) {
+          listGiFilter.push(request.plasmid_id)
+        }
+      })
+        // .then( (results) => {
+        //   results.map( (request) => {
+        //     if (tempPageReRun === false) {
+        //       listGiFilter.push(request.plasmid_id)
+        //     }
+        //   })
+        // })
     }
   }
   return storeLis
 }
 
 // function to display resistances after clicking resSubmit button
-const resSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
+const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
   let legendInst = false // by default legend is off
@@ -109,15 +116,15 @@ const resSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
   // remove first char from selected* arrays
   selectedCard = removeFirstCharFromArray(selectedCard)
   selectedResfinder = removeFirstCharFromArray(selectedResfinder)
-  const promises = []
+  // const promises = []
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
-    storeLis = iterateSelectedArrays(selectedCard, g, graphics, renderer, tempPageReRun)
+    storeLis = await iterateSelectedArrays(selectedCard, g, graphics, renderer, tempPageReRun)
     legendInst = true
   } else if (selectedCard.length === 0 && selectedResfinder.length !== 0) {
     // if only resfinder has selected entries
-    storeLis = iterateSelectedArrays(selectedResfinder, g, graphics, renderer, tempPageReRun)
+    storeLis = await iterateSelectedArrays(selectedResfinder, g, graphics, renderer, tempPageReRun)
     legendInst = true
   } else if (selectedCard.length !== 0 && selectedResfinder.length !== 0) {
     // if multiple menus are selected
@@ -131,16 +138,23 @@ const resSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
     for (let i in mergedSelectedArray) {
       if ({}.hasOwnProperty.call(mergedSelectedArray, i)) {
         const gene = mergedSelectedArray[i]
-        promises.push(
-          resRequest(g, graphics, renderer, gene, currentColor)
-            .then( (results) => {
-              results.map( (request) => {
-                if (tempPageReRun === false) {
-                  listGiFilter.push(request.plasmid_id)
-                }
-              })
-            })
-        )
+
+        const resHandle = await resRequest(g, graphics, renderer, gene, currentColor)
+        resHandle.map( (request) => {
+          if (tempPageReRun === false) {
+            listGiFilter.push(request.plasmid_id)
+          }
+        })
+        // promises.push(
+        //   resRequest(g, graphics, renderer, gene, currentColor)
+        //     .then( (results) => {
+        //       results.map( (request) => {
+        //         if (tempPageReRun === false) {
+        //           listGiFilter.push(request.plasmid_id)
+        //         }
+        //       })
+        //     })
+        // )
       }
     }
   } else {
@@ -149,24 +163,25 @@ const resSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  return Promise.all(promises)
-    .then( () => {
-      if (legendInst === true) {
-        $("#res_label").show()
-        $("#colorLegendBoxRes").empty()
-        $("#colorLegendBoxRes").append(
-          storeLis +
-          "<li class='centeredList'><button class='jscolor btn btn-default'" +
-          " style='background-color:#666370' ></button>&nbsp;unselected</li>"
-        )
-        $("#colorLegendBoxRes").show()
-      }
-      return legendInst
-    })
+  // return Promise.all(promises)
+  //   .then( () => {
+  console.log(storeLis)
+  if (legendInst === true) {
+    $("#res_label").show()
+    $("#colorLegendBoxRes").empty()
+    $("#colorLegendBoxRes").append(
+      storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+    )
+    $("#colorLegendBoxRes").show()
+  }
+  return legendInst
+  // })
 }
 
 // function to display resistances after clicking resSubmit button
-const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
+const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
   let legendInst = false // by default legend is off
@@ -177,7 +192,7 @@ const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
   // remove first char from selected* arrays
   // selectedPf = removeFirstCharFromArray(selectedPf)
   // check if arrays are empty
-  const promises = []
+  // const promises = []
   if (selectedPf.length !== 0) {
     // if only card has selected entries
     for (let i in selectedPf) {
@@ -199,16 +214,21 @@ const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
             "</li>"
         }
         // after setting the legend make the actual request
-        promises.push(
-          pfRequest(g, graphics, renderer, gene, currentColor)
-          .then( (results) => {
-            results.map( (request) => {
-              if (tempPageReRun === false) {
-                listGiFilter.push(request.plasmid_id)
-              }
-            })
-          })
-        )
+        // promises.push(
+        const pfHandle = await pfRequest(g, graphics, renderer, gene, currentColor)
+        pfHandle.map( (request) => {
+          if (tempPageReRun === false) {
+            listGiFilter.push(request.plasmid_id)
+          }
+        })
+          // .then( (results) => {
+          //   results.map( (request) => {
+          //     if (tempPageReRun === false) {
+          //       listGiFilter.push(request.plasmid_id)
+          //     }
+          //   })
+          // })
+        // )
       }
     }
     legendInst = true
@@ -218,24 +238,24 @@ const pfSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  return Promise.all(promises)
-    .then( () => {
-      if (legendInst === true) {
-        $("#pf_label").show()
-        $("#colorLegendBoxPf").empty()
-        $("#colorLegendBoxPf").append(
-          storeLis +
-          "<li class='centeredList'><button class='jscolor btn btn-default'" +
-          " style='background-color:#666370' ></button>&nbsp;unselected</li>"
-        )
-        $("#colorLegendBoxPf").show()
-      }
-      return legendInst
-    })
+  // return Promise.all(promises)
+  //   .then( () => {
+  if (legendInst === true) {
+    $("#pf_label").show()
+    $("#colorLegendBoxPf").empty()
+    $("#colorLegendBoxPf").append(
+      storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+    )
+    $("#colorLegendBoxPf").show()
+  }
+  return legendInst
+  // })
 }
 
 // function to display resistances after clicking resSubmit button
-const virSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
+const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
   let legendInst = false // by default legend is off
@@ -246,7 +266,7 @@ const virSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
   // remove first char from selected* arrays
   // selectedPf = removeFirstCharFromArray(selectedPf)
   // check if arrays are empty
-  const promises = []
+  // const promises = []
   if (selectedVir.length !== 0) {
     // if only card has selected entries
     for (let i in selectedVir) {
@@ -268,16 +288,21 @@ const virSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
             "</li>"
         }
         // after setting the legend make the actual request
-        promises.push(
-          virRequest(g, graphics, renderer, gene, currentColor)
-            .then( (results) => {
-              results.map( (request) => {
-                if (tempPageReRun === false) {
-                  listGiFilter.push(request.plasmid_id)
-                }
-              })
-            })
-        )
+        // promises.push(
+        const virHandle = await virRequest(g, graphics, renderer, gene, currentColor)
+        virHandle.map( (request) => {
+          if (tempPageReRun === false) {
+            listGiFilter.push(request.plasmid_id)
+          }
+        })
+        //     .then( (results) => {
+        //       results.map( (request) => {
+        //         if (tempPageReRun === false) {
+        //           listGiFilter.push(request.plasmid_id)
+        //         }
+        //       })
+        //     })
+        // )
       }
     }
     legendInst = true
@@ -287,18 +312,18 @@ const virSubmitFunction = (g, graphics, renderer, tempPageReRun) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  return Promise.all(promises)
-    .then( () => {
-      if (legendInst === true) {
-        $("#vir_label").show()
-        $("#colorLegendBoxVir").empty()
-        $("#colorLegendBoxVir").append(
-          storeLis +
-          "<li class='centeredList'><button class='jscolor btn btn-default'" +
-          " style='background-color:#666370' ></button>&nbsp;unselected</li>"
-        )
-        $("#colorLegendBoxVir").show()
-      }
-      return legendInst
-    })
+  // return Promise.all(promises)
+  //   .then( () => {
+  if (legendInst === true) {
+    $("#vir_label").show()
+    $("#colorLegendBoxVir").empty()
+    $("#colorLegendBoxVir").append(
+      storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+    )
+    $("#colorLegendBoxVir").show()
+  }
+  return legendInst
+  // })
 }
