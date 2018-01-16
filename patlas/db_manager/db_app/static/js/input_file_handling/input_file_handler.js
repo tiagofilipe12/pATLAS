@@ -1,9 +1,10 @@
+/* globals readFilejson */
+
 // will cancel reader when defined... so during handleFileSelect
 const abortRead = (reader) => {
-  console.log("canceled reading of file")
   // cancels the loading it self
   document.getElementById("file_text").value = ""
-  read_json = ""
+  readFilejson = ""
 }
 
 // function to handle ONE file at a time (per button)

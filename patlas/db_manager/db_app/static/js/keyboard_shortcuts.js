@@ -1,3 +1,5 @@
+/* globals Mousetrap */
+
 // keyboard shortcuts using mousetrap.min.js from https://craig.is/killing/mice//
 
 // keyboard shortcut for length filter

@@ -1,3 +1,6 @@
+/* globals Viva, recenterDOM, resetAllNodes, storeRecenterDom,
+ buildCircleNodeShader, requestPlasmidTable, WebglCircle */
+
 /**
 * A bunch of global functions to be used throughout patlas
 */
@@ -10,7 +13,7 @@ const devel = false
 let rerun = false
 
 // helps set menu to close status
-let first_click_menu = true
+let firstClickMenu = true
 
 // checks if vivagraph should load first initial dataset or the filters
 let firstInstace = true
@@ -57,6 +60,8 @@ let graphSize
 let toggleRatioStatus = false
 
 let totalNumberOfLinks
+
+let multiSelectOverlayObj
 
 /**
  * load JSON file with taxa dictionary
@@ -150,7 +155,7 @@ const onLoad = () => {
 
   let list = []   // list to store references already ploted as nodes
   // links between accession numbers
-  let list_lengths = [] // list to store the lengths of all nodes
+  let listLengths = [] // list to store the lengths of all nodes
 
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
@@ -193,7 +198,7 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
-      nodeSize = minNodeSize * node.data.log_length
+      let nodeSize = minNodeSize * node.data.log_length
       return new WebglCircle(nodeSize, nodeColor)
     })
 
@@ -316,7 +321,7 @@ const onLoad = () => {
     // $("#toggle-event").bootstrapToggle("off") // set to default off
     $("#toggle-event").change(function () {   // jquery seems not to support es6
       toggleStatus = $(this).prop("checked")
-      toggle_manager(toggleStatus)
+      toggleManager(toggleStatus)
     })
 
     //* *************//
@@ -324,7 +329,6 @@ const onLoad = () => {
     //* *************//
 
     const events = Viva.Graph.webglInputEvents(graphics, g)
-    store_nodes = []  // list used to store nodes
 
     //* * mouse click on nodes **//
     events.click( (node, e) => {
@@ -341,22 +345,22 @@ const onLoad = () => {
       }
       // then starts making new changes to the newly geerated node
       currentQueryNode = node.id
-      nodeUI_1 = graphics.getNodeUI(node.id)
+      let nodeUI1 = graphics.getNodeUI(node.id)
       const domPos = {
-        x: nodeUI_1.position.x,
-        y: nodeUI_1.position.y
+        x: nodeUI1.position.x,
+        y: nodeUI1.position.y
       }
       // if statement used to check if backup color is set
-      if (nodeUI_1.backupColor) { nodeUI_1.backupColor = nodeUI_1.color }
+      if (nodeUI1.backupColor) { nodeUI1.backupColor = nodeUI1.color }
 
-      nodeUI_1.color = 0xFFC300
+      nodeUI1.color = 0xFFC300
       renderer.rerender()
 
       // allows the control of the click appearing and locking
 
       // And ask graphics to transform it to DOM coordinates:
       graphics.transformGraphToClientCoordinates(domPos)
-      domPos.x = (domPos.x + nodeUI_1.size) + "px"
+      domPos.x = (domPos.x + nodeUI1.size) + "px"
       domPos.y = (domPos.y) + "px"
 
       // this sets the popup internal buttons to allow them to run,
@@ -580,7 +584,7 @@ const onLoad = () => {
         // executed for plasmid search
         toggleOnSearch(g, graphics, renderer,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-          clickedPopupButtonFamily)
+          clickedPopupButtonFamily, requestPlasmidTable)
           // then is here used to parse the results from async/await function
           .then( (result) => {
             currentQueryNode = result
@@ -1670,7 +1674,7 @@ const onLoad = () => {
         $("#toolButtonGroup button").removeAttr("disabled")
       })
       const readMode = false
-      color_legend(readMode)
+      colorLegendFunction(readMode)
     })
 
     $("#reset-links").unbind("click").bind("click", (event) => {
@@ -1715,8 +1719,8 @@ const onLoad = () => {
     // this is only triggered on first instance because we only want to get
     // the limits of all plasmids once
     if (sliderMinMax.length === 0) {
-      sliderMinMax = [Math.log(Math.min.apply(null, list_lengths)),
-        Math.log(Math.max.apply(null, list_lengths))]
+      sliderMinMax = [Math.log(Math.min.apply(null, listLengths)),
+        Math.log(Math.max.apply(null, listLengths))]
       // generates and costumizes slider itself
       const slider = document.getElementById("slider")
 
@@ -1816,7 +1820,7 @@ const onLoad = () => {
       pageReload = true
       list = []
       list_gi = []
-      list_lengths = []
+      listLengths = []
       listGiFilter = []
       showDiv().then( () => {
         // removes nodes and forces adding same nodes
@@ -1858,15 +1862,15 @@ const onLoad = () => {
       // is way less efficient than the non development session.
       if (devel === true) {
         getArray.done(function (json) {
-          $.each(json, function (sequence_info, dict_dist) {
+          $.each(json, function (sequenceInfo, dictDist) {
             counter++
             // next we need to retrieve each information type independently
-            const sequence = sequence_info.split("_").slice(0, 3).join("_")
+            const sequence = sequenceInfo.split("_").slice(0, 3).join("_")
 
             // and continues
-            const seqLength = sequence_info.split("_").slice(-1).join("")
+            const seqLength = sequenceInfo.split("_").slice(-1).join("")
             const log_length = Math.log(parseInt(seqLength)) //ln seq length
-            list_lengths.push(seqLength); // appends all lengths to this list
+            listLengths.push(seqLength); // appends all lengths to this list
             list_gi.push(sequence)
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
             if (list.indexOf(sequence) < 0) {
@@ -1883,19 +1887,20 @@ const onLoad = () => {
               })
               list.push(sequence)
 
-              if (dict_dist !== null) {
+              if (dictDist !== null) {
                 // loops between all arrays of array pairing sequence and distances
-                for (let i = 0; i < dict_dist.length; i++) {
-                  const reference = Object.keys(dict_dist[i])[0]  // stores references in a unique variable
-                  const distance = Object.values(dict_dist[i])[0].distance   // stores distances in a unique variable
+                for (let i = 0; i < dictDist.length; i++) {
+                  const reference = Object.keys(dictDist[i])[0]  // stores
+                  // references in a unique variable
+                  const distance = Object.values(dictDist[i])[0].distance   // stores distances in a unique variable
                   g.addLink(sequence, reference, { distance })
                 }
               } else {
-                dict_dist = []
+                dictDist = []
               }
             }
             // centers on node with more links
-            storeMasterNode = storeRecenterDom(storeMasterNode, dict_dist, sequence, counter)
+            storeMasterNode = storeRecenterDom(storeMasterNode, dictDist, sequence, counter)
           })
           // precompute before rendering
           renderGraph(graphics)
@@ -1914,7 +1919,7 @@ const onLoad = () => {
                 const sequence = array.id
                 const seqLength = array.length
                 const log_length = Math.log(parseInt(seqLength))
-                list_lengths.push(seqLength)
+                listLengths.push(seqLength)
                 list_gi.push(sequence)
 
                 if (list.indexOf(sequence) < 0) {
@@ -2027,12 +2032,12 @@ const onLoad = () => {
   //* ****************************** *//
 
   $("#menu-toggle").on("click", function (e) {
-    if (first_click_menu === true) {
+    if (firstClickMenu === true) {
       $("#menu-toggle").css( {"color": "#fff"} )
-      first_click_menu = false
+      firstClickMenu = false
     } else {
       $("#menu-toggle").css( {"color": "#999999"} )
-      first_click_menu = true
+      firstClickMenu = true
     }
   })
 

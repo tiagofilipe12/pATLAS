@@ -1,3 +1,6 @@
+/* globals makeHash, reloadAccessionList, assembly, listGiFilter,
+ colorNodes, readColoring */
+
 // function that adds links, avoiding duplication below on reAddNode function
 const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
   const currentHash = makeHash(sequence, linkAccession)
@@ -138,6 +141,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
     // vivagraph.... and only then precompute the graph.
     //Promise.all(promises)
       .then( (results) => {
+        let plasmidName, speciesName, reAddNodeList
         for (const data of results) {
           // if request rtaeturn no speciesName or plasmidName
           // sometimes plasmids have no descriptor for one of these or both
@@ -188,7 +192,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
         if (readString !== false) {
           readColoring(g, list_gi, graphics, renderer, readString)
         } else if (assemblyJson !== false) {
-          masterReadArray = [] //needs to reset this array for the assembly
+          let masterReadArray = [] //needs to reset this array for the assembly
           // function to be successful
           listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
         } else if ($("#p_Card").html() !== "Card:" ||

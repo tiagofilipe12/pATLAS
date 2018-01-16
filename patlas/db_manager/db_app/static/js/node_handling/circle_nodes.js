@@ -1,3 +1,5 @@
+/* globals webglUtils */
+
 /// ************************************************///
 /// *** transforms nodes from squares to circles ***///
 /// ************************************************///
@@ -83,7 +85,7 @@ const buildCircleNodeShader = () => {
       gl.getExtension("OES_standard_derivatives")
       program = webglUtils.createProgram(nodesVS, nodesFS)
       gl.useProgram(program)
-      locations = webglUtils.getLocations(program, ['a_vertexPos', 'a_customAttributes', 'u_screenSize', 'u_transform'])
+      locations = webglUtils.getLocations(program, ["a_vertexPos", "a_customAttributes", "u_screenSize", "u_transform"])
       gl.enableVertexAttribArray(locations.vertexPos)
       gl.enableVertexAttribArray(locations.customAttributes)
       buffer = gl.createBuffer()
@@ -155,7 +157,7 @@ const buildCircleNodeShader = () => {
     },
         /**
           * This method is called by webgl renderer when it changes parts of its
-          * buffers. We don't use it here, but it's needed by API (see the comment
+          * buffers. We don"t use it here, but it"s needed by API (see the comment
           * in the removeNode() method)
           */
     replaceProperties(replacedNode, newNode) {}

@@ -1,3 +1,6 @@
+/* globals colorNodes, areaSelection, previousTableList, Highcharts,
+ arraysEqual, clickedHighchart, arraytByValue */
+
 //********//
 // PLOTS  //
 //********//
@@ -148,7 +151,7 @@ const highLightScatter = (el) => {
   // Highlight currently selected bar
   let modifiedBar = []
   for (const b of el.series.chart.series[0].data) {
-    if ( b.index === el.index ) {
+    if (b.index === el.index) {
       modifiedBar.push({"color": "#4A6EAD"})
     } else {
       modifiedBar.push({"color": selector.length.color})
@@ -174,8 +177,8 @@ const highlightHist = (el) => {
   }
 
   let modifiedBars = []
-  for ( const b of bars ){
-    if ( b.x <= yval && yval < b.x2 ) {
+  for (const b of bars){
+    if (b.x <= yval && yval < b.x2) {
       modifiedBars.push({"color": "#4A6EAD"})
     } else {
       modifiedBars.push({"color": selector.length.color})
@@ -184,8 +187,8 @@ const highlightHist = (el) => {
   el.series.chart.series[0].update({data: modifiedBars})
 
   let modifiedPoints = []
-  for ( const p of points ) {
-    if ( p.index === el.index ) {
+  for (const p of points) {
+    if (p.index === el.index) {
       modifiedPoints.push({x: p.x, y: p.y, marker: {fillColor: "#EF626C", radius: 5, lineColor: "#F9D6EB", lineWidth: 1}})
     } else {
       modifiedPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3, lineWidth: 0}})
@@ -213,7 +216,7 @@ const resetHighlight = (ch) => {
     resetPoints.push({x: p.x, y:p.y, marker: {fillColor: "#000501", radius: 3}})
   }
 
-  for (i = 0; i < bars.length; i++) {
+  for (let i = 0; i < bars.length; i++) {
     resetBars.push({"color": selector.length.color})
   }
 
@@ -260,7 +263,7 @@ const highlightBar = (bar, resetColor, objectHighlights, associativeObjArray) =>
 const resetAllBars = (chartElement, defaultColor) => {
   const bars = chartElement.series[0].data
   const resetBars = []
-  for (i = 0; i < bars.length; i++) {
+  for (let i = 0; i < bars.length; i++) {
   // for (const i in bars) {
     resetBars.push({"color": defaultColor})
   }
@@ -979,7 +982,6 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
  */
 const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
   $("#loadingImgPlots").show()
-  console.log(clickerButton.replace(" ", ""))
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton.replace(" ", "")].state === false
     || selector[clickerButton.replace(" ", "")].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
     const listPlots = (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)

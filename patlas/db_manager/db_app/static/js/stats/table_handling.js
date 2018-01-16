@@ -1,3 +1,5 @@
+/* globals Highcharts */
+
 /**
  * Function to compare two arrays and check if they are equal, i.e. if they
  * have the same elements present in both.
@@ -356,7 +358,7 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       symbolHeight: 200
     },
     tooltip: {
-      formatter: function () {
+      formatter() {
         return "<b>" + this.series.xAxis.categories[this.point.x] + "</b>" +
           " file" + " <br><b>" + this.point.value +
           "</b> % coverage <br><b>" +

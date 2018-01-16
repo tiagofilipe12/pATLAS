@@ -1,3 +1,5 @@
+/* globals listGiFilter, resetDisplayTaxaBox, chroma, showLegend */
+
 /**
  * Function that convert a given range of values between oldMin and oldMax
  * to newMin and newMax
@@ -64,7 +66,7 @@ const copyNumberCutoff = () => {
  * plasmid that came from mash screen results. Other modules will not have
  * copy number for now
  */
-const node_iter = (g, readColor, gi, graphics, perc, copyNumber) => {
+const nodeIter = (g, readColor, gi, graphics, perc, copyNumber) => {
   g.forEachNode( (node) => {
     // when filter removes all nodes and then adds them again. Looks like g
     // was somehow affected.
@@ -105,17 +107,17 @@ const palette = (scale, x, readMode) => { // x is the number of colors
   // be reset by the button reset-filters
   showLegend.style.display = "block"
   const tmpArray = new Array(x)// create an empty array with length x
-  const style_width = 100 / x
+  const styleWidth = 100 / x
   // enters this statement for coloring the links and not the nodes
   if (readMode !== true) {
     $("#scaleLegend").empty()
     $("#scaleString").empty()
     // this loop should be reversed since the higher values will have a lighter color
     for (let i = tmpArray.length - 1; i >= 0; i--) {
-      const color_element = scale(i / x).hex()
+      const colorElement = scale(i / x).hex()
       $("#scaleLegend").append("<span class='grad-step'" +
-        " style='background-color:" + color_element + "; width:" +
-        style_width + "%'></span>")
+        " style='background-color:" + colorElement + "; width:" +
+        styleWidth + "%'></span>")
     }
     $("#scaleString").append("<div class='min'>0.1</div>")
     $("#scaleString").append("<div class='med'>0.05</div>")
@@ -125,9 +127,9 @@ const palette = (scale, x, readMode) => { // x is the number of colors
     $("#readLegend").empty()
     $("#readString").empty()
     for (let i = 0; i < tmpArray.length; i++) {
-      const color_element = scale(i / x).hex()
+      const colorElement = scale(i / x).hex()
       $("#readLegend").append("<span class='grad-step' style='background-color:"
-         + color_element + "; width:" + style_width + "%'></span>")
+         + colorElement + "; width:" + styleWidth + "%'></span>")
     }
   }
 }
@@ -172,7 +174,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
-          node_iter(g, readColor, gi, graphics, identity, copyNumber)
+          nodeIter(g, readColor, gi, graphics, identity, copyNumber)
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
@@ -196,14 +198,14 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           // and 1
           const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
             .replace("#", "0x")
-          node_iter(g, readColor, gi, graphics, perc)
+          nodeIter(g, readColor, gi, graphics, perc)
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
         } else {
           const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
             .replace("#", "0x")
-          node_iter(g, readColor, gi, graphics, perc)
+          nodeIter(g, readColor, gi, graphics, perc)
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
@@ -216,7 +218,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
-          node_iter(g, readColor, gi, graphics, perc)
+          nodeIter(g, readColor, gi, graphics, perc)
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
@@ -351,7 +353,7 @@ const reset_link_color = (g, graphics, renderer) => {
  * it to child palette function, which will use it to selct a different
  * color scheme for this link coloring mode.
  */
-const color_legend = (readMode) => {
+const colorLegendFunction = (readMode) => {
   const scale = (document.getElementById("colorForm").value === "Green" +
     " color scheme") ? chroma.scale(["#65B661", "#CAE368"]) :
     (document.getElementById("colorForm").value === "") ?

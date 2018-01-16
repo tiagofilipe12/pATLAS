@@ -2,12 +2,12 @@
  * This function controls the elements in the toggle button on the top left
  * corner of patlas that enables the user to switch the search between
  * plasmid names and accession number.
- * @param {boolean} toggle_status - a boolean to control the status of the
+ * @param {boolean} toggleStatus - a boolean to control the status of the
  * toggle for plasmid name or accession number search box
  */
-const toggle_manager = (toggle_status) => {
+const toggleManager = (toggleStatus) => {
   // if node mode on disable dropdown and retrieve an alert whenever the dropdown is clicked in this instance
-  if (toggle_status === true) {
+  if (toggleStatus === true) {
     document.getElementById("toggle-event").className += " disabled"
     $("#formValueId").attr("placeholder", "Search plasmid name")
   }
@@ -154,7 +154,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
  */
 const toggleOnSearch = async (g, graphics, renderer, currentQueryNode,
                               clickedPopupButtonCard, clickedPopupButtonRes,
-                              clickedPopupButtonFamily) => {
+                              clickedPopupButtonFamily, requestPlasmidTable) => {
   const query = $("#formValueId").val()
   // await allows to wait for the response from the query
   // result is an accession get from db
