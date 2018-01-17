@@ -2115,7 +2115,7 @@ const onLoad = () => {
     const acc = bootstrapTableList.map((uniqueAcc) => {
       return uniqueAcc.split("_").splice(0,2).join("_")
     })
-    multiDownload(acc, "nuccore", "fasta", fireMultipleDownloads)
+    multiDownload(acc, "nuccore", "fasta")
   })
 
   // function to display heatmap dataset selected in table
