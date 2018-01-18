@@ -7,7 +7,8 @@
       centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
        filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
         defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor,
-         readColoring, assembly, handleFileSelect, downloadSeqByColor, downloadSeq */
+         readColoring, assembly, handleFileSelect, downloadSeqByColor,
+          downloadSeq, setupPopupDisplay, multiDownload, heatmapMaker, colorNodes */
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -1506,7 +1507,7 @@ const onLoad = () => {
     })
 
     $("#cancel_infile").unbind("click").bind("click", () => {
-      abortRead(readFilejson)
+      readFilejson = abortRead()
     })
 
     $("#sampleMapping").unbind("click").bind("click", (event) => {
@@ -1549,7 +1550,7 @@ const onLoad = () => {
     $("#fileSubmit_mash").unbind("click").bind("click", (event) => {
       masterReadArray = []
       assemblyJson = false
-      readFilejson = mashJson // converts mash_json into readFilejson to
+      readFilejson = mashJson // converts mashJson into readFilejson to
       readString = JSON.parse(Object.values(mashJson)[0])
       $("#fileNameDiv").html(Object.keys(mashJson)[0])
         .show()
@@ -1584,7 +1585,7 @@ const onLoad = () => {
     })
 
     $("#cancel_infile_mash").unbind("click").bind("click", () => {
-      abortRead(mashJson)
+      mashJson = abortRead()
     })
 
     $("#sampleMash").unbind("click").bind("click", (event) => {
@@ -1652,7 +1653,7 @@ const onLoad = () => {
     })
 
     $("#cancel_assembly").unbind("click").bind("click", () => {
-      abortRead(assemblyJson)
+      assemblyJson = abortRead()
     })
 
     $("#sampleAssembly").unbind("click").bind("click", (event) => {
@@ -2138,17 +2139,12 @@ const onLoad = () => {
     // transform internal accession numbers to ncbi acceptable accesions
     if (readFilejson !== false) {
       heatmapMaker(masterReadArray, readFilejson)
-      mash_json = false
+      mashJson = false
       assemblyJson = false
-    // }
-    // else if (mash_json !== false) {
-    //   heatmapMaker(masterReadArray, mash_json)
-    //   readFilejson = false
-    //   assembly_json = false
     } else if (assemblyJson !== false) {
       heatmapMaker(masterReadArray, assemblyJson)
       readFilejson = false
-      mash_json = false
+      mashJson = false
     }
   })
   // button to color selected nodes by check boxes
@@ -2161,7 +2157,6 @@ const onLoad = () => {
       requestPlasmidTable(g.getNode(bootstrapTableList[0]), setupPopupDisplay)
     }
     showDiv().then( () => {
-      console.log("color")
       colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
 
       // handles hidden buttons
@@ -2248,7 +2243,7 @@ const onLoad = () => {
     $("#mashInfile").val("")
     $("#assemblyfile").val("")
     readFilejson = false
-    mash_json = false
+    mashJson = false
     assemblyJson = false
   }
 

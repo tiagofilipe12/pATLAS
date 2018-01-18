@@ -1,14 +1,26 @@
 /* globals readFilejson */
 
 // will cancel reader when defined... so during handleFileSelect
-const abortRead = (reader) => {
+/**
+ * Function that cancel reader, which basically deletes the file to be
+ * loaded from the form
+ * @return {String} - empty string to assign to file loaded file variable
+ */
+const abortRead = () => {
   // cancels the loading it self
   document.getElementById("file_text").value = ""
-  readFilejson = ""
+  return ""
 }
 
 // function to handle ONE file at a time (per button)
 // infile_id refers to the button id and text_id referes to the text form that reads the file
+/**
+ * Function to handle one file at a time (per button).
+ * @param {String} infileId - button id that loads the file
+ * @param {String} textId - text form that reads the file id
+ * @param {Function} callback - callback function to be executed after
+ * reading this function, i.e., after reading all files
+ */
 const handleFileSelect = (infileId, textId, callback) => {
   document.getElementById(infileId).addEventListener("change", function (e) {
     let arrayOfObj = {}
