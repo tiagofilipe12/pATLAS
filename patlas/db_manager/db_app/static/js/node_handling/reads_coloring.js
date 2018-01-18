@@ -159,15 +159,16 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
   let meanValue, minValue
   let counter = 0
   for (let string in readString) {
-    counter += 1
-    const gi = string
-    const perc = readString[string]
+    if ({}.hasOwnProperty.call(readString, string)) {
+      counter += 1
+      const gi = string
+      const perc = readString[string]
 
-    // adds node if it doesn't have links
+      // adds node if it doesn't have links
 
-    if (perc.constructor === Array) {
-      const identity = parseFloat(perc[0])
-      const copyNumber = perc[1]
+      if (perc.constructor === Array) {
+        const identity = parseFloat(perc[0])
+        const copyNumber = perc[1]
 
         if (identity >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
           const newPerc = rangeConverter(identity, cutoffParserMash(), 1, 0, 1)
@@ -189,50 +190,51 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           // and max values divided by two
           meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
         }
-      // }
-      // otherwise just runs read mode
-    } else {
-      if (document.getElementsByClassName("check_file").checked) {
-        if (perc >= 0.5) {
-          // perc values had to be normalized to the percentage value between 0
-          // and 1
-          const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
-            .replace("#", "0x")
-          nodeIter(g, readColor, gi, graphics, perc)
-          if (listGi.includes(gi)) {
-            listGiFilter.push(gi)
-          }
-        } else {
-          const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
-            .replace("#", "0x")
-          nodeIter(g, readColor, gi, graphics, perc)
-          if (listGi.includes(gi)) {
-            listGiFilter.push(gi)
-          }
-        }
-        const scale = chroma.scale(["blue", "#eacc00", "maroon"])
-        palette(scale, 10, readMode)
+        // }
+        // otherwise just runs read mode
       } else {
-        if (perc >= cutoffParser()) {
-          const newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
-          const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
-          const scale = chroma.scale(["lightsalmon", "maroon"])
+        if (document.getElementsByClassName("check_file").checked) {
+          if (perc >= 0.5) {
+            // perc values had to be normalized to the percentage value between 0
+            // and 1
+            const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
+              .replace("#", "0x")
+            nodeIter(g, readColor, gi, graphics, perc)
+            if (listGi.includes(gi)) {
+              listGiFilter.push(gi)
+            }
+          } else {
+            const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
+              .replace("#", "0x")
+            nodeIter(g, readColor, gi, graphics, perc)
+            if (listGi.includes(gi)) {
+              listGiFilter.push(gi)
+            }
+          }
+          const scale = chroma.scale(["blue", "#eacc00", "maroon"])
           palette(scale, 10, readMode)
-          nodeIter(g, readColor, gi, graphics, perc)
-          if (listGi.includes(gi)) {
-            listGiFilter.push(gi)
+        } else {
+          if (perc >= cutoffParser()) {
+            const newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
+            const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
+            const scale = chroma.scale(["lightsalmon", "maroon"])
+            palette(scale, 10, readMode)
+            nodeIter(g, readColor, gi, graphics, perc)
+            if (listGi.includes(gi)) {
+              listGiFilter.push(gi)
+            }
           }
         }
-      }
-      if (Object.keys(readString).length === counter) {
-        // min value is the one fetched from the input form or by default 0.6
-        // values are fixed to two decimal
-        minValue = parseFloat(
-          ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
-        ).toFixed(2)
-        // mean value is the sum of the min value plus the range between the min
-        // and max values divided by two
-        meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
+        if (Object.keys(readString).length === counter) {
+          // min value is the one fetched from the input form or by default 0.6
+          // values are fixed to two decimal
+          minValue = parseFloat(
+            ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
+          ).toFixed(2)
+          // mean value is the sum of the min value plus the range between the min
+          // and max values divided by two
+          meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
+        }
       }
     }
   }

@@ -1,3 +1,10 @@
+/**
+ * Function that enables to sort an array by its values and count the number
+ * of occurences of repetitive elements in array
+ * @param {Array} startingArray - The array to be sorted
+ * @returns {Array} finalArray - The array with the sorted entries in
+ * descending order
+ */
 const arraytByValue = (startingArray) => {
   let arrayToObject = {}
   // first put every element into a dictionary or object to count the number
@@ -17,7 +24,9 @@ const arraytByValue = (startingArray) => {
   // each entry in object
   const sortable = [];
   for (const x in arrayToObject ) {
-    sortable.push([x, arrayToObject[x]])
+    if ({}.hasOwnProperty.call(arrayToObject, x)) {
+      sortable.push([x, arrayToObject[x]])
+    }
   }
 
   // sorts array by second element in every pairs array
