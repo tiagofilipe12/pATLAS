@@ -1,4 +1,4 @@
-/*globals listGiFilter, resetDisplayTaxaBox, chroma, showLegend */
+/*globals listGiFilter, resetDisplayTaxaBox, chroma, showLegend, nodeColorReset */
 
 /**
  * Function that convert a given range of values between oldMin and oldMax

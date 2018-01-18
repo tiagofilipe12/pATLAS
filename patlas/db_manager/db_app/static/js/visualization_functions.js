@@ -11,7 +11,9 @@
           downloadSeq, setupPopupDisplay, multiDownload, heatmapMaker,
            colorNodes, abortRead, makeTable, arrayToCsv, resGetter,
             plasmidFamilyGetter, virulenceGetter, linkColoring,
-             slideToRight, slideToLeft, Mousetrap, initCallback*/
+             slideToRight, slideToLeft, Mousetrap, initCallback,
+              taxaRequest, pushToMasterReadArray, getArrayMapping,
+               getArrayMash, colorLegendFunction, noUiSlider, actualRemoval*/
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -1381,9 +1383,10 @@ const onLoad = () => {
                     const currentColor = colorList[i].replace("#", "0x")
                     const tempArray = assocFamilyGenus[currentSelection[i]]
                     const styleColor = "background-color:" + colorList[i]
-                    storeLis = storeLis + '<li' +
-                      ' class="centeredList"><button class="jscolor btn' +
-                      ' btn-default" style=' + styleColor + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                    storeLis = storeLis + "<li" +
+                      " class='centeredList'><button class='jscolor btn" +
+                      " btn-default' style=" + styleColor +
+                      "></button>&nbsp;' + currentSelection[i] + "</li>"
                     // executres node function for family
                     for (const sp in tempArray) {
                       promises.push(
@@ -1528,7 +1531,7 @@ const onLoad = () => {
       areaSelection = false
       $("#loading").show()
       setTimeout( () => {
-        getArrayMapping().done((result) => {
+        getArrayMapping().done( (result) => {
           // puts to readFilejson object that may store many files
           readFilejson = {
             // has to be stringifyed to be passed to pushToMasterReadArray
@@ -1769,19 +1772,19 @@ const onLoad = () => {
     // trigger only if clicked to avoid looping through the nodes again
     $("#length_filter").unbind("click").bind("click", () => {
       slider.noUiSlider.on("set", function() {
-        let slider_max = Math.exp(slider.noUiSlider.get()[1]),
-          slider_min = Math.exp(slider.noUiSlider.get()[0])
+        let sliderMax = Math.exp(slider.noUiSlider.get()[1]),
+          sliderMin = Math.exp(slider.noUiSlider.get()[0])
         g.forEachNode( (node) => {
           // check if node is not a singleton
           // singletons for now do not have size set so they cannot be
           // filtered with this method
-          // only changes nodes for nodes with seq_length data
-          if (node.data.seq_length) {
-            const node_length = node.data.seq_length.split(">").slice(-1).toString()
+          // only changes nodes for nodes with seqLength data
+          if (node.data.seqLength) {
+            const nodeLength = node.data.seqLength.split(">").slice(-1).toString()
             let nodeUI = graphics.getNodeUI(node.id)
-            if (parseInt(node_length) < parseInt(slider_min) || parseInt(node_length) > parseInt(slider_max)) {
+            if (parseInt(nodeLength) < parseInt(sliderMin) || parseInt(nodeLength) > parseInt(sliderMax)) {
               nodeUI.color = 0xcdc8b1 // shades nodes
-            } else if (parseInt(node_length) >= parseInt(slider_min) || parseInt(node_length) <= parseInt(slider_max)) {
+            } else if (parseInt(nodeLength) >= parseInt(sliderMin) || parseInt(nodeLength) <= parseInt(sliderMax)) {
               nodeUI.color = nodeUI.backupColor // return nodes to original color
             }
           }
@@ -1909,7 +1912,7 @@ const onLoad = () => {
                 " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
                 //species:"<font color='#468499'>Species:
                 // </font>" + species,
-                seq_length: "<span" +
+                seqLength: "<span" +
                 " style='color:#468499'>Sequence length:" +
                 " </span>" + seqLength,
                 logLength
@@ -1957,7 +1960,7 @@ const onLoad = () => {
                       sequence: "<span style='color:#468499'>Accession:" +
                       " </span><a" +
                       " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                      seq_length: "<span" +
+                      seqLength: "<span" +
                       " style='color:#468499'>Sequence length:" +
                       " </span>" + seqLength,
                       logLength

@@ -1,6 +1,16 @@
-/* globals makeHash */
+/*globals makeHash */
 
 // function used to download file from json object
+/**
+ * Function used to download file to json object from masterJSON object that
+ * contains a more organized structure to the JSON initially set to load on
+ * devel session. This masterJSON has stored positions of x and y for each
+ * node and their links.
+ * @param {String} text - the JSON object stringified to be dumped into the file
+ * @param {String} name - The name of the file in which the JSON object will
+ * be saved
+ * @param {String} type - the type of the file to be created
+ */
 const downloadJSON = (text, name, type) => {
   const a = document.createElement("a")
   const file = new Blob([text], {type})
@@ -13,8 +23,10 @@ const downloadJSON = (text, name, type) => {
  * Function to get all node positions and write then to a file. It also
  * calculates the ratio between the two linked nodes and adds it to last
  * element for link { distance, nodeRatio }
- * @param g
- * @param layout
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} layout - object that stores vivagraph layout with all the
+ * defined options
  */
 const getPositions = (g, layout) => {
   let masterJSON = {
@@ -50,9 +62,10 @@ const getPositions = (g, layout) => {
     }
   })
 
+  return masterJSON
   // somehow, and I don't know how, this is executed sync, i.e., after
   // forEach loops
-  downloadJSON(JSON.stringify(masterJSON), "filtered.json", "text/plain")
+  // downloadJSON(JSON.stringify(masterJSON), "filtered.json", "text/plain")
 }
 
 //*********************//
@@ -60,12 +73,22 @@ const getPositions = (g, layout) => {
 //*********************//
 
 // devel session to get positions of each node
-const initCallback = (g, layout, devel) => {
-  //if (devel === true && layout !== false) {
-  if (layout !== false) {
-    //console.log("devel on")
-    getPositions(g, layout)
-  } //else {
-    //console.log("devel off")
-  //}
+/**
+ * This function is used during devel session, so when devel is = true that
+ * triggers getPositions function which will in fact run get the positions
+ * of all nodes and links and save it to a file
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} layout - object that stores vivagraph layout with all the
+ * defined options
+ * @param {Boolean} devel - variable that controls if downloadJSON will be
+ * executed or not... this is only allowed during devel sessions and users
+ * must not be able to use this.
+ */
+const initCallback = async (g, layout, devel) => {
+  if (devel === true && layout !== false) {
+  // if (layout !== false) {
+    const masterJSON = await getPositions(g, layout)
+    await downloadJSON(JSON.stringify(masterJSON), "filtered.json", "text/plain")
+  }
 }
