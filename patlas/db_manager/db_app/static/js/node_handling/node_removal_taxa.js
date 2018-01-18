@@ -2,6 +2,22 @@
  colorNodes, readColoring */
 
 // function that adds links, avoiding duplication below on reAddNode function
+/**
+ * A function that adds links, avoiding duplication below on reAddNode
+ * function. This function avoids that duplicated links are added to the
+ * visualization, reducing to the minimum the amount of information
+ * displayed in the graph.
+ * @param {Object} g - object that stores vivagraph graph associated functions
+ * @param {Array} newListHashes - an array with a list of hashes, each one
+ * coding for an already added link.
+ * @param {String} sequence - the accession number of the node being added
+ * @param {String} linkAccession - the accession number of the linked node
+ * @param {String} linkDistance - the distance between the sequence and the
+ * linkAccession nodes
+ * @returns {Array} newListHashes - returns an array with a list of hashes
+ * updated that will be stored until all nodes and links have been added.
+ * This is used to avoid link duplication.
+ */
 const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
   const currentHash = makeHash(sequence, linkAccession)
   if (newListHashes.indexOf(currentHash) < 0) {
@@ -80,17 +96,26 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
  * Function to call the request on the db when executing Re_run
  * @param {Object} g - graph related functions that iterate through nodes
  * and links
- * @param {Array} listGiFilter -
- * @param counter
- * @param {Function} renderGraph -
+ * @param {Array} listGiFilter - The list of accession numbers that are
+ * currently selected.
+ * @param {Number} counter -
+ * @param {Function} renderGraph - function used to render the graph
  * @param {Object} graphics - vivagraph functions related with node and link
  * data
- * @param {Array} reloadAccessionList -
- * @param {Function} renderer -
- * @param {Array} listGi -
- * @param readString
- * @param assemblyJson
- * @returns {*[]}
+ * @param {Array} reloadAccessionList - A list of the accession number used
+ * to reload. This include all linked accessions to the ones present in
+ * listGiFilter
+ * @param {Function} renderer - Function that forces the graph to be updated
+ * @param {Array} listGi - The list of all accessions present in pATLAS,
+ * when loading for the first time
+ * @param {String} readString - A string with the json objects to be parsed
+ * into this function
+ * @param {Object} assemblyJson - The object that contains the associations
+ * of the new nodes to the plasmids present in pATLAS. This object may
+ * suffer updates in future implementations, since this is an experimental
+ * feature.
+ * @returns {*[]} - returns an array containing two arrays that control the
+ * the displayed accessions, both in listGiFilter and in realodAccessionList.
  */
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, listGi, readString,
@@ -420,6 +445,16 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     )
 
   // should be executed when listGiFilter is empty ... mainly for area selection
+  /**
+   * Function that should be exeuted when listGiFilter is empty, this is
+   * mainly used to parse area selections.
+   * @param {Object} g - graph related functions that iterate through nodes
+   * and links
+   * @param {Object} graphics - vivagraph functions related with node and link
+   * data
+   * @returns {Array} tempListAccessions - an array that contains the
+   * accessions that are selected with area selection option.
+   */
   const reGetListGi = (g, graphics) => {
     let tempListAccessions = []
     g.forEachNode( (node) => {

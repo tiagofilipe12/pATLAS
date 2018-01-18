@@ -108,69 +108,66 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
       .then( (requests) => {
         // let promises = []
         for (const i in listGiFilter) {
-          const accession = ({}.hasOwnProperty.call(listGiFilter, i)) ?
-            listGiFilter[i] : false
-          // forces reseting of the entry object to be passed has an array
-          const entry = {
-            "id": "",
-            "length": "",
-            "percentage": "",
-            "speciesName": "",
-            "plasmidName": "",
-            "resGenes": "",
-            "pfGenes": ""
-          }
-          // gets percentage
-          const seqPercentage = (g.getNode(accession) && g.getNode(accession).data.percentage) ?
-            g.getNode(accession).data.percentage : "N/A"
+          if ({}.hasOwnProperty.call(listGiFilter, i)) {
+            const accession = ({}.hasOwnProperty.call(listGiFilter, i)) ? listGiFilter[i] : false
+            // forces reseting of the entry object to be passed has an array
+            const entry = {
+              "id": "",
+              "length": "",
+              "percentage": "",
+              "speciesName": "",
+              "plasmidName": "",
+              "resGenes": "",
+              "pfGenes": ""
+            }
+            // gets percentage
+            const seqPercentage = (g.getNode(accession) && g.getNode(accession).data.percentage) ? g.getNode(accession).data.percentage : "N/A"
 
-          // iterates through main database entries
-          for (let mainRequest of requests.sequences) {
-            if (mainRequest.plasmid_id === accession) {
-              // then add all to the object
-              entry.id = accession
-              entry.length = mainRequest.json_entry.length
-              entry.percentage = seqPercentage
-              entry.speciesName = mainRequest.json_entry.name.split("_").join(" ")
-              entry.plasmidName = mainRequest.json_entry.plasmid_name
-              entry.cluster = mainRequest.json_entry.cluster
-              // loops must be break because there must be only one entry
-              break
+            // iterates through main database entries
+            for (let mainRequest of requests.sequences) {
+              if (mainRequest.plasmid_id === accession) {
+                // then add all to the object
+                entry.id = accession
+                entry.length = mainRequest.json_entry.length
+                entry.percentage = seqPercentage
+                entry.speciesName = mainRequest.json_entry.name.split("_").join(" ")
+                entry.plasmidName = mainRequest.json_entry.plasmid_name
+                entry.cluster = mainRequest.json_entry.cluster
+                // loops must be break because there must be only one entry
+                break
+              }
             }
-          }
-          // iterates through resistance database entries
-          for (let resistanceRequest of requests.resistances) {
-            if (resistanceRequest.plasmid_id === accession) {
-              entry.resGenes = resistanceRequest.json_entry.gene.replace(/['u"\[\]]/g, "")
-              // loops must be break because there must be only one entry
-              break
+            // iterates through resistance database entries
+            for (let resistanceRequest of requests.resistances) {
+              if (resistanceRequest.plasmid_id === accession) {
+                entry.resGenes = resistanceRequest.json_entry.gene.replace(/['u"\[\]]/g, "")
+                // loops must be break because there must be only one entry
+                break
+              }
             }
-          }
-          // iterates through plasmidfinder database entries
-          for (let pfamiliesRequest of requests.pfamilies) {
-            if (pfamiliesRequest.plasmid_id === accession) {
-              entry.pfGenes = pfamiliesRequest.json_entry.gene.replace(/['u"\[\]]/g, "")
-              // loops must be break because there must be only one entry
-              break
+            // iterates through plasmidfinder database entries
+            for (let pfamiliesRequest of requests.pfamilies) {
+              if (pfamiliesRequest.plasmid_id === accession) {
+                entry.pfGenes = pfamiliesRequest.json_entry.gene.replace(/['u"\[\]]/g, "")
+                // loops must be break because there must be only one entry
+                break
+              }
             }
-          }
-          for (let virulenceRequests of requests.virulence) {
-            if (virulenceRequests.plasmid_id === accession) {
-              entry.virGenes = virulenceRequests.json_entry.gene.replace(/['u"\[\]]/g, "")
-              // loops must be break because there must be only one entry
-              break
+            for (let virulenceRequests of requests.virulence) {
+              if (virulenceRequests.plasmid_id === accession) {
+                entry.virGenes = virulenceRequests.json_entry.gene.replace(/['u"\[\]]/g, "")
+                // loops must be break because there must be only one entry
+                break
+              }
             }
+            // since not allways the response is an empty string and sometimes
+            // it returns undefined... this check is to prevent showing empty
+            // columns in table
+            entry.resGenes = (entry.resGenes === "" || entry.resGenes === undefined) ? "N/A" : entry.resGenes
+            entry.pfGenes = (entry.pfGenes === "" || entry.pfGenes === undefined) ? "N/A" : entry.pfGenes
+            entry.virGenes = (entry.virGenes === "" || entry.virGenes === undefined) ? "N/A" : entry.virGenes
+            promises.push(entry)
           }
-          // since not allways the response is an empty string and sometimes
-          // it returns undefined... this check is to prevent showing empty
-          // columns in table
-          entry.resGenes = (entry.resGenes === "" || entry.resGenes === undefined) ?
-            "N/A" : entry.resGenes
-          entry.pfGenes = (entry.pfGenes === "" || entry.pfGenes === undefined) ?
-            "N/A" : entry.pfGenes
-          entry.virGenes = (entry.virGenes === "" || entry.virGenes === undefined) ?
-            "N/A" : entry.virGenes
-          promises.push(entry)
         }
 
         // after everyt entry has been added to promises array it will

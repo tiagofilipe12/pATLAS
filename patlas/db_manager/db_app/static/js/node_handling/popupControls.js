@@ -1,3 +1,8 @@
+/**
+ * Array to export an array to an csv file. This function collects info in
+ * an array and forces it to be downloaded to a file
+ * @param {Array} array - the array of entries to be dumped into csv export.
+ */
 const arrayToCsv = (array) => {
   // should parse an array with key: value, e.g. [
   let csvContent = "data:text/csv;charset=utf-8,"
@@ -14,6 +19,17 @@ const arrayToCsv = (array) => {
   link.click() // This will download the data file named "my_data.csv".
 }
 
+/**
+ * Function that prepares the top-right corner popup to display
+ * @param {Object} node - node object that contains the metadata associated
+ * with that plasmid
+ * @param {String} speciesName - a string with the species name of the node
+ * being displayed
+ * @param {String} plasmidName - a string with the plasmid name of the node
+ * being displayed
+ * @param {String} clusterId - A string with the id of the cluster being
+ * displayed
+ */
 const setupPopupDisplay = (node, speciesName, plasmidName, clusterId) => {
   // this will assure that even db doesn't return anything these divs are
   // emptied before adding something new
