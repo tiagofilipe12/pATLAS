@@ -1,4 +1,4 @@
-/* globals listGiFilter, resetDisplayTaxaBox, chroma, showLegend */
+/*globals listGiFilter, resetDisplayTaxaBox, chroma, showLegend */
 
 /**
  * Function that convert a given range of values between oldMin and oldMax
@@ -336,7 +336,7 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
  * data.
  * @param {Object} renderer - vivagraph object to render the graph.
  */
-const reset_link_color = (g, graphics, renderer) => {
+const resetLinkColor = (g, graphics, renderer) => {
   g.forEachLink(function (link) {
     const linkUI = graphics.getLinkUI(link.id)
     linkUI.color = 0xb3b3b3ff
@@ -385,7 +385,7 @@ const forceSelectorFullRemoval = (selector) => {
  */
 const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   // first iters nodes to get nodeColor (default color)
-  node_color_reset(graphics, g, nodeColor, renderer)
+  nodeColorReset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
   if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
     showLegend.style.display = "none"

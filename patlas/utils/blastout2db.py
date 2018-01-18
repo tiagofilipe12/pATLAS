@@ -29,7 +29,7 @@ def model_selector(selected_class):
 
 def output_json(dict_main_json, blast_out, selected_class, id_param, perc_cov_param):
     '''
-    This function outputs a dictionary of json entries per each Accession 
+    This function outputs a dictionary of json entries per each Accession
     number in database.
     '''
     bout_file = open(blast_out, "r")
@@ -74,8 +74,8 @@ def output_json(dict_main_json, blast_out, selected_class, id_param, perc_cov_pa
 
 def json_dumping(dict_main_json, model_class):
     '''
-    This function outputs each json entry in the dictionary to the postgres 
-    database with each accession number as primary key and a list of arrays  
+    This function outputs each json entry in the dictionary to the postgres
+    database with each accession number as primary key and a list of arrays
     '''
     print("==============================================================")
     print("outputing to db...")

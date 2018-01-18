@@ -1,3 +1,5 @@
+/*globals requestPlasmidTable */
+
 /**
  * This function controls the elements in the toggle button on the top left
  * corner of patlas that enables the user to switch the search between

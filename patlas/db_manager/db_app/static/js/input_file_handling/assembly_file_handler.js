@@ -27,10 +27,10 @@ const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilt
         " </span>" + i,
         //species:"<font color='#468499'>Species:
         // </font>" + species,
-        seq_length: "<span" +
+        seqLength: "<span" +
         " style='color:#468499'>Sequence length:" +
         " </span>" + "N/A",
-        log_length: 10
+        logLength: 10
       })
       const nodeUI = graphics.getNodeUI(i)
       nodeUI.backupColor = nodeUI.color

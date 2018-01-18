@@ -1,4 +1,4 @@
-/* globals Viva */
+/*globals Viva */
 
 /**
  * Function to create overlay that permits startMultiSelect to change color

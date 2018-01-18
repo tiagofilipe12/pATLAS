@@ -1,4 +1,4 @@
-/* globals colorNodes, areaSelection, previousTableList, Highcharts,
+/*globals colorNodes, areaSelection, previousTableList, Highcharts,
  arraysEqual, clickedHighchart, arraytByValue, associativeObj */
 
 //********//
@@ -718,8 +718,10 @@ const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
         } else {
           // otherwise needs to parse the array into an array
           for (const i in pfName) {
-            resList.push(pfName[i])
-            associativeObjAssigner(associativeObj, data.plasmid_id, pfName[i])
+            if ({}.hasOwnProperty.call(pfName, i)) {
+              resList.push(pfName[i])
+              associativeObjAssigner(associativeObj, data.plasmid_id, pfName[i])
+            }
           }
         }
       })
@@ -898,9 +900,9 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
       const layout = layoutGet(taxaType)
       statsParser(g, graphics, renderer, accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal, associativeObj)
     })
-    .catch( (error) => {
-      console.log("Error: ", error)
-    })
+    // .catch( (error) => {
+    //   console.log("Error: ", error)
+    // })
   return speciesList // this is returned async but there is no problem
 }
 

@@ -1,11 +1,12 @@
-/* globals Viva, recenterDOM, resetAllNodes, storeRecenterDom,
+/*globals Viva, recenterDOM, resetAllNodes, storeRecenterDom,
  buildCircleNodeShader, requestPlasmidTable, WebglCircle, selector,
   hideAllOtherPlots, toggleManager, repetitivePlotFunction,
    resRepetitivePlotFunction, pfRepetitivePlotFunction,
-    virRepetitivePlotFunction, statsParser, node_color_reset,
+    virRepetitivePlotFunction, statsParser, nodeColorReset,
      resetDisplayTaxaBox, showDiv, pfSubmitFunction, layoutGet,
       centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
-       filterDisplayer, slider, resSubmitFunction, virSubmitFunction */
+       filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
+        defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor */
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -46,8 +47,8 @@ const getArray = (devel === true) ? $.getJSON("/test") : $.getJSON("/fullDS")
 let bootstrapTableList = []
 // dictionary to store all the connections between species and other taxa
 // level available. This needs to be stored here because there is no reason
-// to execute the getArray_taxa twice.
-const dict_genera = {}
+// to execute the getArrayTaxa twice.
+const dictGenera = {}
 // buttonSubmit current node
 let currentQueryNode = false
 
@@ -83,7 +84,7 @@ let clickerButton, listPlots
  * @returns {Object} - return is an object that perform matches between taxa
  * levels species, genera, families and orders.
  */
-const getArray_taxa = () => {
+const getArrayTaxa = () => {
   return $.getJSON("/taxa")
 }
 
@@ -92,7 +93,7 @@ const getArray_taxa = () => {
  * @returns {Object} - returns an object that allows resistance menus to be
  * populated
  */
-const getArray_res = () => {
+const getArrayRes = () => {
   return $.getJSON("/resistance")
 }
 
@@ -101,7 +102,7 @@ const getArray_res = () => {
  * @returns {Object} - returns an object that allows plasmidfinder menus
  * to be populated
  */
-const getArray_pf = () => {
+const getArrayPf = () => {
   return $.getJSON("/plasmidfinder")
 }
 
@@ -124,7 +125,7 @@ let previousTableList = []
 
 let sliderMinMax = [] // initiates an array for min and max slider entries
 // and stores it for reloading instances of onload()
-let list_gi = []
+let listGi = []
 // define render on the scope of onload in order to be used by buttons
 // outside renderGraph
 let renderer
@@ -185,7 +186,7 @@ const onLoad = () => {
     // This is the main part of this example. We are telling force directed
     // layout, that we want to change length of each physical spring
     // by overriding `springTransform` method:
-    springTransform: function (link, spring) {
+    springTransform(link, spring) {
       spring.length = 100 * Math.log10(1 - link.data.distance) + 100
     }
   })
@@ -213,7 +214,7 @@ const onLoad = () => {
     // second, change the node ui model, which can be understood
     // by the custom shader:
     graphics.node( (node) => {
-      let nodeSize = minNodeSize * node.data.log_length
+      let nodeSize = minNodeSize * node.data.logLength
       return new WebglCircle(nodeSize, nodeColor)
     })
 
@@ -625,7 +626,7 @@ const onLoad = () => {
     //* ******************//
 
     if (firstInstace === true && pageReload === false) {
-      getArray_pf().done((json) => {
+      getArrayPf().done((json) => {
         // first parse the json input file
         const listPF = []
         // iterate over the file
@@ -664,7 +665,7 @@ const onLoad = () => {
       $("#plasmidFamiliesList").selectpicker("deselectAll")
 
       slider.noUiSlider.set([min, max])
-      node_color_reset(graphics, g, nodeColor, renderer)
+      nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -704,7 +705,7 @@ const onLoad = () => {
       $("#cardList").selectpicker("deselectAll")
       $("#virList").selectpicker("deselectAll")
       // clears previous selected nodes
-      node_color_reset(graphics, g, nodeColor, renderer)
+      nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -747,7 +748,7 @@ const onLoad = () => {
 
     // first parse the json input file
     if (firstInstace === true && pageReload === false) {
-      getArray_res().done((json) => {
+      getArrayRes().done((json) => {
         const listCard = [],
           listRes = []
         // iterate over the file
@@ -794,7 +795,7 @@ const onLoad = () => {
       $("#resList").selectpicker("deselectAll")
 
       slider.noUiSlider.set([min, max])
-      node_color_reset(graphics, g, nodeColor, renderer)
+      nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -833,7 +834,7 @@ const onLoad = () => {
       $("#virList").selectpicker("deselectAll")
 
       // clears previously selected nodes
-      node_color_reset(graphics, g, nodeColor, renderer)
+      nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -915,7 +916,7 @@ const onLoad = () => {
       $("#virList").selectpicker("deselectAll")
 
       slider.noUiSlider.set([min, max])
-      node_color_reset(graphics, g, nodeColor, renderer)
+      nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -955,7 +956,7 @@ const onLoad = () => {
       $("#cardList").selectpicker("deselectAll")
       $("#plasmidFamiliesList").selectpicker("deselectAll")
       // clears previous selected nodes
-      node_color_reset(graphics, g, nodeColor, renderer)
+      nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -997,38 +998,38 @@ const onLoad = () => {
     //* ***Taxa Filter****//
     //* ******************//
 
-    const list_orders = [],
-      list_families = [],
-      list_genera = [],
-      list_species = []
+    const listOrders = [],
+      listFamilies = [],
+      listGenera = [],
+      listSpecies = []
     if (firstInstace === true && pageReload === false) {
-      getArray_taxa().done((json) => {
+      getArrayTaxa().done((json) => {
         $.each(json, (sps, other) => {    // sps aka species
           const species = sps.split("_").join(" ")
           const genus = other[0]
           const family = other[1]
           const order = other[2]
-          dict_genera[species] = [genus, family, order] // append the list to
+          dictGenera[species] = [genus, family, order] // append the list to
           // this dict to be used later
-          if (list_genera.indexOf(genus) < 0) {
-            list_genera.push(genus)
+          if (listGenera.indexOf(genus) < 0) {
+            listGenera.push(genus)
           }
-          if (list_families.indexOf(family) < 0) {
-            list_families.push(family)
+          if (listFamilies.indexOf(family) < 0) {
+            listFamilies.push(family)
           }
-          if (list_orders.indexOf(order) < 0) {
-            list_orders.push(order)
+          if (listOrders.indexOf(order) < 0) {
+            listOrders.push(order)
           }
-          if (list_species.indexOf(species) < 0) {
-            list_species.push(species)
+          if (listSpecies.indexOf(species) < 0) {
+            listSpecies.push(species)
           }
         })
 
         // populate the menus
-        singleDropdownPopulate("#orderList", list_orders, "OrderClass")
-        singleDropdownPopulate("#familyList", list_families, "FamilyClass")
-        singleDropdownPopulate("#genusList", list_genera, "GenusClass")
-        singleDropdownPopulate("#speciesList", list_species, "SpeciesClass")
+        singleDropdownPopulate("#orderList", listOrders, "OrderClass")
+        singleDropdownPopulate("#familyList", listFamilies, "FamilyClass")
+        singleDropdownPopulate("#genusList", listGenera, "GenusClass")
+        singleDropdownPopulate("#speciesList", listSpecies, "SpeciesClass")
 
         // clickable <li> and control of displayer of current filters
         const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
@@ -1062,7 +1063,7 @@ const onLoad = () => {
       $("#speciesList").selectpicker("deselectAll")
 
       slider.noUiSlider.set([min, max])
-      node_color_reset(graphics, g, nodeColor, renderer)
+      nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -1111,14 +1112,14 @@ const onLoad = () => {
       listGiFilter = []   // makes listGiFilter an empty array
       // noLegend = false // sets legend to hidden state by default
       // now processes the current selection
-      const species_query = document.getElementById("p_Species").innerHTML,
-        genus_query = document.getElementById("p_Genus").innerHTML,
-        family_query = document.getElementById("p_Family").innerHTML,
-        order_query = document.getElementById("p_Order").innerHTML
-      let selectedSpecies = species_query.replace("Species:", "").split(",").filter(Boolean),
-        selectedGenus = genus_query.replace("Genus:", "").split(",").filter(Boolean),
-        selectedFamily = family_query.replace("Family:", "").split(",").filter(Boolean),
-        selectedOrder = order_query.replace("Order:", "").split(",").filter(Boolean)
+      const speciesQuery = document.getElementById("p_Species").innerHTML,
+        genusQuery = document.getElementById("p_Genus").innerHTML,
+        familyQuery = document.getElementById("p_Family").innerHTML,
+        orderQuery = document.getElementById("p_Order").innerHTML
+      let selectedSpecies = speciesQuery.replace("Species:", "").split(",").filter(Boolean),
+        selectedGenus = genusQuery.replace("Genus:", "").split(",").filter(Boolean),
+        selectedFamily = familyQuery.replace("Family:", "").split(",").filter(Boolean),
+        selectedOrder = orderQuery.replace("Order:", "").split(",").filter(Boolean)
       // remove first char from selected* arrays
       selectedSpecies = removeFirstCharFromArray(selectedSpecies)
       selectedGenus = removeFirstCharFromArray(selectedGenus)
@@ -1174,7 +1175,7 @@ const onLoad = () => {
 
       // appends genus to selectedGenus according with the family and order for single-color selection
       // also appends to associative arrays for family and order for multi-color selection
-      $.each(dict_genera, (species, pair) => {
+      $.each(dictGenera, (species, pair) => {
         const genus = pair[0]
         const family = pair[1]
         const order = pair[2]
@@ -1205,12 +1206,12 @@ const onLoad = () => {
       })
 
       // renders the graph for the desired taxon if more than one taxon type is selected
-      let store_lis = "" // a variable to store all <li> generated for legend
+      let storeLis = "" // a variable to store all <li> generated for legend
       let firstIteration = true // boolean to control the upper taxa level
       // (order or family)
 
       // first restores all nodes to default color
-      node_color_reset(graphics, g, nodeColor, renderer)
+      nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -1227,16 +1228,16 @@ const onLoad = () => {
 
       // if multiple selections are made in different taxa levels
       if (counter > 1 && counter <= 4) {
-        const style_color = "background-color:" + colorList[2]
-        store_lis = store_lis + "<li" +
+        const styleColor = "background-color:" + colorList[2]
+        storeLis = storeLis + "<li" +
           " class='centeredList'><button class='jscolor btn" +
-          " btn-default' style=" + style_color + "></button>&nbsp;multi taxa" +
+          " btn-default' style=" + styleColor + "></button>&nbsp;multi taxa" +
           " selection</li>"
         showDiv().then( () => {
           const promises = []
           const currentColor = 0xf71735   // sets color of all changes_nodes to
           // be red
-          store_lis = "<li class='centeredList'><button class='jscolor btn'" +
+          storeLis = "<li class='centeredList'><button class='jscolor btn'" +
             " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
           // for (const i in alertArrays.order) {
           let currentSelectionOrder = alertArrays.order
@@ -1305,7 +1306,7 @@ const onLoad = () => {
               showLegend.style.display = "block"
               document.getElementById("taxa_label").style.display = "block" // show label
               $("#colorLegendBox").empty()
-              $("#colorLegendBox").append(store_lis +
+              $("#colorLegendBox").append(storeLis +
                 '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
               showRerun.style.display = "block"
               showGoback.style.display = "block"
@@ -1335,10 +1336,10 @@ const onLoad = () => {
                 if (alertArrays.order.length !== 0) {
                   const currentColor = colorList[i].replace("#", "0x")
                   const tempArray = assocOrderGenus[currentSelection[i]]
-                  const style_color = 'background-color:' + colorList[i]
-                  store_lis = store_lis + '<li' +
+                  const styleColor = 'background-color:' + colorList[i]
+                  storeLis = storeLis + '<li' +
                     ' class="centeredList"><button class="jscolor btn' +
-                    ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                    ' btn-default" style=' + styleColor + '></button>&nbsp;' + currentSelection[i] + '</li>'
                   // executres node function for family and orders
                   for (const sp in tempArray) {
                     promises.push(
@@ -1356,10 +1357,10 @@ const onLoad = () => {
                 else if (alertArrays.family.length !== 0) {
                   const currentColor = colorList[i].replace("#", "0x")
                   const tempArray = assocFamilyGenus[currentSelection[i]]
-                  const style_color = "background-color:" + colorList[i]
-                  store_lis = store_lis + '<li' +
+                  const styleColor = "background-color:" + colorList[i]
+                  storeLis = storeLis + '<li' +
                     ' class="centeredList"><button class="jscolor btn' +
-                    ' btn-default" style=' + style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                    ' btn-default" style=' + styleColor + '></button>&nbsp;' + currentSelection[i] + '</li>'
                   // executres node function for family
                   for (const sp in tempArray) {
                     promises.push(
@@ -1377,9 +1378,11 @@ const onLoad = () => {
                 else if (alertArrays.genus.length !== 0) {
                   const currentColor = colorList[i].replace("#", "0x")
                   const tempArray = assocGenus[currentSelection[i]]
-                  const style_color = "background-color:" + colorList[i]
-                  store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
-                    style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                  const styleColor = "background-color:" + colorList[i]
+                  storeLis = storeLis + "<li class='centeredList'><button" +
+                    " class='jscolor btn btn-default' style=" +
+                    styleColor + "></button>&nbsp;" + currentSelection[i] +
+                    "</li>"
 
                   // requests taxa associated accession from db and colors
                   // respective nodes
@@ -1398,9 +1401,11 @@ const onLoad = () => {
                 // species //
                 else if (alertArrays.species.length !== 0) {
                   const currentColor = colorList[i].replace("#", "0x")
-                  const style_color = "background-color:" + colorList[i]
-                  store_lis = store_lis + '<li class="centeredList"><button class="jscolor btn btn-default" style=' +
-                    style_color + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                  const styleColor = "background-color:" + colorList[i]
+                  storeLis = storeLis + "<li class='centeredList'><button" +
+                    " class'jscolor btn btn-default' style=" +
+                    styleColor + "></button>&nbsp;" + currentSelection[i] +
+                    "</li>"
 
                   // requests taxa associated accession from db and colors
                   // respective nodes
@@ -1421,8 +1426,8 @@ const onLoad = () => {
                   showLegend.style.display = "block"
                   document.getElementById("taxa_label").style.display = "block" // show label
                   $("#colorLegendBox").empty()
-                  $("#colorLegendBox").append(store_lis +
-                    '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
+                  $("#colorLegendBox").append(storeLis +
+                    "<li class='centeredList'><button class='jscolor btn btn-default' style='background-color:#666370' ></button>&nbsp;unselected</li>")
                   showRerun.style.display = "block"
                   showGoback.style.display = "block"
                   showDownload.style.display = "block"
@@ -1438,22 +1443,6 @@ const onLoad = () => {
           }
         }
       }
-      // used to control if no selection was made avoiding to display the legend
-      // else {
-      //   noLegend = true
-      // }
-      // // show legend //
-      // if (noLegend === false) {
-      //   showLegend.style.display = "block"
-      //   document.getElementById("taxa_label").style.display = "block" // show label
-      //   $("#colorLegendBox").empty()
-      //   $("#colorLegendBox").append(store_lis +
-      //     '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
-      //   showRerun.style.display = "block"
-      //   showGoback.style.display = "block"
-      //   showDownload.style.display = "block"
-      //   showTable.style.display = "block"
-      // }
     })
 
     //* ************//
@@ -1480,8 +1469,8 @@ const onLoad = () => {
       $("#loading").show()
       setTimeout( () => {
         // colors each node for first element of readFilejson
-        const outLists = readColoring(g, list_gi, graphics, renderer, readString)
-        list_gi  = outLists[0]
+        const outLists = readColoring(g, listGi, graphics, renderer, readString)
+        listGi  = outLists[0]
         listGiFilter = outLists[1]
         masterReadArray = pushToMasterReadArray(readFilejson)
       }, 100)
@@ -1520,8 +1509,8 @@ const onLoad = () => {
             // has to be stringifyed to be passed to pushToMasterReadArray
             "mapping_sample1": JSON.stringify(result)
           }
-          const outLists = readColoring(g, list_gi, graphics, renderer, result)
-          list_gi = outLists[0]
+          const outLists = readColoring(g, listGi, graphics, renderer, result)
+          listGi = outLists[0]
           listGiFilter = outLists[1]
           masterReadArray = pushToMasterReadArray(readFilejson)
         })
@@ -1557,8 +1546,8 @@ const onLoad = () => {
       $("#loading").show()
       setTimeout( () => {
         // TODO this readFilejson here must be a json object from 1 file
-        const outputList = readColoring(g, list_gi, graphics, renderer, readString)
-        list_gi = outputList[0]
+        const outputList = readColoring(g, listGi, graphics, renderer, readString)
+        listGi = outputList[0]
         listGiFilter = outputList[1]
         masterReadArray = pushToMasterReadArray(readFilejson)
       }, 100)
@@ -1599,8 +1588,8 @@ const onLoad = () => {
             "mash_sample1": JSON.stringify(result)
           }
           readFilejson = mashJson
-          const outLists = readColoring(g, list_gi, graphics, renderer, result)
-          list_gi = outLists[0]
+          const outLists = readColoring(g, listGi, graphics, renderer, result)
+          listGi = outLists[0]
           listGiFilter = outLists[1]
           masterReadArray = pushToMasterReadArray(mashJson)
         })
@@ -1628,7 +1617,7 @@ const onLoad = () => {
       areaSelection = false
       $("#loading").show()
       // setTimeout( () => {
-      listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
+      listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
       // }, 100)
       setTimeout( () => {
         renderer.rerender()
@@ -1661,7 +1650,7 @@ const onLoad = () => {
       // setTimeout( () => {
       getArrayAssembly().then( (results) => {
         assemblyJson = results
-        listGiFilter = assembly(list_gi, results, g, graphics, masterReadArray, listGiFilter)
+        listGiFilter = assembly(listGi, results, g, graphics, masterReadArray, listGiFilter)
       // }, 100)
       })
       setTimeout( () => {
@@ -1721,7 +1710,7 @@ const onLoad = () => {
       $("#scaleString").empty()
       $("#distance_label").hide()
       setTimeout(function () {
-        reset_link_color(g, graphics, renderer)
+        resetLinkColor(g, graphics, renderer)
       }, 100)
     })
 
@@ -1835,7 +1824,7 @@ const onLoad = () => {
       firstInstace = true
       pageReload = true
       list = []
-      list_gi = []
+      listGi = []
       listLengths = []
       listGiFilter = []
       showDiv().then( () => {
@@ -1885,9 +1874,9 @@ const onLoad = () => {
 
             // and continues
             const seqLength = sequenceInfo.split("_").slice(-1).join("")
-            const log_length = Math.log(parseInt(seqLength)) //ln seq length
+            const logLength = Math.log(parseInt(seqLength)) //ln seq length
             listLengths.push(seqLength); // appends all lengths to this list
-            list_gi.push(sequence)
+            listGi.push(sequence)
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
@@ -1899,7 +1888,7 @@ const onLoad = () => {
                 seq_length: "<span" +
                 " style='color:#468499'>Sequence length:" +
                 " </span>" + seqLength,
-                log_length: log_length
+                logLength
               })
               list.push(sequence)
 
@@ -1934,9 +1923,9 @@ const onLoad = () => {
                 counter++
                 const sequence = array.id
                 const seqLength = array.length
-                const log_length = Math.log(parseInt(seqLength))
+                const logLength = Math.log(parseInt(seqLength))
                 listLengths.push(seqLength)
-                list_gi.push(sequence)
+                listGi.push(sequence)
 
                 if (list.indexOf(sequence) < 0) {
                   g.addNode(sequence, {
@@ -1946,7 +1935,7 @@ const onLoad = () => {
                     seq_length: "<span" +
                     " style='color:#468499'>Sequence length:" +
                     " </span>" + seqLength,
-                    log_length: log_length
+                    logLength
                   })
                   list.push(sequence)
                   layout.setNodePosition(sequence, array.position.x, array.position.y)
@@ -2003,19 +1992,19 @@ const onLoad = () => {
         $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
         $("#fileNameDiv").show()
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
-          graphics, reloadAccessionList, renderer, list_gi, readReload,
+          graphics, reloadAccessionList, renderer, listGi, readReload,
           assemblyJson)
       } else {
         // sets pageReRun to true
         pageReRun = true
         // used when no reads are used to filter
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
-          graphics, reloadAccessionList, renderer, list_gi, false,
+          graphics, reloadAccessionList, renderer, listGi, false,
           assemblyJson)
       }
       listGiFilter = requestDBList[0] // list with the nodes used to filter
       reloadAccessionList = requestDBList[1] //list stores all nodes present
-      // this list_gi isn't the same as the initial but has information on
+      // this listGi isn't the same as the initial but has information on
       // all the nodes that were used in filters
       // wait a while before showing the colors
       setTimeout( () => {
@@ -2317,10 +2306,10 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    const outArray = slideToRight(readFilejson, readIndex, g, list_gi, graphics, renderer)
+    const outArray = slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
-    list_gi = outArray[1][0]
+    listGi = outArray[1][0]
   })
 
   $("#slideLeft").unbind("click").bind("click", () => {
@@ -2331,10 +2320,10 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    const outArray = slideToLeft(readFilejson, readIndex, g, list_gi, graphics, renderer)
+    const outArray = slideToLeft(readFilejson, readIndex, g, listGi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
-    list_gi = outArray[1][0]
+    listGi = outArray[1][0]
   })
 
   // changes the behavior of tooltip to show only on click

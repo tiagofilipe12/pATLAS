@@ -1,4 +1,4 @@
-/* globals webglUtils */
+/*globals webglUtils */
 
 /// ************************************************///
 /// *** transforms nodes from squares to circles ***///

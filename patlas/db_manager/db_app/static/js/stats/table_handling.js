@@ -1,4 +1,4 @@
-/* globals Highcharts */
+/*globals Highcharts, cutoffParser, cutoffParserMash */
 
 /**
  * Function to compare two arrays and check if they are equal, i.e. if they

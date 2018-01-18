@@ -1,4 +1,4 @@
-/* globals makeHash, reloadAccessionList, assembly, listGiFilter,
+/*globals makeHash, reloadAccessionList, assembly, listGiFilter,
  colorNodes, readColoring */
 
 // function that adds links, avoiding duplication below on reAddNode function
@@ -36,7 +36,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       " </span><a" +
       " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
       seq_length: "<span style='color:#468499'>Sequence length: </span>" + ((length !== "N/A") ? length : "N/A"),
-      log_length: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
+      logLength: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
     newList.push(sequence)  //adds to list every time a new node is added here
   }
@@ -60,7 +60,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
           seq_length: "<span" +
           " style='color:#468499'>Sequence length:" +
           " </span>" + linkLength,
-          log_length: Math.log(parseInt(linkLength))
+          logLength: Math.log(parseInt(linkLength))
         })
         newList.push(linkAccession) //adds to list every time a node is
         // added here
@@ -87,13 +87,13 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
  * data
  * @param {Array} reloadAccessionList -
  * @param {Function} renderer -
- * @param {Array} list_gi -
+ * @param {Array} listGi -
  * @param readString
  * @param assemblyJson
  * @returns {*[]}
  */
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
-                     reloadAccessionList, renderer, list_gi, readString,
+                     reloadAccessionList, renderer, listGi, readString,
                      assemblyJson) => {
   if (listGiFilter.length > 0) {
     let newListHashes = [] // similar to listHashes from first instance
@@ -135,8 +135,8 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
             const jsonObj = {
               "plasmidAccession": data.plasmid_id,
               "plasmidLenght": data.json_entry.length,
-              "speciesName": speciesName,
-              "plasmidName": plasmidName,
+              speciesName,
+              plasmidName,
               // this splits the string into an array with each entry
               "significantLinks": data.json_entry.significantLinks//.split("],")
             }
@@ -150,11 +150,11 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
       .then( () => {
         renderGraph(graphics)
         if (readString !== false) {
-          readColoring(g, list_gi, graphics, renderer, readString)
+          readColoring(g, listGi, graphics, renderer, readString)
         } else if (assemblyJson !== false) {
           let masterReadArray = [] //needs to reset this array for the assembly
           // function to be successful
-          listGiFilter = assembly(list_gi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
+          listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
         } else if ($("#p_Card").html() !== "Card:" ||
           $("#p_Resfinder").html() !== "Resfinder:") {
           $("#resSubmit").click()
@@ -175,9 +175,9 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           // color for area selection
         }
       })
-      .catch( (error) => {
-        console.log("Error! No query was made. Error message: ", error)
-      })
+      // .catch( (error) => {
+      //   console.log("Error! No query was made. Error message: ", error)
+      // })
     //}
   }
   return [listGiFilter, reloadAccessionList]
@@ -451,7 +451,16 @@ const showDiv = () => {
 }
 
 // function to reset node colors
-const node_color_reset = (graphics, g, nodeColor, renderer) => {
+/**
+ * Function that resets node colors
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Floar} nodeColor - the color value for vivagraph (e.g. 0x<hexcode>)
+ * @param {Object} renderer - vivagraph object to render the graph.
+ */
+const nodeColorReset = (graphics, g, nodeColor, renderer) => {
   document.getElementById("taxa_label").style.display = "none" // hide label
   g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)

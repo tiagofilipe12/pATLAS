@@ -22,7 +22,7 @@ const arraytByValue = (startingArray) => {
 
   // puts every instance of this object into an array with a pair array for
   // each entry in object
-  const sortable = [];
+  const sortable = []
   for (const x in arrayToObject ) {
     if ({}.hasOwnProperty.call(arrayToObject, x)) {
       sortable.push([x, arrayToObject[x]])

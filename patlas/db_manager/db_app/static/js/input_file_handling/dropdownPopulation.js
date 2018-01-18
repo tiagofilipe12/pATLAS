@@ -1,4 +1,4 @@
-/* globals colorList, listGiFilter, colorNodes, legendInst */
+/*globals colorList, listGiFilter, colorNodes, legendInst */
 
 // function to remove first char from every string in array
 // of course array must have strings
