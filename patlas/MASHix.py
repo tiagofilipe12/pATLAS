@@ -206,7 +206,7 @@ def genomes_parser(main_fasta, mother_directory):
     if_handle = open(main_fasta, "r")
     list_genomes_files = []
     out_handle = None
-    for x, line in enumerate(if_handle):  ## x coupled with enumerate creates
+    for line in if_handle:  ## x coupled with enumerate creates
         # a counter for every loop
         linesplit = line.strip().split("_")
         if line.startswith(">"):
