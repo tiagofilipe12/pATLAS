@@ -98,13 +98,14 @@ const startMultiSelect = (graph, renderer, layout) => {
   const overlay = createOverlay(document.querySelector(".graph-overlay"), document.getElementById("couve-flor"))
   overlay.onAreaSelected( (area) => {
 
-    const isInside = (nodeId, topLeft, bottomRight) => {
-      const nodePos = layout.getNodePosition(nodeId)
-      return (topLeft.x < nodePos.x && nodePos.x < bottomRight.x &&
-        topLeft.y < nodePos.y && nodePos.y < bottomRight.y)
-    }
-
     const higlightIfInside = (node) => {
+
+      const isInside = (nodeId, topLeft, bottomRight) => {
+        const nodePos = layout.getNodePosition(nodeId)
+        return (topLeft.x < nodePos.x && nodePos.x < bottomRight.x &&
+          topLeft.y < nodePos.y && nodePos.y < bottomRight.y)
+      }
+
       const nodeUI = graphics.getNodeUI(node.id)
       if (nodeUI) {
         if (isInside(node.id, topLeft, bottomRight)) {

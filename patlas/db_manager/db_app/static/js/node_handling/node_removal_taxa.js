@@ -76,70 +76,30 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   return [newList, newListHashes]
 }
 
-// function to call requests on db
-
+/**
+ * Function to call the request on the db when executing Re_run
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links
+ * @param {Array} listGiFilter -
+ * @param counter
+ * @param {Function} renderGraph -
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data
+ * @param {Array} reloadAccessionList -
+ * @param {Function} renderer -
+ * @param {Array} list_gi -
+ * @param readString
+ * @param assemblyJson
+ * @returns {*[]}
+ */
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, list_gi, readString,
                      assemblyJson) => {
   if (listGiFilter.length > 0) {
-    //let promises = []   //an array to store all the requests as promises
     let newListHashes = [] // similar to listHashes from first instance
-    // loops every Accession stored in listGiFilter on re_run button
-    // for (let i = 0; i < listGiFilter.length; i++) {
-    // promises.push(
     $.post("api/getspecies/", { "accession": JSON.stringify(listGiFilter)} ) //,
-    // (data, status) => {
-    //   // this request uses nested json object to access json entries
-    //   // available in the database
-    //
-    //   // if request return no speciesName or plasmidName
-    //   // sometimes plasmids have no descriptor for one of these or both
-    //   if (data.json_entry.name === null) {
-    //     speciesName = "N/A"
-    //   } else {
-    //     speciesName = data.json_entry.name.split("_").join(" ")
-    //   }
-    //   if (data.json_entry.plasmid_name === null) {
-    //     plasmidName = "N/A"
-    //   } else {
-    //     plasmidName = data.json_entry.plasmid_name
-    //   }
-    //   // if accession is not present in the database because singletons
-    //   // are not stored in database
-    //   if (data.json_entry.significantLinks === null) {
-    //     const jsonObj = {
-    //       "plasmidAccession": listGiFilter[i],
-    //       "plasmidLenght": "N/A",
-    //       "speciesName": "N/A",
-    //       "plasmidName": "N/A",
-    //       "significantLinks": "N/A"
-    //     }
-    //     //add node
-    //     reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
-    //     reloadAccessionList = reAddNodeList[0]
-    //     newListHashes = reAddNodeList[1]
-    //
-    //   } else {  // add node for every accession that has links and that is
-    //     // present in plasmid_db
-    //     const jsonObj = {
-    //       "plasmidAccession": data.plasmid_id,
-    //       "plasmidLenght": data.json_entry.length,
-    //       "speciesName": speciesName,
-    //       "plasmidName": plasmidName,
-    //       // this splits the string into an array with each entry
-    //       "significantLinks": data.json_entry.significantLinks//.split("],")
-    //     }
-    //     //add node
-    //     reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
-    //     reloadAccessionList = reAddNodeList[0]
-    //     newListHashes = reAddNodeList[1]
-    //   }
-    // })
-    // )
-
     // promise that waits for all the requests and nodes to be added to
     // vivagraph.... and only then precompute the graph.
-    //Promise.all(promises)
       .then( (results) => {
         let plasmidName, speciesName, reAddNodeList
         for (const data of results) {
