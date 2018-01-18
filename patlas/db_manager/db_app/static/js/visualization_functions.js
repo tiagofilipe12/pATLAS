@@ -13,7 +13,7 @@
             plasmidFamilyGetter, virulenceGetter, linkColoring,
              slideToRight, slideToLeft, Mousetrap, initCallback,
               taxaRequest, pushToMasterReadArray, getArrayMapping,
-               getArrayMash, colorLegendFunction, noUiSlider, actualRemoval*/
+               getArrayMash, colorLegendFunction, noUiSlider, actualRemoval, getArrayAssembly*/
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -1260,14 +1260,16 @@ const onLoad = () => {
             if (currentSelectionOrder.hasOwnProperty(i)) {
               const tempArray = assocOrderGenus[currentSelectionOrder[i]]
               for (const sp in tempArray) {
-                promises.push(
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                    .then((results) => {
-                      results.map((request) => {
-                        listGiFilter.push(request.plasmid_id)
+                if ({}.hasOwnProperty.call(tempArray, sp)) {
+                  promises.push(
+                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                      .then((results) => {
+                        results.map((request) => {
+                          listGiFilter.push(request.plasmid_id)
+                        })
                       })
-                    })
-                )
+                  )
+                }
               }
             }
           }
@@ -1438,8 +1440,8 @@ const onLoad = () => {
                     promises.push(
                       taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, reloadAccessionList)
                       // })//, changed_nodes)
-                        .then((results) => {
-                          results.map(request => {
+                        .then( (results) => {
+                          results.map( (request) => {
                             listGiFilter.push(request.plasmid_id)
                           })
                         })
@@ -1557,7 +1559,7 @@ const onLoad = () => {
       masterReadArray = []
       assemblyJson = false
       readFilejson = mashJson // converts mashJson into readFilejson to
-      readString = JSON.parse(Object.values(mashJson)[0])
+      const readString = JSON.parse(Object.values(mashJson)[0])
       $("#fileNameDiv").html(Object.keys(mashJson)[0])
         .show()
       // readIndex will be used by slider buttons
