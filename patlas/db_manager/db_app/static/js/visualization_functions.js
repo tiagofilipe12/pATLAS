@@ -8,7 +8,10 @@
        filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
         defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor,
          readColoring, assembly, handleFileSelect, downloadSeqByColor,
-          downloadSeq, setupPopupDisplay, multiDownload, heatmapMaker, colorNodes */
+          downloadSeq, setupPopupDisplay, multiDownload, heatmapMaker,
+           colorNodes, abortRead, makeTable, arrayToCsv, resGetter,
+            plasmidFamilyGetter, virulenceGetter, linkColoring,
+             slideToRight, slideToLeft, Mousetrap, initCallback*/
 
 /**
 * A bunch of global functions to be used throughout patlas
