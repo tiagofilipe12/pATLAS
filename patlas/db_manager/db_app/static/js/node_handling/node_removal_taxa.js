@@ -35,7 +35,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       sequence: "<span style='color:#468499'>Accession:" +
       " </span><a" +
       " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-      seq_length: "<span style='color:#468499'>Sequence length: </span>" + ((length !== "N/A") ? length : "N/A"),
+      seqLength: "<span style='color:#468499'>Sequence length: </span>" + ((length !== "N/A") ? length : "N/A"),
       logLength: (length !== "N/A") ? Math.log(parseInt(length)) : Math.log(2000)
     })
     newList.push(sequence)  //adds to list every time a new node is added here
@@ -57,7 +57,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
           sequence: "<span style='color:#468499'>Accession:" +
           " </span><a" +
           " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
-          seq_length: "<span" +
+          seqLength: "<span" +
           " style='color:#468499'>Sequence length:" +
           " </span>" + linkLength,
           logLength: Math.log(parseInt(linkLength))

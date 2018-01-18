@@ -1,4 +1,4 @@
-/*globals requestPlasmidTable */
+/*globals setupPopupDisplay */
 
 /**
  * This function controls the elements in the toggle button on the top left
@@ -33,7 +33,7 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
   // if statement to check if node is in database or is a new import
   // from mapping
   // if (node.data !== undefined) {
-  if (typeof node.data.seq_length !== "undefined") {
+  if (typeof node.data.seqLength !== "undefined") {
     $.post("api/getspecies/", {"accession": JSON.stringify([node.id])}, (data, status) => {
       // this request uses nested json object to access json entries
       // available in the database
@@ -80,14 +80,12 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
  * the popup was previously set
  * @param {Boolean} clickedPopupButtonFamily - checks if plasmid finder
  * button was previosuly opened
- * @param {Function} requestPlasmidTable - function that executes the
- * request for plasmid table and then handle the popup display
  * @returns {String} currentQueryNode - returns currentQueryNode to be
  * stored globally for future executions of this functions
  */
 const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
                            clickedPopupButtonCard, clickedPopupButtonRes,
-                           clickedPopupButtonFamily, requestPlasmidTable) => {
+                           clickedPopupButtonFamily) => {
 
   const queriedNode = g.forEachNode((node) => {
     const nodeUI = graphics.getNodeUI(node.id)
@@ -151,20 +149,18 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
  * the popup was previously set
  * @param {Boolean} clickedPopupButtonFamily - checks if plasmid finder
  * button was previosuly opened
- * @param {Function} requestPlasmidTable - Function used to make requests to
- * the plasmid table in psql. This is here to be executed as a callback
  * @returns {Promise<String|*>} currentQueryNode - returns currentQueryNode to be
  * stored globally for future executions of this functions
  */
 const toggleOnSearch = async (g, graphics, renderer, currentQueryNode,
                               clickedPopupButtonCard, clickedPopupButtonRes,
-                              clickedPopupButtonFamily, requestPlasmidTable) => {
+                              clickedPopupButtonFamily) => {
   const query = $("#formValueId").val()
   // await allows to wait for the response from the query
   // result is an accession get from db
   const result = await $.get("api/getplasmidname/", {"plasmid_name": query})
-  currentQueryNode = centerToggleQuery(g, graphics, renderer, result.plasmid_id, currentQueryNode,
+  currentQueryNode = await centerToggleQuery(g, graphics, renderer, result.plasmid_id, currentQueryNode,
     clickedPopupButtonCard, clickedPopupButtonRes,
-    clickedPopupButtonFamily, requestPlasmidTable)
+    clickedPopupButtonFamily)
   return currentQueryNode
 }

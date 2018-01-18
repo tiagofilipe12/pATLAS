@@ -604,12 +604,12 @@ const onLoad = () => {
 
         currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-          clickedPopupButtonFamily, requestPlasmidTable)
+          clickedPopupButtonFamily)
       } else {
         // executed for plasmid search
         toggleOnSearch(g, graphics, renderer,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-          clickedPopupButtonFamily, requestPlasmidTable)
+          clickedPopupButtonFamily)
           // then is here used to parse the results from async/await function
           .then( (result) => {
             currentQueryNode = result
@@ -1386,7 +1386,7 @@ const onLoad = () => {
                     storeLis = storeLis + "<li" +
                       " class='centeredList'><button class='jscolor btn" +
                       " btn-default' style=" + styleColor +
-                      "></button>&nbsp;' + currentSelection[i] + "</li>"
+                      "></button>&nbsp;" + currentSelection[i] + "</li>"
                     // executres node function for family
                     for (const sp in tempArray) {
                       promises.push(

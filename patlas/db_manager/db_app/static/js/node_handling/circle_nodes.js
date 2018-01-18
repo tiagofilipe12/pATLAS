@@ -1,5 +1,3 @@
-/*globals webglUtils */
-
 /// ************************************************///
 /// *** transforms nodes from squares to circles ***///
 /// ************************************************///
@@ -74,7 +72,8 @@ const buildCircleNodeShader = () => {
     nodes = new Float32Array(64),
     nodesCount = 0,
     canvasWidth, canvasHeight, transform,
-    isCanvasDirty
+    isCanvasDirty,
+    webglUtils
   return {
         /**
           * Called by webgl renderer to load the shader into gl context.
