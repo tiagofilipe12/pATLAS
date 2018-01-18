@@ -151,6 +151,8 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
  * the popup was previously set
  * @param {Boolean} clickedPopupButtonFamily - checks if plasmid finder
  * button was previosuly opened
+ * @param {Function} requestPlasmidTable - Function used to make requests to
+ * the plasmid table in psql. This is here to be executed as a callback
  * @returns {Promise<String|*>} currentQueryNode - returns currentQueryNode to be
  * stored globally for future executions of this functions
  */

@@ -70,7 +70,7 @@ const buildCircleNodeShader = () => {
     gl,
     buffer,
     locations,
-    utils,
+    // utils,
     nodes = new Float32Array(64),
     nodesCount = 0,
     canvasWidth, canvasHeight, transform,

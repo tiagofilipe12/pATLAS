@@ -67,15 +67,15 @@ const assembly = (listGi, assemblyFile, g, graphics, masterReadArray, listGiFilt
   // control all related divs
 
   $("#assemblyLegend").empty()
-  $("#assemblyLegend").append(
-    "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
-    " style=\"background-color:#C70039\" ></button>&nbsp;contigs</li>",
-    "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
-    " style=\"background-color:#FF5733\" ></button>&nbsp;significant" +
-    " links</li>",
-    "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
-    " style=\"background-color:#666370\" ></button>&nbsp;others</li>"
-  )
+    .append(
+      "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
+      " style=\"background-color:#C70039\" ></button>&nbsp;contigs</li>",
+      "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
+      " style=\"background-color:#FF5733\" ></button>&nbsp;significant" +
+      " links</li>",
+      "<li class=\"centeredList\"><button class=\"jscolor btn btn-default\"" +
+      " style=\"background-color:#666370\" ></button>&nbsp;others</li>"
+    )
 
   let showRerun = document.getElementById("Re_run")
   let showGoback = document.getElementById("go_back")

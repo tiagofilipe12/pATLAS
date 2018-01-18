@@ -237,7 +237,7 @@ const resetHighlight = (ch) => {
  * @param {Object} objectHighlights - The object that stores the accession
  * numbers associated with a given file. When the bar is removed the
  * property of that bar will be removed from this object in this function
- * @ param {Array} associativeObjArray - This contains the array for the
+ * @param {Array} associativeObjArray - This contains the array for the
  * clicked bar that as the accession numbers that should be associated with
  * that bar element
  */
@@ -928,11 +928,10 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
     if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
   })
   // function to get the data from the accessions on the list
-  const taxaList = (mode === "plasmidfamilies") ? getMetadataPF(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
+  return (mode === "plasmidfamilies") ? getMetadataPF(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
     (mode === "resistances") ? getMetadataRes(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
       (mode === "virulence") ? getMetadataVir(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
         getMetadata(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal)
-  return taxaList
 }
 
 /**
@@ -944,8 +943,10 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
  * data.
  * @param {Object} renderer - vivagraph object to render the graph.
  * @param {boolean} areaSelection
- * @param {Array} listGiFilter
- * @param {String} clickerButtonsliders
+ * @param {Array} listGiFilter - The current list of accession numbers to be
+ * filtered or in this case used to construt the plot
+ * @param {String} clickerButton - the mode that will be executed. This
+ * controls the type of plot to be made.
  * @param g - graph related functions that iterate through nodes
  * and links.
  * @param graphics - vivagraph functions related with node and link
@@ -957,10 +958,9 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
     || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
-    const listPlots = (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+    return (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
     previousTableList = listGiFilter
-    return listPlots
   } else {
     // this code prevents plot from being queried again, since it is already
     // stored in a div it is just a matter of hidding all other and showing
@@ -995,10 +995,9 @@ const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFi
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton.replace(" ", "")].state === false
     || selector[clickerButton.replace(" ", "")].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
-    const listPlots = (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+    return (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton.replace(" ", ""), false, false)
     previousTableList = listGiFilter
-    return listPlots
   } else {
     // this code prevents plot from being queried again, since it is already
     // stored in a div it is just a matter of hidding all other and showing
@@ -1033,10 +1032,9 @@ const resRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiF
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
     || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
-    const listPlots = (areaSelection === false) ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+    return (areaSelection === false) ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
     previousTableList = listGiFilter
-    return listPlots
   } else {
     // this code prevents plot from being queried again, since it is already
     // stored in a div it is just a matter of hidding all other and showing
@@ -1067,9 +1065,8 @@ const virRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiF
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
   || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
-    const listPlots = (areaSelection === false) ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+    return (areaSelection === false) ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
-    return listPlots
   } else {
     // this code prevents plot from being queried again, since it is already
     // stored in a div it is just a matter of hidding all other and showing

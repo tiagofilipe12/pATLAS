@@ -16,8 +16,10 @@ const arraysEqual = (arr1, arr2) => {
     return false
   }
   for(const i in arr1.length) {
-    if(arr1[i] !== arr2[i]) {
-      return false
+    if ({}.hasOwnProperty.call(arr1.length, i)) {
+      if (arr1[i] !== arr2[i]) {
+        return false
+      }
     }
   }
   return true
@@ -83,6 +85,9 @@ const promiseGather = async (listGiFilter) => {
  * @param {Array} listGiFilter - in the case areaSelection is false then
  * this variable will be populated with an array of accession numbers for
  * which colors are assigned in vivagraph network
+ * @param {Array} previousTableList - a variable that stores the previous
+ * array used to construct table. If this is equal to listGiFilter then it
+ * will display the previous table rather than the new one.
  * @param {Object} g - vivagraph graph object that allows to add nodes and links
  * @param {Object} graphics - vivagraph object that allows to change colors
  * of nodes and links
@@ -375,5 +380,5 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       }
     }]
   })
-  $("#chartContainer2").show()
+    .show()
 }

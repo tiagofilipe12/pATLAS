@@ -10,15 +10,14 @@
  * where x was present
  * @param {number} newMin - The new min value to change x to
  * @param {number} newMax - The new max value to change x to
- * @returns {number} y - the changed x value within the new range
+ * @returns {number} - the changed x value within the new range
  */
 const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
   // initial range is between 0 and 1
   // newMax should be 1
   // newMin should be the one that may change on user input and default
   // behavior should be 0.6--> this is done by cutoffParser()
-  const y = (x - oldMin) * (newMax - newMin) / (oldMax - oldMin) + newMin
-  return y
+  return (x - oldMin) * (newMax - newMin) / (oldMax - oldMin) + newMin
 }
 
 /**
@@ -27,7 +26,8 @@ const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
  * @returns {number}
  */
 const cutoffParser = () => {
-  return ($("#cutoffValue").val() !== "") ? parseFloat($("#cutoffValue").val()) : 0.6
+  const cutoff = $("#cutoffValue").val()
+  return (cutoff !== "") ? parseFloat(cutoff.val()) : 0.6
 }
 
 /**
@@ -36,7 +36,8 @@ const cutoffParser = () => {
  * @returns {number} - The cutoff percentage cutoff value for mash import
  */
 const cutoffParserMash = () => {
-  return ($("#cutoffValueMash").val() !== "") ? parseFloat($("#cutoffValueMash").val()) : 0.9
+  const cutoffMash = $("#cutoffValueMash").val()
+  return (cutoffMash !== "") ? parseFloat(cutoffMash) : 0.9
 }
 
 /**
@@ -45,7 +46,8 @@ const cutoffParserMash = () => {
  * @returns {number} - The copy number cutoff value
  */
 const copyNumberCutoff = () => {
-  return ($("#copyNumberValue").val() !== "") ? parseFloat($("#copyNumberValue").val()) : 1
+  const cutoffCopy =$("#copyNumberValue").val()
+  return (cutoffCopy !== "") ? parseFloat(cutoffCopy) : 1
 }
 
 // function to iterate through nodes
@@ -120,8 +122,8 @@ const palette = (scale, x, readMode) => { // x is the number of colors
         styleWidth + "%'></span>")
     }
     $("#scaleString").append("<div class='min'>0.1</div>")
-    $("#scaleString").append("<div class='med'>0.05</div>")
-    $("#scaleString").append("<div class='max'>0</div>")
+      .append("<div class='med'>0.05</div>")
+      .append("<div class='max'>0</div>")
     document.getElementById("distance_label").style.display = "block" // show label
   } else { // here enters for coloring the reads
     $("#readLegend").empty()
@@ -240,9 +242,9 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
   }
   $("#readString").append("<div class='min'>" +
     minValue.toString() + "</div>")
-  $("#readString").append("<div class='med'>" +
-    meanValue.toFixed(2).toString() + "</div>")
-  $("#readString").append("<div class='max'>1</div>")
+    .append("<div class='med'>" +
+      meanValue.toFixed(2).toString() + "</div>")
+    .append("<div class='max'>1</div>")
   document.getElementById("read_label").style.display = "block" // show label
   // control all related divs
   // TODO this code is duplicated, should be fixed

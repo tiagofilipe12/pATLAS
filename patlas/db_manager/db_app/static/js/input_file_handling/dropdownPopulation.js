@@ -80,8 +80,8 @@ const iterateSelectedArrays = async (array, g, graphics, renderer, tempPageReRun
       const gene = array[i]
       // variable to store all lis for legend
       storeLis = storeLis + "<li" +
-        " class='centeredList'><button class='jscolor btn'" +
-        " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+        " class='centeredList'><button class='jscolor btn btn-default'" +
+        " style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
         "</li>"
 
       const resHandle = await resRequest(g, graphics, renderer, gene, currentColor)
@@ -129,8 +129,7 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   } else if (selectedCard.length !== 0 && selectedResfinder.length !== 0) {
     // if multiple menus are selected
     const currentColor = 0xf71735   // sets color of all changes_nodes to be red
-    storeLis = "<li class='centeredList'><button class='jscolor btn'" +
-      " btn-default'" +
+    storeLis = "<li class='centeredList'><button class='jscolor btn btn-default'" +
       " style='background-color:#f71735'></button>&nbsp;multiple selection</li>"
     legendInst = true
     const mergedSelectedArray = selectedCard.concat(selectedResfinder)
@@ -168,12 +167,12 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   if (legendInst === true) {
     $("#res_label").show()
     $("#colorLegendBoxRes").empty()
-    $("#colorLegendBoxRes").append(
-      storeLis +
-      "<li class='centeredList'><button class='jscolor btn btn-default'" +
-      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
-    )
-    $("#colorLegendBoxRes").show()
+      .append(
+        storeLis +
+        "<li class='centeredList'><button class='jscolor btn btn-default'" +
+        " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+      )
+      .show()
   }
   return legendInst
   // })
@@ -203,13 +202,13 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
         // variable to store all lis for legend
         if (storeLis === "undefined") {
           storeLis = "<li" +
-            " class='centeredList'><button class='jscolor btn'" +
-            " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            " class='centeredList'><button class='jscolor btn btn-default'" +
+            "  style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
             "</li>"
         } else {
           storeLis = storeLis + "<li" +
-            " class='centeredList'><button class='jscolor btn'" +
-            " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            " class='centeredList'><button class='jscolor btn btn-default'" +
+            " style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
             "</li>"
         }
         // after setting the legend make the actual request
@@ -242,12 +241,12 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   if (legendInst === true) {
     $("#pf_label").show()
     $("#colorLegendBoxPf").empty()
-    $("#colorLegendBoxPf").append(
-      storeLis +
-      "<li class='centeredList'><button class='jscolor btn btn-default'" +
-      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
-    )
-    $("#colorLegendBoxPf").show()
+      .append(
+        storeLis +
+        "<li class='centeredList'><button class='jscolor btn btn-default'" +
+        " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+      )
+      .show()
   }
   return legendInst
   // })
@@ -277,13 +276,13 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
         // variable to store all lis for legend
         if (storeLis === "undefined") {
           storeLis = "<li" +
-            " class='centeredList'><button class='jscolor btn'" +
-            " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            " class='centeredList'><button class='jscolor btn btn-default'" +
+            " style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
             "</li>"
         } else {
           storeLis = storeLis + "<li" +
-            " class='centeredList'><button class='jscolor btn'" +
-            " btn-default' style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            " class='centeredList'><button class='jscolor btn btn-default'" +
+            " style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
             "</li>"
         }
         // after setting the legend make the actual request
@@ -316,12 +315,12 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   if (legendInst === true) {
     $("#vir_label").show()
     $("#colorLegendBoxVir").empty()
-    $("#colorLegendBoxVir").append(
-      storeLis +
-      "<li class='centeredList'><button class='jscolor btn btn-default'" +
-      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
-    )
-    $("#colorLegendBoxVir").show()
+      .append(
+        storeLis +
+        "<li class='centeredList'><button class='jscolor btn btn-default'" +
+        " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+      )
+      .show()
   }
   return legendInst
   // })

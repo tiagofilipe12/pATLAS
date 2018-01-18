@@ -6,7 +6,8 @@
      resetDisplayTaxaBox, showDiv, pfSubmitFunction, layoutGet,
       centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
        filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
-        defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor */
+        defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor,
+         readColoring, assembly*/
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -569,12 +570,12 @@ const onLoad = () => {
       if (paused === true) {
         renderer.resume()
         $("#playpauseButton").append("<span class='glyphicon glyphicon-pause'></span>")
-        $("#playpauseButton").removeClass("btn-default").addClass("btn-success")
+          .removeClass("btn-default").addClass("btn-success")
         paused = false
       } else {
         renderer.pause()
         $("#playpauseButton").append("<span class='glyphicon glyphicon-play'></span>")
-        $("#playpauseButton").removeClass("btn-success").addClass("btn-default")
+          .removeClass("btn-success").addClass("btn-default")
         paused = true
       }
     })
@@ -591,8 +592,9 @@ const onLoad = () => {
       event.preventDefault()    // prevents page from reloading
       if (toggleStatus === false) {
         // const query !==)
-        const query = ($("#formValueId").val() === "") ? clickedHighchart :
-          $("#formValueId").val().replace(".", "_")
+        const formvalueId = $("#formValueId").val()
+        const query = (formvalueId === "") ? clickedHighchart :
+          formvalueId.replace(".", "_")
 
         currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
           currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
@@ -633,15 +635,17 @@ const onLoad = () => {
         $.each(json, (accession, entry) => {
           const geneEntries = entry.gene
           for (let i in geneEntries) {
-            if (listPF.indexOf(geneEntries[i]) < 0) {
-              listPF.push(geneEntries[i])
+            if (geneEntries.hasOwnProperty(i)) {
+              if (listPF.indexOf(geneEntries[i]) < 0) {
+                listPF.push(geneEntries[i])
+              }
             }
           }
         })
         // populate the menus
         singleDropdownPopulate("#plasmidFamiliesList", listPF, "PlasmidfinderClass")
 
-        $(".PlasmidfinderClass").on("click", function (e) {
+        $(".PlasmidfinderClass").on("click", function() {
           // fill panel group displaying current selected taxa filters //
           const stringClass = this.className.slice(0, -5)
           const tempVar = this.firstChild.innerHTML
@@ -756,11 +760,13 @@ const onLoad = () => {
           const databaseEntries = entry.database
           const geneEntries = entry.gene
           for (let i in databaseEntries) {
-            if (databaseEntries[i] === "card" && listCard.indexOf(geneEntries[i]) < 0) {
-              listCard.push(geneEntries[i])
-            } else {
-              if (listRes.indexOf(geneEntries[i]) < 0) {
-                listRes.push(geneEntries[i])
+            if (databaseEntries.hasOwnProperty(i)) {
+              if (databaseEntries[i] === "card" && listCard.indexOf(geneEntries[i]) < 0) {
+                listCard.push(geneEntries[i])
+              } else {
+                if (listRes.indexOf(geneEntries[i]) < 0) {
+                  listRes.push(geneEntries[i])
+                }
               }
             }
           }
@@ -771,7 +777,7 @@ const onLoad = () => {
 
         const classArray = [".CardClass", ".ResfinderClass"]
         for (let i = 0; i < classArray.length; i++) {
-          $(classArray[i]).on("click", function (e) {
+          $(classArray[i]).on("click", function() {
             // fill panel group displaying current selected taxa filters //
             const stringClass = this.className.slice(0, -5)
             const tempVar = this.firstChild.innerHTML
@@ -883,8 +889,10 @@ const onLoad = () => {
         $.each(json, (accession, entry) => {
           const geneEntries = entry.gene
           for (let i in geneEntries) {
-            if (listVir.indexOf(geneEntries[i]) < 0) {
-              listVir.push(geneEntries[i])
+            if (geneEntries.hasOwnProperty(i)) {
+              if (listVir.indexOf(geneEntries[i]) < 0) {
+                listVir.push(geneEntries[i])
+              }
             }
           }
         })
@@ -892,7 +900,7 @@ const onLoad = () => {
         // populate the menus
         singleDropdownPopulate("#virList", listVir, "VirulenceClass")
 
-        $(".VirulenceClass").on("click", function (e) {
+        $(".VirulenceClass").on("click", function() {
           // fill panel group displaying current selected taxa filters //
           const stringClass = this.className.slice(0, -5)
           const tempVar = this.firstChild.innerHTML
@@ -1034,7 +1042,7 @@ const onLoad = () => {
         // clickable <li> and control of displayer of current filters
         const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
         for (let i = 0; i < classArray.length; i++) {
-          $(classArray[i]).on("click", function (e) {
+          $(classArray[i]).on("click", function() {
             // fill panel group displaying current selected taxa filters //
             const stringClass = this.className.slice(0, -5)
             const tempVar = this.firstChild.innerHTML
@@ -1237,68 +1245,76 @@ const onLoad = () => {
           const promises = []
           const currentColor = 0xf71735   // sets color of all changes_nodes to
           // be red
-          storeLis = "<li class='centeredList'><button class='jscolor btn'" +
-            " btn-default' style='background-color:#f71735'></button>&nbsp;multi-level selected taxa</li>"
+          storeLis = "<li class='centeredList'><button class='jscolor btn btn-default'" +
+            " style='background-color:#f71735'></button>&nbsp;multi-level" +
+            " selected taxa</li>"
           // for (const i in alertArrays.order) {
           let currentSelectionOrder = alertArrays.order
           for (const i in currentSelectionOrder) {
-            const tempArray = assocOrderGenus[currentSelectionOrder[i]]
-            for (const sp in tempArray) {
-              promises.push(
-                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                  .then( (results) => {
-                    results.map( (request) => {
-                      listGiFilter.push(request.plasmid_id)
+            if (currentSelectionOrder.hasOwnProperty(i)) {
+              const tempArray = assocOrderGenus[currentSelectionOrder[i]]
+              for (const sp in tempArray) {
+                promises.push(
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                    .then((results) => {
+                      results.map((request) => {
+                        listGiFilter.push(request.plasmid_id)
+                      })
                     })
-                  })
-              )
+                )
+              }
             }
           }
           // }
           // for (i in alertArrays.family) {
           let currentSelectionFamily = alertArrays.family
           for (const i in currentSelectionFamily) {
-            const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
-            for (const sp in tempArray) {
-              promises.push(
-                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                  .then( (results) => {
-                    results.map( (request) => {
-                      listGiFilter.push(request.plasmid_id)
+            if (currentSelectionFamily.hasOwnProperty(i)) {
+              const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
+              for (const sp in tempArray) {
+                promises.push(
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                    .then((results) => {
+                      results.map((request) => {
+                        listGiFilter.push(request.plasmid_id)
+                      })
                     })
-                  })
-              )
+                )
+              }
             }
           }
           // }
           // for (i in alertArrays.genus) {
           let currentSelectionGenus = alertArrays.genus
           for (const i in currentSelectionGenus) {
-            const tempArray = assocGenus[currentSelectionGenus[i]]
-            for (const sp in tempArray) {
-              promises.push(
-                taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                  .then( (results) => {
-                    results.map( (request) => {
-                      listGiFilter.push(request.plasmid_id)
+            if (currentSelectionGenus.hasOwnProperty(i)) {
+              const tempArray = assocGenus[currentSelectionGenus[i]]
+              for (const sp in tempArray) {
+                promises.push(
+                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                    .then((results) => {
+                      results.map((request) => {
+                        listGiFilter.push(request.plasmid_id)
+                      })
                     })
-                  })
-              )
+                )
+              }
             }
           }
           // }
           // for (i in alertArrays.species) {
           let currentSelectionSpecies = alertArrays.species
           for (const i in currentSelectionSpecies) {
-            promises.push(
-              taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)//, reloadAccessionList)//, changed_nodes)
-                .then( (results) => {
-                  results.map( (request) => {
-                    listGiFilter.push(request.plasmid_id)
+            if (currentSelectionSpecies.hasOwnProperty(i)) {
+              promises.push(
+                taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)//, reloadAccessionList)//, changed_nodes)
+                  .then((results) => {
+                    results.map((request) => {
+                      listGiFilter.push(request.plasmid_id)
+                    })
                   })
-                })
-            )
-            // }
+              )
+            }
           }
           Promise.all(promises)
             .then( () => {
@@ -1306,8 +1322,9 @@ const onLoad = () => {
               showLegend.style.display = "block"
               document.getElementById("taxa_label").style.display = "block" // show label
               $("#colorLegendBox").empty()
-              $("#colorLegendBox").append(storeLis +
-                '<li class="centeredList"><button class="jscolor btn btn-default" style="background-color:#666370" ></button>&nbsp;unselected</li>')
+                .append(storeLis +
+                  "<li class='centeredList'><button class='jscolor btn btn-default'" +
+                  "style='background-color:#666370' ></button>&nbsp;unselected</li>")
               showRerun.style.display = "block"
               showGoback.style.display = "block"
               showDownload.style.display = "block"
@@ -1333,91 +1350,94 @@ const onLoad = () => {
               const promises = []
               for (const i in currentSelection) {
                 // orders //
-                if (alertArrays.order.length !== 0) {
-                  const currentColor = colorList[i].replace("#", "0x")
-                  const tempArray = assocOrderGenus[currentSelection[i]]
-                  const styleColor = 'background-color:' + colorList[i]
-                  storeLis = storeLis + '<li' +
-                    ' class="centeredList"><button class="jscolor btn' +
-                    ' btn-default" style=' + styleColor + '></button>&nbsp;' + currentSelection[i] + '</li>'
-                  // executres node function for family and orders
-                  for (const sp in tempArray) {
+                if (currentSelection.hasOwnProperty(i)) {
+                  if (alertArrays.order.length !== 0) {
+                    const currentColor = colorList[i].replace("#", "0x")
+                    const tempArray = assocOrderGenus[currentSelection[i]]
+                    const styleColor = "background-color:" + colorList[i]
+                    storeLis = storeLis + "<li" +
+                      " class='centeredList'><button class='jscolor btn" +
+                      " btn-default' style=" + styleColor + "></button>&nbsp;" +
+                      currentSelection[i] + "</li>"
+                    // executres node function for family and orders
+                    for (const sp in tempArray) {
+                      promises.push(
+                        taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                          .then((results) => {
+                            results.map((request) => {
+                              listGiFilter.push(request.plasmid_id)
+                            })
+                          })
+                      )
+                    }
+                  }
+
+                  // families //
+                  else if (alertArrays.family.length !== 0) {
+                    const currentColor = colorList[i].replace("#", "0x")
+                    const tempArray = assocFamilyGenus[currentSelection[i]]
+                    const styleColor = "background-color:" + colorList[i]
+                    storeLis = storeLis + '<li' +
+                      ' class="centeredList"><button class="jscolor btn' +
+                      ' btn-default" style=' + styleColor + '></button>&nbsp;' + currentSelection[i] + '</li>'
+                    // executres node function for family
+                    for (const sp in tempArray) {
+                      promises.push(
+                        taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                          .then((results) => {
+                            results.map((request) => {
+                              listGiFilter.push(request.plasmid_id)
+                            })
+                          })
+                      )
+                    }
+                  }
+
+                  // genus //
+                  else if (alertArrays.genus.length !== 0) {
+                    const currentColor = colorList[i].replace("#", "0x")
+                    const tempArray = assocGenus[currentSelection[i]]
+                    const styleColor = "background-color:" + colorList[i]
+                    storeLis = storeLis + "<li class='centeredList'><button" +
+                      " class='jscolor btn btn-default' style=" +
+                      styleColor + "></button>&nbsp;" + currentSelection[i] +
+                      "</li>"
+
+                    // requests taxa associated accession from db and colors
+                    // respective nodes
+                    for (const sp in tempArray) {
+                      promises.push(
+                        taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                          .then((results) => {
+                            results.map((request) => {
+                              listGiFilter.push(request.plasmid_id)
+                            })
+                          })
+                      )
+                    }
+                  }
+
+                  // species //
+                  else if (alertArrays.species.length !== 0) {
+                    const currentColor = colorList[i].replace("#", "0x")
+                    const styleColor = "background-color:" + colorList[i]
+                    storeLis = storeLis + "<li class='centeredList'><button" +
+                      " class='jscolor btn btn-default' style=" +
+                      styleColor + "></button>&nbsp;" + currentSelection[i] +
+                      "</li>"
+
+                    // requests taxa associated accession from db and colors
+                    // respective nodes
                     promises.push(
-                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                      taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, reloadAccessionList)
+                      // })//, changed_nodes)
                         .then((results) => {
-                          results.map((request) => {
+                          results.map(request => {
                             listGiFilter.push(request.plasmid_id)
                           })
                         })
                     )
                   }
-                }
-
-                // families //
-                else if (alertArrays.family.length !== 0) {
-                  const currentColor = colorList[i].replace("#", "0x")
-                  const tempArray = assocFamilyGenus[currentSelection[i]]
-                  const styleColor = "background-color:" + colorList[i]
-                  storeLis = storeLis + '<li' +
-                    ' class="centeredList"><button class="jscolor btn' +
-                    ' btn-default" style=' + styleColor + '></button>&nbsp;' + currentSelection[i] + '</li>'
-                  // executres node function for family
-                  for (const sp in tempArray) {
-                    promises.push(
-                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                        .then((results) => {
-                          results.map((request) => {
-                            listGiFilter.push(request.plasmid_id)
-                          })
-                        })
-                    )
-                  }
-                }
-
-                // genus //
-                else if (alertArrays.genus.length !== 0) {
-                  const currentColor = colorList[i].replace("#", "0x")
-                  const tempArray = assocGenus[currentSelection[i]]
-                  const styleColor = "background-color:" + colorList[i]
-                  storeLis = storeLis + "<li class='centeredList'><button" +
-                    " class='jscolor btn btn-default' style=" +
-                    styleColor + "></button>&nbsp;" + currentSelection[i] +
-                    "</li>"
-
-                  // requests taxa associated accession from db and colors
-                  // respective nodes
-                  for (const sp in tempArray) {
-                    promises.push(
-                      taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                        .then((results) => {
-                          results.map((request) => {
-                            listGiFilter.push(request.plasmid_id)
-                          })
-                        })
-                    )
-                  }
-                }
-
-                // species //
-                else if (alertArrays.species.length !== 0) {
-                  const currentColor = colorList[i].replace("#", "0x")
-                  const styleColor = "background-color:" + colorList[i]
-                  storeLis = storeLis + "<li class='centeredList'><button" +
-                    " class'jscolor btn btn-default' style=" +
-                    styleColor + "></button>&nbsp;" + currentSelection[i] +
-                    "</li>"
-
-                  // requests taxa associated accession from db and colors
-                  // respective nodes
-                  promises.push(
-                    taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, reloadAccessionList)
-                    // })//, changed_nodes)
-                      .then((results) => {
-                        results.map(request => {
-                          listGiFilter.push(request.plasmid_id)
-                        })
-                      })
-                  )
                 }
               }
               Promise.all(promises)
@@ -1426,8 +1446,9 @@ const onLoad = () => {
                   showLegend.style.display = "block"
                   document.getElementById("taxa_label").style.display = "block" // show label
                   $("#colorLegendBox").empty()
-                  $("#colorLegendBox").append(storeLis +
-                    "<li class='centeredList'><button class='jscolor btn btn-default' style='background-color:#666370' ></button>&nbsp;unselected</li>")
+                    .append(storeLis +
+                      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+                      " style='background-color:#666370' ></button>&nbsp;unselected</li>")
                   showRerun.style.display = "block"
                   showGoback.style.display = "block"
                   showDownload.style.display = "block"
@@ -1456,7 +1477,7 @@ const onLoad = () => {
       // feeds the first file
       const readString = JSON.parse(Object.values(readFilejson)[0])
       $("#fileNameDiv").html(Object.keys(readFilejson)[0])
-      $("#fileNameDiv").show()
+        .show()
       // readIndex will be used by slider buttons
       readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
@@ -1531,7 +1552,7 @@ const onLoad = () => {
       readFilejson = mashJson // converts mash_json into readFilejson to
       readString = JSON.parse(Object.values(mashJson)[0])
       $("#fileNameDiv").html(Object.keys(mashJson)[0])
-      $("#fileNameDiv").show()
+        .show()
       // readIndex will be used by slider buttons
       readIndex += 1
       // it and use the same function (readColoring)
@@ -1743,7 +1764,7 @@ const onLoad = () => {
     // event handler for slider
     // trigger only if clicked to avoid looping through the nodes again
     $("#length_filter").unbind("click").bind("click", () => {
-      slider.noUiSlider.on("set", (event) => {
+      slider.noUiSlider.on("set", function() {
         let slider_max = Math.exp(slider.noUiSlider.get()[1]),
           slider_min = Math.exp(slider.noUiSlider.get()[0])
         g.forEachNode( (node) => {
@@ -1875,7 +1896,7 @@ const onLoad = () => {
             // and continues
             const seqLength = sequenceInfo.split("_").slice(-1).join("")
             const logLength = Math.log(parseInt(seqLength)) //ln seq length
-            listLengths.push(seqLength); // appends all lengths to this list
+            listLengths.push(seqLength) // appends all lengths to this list
             listGi.push(sequence)
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
             if (list.indexOf(sequence) < 0) {
@@ -1919,31 +1940,33 @@ const onLoad = () => {
           const addAllNodes = (json) => {
             return new Promise((resolve, reject) => {
               for (const i in json) {
-                const array = json[i]
-                counter++
-                const sequence = array.id
-                const seqLength = array.length
-                const logLength = Math.log(parseInt(seqLength))
-                listLengths.push(seqLength)
-                listGi.push(sequence)
+                if (json.hasOwnProperty(i)) {
+                  const array = json[i]
+                  counter++
+                  const sequence = array.id
+                  const seqLength = array.length
+                  const logLength = Math.log(parseInt(seqLength))
+                  listLengths.push(seqLength)
+                  listGi.push(sequence)
 
-                if (list.indexOf(sequence) < 0) {
-                  g.addNode(sequence, {
-                    sequence: "<span style='color:#468499'>Accession:" +
-                    " </span><a" +
-                    " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                    seq_length: "<span" +
-                    " style='color:#468499'>Sequence length:" +
-                    " </span>" + seqLength,
-                    logLength
-                  })
-                  list.push(sequence)
-                  layout.setNodePosition(sequence, array.position.x, array.position.y)
-                } else {
-                  reject(`node wasn't added: ${sequence}`)
-                }
-                if (i + 1 === json.length) {
-                  resolve("sucessfully added all nodes")
+                  if (list.indexOf(sequence) < 0) {
+                    g.addNode(sequence, {
+                      sequence: "<span style='color:#468499'>Accession:" +
+                      " </span><a" +
+                      " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+                      seq_length: "<span" +
+                      " style='color:#468499'>Sequence length:" +
+                      " </span>" + seqLength,
+                      logLength
+                    })
+                    list.push(sequence)
+                    layout.setNodePosition(sequence, array.position.x, array.position.y)
+                  } else {
+                    reject(`node wasn't added: ${sequence}`)
+                  }
+                  if (i + 1 === json.length) {
+                    resolve("sucessfully added all nodes")
+                  }
                 }
               }
             })
@@ -1953,22 +1976,24 @@ const onLoad = () => {
             totalNumberOfLinks = json.length
             return new Promise( (resolve, reject) => {
               for (const i in json) {
-                const array = json[i]
-                const sequence = array.parentId   // stores sequences
-                const reference = array.childId  // stores references
-                const distNSizes = array.distNSizes   // stores distances
+                if (json.hasOwnProperty(i)) {
+                  const array = json[i]
+                  const sequence = array.parentId   // stores sequences
+                  const reference = array.childId  // stores references
+                  const distNSizes = array.distNSizes   // stores distances
                   // and sizeRatios
-                if (reference !== "") {
-                  // here it adds only unique links because filtered.json file
-                  // just stores unique links
-                  g.addLink(sequence, reference, distNSizes)
-                } else {
-                  // if there is no reference associated with sequence then
-                  // there are no links
-                  reject(new Error(`link wasn't added: ${array.childId} -> ${sequence}`))
-                }
-                if (i + 1 === json.lenght) {
-                  resolve("sucessefully added all links")
+                  if (reference !== "") {
+                    // here it adds only unique links because filtered.json file
+                    // just stores unique links
+                    g.addLink(sequence, reference, distNSizes)
+                  } else {
+                    // if there is no reference associated with sequence then
+                    // there are no links
+                    reject(new Error(`link wasn't added: ${array.childId} -> ${sequence}`))
+                  }
+                  if (i + 1 === json.lenght) {
+                    resolve("sucessefully added all links")
+                  }
                 }
               }
             })
@@ -1990,7 +2015,7 @@ const onLoad = () => {
       if (readFilejson !== false) {
         const readReload = JSON.parse(Object.values(readFilejson)[readIndex])
         $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
-        $("#fileNameDiv").show()
+          .show()
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, listGi, readReload,
           assemblyJson)
@@ -2036,7 +2061,7 @@ const onLoad = () => {
   //      Menu Button controls       //
   //* ****************************** *//
 
-  $("#menu-toggle").on("click", function (e) {
+  $("#menu-toggle").on("click", function() {
     if (firstClickMenu === true) {
       $("#menu-toggle").css( {"color": "#fff"} )
       firstClickMenu = false
@@ -2047,7 +2072,7 @@ const onLoad = () => {
   })
 
   // download button //
-  $("#download_ds").unbind("click").bind("click", (e) => {
+  $("#download_ds").unbind("click").bind("click", () => {
     // for now this is just taking what have been changed by taxa coloring
     if (areaSelection === true) {
       // downloads if area selection is triggered
@@ -2080,14 +2105,14 @@ const onLoad = () => {
     })
     // function to handle when all are selected
     .on("check-all.bs.table", (e, rows) => {
-      for (row in rows) {
-        if (bootstrapTableList.indexOf(rows[row]) < 0) {
-          bootstrapTableList.push(rows[row].id)
+      for (const row of rows) {
+        if (bootstrapTableList.indexOf(row) < 0) {
+          bootstrapTableList.push(row.id)
         }
       }
     })
     // function to remove when all are selected
-    .on("uncheck-all.bs.table", (e, rows) => {
+    .on("uncheck-all.bs.table", () => {
       bootstrapTableList = []
     })
 
@@ -2099,7 +2124,7 @@ const onLoad = () => {
     })
 
   // function to download dataset selected in table
-  $("#downloadTable").unbind("click").bind("click", (e) => {
+  $("#downloadTable").unbind("click").bind("click", () => {
     // transform internal accession numbers to ncbi acceptable accesions
     const acc = bootstrapTableList.map((uniqueAcc) => {
       return uniqueAcc.split("_").splice(0,2).join("_")
@@ -2108,7 +2133,7 @@ const onLoad = () => {
   })
 
   // function to display heatmap dataset selected in table
-  $("#heatmapButtonTab").unbind("click").bind("click", (e) => {
+  $("#heatmapButtonTab").unbind("click").bind("click", () => {
     $("#heatmapModal").modal()
     // transform internal accession numbers to ncbi acceptable accesions
     if (readFilejson !== false) {
@@ -2127,7 +2152,7 @@ const onLoad = () => {
     }
   })
   // button to color selected nodes by check boxes
-  $("#tableSubmit").unbind("click").bind("click", (e) => {
+  $("#tableSubmit").unbind("click").bind("click", () => {
     $("#reset-sliders").click()
     $("#colorLegend").hide()
     // if bootstraTableList contains only one accession then showPopup
@@ -2157,7 +2182,7 @@ const onLoad = () => {
   })
 
   // function to create table
-  $("#tableShow").unbind("click").bind("click", (e) => {
+  $("#tableShow").unbind("click").bind("click", () => {
     $("#tableModal").modal()
     showDiv()
       .then( () => {
@@ -2169,7 +2194,7 @@ const onLoad = () => {
   })
 
   // function to close table
-  $("#cancelTable").unbind("click").bind("click", (e) => {
+  $("#cancelTable").unbind("click").bind("click", () => {
     $("#tableModal").modal("toggle")
   })
 
@@ -2180,8 +2205,7 @@ const onLoad = () => {
 
     const quickFixString = (divNameList) => {
       let returnArray = []
-      for (i in divNameList) {
-        const divName = divNameList[i]
+      for (const divName of divNameList) {
         returnArray.push($(divName).text().replace(":", ",").trim())
       }
       return returnArray
@@ -2345,19 +2369,19 @@ const onLoad = () => {
   /**
   * function to allow shift key to select nodes again, on modal close
   */
-  $(".modal").on("hidden.bs.modal", () => {
-    multiSelectOverlay = false
-    // this force question buttons to close if tableModal and modalPlot are
-    // closed
-    $("#questionTable").popover("hide")
-    $("#questionHeatmap").popover("hide")
-    $("#questionPlots").popover("hide")
-    $("#questionMap").popover("hide")
-    $("#questionRatio").popover("hide")
-    $("#infoMap").popover("hide")
-    $("#infoMash").popover("hide")
-    $("#infoAssembly").popover("hide")
-  })
+    .on("hidden.bs.modal", () => {
+      multiSelectOverlay = false
+      // this force question buttons to close if tableModal and modalPlot are
+      // closed
+      $("#questionTable").popover("hide")
+      $("#questionHeatmap").popover("hide")
+      $("#questionPlots").popover("hide")
+      $("#questionMap").popover("hide")
+      $("#questionRatio").popover("hide")
+      $("#infoMap").popover("hide")
+      $("#infoMash").popover("hide")
+      $("#infoAssembly").popover("hide")
+    })
 
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before

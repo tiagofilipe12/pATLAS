@@ -190,7 +190,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
  * and links
  * @param {Object} graphics - vivagraph functions related with node and link
  * data
- * @param {requestCallback} onload - a function that is used as a callback to
+ * @param {Function} onload - a function that is used as a callback to
  * trigger the reload of the page with a new dataset
  * @param {boolean} forgetListGiFilter - this variable is set to false if
  * re_run is triggered and true if go_back is triggered
@@ -200,225 +200,224 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
   // firstInstace = false
   // change play button in order to be properly set to pause
   $("#couve-flor").empty()
-  // TODO check if this can be cleaner... removing vivagraph canvas?
-  $("#couve-flor").append(
-    "<!--hidden div for color legend-->\n" +
-    "<div class='panel-group colorpicker-component' id='colorLegend' style='display: none'>\n" +
-    "<div class='panel panel-default' >\n" +
-    "<div class='panel-heading'>Color legend</div>\n" +
-    "<div class='panel-body'>\n" +
-    "<!--Populated by visualization_functions.js-->\n" +
-    "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
-    "<ul class='legend' id='colorLegendBox'></ul>\n" +
-    "<label id='res_label' style='display: none'>Resistances</label>" +
-    "<ul class='legend' id='colorLegendBoxRes'></ul>" +
-    "<label id='pf_label' style='display: none'>Plasmid Families</label>" +
-    "<ul class='legend' id='colorLegendBoxPf'></ul>" +
-    "<label id='vir_label' style='display: none'>Virulence factors</label>" +
-    "<ul class='legend' id='colorLegendBoxVir'></ul>" +
-    "<!--Populated by visualization_functions.js-->\n" +
-    "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
-    "<div class='gradient' id='scaleLegend'></div>\n" +
-    "<div id='scaleString'></div>" +
-    "<!--Populated by visualization_functions.js-->\n" +
-    "<label id='read_label' style='display: none'>Read filters</label>\n" +
-    "<div class='gradient' id='readLegend'></div>\n" +
-    "<div id='readString'></div>" +
-    "<label id='assemblyLabel' style='display: none'>Assembly</label>" +
-    "<div class='legend' id='assemblyLegend'></div>" +
-    "</div>\n" +
-    "</div>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div id='buttonStuff'>\n" +
-    "<div class='btn-group'>\n" +
-    "\n" +
-    "<!-- Buttons that overlay the graph and interact with it -->\n" +
-    "<button id='playpauseButton' data-toggle='tooltip'" +
-    "title='Play/Pause' type='button' class='btn btn-default'>" +
-    "<span class='glyphicon glyphicon-play'></span></button>" +
-    "<button class='btn btn-default' data-toggle='tooltip'" +
-    "title='Trigger area selection (uses shift key)'" +
-    "type='button' id='refreshButton'>" +
-    "<span class='glyphicon glyphicon-screenshot'></span></button>" +
-    "</div>\n" +
-    "<!--zoom buttons-->\n" +
-    "<div class='btn-group'>\n" +
-    "<button id='zoom_in' class='zoom in btn btn-default'\n" +
-    "        data-toggle='tooltip' title='Zoom in' \n" +
-    "        type='button'>\n" +
-    "<span class='glyphicon glyphicon-zoom-in'></span>\n" +
-    "</button>\n" +
-    "<button id='zoom_out' class='zoom out btn btn-default'\n" +
-    "        data-toggle='tooltip' title='Zoom out' \n" +
-    "        type='button'>\n" +
-    "<span class='glyphicon glyphicon-zoom-out'></span>\n" +
-    "</button>\n" +
-    "</div> \n" +
-    "<div class='btn-group'>" +
-    "<button id='slideLeft' class='zoom in btn btn-default' data-toggle='tooltip'" +
-    "title='Change file' type='button' disabled>" +
-    "<span class='glyphicon glyphicon-chevron-left'></span>" +
-    "</button><button id='slideRight' class='zoom out btn btn-default'" +
-    "data-toggle='tooltip' title='Change file'" +
-    "type='button' disabled>" +
-    "<span class='glyphicon glyphicon-chevron-right'></span></button>" +
-    "</div>" +
-    "<div id='fileNameDiv'></div>" +
-    "</div>\n" +
-    "<div id='popup_description' style='display: none'>" +
-    "<button id='closePop' class='close' type='button'>&times;</button>" +
-    "<button class='btn btn-default' id='downloadCsv'" +
-    "type='button' data-toogle='tooptip'" +
-    "title='Export as csv'>" +
-    "<span class='glyphicon glyphicon-save-file'></span>" +
-    "</button>" +
-    "<div class=\"popupHeaders\">General sequence info</div>" +
-    "<div style='border-top: 3px solid #4588ba; position: relative;" +
-    "top: 10px; margin-bottom: 10px;'>" +
-    "</div>" +
-    "<div id='accessionPop'></div>" +
-    "<div id='speciesNamePop'><span style='color: #468499'>Species:</span>" +
-    "<span id='speciesNamePopSpan'></span>" +
-    "</div>" +
-    "<div id='lengthPop'></div>" +
-    "<div id='plasmidNamePop'>" +
-    "<span style='color: #468499'>Plasmid: </span>" +
-    "<span id='plasmidNamePopSpan'></span>" +
-    "</div>" +
-    "<div id='percentagePop'><span style='color: #468499'>Percentage:</span>" +
-    "<span id='percentagePopSpan'></span>" +
-    "</div>" +
-    "<div id='copyNumberPop'><span style='color: #468499'>Relative copy" +
-    " number:</span>" +
-    "<span id='copyNumberPopSpan'></span>" +
-    "</div>" +
-    "<br />" +
-    // "</div>" +
-    "<ul class='nav nav-tabs' style=\"display: flex; justify-content: center;\">" +
-    "<li id='resButton'>" +
-    "<a data-toggle='tab' href='#resTab'>Resistances</a>" +
-    "</li>" +
-    "<li id='plasmidButton'>" +
-    "<a data-toggle='tab' href='#pfTab'>Plasmid finder</a>" +
-    "</li>" +
-    "<li id='virButton'>" +
-    "<a data-toggle='tab' href='#virTab'>Virulence</a>" +
-    "</li>" +
-    "</ul>" +
-    "<div class='tab-content' id='popupTabs'>" +
-    "<div id='pfTab' class='tab-pane fade'>" +
-    "<div id='pfPop' class=\"popupHeaders\">PlasmidFinder database</div>" +
-    "<div style='border-top: 3px solid #4588ba; position: relative;" +
-    "top: 10px; margin-bottom: 10px;'>" +
-    "</div>" +
-    "<div id='pfGenePop'>" +
-    "<span style='color: #468499'>Gene name: </span>" +
-    "<span id='pfGenePopSpan'></span>" +
-    "</div>" +
-    "<div id='pfGenbankPop'>" +
-    "<span style='color: #468499'>Genbank Accession: </span>" +
-    "<span id='pfGenbankPopSpan'></span>" +
-    "</div>" +
-    "<div>Matching genes information</div>" +
-    "<div id='pfCoveragePop'>" +
-    "<span style='color: #468499'>Coverage: </span>" +
-    "<span id='pfCoveragePopSpan'></span>" +
-    "</div>" +
-    "<div id='pfIdentityPop'>" +
-    "<span style='color: #468499'>Identity: </span>" +
-    "<span id='pfIdentityPopSpan'></span>" +
-    "</div>" +
-    "<div id='pfRangePop'>" +
-    "<span style='color: #468499'>Range in plasmid: </span>" +
-    "<span id='pfRangePopSpan'></span>" +
-    "</div>" +
-    "</div>" +
-    "<div id='resTab' class='tab-pane fade'>" +
-    "<div id='cardPop' class=\"popupHeaders\">CARD database</div>" +
-    "<div style='border-top: 3px solid #4588ba; position: relative;" +
-    "top: 10px; margin-bottom: 10px;'>" +
-    "</div>" +
-    "<div id='cardGenePop'>" +
-    "<span style='color: #468499'>Gene name: </span>" +
-    "<span id='cardGenePopSpan'></span>" +
-    "</div>" +
-    "<div id='cardGenbankPop'>" +
-    "<span style='color: #468499'>Genbank accession: </span>" +
-    "<span id='cardGenbankPopSpan'></span>" +
-    "</div>" +
-    "<div id='cardAroPop'>" +
-    "<span style='color: #468499'>ARO accessions: </span>" +
-    "<span id='cardAroPopSpan'></span>" +
-    "</div>" +
-    "<div>Matching genes information</div>" +
-    "<div id='cardCoveragePop'>" +
-    "<span style='color: #468499'>Coverage: </span>" +
-    "<span id='cardCoveragePopSpan'></span>" +
-    "</div>" +
-    "<div id='cardIdPop'>" +
-    "<span style='color: #468499'>Identity: </span>" +
-    "<span id='cardIdPopSpan'></span>" +
-    "</div>" +
-    "<div id='cardRangePop'>" +
-    "<span style='color: #468499'>Range in plasmid: </span>" +
-    "<span id='cardRangePopSpan'></span>" +
-    "</div>" +
-    "<div id='resfinderPop' class=\"popupHeaders\">ResFinder database" +
-    "<div style='border-top: 3px solid #4588ba; position: relative;" +
-    "top: 10px; margin-bottom: 10px;'>" +
-    "</div>" +
-    "</div>" +
-    "<div id='resfinderGenePop'>" +
-    "<span style='color: #468499'>Gene name: </span>" +
-    "<span id='resfinderGenePopSpan'></span>" +
-    "</div>" +
-    "<div id='resfinderGenbankPop'>" +
-    "<span style='color: #468499'>Genbank accession: </span>" +
-    "<span id='resfinderGenbankPopSpan'></span>" +
-    "</div>" +
-    "<div>Matching genes information</div>" +
-    "<div id='resfinderCoveragePop'>" +
-    "<span style='color: #468499'>Coverage: </span>" +
-    "<span id='resfinderCoveragePopSpan'></span>" +
-    "</div>" +
-    "<div id='resfinderIdPop'>" +
-    "<span style='color: #468499'>Identity: </span>" +
-    "<span id='resfinderIdPopSpan'></span>" +
-    "</div>" +
-    "<div id='resfinderRangePop'>" +
-    "<span style='color: #468499'>Range in plasmid: </span>" +
-    "<span id='resfinderRangePopSpan'></span>" +
-    "</div></div>" +
-    "<div id='virTab' class='tab-pane fade'>" +
-    "<div id='virPop' class='popupHeaders'>Virulence database</div>" +
-    "<div style='border-top: 3px solid #4588ba; position: relative;" +
-    "top: 10px; margin-bottom: 10px;'>" +
-    "</div>" +
-    "<div id='virGenePop'>" +
-    "<span style='color: #468499'>Gene name: </span><span" +
-    " id='virGenePopSpan'></span>" +
-    "</div>" +
-    "<div id='virGenbankPop'>" +
-    "<span style='color: #468499'>Genbank Accession: </span>" +
-    "<span id='virGenbankPopSpan'></span>" +
-    "</div>" +
-    "<div>Matching genes information</div>" +
-    "<div id='virCoveragePop'>" +
-    "<span style='color: #468499'>Coverage: </span>" +
-    "<span id='virCoveragePopSpan'></span>" +
-    "</div>" +
-    "<div id='virIdentityPop'>" +
-    "<span style='color: #468499'>Identity: </span>" +
-    "<span id='virIdentityPopSpan'></span>" +
-    "</div>" +
-    "<div id='virRangePop'>" +
-    "<span style='color: #468499'>Range in plasmid: </span>" +
-    "<span id='virRangePopSpan'></span>" +
-    "</div>" +
-    "</div>" +
-    "</div></div></div>"
-  )
+    .append(
+      "<!--hidden div for color legend-->\n" +
+      "<div class='panel-group colorpicker-component' id='colorLegend' style='display: none'>\n" +
+      "<div class='panel panel-default' >\n" +
+      "<div class='panel-heading'>Color legend</div>\n" +
+      "<div class='panel-body'>\n" +
+      "<!--Populated by visualization_functions.js-->\n" +
+      "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
+      "<ul class='legend' id='colorLegendBox'></ul>\n" +
+      "<label id='res_label' style='display: none'>Resistances</label>" +
+      "<ul class='legend' id='colorLegendBoxRes'></ul>" +
+      "<label id='pf_label' style='display: none'>Plasmid Families</label>" +
+      "<ul class='legend' id='colorLegendBoxPf'></ul>" +
+      "<label id='vir_label' style='display: none'>Virulence factors</label>" +
+      "<ul class='legend' id='colorLegendBoxVir'></ul>" +
+      "<!--Populated by visualization_functions.js-->\n" +
+      "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
+      "<div class='gradient' id='scaleLegend'></div>\n" +
+      "<div id='scaleString'></div>" +
+      "<!--Populated by visualization_functions.js-->\n" +
+      "<label id='read_label' style='display: none'>Read filters</label>\n" +
+      "<div class='gradient' id='readLegend'></div>\n" +
+      "<div id='readString'></div>" +
+      "<label id='assemblyLabel' style='display: none'>Assembly</label>" +
+      "<div class='legend' id='assemblyLegend'></div>" +
+      "</div>\n" +
+      "</div>\n" +
+      "</div>\n" +
+      "\n" +
+      "<div id='buttonStuff'>\n" +
+      "<div class='btn-group'>\n" +
+      "\n" +
+      "<!-- Buttons that overlay the graph and interact with it -->\n" +
+      "<button id='playpauseButton' data-toggle='tooltip'" +
+      " title='Play/Pause' type='button' class='btn btn-default'>" +
+      "<span class='glyphicon glyphicon-play'></span></button>" +
+      "<button class='btn btn-default' data-toggle='tooltip'" +
+      " title='Trigger area selection (uses shift key)'" +
+      " type='button' id='refreshButton'>" +
+      "<span class='glyphicon glyphicon-screenshot'></span></button>" +
+      "</div>\n" +
+      "<!--zoom buttons-->\n" +
+      "<div class='btn-group'>\n" +
+      "<button id='zoom_in' class='zoom in btn btn-default'\n" +
+      "        data-toggle='tooltip' title='Zoom in' \n" +
+      "        type='button'>\n" +
+      "<span class='glyphicon glyphicon-zoom-in'></span>\n" +
+      "</button>\n" +
+      "<button id='zoom_out' class='zoom out btn btn-default'\n" +
+      "        data-toggle='tooltip' title='Zoom out' \n" +
+      "        type='button'>\n" +
+      "<span class='glyphicon glyphicon-zoom-out'></span>\n" +
+      "</button>\n" +
+      "</div> \n" +
+      "<div class='btn-group'>" +
+      "<button id='slideLeft' class='zoom in btn btn-default' data-toggle='tooltip'" +
+      " title='Change file' type='button' disabled>" +
+      "<span class='glyphicon glyphicon-chevron-left'></span>" +
+      "</button><button id='slideRight' class='zoom out btn btn-default'" +
+      " data-toggle='tooltip' title='Change file'" +
+      " type='button' disabled>" +
+      "<span class='glyphicon glyphicon-chevron-right'></span></button>" +
+      "</div>" +
+      "<div id='fileNameDiv'></div>" +
+      "</div>\n" +
+      "<div id='popup_description' style='display: none'>" +
+      "<button id='closePop' class='close' type='button'>&times;</button>" +
+      "<button class='btn btn-default' id='downloadCsv'" +
+      " type='button' data-toogle='tooptip'" +
+      " title='Export as csv'>" +
+      "<span class='glyphicon glyphicon-save-file'></span>" +
+      "</button>" +
+      "<div class=\"popupHeaders\">General sequence info</div>" +
+      "<div style='border-top: 3px solid #4588ba; position: relative;" +
+      "top: 10px; margin-bottom: 10px;'>" +
+      "</div>" +
+      "<div id='accessionPop'></div>" +
+      "<div id='speciesNamePop'><span style='color: #468499'>Species:</span>" +
+      "<span id='speciesNamePopSpan'></span>" +
+      "</div>" +
+      "<div id='lengthPop'></div>" +
+      "<div id='plasmidNamePop'>" +
+      "<span style='color: #468499'>Plasmid: </span>" +
+      "<span id='plasmidNamePopSpan'></span>" +
+      "</div>" +
+      "<div id='percentagePop'><span style='color: #468499'>Percentage:</span>" +
+      "<span id='percentagePopSpan'></span>" +
+      "</div>" +
+      "<div id='copyNumberPop'><span style='color: #468499'>Relative copy" +
+      " number:</span>" +
+      "<span id='copyNumberPopSpan'></span>" +
+      "</div>" +
+      "<br />" +
+      // "</div>" +
+      "<ul class='nav nav-tabs' style=\"display: flex; justify-content: center;\">" +
+      "<li id='resButton'>" +
+      "<a data-toggle='tab' href='#resTab'>Resistances</a>" +
+      "</li>" +
+      "<li id='plasmidButton'>" +
+      "<a data-toggle='tab' href='#pfTab'>Plasmid finder</a>" +
+      "</li>" +
+      "<li id='virButton'>" +
+      "<a data-toggle='tab' href='#virTab'>Virulence</a>" +
+      "</li>" +
+      "</ul>" +
+      "<div class='tab-content' id='popupTabs'>" +
+      "<div id='pfTab' class='tab-pane fade'>" +
+      "<div id='pfPop' class=\"popupHeaders\">PlasmidFinder database</div>" +
+      "<div style='border-top: 3px solid #4588ba; position: relative;" +
+      "top: 10px; margin-bottom: 10px;'>" +
+      "</div>" +
+      "<div id='pfGenePop'>" +
+      "<span style='color: #468499'>Gene name: </span>" +
+      "<span id='pfGenePopSpan'></span>" +
+      "</div>" +
+      "<div id='pfGenbankPop'>" +
+      "<span style='color: #468499'>Genbank Accession: </span>" +
+      "<span id='pfGenbankPopSpan'></span>" +
+      "</div>" +
+      "<div>Matching genes information</div>" +
+      "<div id='pfCoveragePop'>" +
+      "<span style='color: #468499'>Coverage: </span>" +
+      "<span id='pfCoveragePopSpan'></span>" +
+      "</div>" +
+      "<div id='pfIdentityPop'>" +
+      "<span style='color: #468499'>Identity: </span>" +
+      "<span id='pfIdentityPopSpan'></span>" +
+      "</div>" +
+      "<div id='pfRangePop'>" +
+      "<span style='color: #468499'>Range in plasmid: </span>" +
+      "<span id='pfRangePopSpan'></span>" +
+      "</div>" +
+      "</div>" +
+      "<div id='resTab' class='tab-pane fade'>" +
+      "<div id='cardPop' class=\"popupHeaders\">CARD database</div>" +
+      "<div style='border-top: 3px solid #4588ba; position: relative;" +
+      "top: 10px; margin-bottom: 10px;'>" +
+      "</div>" +
+      "<div id='cardGenePop'>" +
+      "<span style='color: #468499'>Gene name: </span>" +
+      "<span id='cardGenePopSpan'></span>" +
+      "</div>" +
+      "<div id='cardGenbankPop'>" +
+      "<span style='color: #468499'>Genbank accession: </span>" +
+      "<span id='cardGenbankPopSpan'></span>" +
+      "</div>" +
+      "<div id='cardAroPop'>" +
+      "<span style='color: #468499'>ARO accessions: </span>" +
+      "<span id='cardAroPopSpan'></span>" +
+      "</div>" +
+      "<div>Matching genes information</div>" +
+      "<div id='cardCoveragePop'>" +
+      "<span style='color: #468499'>Coverage: </span>" +
+      "<span id='cardCoveragePopSpan'></span>" +
+      "</div>" +
+      "<div id='cardIdPop'>" +
+      "<span style='color: #468499'>Identity: </span>" +
+      "<span id='cardIdPopSpan'></span>" +
+      "</div>" +
+      "<div id='cardRangePop'>" +
+      "<span style='color: #468499'>Range in plasmid: </span>" +
+      "<span id='cardRangePopSpan'></span>" +
+      "</div>" +
+      "<div id='resfinderPop' class=\"popupHeaders\">ResFinder database" +
+      "<div style='border-top: 3px solid #4588ba; position: relative;" +
+      "top: 10px; margin-bottom: 10px;'>" +
+      "</div>" +
+      "</div>" +
+      "<div id='resfinderGenePop'>" +
+      "<span style='color: #468499'>Gene name: </span>" +
+      "<span id='resfinderGenePopSpan'></span>" +
+      "</div>" +
+      "<div id='resfinderGenbankPop'>" +
+      "<span style='color: #468499'>Genbank accession: </span>" +
+      "<span id='resfinderGenbankPopSpan'></span>" +
+      "</div>" +
+      "<div>Matching genes information</div>" +
+      "<div id='resfinderCoveragePop'>" +
+      "<span style='color: #468499'>Coverage: </span>" +
+      "<span id='resfinderCoveragePopSpan'></span>" +
+      "</div>" +
+      "<div id='resfinderIdPop'>" +
+      "<span style='color: #468499'>Identity: </span>" +
+      "<span id='resfinderIdPopSpan'></span>" +
+      "</div>" +
+      "<div id='resfinderRangePop'>" +
+      "<span style='color: #468499'>Range in plasmid: </span>" +
+      "<span id='resfinderRangePopSpan'></span>" +
+      "</div></div>" +
+      "<div id='virTab' class='tab-pane fade'>" +
+      "<div id='virPop' class='popupHeaders'>Virulence database</div>" +
+      "<div style='border-top: 3px solid #4588ba; position: relative;" +
+      "top: 10px; margin-bottom: 10px;'>" +
+      "</div>" +
+      "<div id='virGenePop'>" +
+      "<span style='color: #468499'>Gene name: </span><span" +
+      " id='virGenePopSpan'></span>" +
+      "</div>" +
+      "<div id='virGenbankPop'>" +
+      "<span style='color: #468499'>Genbank Accession: </span>" +
+      "<span id='virGenbankPopSpan'></span>" +
+      "</div>" +
+      "<div>Matching genes information</div>" +
+      "<div id='virCoveragePop'>" +
+      "<span style='color: #468499'>Coverage: </span>" +
+      "<span id='virCoveragePopSpan'></span>" +
+      "</div>" +
+      "<div id='virIdentityPop'>" +
+      "<span style='color: #468499'>Identity: </span>" +
+      "<span id='virIdentityPopSpan'></span>" +
+      "</div>" +
+      "<div id='virRangePop'>" +
+      "<span style='color: #468499'>Range in plasmid: </span>" +
+      "<span id='virRangePopSpan'></span>" +
+      "</div>" +
+      "</div>" +
+      "</div></div></div>"
+    )
 
   // should be executed when listGiFilter is empty ... mainly for area selection
   const reGetListGi = (g, graphics) => {
@@ -457,7 +456,7 @@ const showDiv = () => {
  * data.
  * @param {Object} g - graph related functions that iterate through nodes
  * and links.
- * @param {Floar} nodeColor - the color value for vivagraph (e.g. 0x<hexcode>)
+ * @param {Float} nodeColor - the color value for vivagraph (e.g. 0x<hexcode>)
  * @param {Object} renderer - vivagraph object to render the graph.
  */
 const nodeColorReset = (graphics, g, nodeColor, renderer) => {
