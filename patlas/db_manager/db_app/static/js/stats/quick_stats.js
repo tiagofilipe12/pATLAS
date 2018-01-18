@@ -958,9 +958,9 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
     || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    previousTableList = listGiFilter
     return (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
-    previousTableList = listGiFilter
   } else {
     // this code prevents plot from being queried again, since it is already
     // stored in a div it is just a matter of hidding all other and showing
@@ -995,9 +995,9 @@ const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFi
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton.replace(" ", "")].state === false
     || selector[clickerButton.replace(" ", "")].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    previousTableList = listGiFilter
     return (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton.replace(" ", ""), false, false)
-    previousTableList = listGiFilter
   } else {
     // this code prevents plot from being queried again, since it is already
     // stored in a div it is just a matter of hidding all other and showing
@@ -1032,9 +1032,9 @@ const resRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiF
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
     || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    previousTableList = listGiFilter
     return (areaSelection === false) ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
-    previousTableList = listGiFilter
   } else {
     // this code prevents plot from being queried again, since it is already
     // stored in a div it is just a matter of hidding all other and showing
@@ -1065,6 +1065,7 @@ const virRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiF
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
   || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
+    previousTableList = listGiFilter
     return (areaSelection === false) ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
   } else {

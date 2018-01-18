@@ -7,7 +7,7 @@
       centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
        filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
         defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor,
-         readColoring, assembly*/
+         readColoring, assembly, handleFileSelect, downloadSeqByColor, downloadSeq */
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -1853,7 +1853,6 @@ const onLoad = () => {
         setTimeout( () => {
           actualRemoval(g, graphics, onLoad, true)
           // enables button group again
-          console.log("test")
           $("#toolButtonGroup button").removeAttr("disabled")
         }, 100)
       })
@@ -2005,12 +2004,13 @@ const onLoad = () => {
             //   $("#loading").hide()
             //   $("#couve-flor").css("visibility", "visible")
             // })
-            .catch( (err) => {
-              console.log(err)
-            })
+            // .catch( (err) => {
+            //   console.log(err)
+            // })
         })
       }
     } else {
+      let requestDBList
       // storeMasterNode is empty in here
       if (readFilejson !== false) {
         const readReload = JSON.parse(Object.values(readFilejson)[readIndex])
