@@ -45,7 +45,7 @@ const cutoffParserMash = () => {
  * @returns {number} - The copy number cutoff value
  */
 const copyNumberCutoff = () => {
-  return ($("#copyNumberValue").val() !== "") ? parseFloat($("#copyNumberValue").val()) : 2
+  return ($("#copyNumberValue").val() !== "") ? parseFloat($("#copyNumberValue").val()) : 1
 }
 
 // function to iterate through nodes

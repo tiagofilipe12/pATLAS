@@ -179,7 +179,28 @@ def master_fasta(fastas, output_tag, mother_directory):
 
 # Creates temporary fasta files in a tmp directory in order to give to mash
 # the file as a unique genome to compare against all genomes
-def genomes_parser(main_fasta, output_tag, mother_directory):
+def genomes_parser(main_fasta, mother_directory):
+    '''
+    A function that gets the names of all entries in master_fasta. It also
+    generates temporary fastas for each one of the entries in fasta that are
+    removed at the end of the script. This is used to construct the distance
+    matrix where the main_fasta will be compared agains each one of these
+    entries with mash dist
+    Parameters
+    ----------
+    main_fasta: str
+        The name of the file that contains all fasta entries
+    mother_directory: str
+        The path to mother_directory that is used to get where tmp files are
+        stored.
+
+    Returns
+    -------
+    list_genome_files: list
+        A list that stores the names of the files that would be parsed by
+        multiprocessing_mash function
+
+    '''
     out_folder = os.path.join(mother_directory, "tmp")
     out_file = os.path.join(out_folder, os.path.basename(main_fasta)[:-4])
     if_handle = open(main_fasta, "r")
@@ -343,7 +364,9 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
 
 def node_crawler(node, links, crawled_nodes, cluster_array, master_dict):
     '''
-
+    A function that enables to crawl nodes in order to get the relationships
+    between all the nodes, getting to know which nodes are in the same
+    cluster and adding it to master_dict that will be dumped to the db.
     Parameters
     ----------
     node: str
@@ -596,7 +619,7 @@ def main():
     ## breaks master fasta into multiple fastas with one genome each
     print("***********************************")
     print("Making temporary files for each genome in fasta...\n")
-    genomes = genomes_parser(main_fasta, output_tag, mother_directory)
+    genomes = genomes_parser(main_fasta, mother_directory)
 
     ## This must be multiprocessed since it is extremely fast to do mash
     # against one plasmid sequence
