@@ -40,7 +40,7 @@ const getPositions = (g, layout) => {
     const position = layout.getNodePosition(node.id)
     masterJSON.nodes.push({
       "id": node.id,
-      "length": node.data.seq_length.split(">").slice(-1).toString(),
+      "length": node.data.seqLength.split(">").slice(-1).toString(),
       position,
     })
   })
@@ -49,8 +49,8 @@ const getPositions = (g, layout) => {
     const currentHash = makeHash(link.fromId, link.toId)
       // gets size of fromId and toId nodes and calculates the ratio between
       // them
-    const fromSize = parseFloat(g.getNode(link.fromId).data.seq_length.split("</span>").slice(-1)[0])
-    const toSize = parseFloat(g.getNode(link.toId).data.seq_length.split("</span>").slice(-1)[0])
+    const fromSize = parseFloat(g.getNode(link.fromId).data.seqLength.split("</span>").slice(-1)[0])
+    const toSize = parseFloat(g.getNode(link.toId).data.seqLength.split("</span>").slice(-1)[0])
     const sizeRatio = Math.min(fromSize, toSize) / Math.max(fromSize, toSize)
     if (hashStore.indexOf(currentHash) < 0) {
       masterJSON.links.push({

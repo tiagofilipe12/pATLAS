@@ -40,7 +40,7 @@ const setupPopupDisplay = (node, speciesName, plasmidName, clusterId) => {
   if (typeof node.data !== "undefined") {
     $("#accessionPop").html(node.data.sequence)
     $("#speciesNamePopSpan").html(speciesName)
-    $("#lengthPop").html(node.data.seq_length)
+    $("#lengthPop").html(node.data.seqLength)
     $("#plasmidNamePopSpan").html(plasmidName)
     $("#percentagePopSpan").html(node.data.percentage)
     $("#copyNumberPopSpan").html(node.data.copyNumber)
