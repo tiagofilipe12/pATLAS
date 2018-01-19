@@ -38,7 +38,7 @@ def main_summary():
 
 @app.route("/fullDS")
 def full_ds():
-    return repetitiveFunction("db_app/static/json/refactored_filtered.json")
+    return repetitiveFunction("db_app/static/json/filtered_19012018.json")
 
 @app.route("/taxa")
 def taxa_summary():
