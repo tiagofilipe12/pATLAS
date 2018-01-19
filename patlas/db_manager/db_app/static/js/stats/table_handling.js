@@ -163,9 +163,9 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
             // since not allways the response is an empty string and sometimes
             // it returns undefined... this check is to prevent showing empty
             // columns in table
-            entry.resGenes = (entry.resGenes === "" || entry.resGenes === undefined) ? "N/A" : entry.resGenes
-            entry.pfGenes = (entry.pfGenes === "" || entry.pfGenes === undefined) ? "N/A" : entry.pfGenes
-            entry.virGenes = (entry.virGenes === "" || entry.virGenes === undefined) ? "N/A" : entry.virGenes
+            entry.resGenes = (entry.resGenes === "" || typeof entry.resGenes === "undefined") ? "N/A" : entry.resGenes
+            entry.pfGenes = (entry.pfGenes === "" || typeof entry.pfGenes === "undefined") ? "N/A" : entry.pfGenes
+            entry.virGenes = (entry.virGenes === "" || typeof entry.virGenes === "undefined") ? "N/A" : entry.virGenes
             promises.push(entry)
           }
         }

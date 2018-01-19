@@ -87,7 +87,6 @@ class DbInsertion(Abricate):
                     aro_accession = None
             else:
                 aro_accession = False
-
             seq_range = entry["seq_range"]
 
             # generate a new dict to dump to db
@@ -100,10 +99,8 @@ class DbInsertion(Abricate):
                     "gene": [gene],
                     "accession": [accession],
                     "seq_range": [seq_range],
-                    #"aro_accession": [aro_accession]
+                    "aro_accession": [aro_accession]
                 }
-                if aro_accession == False:
-                    temp_dict[reference_accession]["aro_accession"] = [aro_accession]
             else:
                 # checks if gene and its accession is in the their respective
                 # lists in the dict. If they are there is no reason to add
@@ -120,10 +117,8 @@ class DbInsertion(Abricate):
                 temp_dict[reference_accession]["gene"].append(gene)
                 temp_dict[reference_accession]["accession"].append(accession)
                 temp_dict[reference_accession]["seq_range"].append(seq_range)
-                #temp_dict[reference_accession]["aro_accession"].append(
-                # aro_accession)
-                if aro_accession == False:
-                    temp_dict[reference_accession]["aro_accession"].append(aro_accession)
+                temp_dict[reference_accession][
+                    "aro_accession"].append(aro_accession)
 
         self.db_dump(temp_dict, db_type)
         self.get_json_file(list_of_filters, db_type)

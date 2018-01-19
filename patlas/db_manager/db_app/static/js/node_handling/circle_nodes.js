@@ -1,6 +1,10 @@
+/*globals Viva */
+
 /// ************************************************///
 /// *** transforms nodes from squares to circles ***///
 /// ************************************************///
+
+let webglUtils
 
 //* * block #2 for node customization **//
 // Lets start from the easiest part - model object for node ui in webgl
@@ -72,8 +76,7 @@ const buildCircleNodeShader = () => {
     nodes = new Float32Array(64),
     nodesCount = 0,
     canvasWidth, canvasHeight, transform,
-    isCanvasDirty,
-    webglUtils
+    isCanvasDirty
   return {
         /**
           * Called by webgl renderer to load the shader into gl context.

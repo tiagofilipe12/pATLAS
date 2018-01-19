@@ -13,14 +13,15 @@
             plasmidFamilyGetter, virulenceGetter, linkColoring,
              slideToRight, slideToLeft, Mousetrap, initCallback,
               taxaRequest, pushToMasterReadArray, getArrayMapping,
-               getArrayMash, colorLegendFunction, noUiSlider, actualRemoval, getArrayAssembly*/
+               getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
+                getArrayAssembly, startMultiSelect, requesterDB*/
 
 /**
 * A bunch of global functions to be used throughout patlas
 */
 
 // if this is a developer session please enable the below line of code
-const devel = false
+const devel = true
 
 // boolean that controls the prerender function if rerun
 // is activated
@@ -85,6 +86,8 @@ let associativeObj = {}
 
 // globals to control plot instances
 let clickerButton, listPlots
+
+let requestDBList
 
 /**
  * load JSON file with taxa dictionary
@@ -1280,14 +1283,16 @@ const onLoad = () => {
             if (currentSelectionFamily.hasOwnProperty(i)) {
               const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
               for (const sp in tempArray) {
-                promises.push(
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                    .then((results) => {
-                      results.map((request) => {
-                        listGiFilter.push(request.plasmid_id)
+                if (tempArray.hasOwnProperty(sp)) {
+                  promises.push(
+                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                      .then((results) => {
+                        results.map((request) => {
+                          listGiFilter.push(request.plasmid_id)
+                        })
                       })
-                    })
-                )
+                  )
+                }
               }
             }
           }
@@ -1298,14 +1303,16 @@ const onLoad = () => {
             if (currentSelectionGenus.hasOwnProperty(i)) {
               const tempArray = assocGenus[currentSelectionGenus[i]]
               for (const sp in tempArray) {
-                promises.push(
-                  taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                    .then((results) => {
-                      results.map((request) => {
-                        listGiFilter.push(request.plasmid_id)
+                if (tempArray.hasOwnProperty(sp)) {
+                  promises.push(
+                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                      .then((results) => {
+                        results.map((request) => {
+                          listGiFilter.push(request.plasmid_id)
+                        })
                       })
-                    })
-                )
+                  )
+                }
               }
             }
           }
@@ -1391,14 +1398,16 @@ const onLoad = () => {
                       "></button>&nbsp;" + currentSelection[i] + "</li>"
                     // executres node function for family
                     for (const sp in tempArray) {
-                      promises.push(
-                        taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                          .then((results) => {
-                            results.map((request) => {
-                              listGiFilter.push(request.plasmid_id)
+                      if (tempArray.hasOwnProperty(sp)) {
+                        promises.push(
+                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                            .then((results) => {
+                              results.map((request) => {
+                                listGiFilter.push(request.plasmid_id)
+                              })
                             })
-                          })
-                      )
+                        )
+                      }
                     }
                   }
 
@@ -1415,14 +1424,16 @@ const onLoad = () => {
                     // requests taxa associated accession from db and colors
                     // respective nodes
                     for (const sp in tempArray) {
-                      promises.push(
-                        taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                          .then((results) => {
-                            results.map((request) => {
-                              listGiFilter.push(request.plasmid_id)
+                      if (tempArray.hasOwnProperty(sp)) {
+                        promises.push(
+                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
+                            .then((results) => {
+                              results.map((request) => {
+                                listGiFilter.push(request.plasmid_id)
+                              })
                             })
-                          })
-                      )
+                        )
+                      }
                     }
                   }
 
@@ -2019,7 +2030,6 @@ const onLoad = () => {
         })
       }
     } else {
-      let requestDBList
       // storeMasterNode is empty in here
       if (readFilejson !== false) {
         const readReload = JSON.parse(Object.values(readFilejson)[readIndex])

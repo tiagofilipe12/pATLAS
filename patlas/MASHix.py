@@ -82,8 +82,11 @@ def folderexist(directory):
 ## Function to fix several issues that fasta header names can have with some
 # programs
 def header_fix(input_header):
-    problematic_characters = ["|", " ", ",", ".", "(", ")", "'", "/", "[", "]",
-                              ":", "{", "}"]
+    #problematic_characters = ["|", " ", ",", ".", "(", ")", "'", "/", "[", "]",
+    #                          ":", "{", "}"]
+    problematic_characters = ["|", " ", ",", ".", "(", ")", "/", "[", "]", \
+                             ":", "{", "}"]
+    # TODO tested removing ' from problematic characters
     for char in problematic_characters:
         input_header = input_header.replace(char, '_')
     return input_header
