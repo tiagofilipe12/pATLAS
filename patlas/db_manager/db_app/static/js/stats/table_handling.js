@@ -1,4 +1,5 @@
-/*globals Highcharts, cutoffParser, cutoffParserMash */
+/*globals Highcharts, cutoffParser, cutoffParserMash, assemblyJson,
+ cutoffParserSeq */
 
 /**
  * Function to compare two arrays and check if they are equal, i.e. if they
@@ -271,7 +272,9 @@ const parseReadObj = (readObjects, masterReadArray) => {
             fileEntries[i2] : parseFloat(fileEntries[i2][0])
           // checks if it is an import from Mash file
           if (fileEntries[i2].constructor !== Array) {
-            if (percValue >= cutoffParser()) {
+            const parsedCutoff = (assemblyJson === false) ? cutoffParser() : cutoffParserSeq()
+            if (percValue >= parsedCutoff) {
+
               // checks if it is already in y labels (containing plasmid accessions
               if (masterReadArray.indexOf(i2) < 0) {
                 plasmidIndex = masterReadArray.indexOf(i2)
@@ -377,5 +380,5 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       }
     }]
   })
-    .show()
+  $("#chartContainer2").show()
 }
