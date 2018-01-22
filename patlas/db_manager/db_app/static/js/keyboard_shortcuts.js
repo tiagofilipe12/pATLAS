@@ -1,6 +1,16 @@
-/* globals Mousetrap */
+/* globals Mousetrap, initCallback */
 
 // keyboard shortcuts using mousetrap.min.js from https://craig.is/killing/mice//
+
+/**
+ * function for keyboard shortcut to save file with node positions
+ * This is only useful if devel is true and should be disabled by default
+ * for users
+ */
+Mousetrap.bind("shift+ctrl+space", () => {
+  console.log("coco")
+  initCallback(g, layout, devel)
+})
 
 // keyboard shortcut for length filter
 Mousetrap.bind("shift+l", () => {
