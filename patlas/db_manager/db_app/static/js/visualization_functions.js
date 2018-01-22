@@ -1711,7 +1711,6 @@ const onLoad = () => {
     //* *********************//
     $("#distancesSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
-      $("#reset-sliders").click()
       $("#loading").show()
       $("#scaleLegend").empty()
       showDiv().then( () => {
