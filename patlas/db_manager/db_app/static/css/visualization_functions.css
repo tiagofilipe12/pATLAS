@@ -211,7 +211,7 @@
 }
 
 /*resize search box for gi*/
-#cutoffValue, #cutoffValueMash, #copyNumberValue{
+#cutoffValue, #cutoffValueMash, #copyNumberValue, #cutoffValueSeq{
     width: 200px;
 }
 

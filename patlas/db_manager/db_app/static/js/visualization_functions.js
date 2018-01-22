@@ -1550,6 +1550,8 @@ const onLoad = () => {
             // has to be stringifyed to be passed to pushToMasterReadArray
             "mapping_sample1": JSON.stringify(result)
           }
+          $("#fileNameDiv").html("mapping_sample1")
+            .show()
           const outLists = readColoring(g, listGi, graphics, renderer, result)
           listGi = outLists[0]
           listGiFilter = outLists[1]
@@ -1586,7 +1588,6 @@ const onLoad = () => {
       event.preventDefault()
       $("#loading").show()
       setTimeout( () => {
-        // TODO this readFilejson here must be a json object from 1 file
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
         listGiFilter = outputList[1]
@@ -1628,6 +1629,8 @@ const onLoad = () => {
             // has to be stringifyed to be passed to pushToMasterReadArray
             "mash_sample1": JSON.stringify(result)
           }
+          $("#fileNameDiv").html("mash_sample1")
+            .show()
           readFilejson = mashJson
           const outLists = readColoring(g, listGi, graphics, renderer, result)
           listGi = outLists[0]
@@ -1645,21 +1648,29 @@ const onLoad = () => {
     //* * Assembly **//
     //* ********* ***//
     $("#assemblySubmit").unbind("click").bind("click", (event) => {
-      $("#alertAssembly").show()
+      // $("#alertAssembly").show()
       masterReadArray = []
-      readFilejson = false
+      readFilejson = assemblyJson
+      readIndex = 0
       event.preventDefault()
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       previousTableList = []
+      $("#fileNameDiv").html(Object.keys(assemblyJson)[0])
+        .show()
       // transform selector object that handles plots and hide their
       // respective divs
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
-      // setTimeout( () => {
-      listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
-      // }, 100)
+      setTimeout( () => {
+        const readString = JSON.parse(Object.values(assemblyJson)[0])
+        const outputList = readColoring(g, listGi, graphics, renderer, readString)
+        listGi = outputList[0]
+        listGiFilter = outputList[1]
+        masterReadArray = pushToMasterReadArray(assemblyJson)
+        // listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
+      }, 100)
       setTimeout( () => {
         renderer.rerender()
       }, 100)
@@ -1669,6 +1680,8 @@ const onLoad = () => {
       setTimeout( () => {
         $("#loading").hide()
       }, 100)
+      $("#slideRight").prop("disabled", false)
+      $("#slideLeft").prop("disabled", false)
     })
 
     $("#cancel_assembly").unbind("click").bind("click", () => {
@@ -1676,34 +1689,42 @@ const onLoad = () => {
     })
 
     $("#sampleAssembly").unbind("click").bind("click", (event) => {
-      $("#alertAssembly").show()
+      // $("#alertAssembly").show()
       event.preventDefault()
       masterReadArray = []
-      readFilejson = false
+      readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       previousTableList = []
+
       // transform selector object that handles plots and hide their
       // respective divs
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
-      // setTimeout( () => {
-      getArrayAssembly().then( (results) => {
-        assemblyJson = results
-        listGiFilter = assembly(listGi, results, g, graphics, masterReadArray, listGiFilter)
-      // }, 100)
+      setTimeout( () => {
+        getArrayAssembly().then( (results) => {
+          assemblyJson = results
+          readFilejson = results
+          $("#fileNameDiv").html(Object.keys(assemblyJson)[0])
+            .show()
+          const readString = JSON.parse(Object.values(assemblyJson)[0])
+          const outputList = readColoring(g, listGi, graphics, renderer, readString)
+          listGi = outputList[0]
+          listGiFilter = outputList[1]
+          masterReadArray = pushToMasterReadArray(assemblyJson)
+          // listGiFilter = assembly(listGi, results, g, graphics, masterReadArray, listGiFilter)
+        }, 100)
       })
       setTimeout( () => {
         renderer.rerender()
-        // TODO raise a warning for users to press play if they want
       }, 100)
-
-      // }
       // used to hide when function is not executed properly
       setTimeout( () => {
         $("#loading").hide()
       }, 100)
+      $("#slideRight").prop("disabled", false)
+      $("#slideLeft").prop("disabled", false)
     })
 
     //* *********************//
@@ -1749,7 +1770,7 @@ const onLoad = () => {
       $("#scaleLegend").empty()
       $("#scaleString").empty()
       $("#distance_label").hide()
-      setTimeout(function () {
+      setTimeout( () => {
         resetLinkColor(g, graphics, renderer)
       }, 100)
     })
@@ -2040,6 +2061,9 @@ const onLoad = () => {
       } else {
         // sets pageReRun to true
         pageReRun = true
+        console.log(assemblyJson, readIndex)
+        $("#fileNameDiv").html(Object.keys(assemblyJson)[readIndex])
+          .show()
         // used when no reads are used to filter
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, listGi, false,
@@ -2342,6 +2366,7 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
+    console.log(readFilejson)
     const outArray = slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]

@@ -1,4 +1,5 @@
-/*globals listGiFilter, resetDisplayTaxaBox, chroma, showLegend, nodeColorReset */
+/*globals listGiFilter, resetDisplayTaxaBox, chroma, showLegend,
+ nodeColorReset, assemblyJson */
 
 /**
  * Function that convert a given range of values between oldMin and oldMax
@@ -48,6 +49,16 @@ const cutoffParserMash = () => {
 const copyNumberCutoff = () => {
   const cutoffCopy =$("#copyNumberValue").val()
   return (cutoffCopy !== "") ? parseFloat(cutoffCopy) : 1
+}
+
+/**
+ * Function to check if the user set a cutoff value for import sequence results
+ * percentage of ANI and if none is provided a default will be set here.
+ * @returns {number}
+ */
+const cutoffParserSeq = () => {
+  const cutoff = $("#cutoffValueSeq").val()
+  return (cutoff !== "") ? parseFloat(cutoff.val()) : 0.9
 }
 
 // function to iterate through nodes
@@ -167,8 +178,8 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
       const perc = readString[string]
 
       // adds node if it doesn't have links
-
       if (perc.constructor === Array) {
+        // if value is array, enter mash screen mode
         const identity = parseFloat(perc[0])
         const copyNumber = perc[1]
 
@@ -195,29 +206,10 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
         // }
         // otherwise just runs read mode
       } else {
-        if (document.getElementsByClassName("check_file").checked) {
-          if (perc >= 0.5) {
-            // perc values had to be normalized to the percentage value between 0
-            // and 1
-            const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
-              .replace("#", "0x")
-            nodeIter(g, readColor, gi, graphics, perc)
-            if (listGi.includes(gi)) {
-              listGiFilter.push(gi)
-            }
-          } else {
-            const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
-              .replace("#", "0x")
-            nodeIter(g, readColor, gi, graphics, perc)
-            if (listGi.includes(gi)) {
-              listGiFilter.push(gi)
-            }
-          }
-          const scale = chroma.scale(["blue", "#eacc00", "maroon"])
-          palette(scale, 10, readMode)
-        } else {
-          if (perc >= cutoffParser()) {
-            const newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
+        if (assemblyJson !== false){
+          // checks if assemblyJson is being executed
+          if (perc >= cutoffParserSeq()) {
+            const newPerc = rangeConverter(perc, cutoffParserSeq(), 1, 0, 1)
             const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
             const scale = chroma.scale(["lightsalmon", "maroon"])
             palette(scale, 10, readMode)
@@ -226,16 +218,60 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
               listGiFilter.push(gi)
             }
           }
-        }
-        if (Object.keys(readString).length === counter) {
-          // min value is the one fetched from the input form or by default 0.6
-          // values are fixed to two decimal
-          minValue = parseFloat(
-            ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
-          ).toFixed(2)
-          // mean value is the sum of the min value plus the range between the min
-          // and max values divided by two
-          meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
+          if (Object.keys(readString).length === counter) {
+            // min value is the one fetched from the input form or by default 0.6
+            // values are fixed to two decimal
+            minValue = parseFloat(
+              ($("#cutoffValueSeq").val() !== "") ? $("#cutoffValueSeq").val() : "0.90"
+            ).toFixed(2)
+            // mean value is the sum of the min value plus the range between the min
+            // and max values divided by two
+            meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
+          }
+        } else {
+          // if value is a float, enters mapping
+          if (document.getElementsByClassName("check_file").checked) {
+            if (perc >= 0.5) {
+              // perc values had to be normalized to the percentage value between 0
+              // and 1
+              const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
+                .replace("#", "0x")
+              nodeIter(g, readColor, gi, graphics, perc)
+              if (listGi.includes(gi)) {
+                listGiFilter.push(gi)
+              }
+            } else {
+              const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
+                .replace("#", "0x")
+              nodeIter(g, readColor, gi, graphics, perc)
+              if (listGi.includes(gi)) {
+                listGiFilter.push(gi)
+              }
+            }
+            const scale = chroma.scale(["blue", "#eacc00", "maroon"])
+            palette(scale, 10, readMode)
+          } else {
+            if (perc >= cutoffParser()) {
+              const newPerc = rangeConverter(perc, cutoffParser(), 1, 0, 1)
+              const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
+              const scale = chroma.scale(["lightsalmon", "maroon"])
+              palette(scale, 10, readMode)
+              nodeIter(g, readColor, gi, graphics, perc)
+              if (listGi.includes(gi)) {
+                listGiFilter.push(gi)
+              }
+            }
+          }
+          if (Object.keys(readString).length === counter) {
+            // min value is the one fetched from the input form or by default 0.6
+            // values are fixed to two decimal
+            minValue = parseFloat(
+              ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
+            ).toFixed(2)
+            // mean value is the sum of the min value plus the range between the min
+            // and max values divided by two
+            meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
+          }
         }
       }
     }
@@ -346,9 +382,6 @@ const resetLinkColor = (g, graphics, renderer) => {
   renderer.rerender()
   // $("#loading").hide()
 }
-
-// *** color scale legend *** //
-// for distances
 
 /**
  * Function to define color legend scale depending on the color scheme
@@ -483,8 +516,15 @@ const pushToMasterReadArray = (readFilejson) => {
           const percValue = (typeof(fileEntries[i2]) === "number") ?
             fileEntries[i2] : parseFloat(fileEntries[i2][0])
           if (fileEntries[i2].constructor !== Array) {
-            if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParser()) {
-              returnArray.push(i2)
+            if (assemblyJson === false) {
+              if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParser()) {
+                returnArray.push(i2)
+              }
+            } else {
+              // assemblyJson is defined
+              if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParserSeq()) {
+                returnArray.push(i2)
+              }
             }
           } else {
             const copyNumber = parseFloat(fileEntries[i2][1])
