@@ -2040,13 +2040,6 @@ const onLoad = () => {
           addAllNodes(json.nodes)
             .then(addAllLinks(json.links))
             .then(renderGraph(graphics))
-            // .then( () => {
-            //   $("#loading").hide()
-            //   $("#couve-flor").css("visibility", "visible")
-            // })
-            // .catch( (err) => {
-            //   console.log(err)
-            // })
         })
       }
     } else {
@@ -2061,7 +2054,6 @@ const onLoad = () => {
       } else {
         // sets pageReRun to true
         pageReRun = true
-        console.log(assemblyJson, readIndex)
         $("#fileNameDiv").html(Object.keys(assemblyJson)[readIndex])
           .show()
         // used when no reads are used to filter
@@ -2366,7 +2358,6 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    console.log(readFilejson)
     const outArray = slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]

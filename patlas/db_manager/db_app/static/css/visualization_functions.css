@@ -575,15 +575,15 @@
 .list-group-item{
     height: 40px;
     border-color: grey;
-    color: black;
-    background-color: #C6E7E2;
+    color: black !important;
+    background-color: #C6E7E2 !important;
     padding-top: 0;
     padding-left: 30px;
 }
 .collapse_groups a{
     /*background-color: #657E84;*/
     border-style: solid;
-    color: white;
+    color: white !important;
     border-color: grey;
     border-width: 1px 0px 1px 0px;
     outline: none;
