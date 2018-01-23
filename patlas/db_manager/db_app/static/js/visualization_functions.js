@@ -259,7 +259,6 @@ const onLoad = () => {
     // event for shift key down
     // shows overlay div and exectures startMultiSelect
     document.addEventListener("keydown", (e) => {
-      console.log(multiSelectOverlay)
       if (e.which === 16 && multiSelectOverlay === false && freezeShift === false) { // shift key
         // should close popup open so it doesn't get into listGiFilter
         $("#closePop").click()
