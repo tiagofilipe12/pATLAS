@@ -108,7 +108,6 @@ const resGetter = (nodeId) => {
         queryArrayResfinderGenes, queryArrayResfinderAccession,
         queryArrayResfinderCoverage, queryArrayResfinderIdentity,
         queryArrayResfinderRange)
-
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no Resistance information available in database."

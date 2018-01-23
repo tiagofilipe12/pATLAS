@@ -85,6 +85,26 @@ const createOverlay = (overlayDom, underElement) => {
 }
 
 /**
+ * Function that allows the nodes inside area selection to be colored and in
+ * fact selected
+ * @param {Object} layout - object that contains vivagraph associated
+ * functions or layout
+ * @param {String} nodeId - a string with the accession number of the nodes
+ * being checked to be inside the area selection
+ * @param {Object} topLeft - an object with the x and y coordinates of
+ * top left corner of area selection
+ * @param {Object} bottomRight - an object with the x and y coordinates of
+ * bottom right corner of area selectio
+ * @returns {boolean} - true if inside the area selection; otherwise it will
+ * return false
+ */
+const isInside = (layout, nodeId, topLeft, bottomRight) => {
+  const nodePos = layout.getNodePosition(nodeId)
+  return (topLeft.x < nodePos.x && nodePos.x < bottomRight.x &&
+    topLeft.y < nodePos.y && nodePos.y < bottomRight.y)
+}
+
+/**
  * Function to start multiple selections on graph
  * @param {Object} graph
  * @param {Object} renderer
@@ -98,25 +118,6 @@ const startMultiSelect = (graph, renderer, layout) => {
   const overlay = createOverlay(document.querySelector(".graph-overlay"), document.getElementById("couve-flor"))
   overlay.onAreaSelected( (area) => {
 
-    const higlightIfInside = (node) => {
-
-      const isInside = (nodeId, topLeft, bottomRight) => {
-        const nodePos = layout.getNodePosition(nodeId)
-        return (topLeft.x < nodePos.x && nodePos.x < bottomRight.x &&
-          topLeft.y < nodePos.y && nodePos.y < bottomRight.y)
-      }
-
-      const nodeUI = graphics.getNodeUI(node.id)
-      if (nodeUI) {
-        if (isInside(node.id, topLeft, bottomRight)) {
-          nodeUI.backupColor = nodeUI.color
-          nodeUI.color = 0x23A900 // green
-        } else {
-          nodeUI.color = 0x666370 // default grey
-        }
-      }
-    }
-
     // For the sake of this demo we are using silly O(n) implementation.
     // Could be improved with spatial indexing if required.
     const topLeft = graphics.transformClientToGraphCoordinates({
@@ -128,6 +129,19 @@ const startMultiSelect = (graph, renderer, layout) => {
       x: area.x + area.width,
       y: area.y + area.height
     })
+
+    const higlightIfInside = (node) => {
+
+      const nodeUI = graphics.getNodeUI(node.id)
+      if (nodeUI) {
+        if (isInside(layout, node.id, topLeft, bottomRight)) {
+          nodeUI.backupColor = nodeUI.color
+          nodeUI.color = 0x23A900 // green
+        } else {
+          nodeUI.color = 0x666370 // default grey
+        }
+      }
+    }
 
     graph.forEachNode(higlightIfInside)
     renderer.rerender()
