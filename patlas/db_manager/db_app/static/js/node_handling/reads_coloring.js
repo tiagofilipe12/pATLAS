@@ -286,7 +286,7 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
   const promises = []
   const storeLinks = []
   g.forEachLink( (link) => {
-    const linkUI = (link !== undefined) ? graphics.getLinkUI(link.id) : null
+    const linkUI = (typeof link !== "undefined") ? graphics.getLinkUI(link.id) : null
     let linkColor
     // the lower the value the more intense the color is
     if (mode === "distance") {

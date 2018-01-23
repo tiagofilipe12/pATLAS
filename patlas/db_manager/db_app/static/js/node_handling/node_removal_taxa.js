@@ -331,6 +331,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, listGi, readString,
                      assemblyJson) => {
+  console.log(listGiFilter)
   if (listGiFilter.length > 0) {
     let newListHashes = [] // similar to listHashes from first instance
     $.post("api/getspecies/", { "accession": JSON.stringify(listGiFilter)} ) //,

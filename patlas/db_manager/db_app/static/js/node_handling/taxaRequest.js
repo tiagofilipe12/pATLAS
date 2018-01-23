@@ -1,3 +1,4 @@
+/*globals listGiFilter */
 // cycles nodes
 const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => {
   g.forEachNode( (node) => {
@@ -17,10 +18,11 @@ const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => 
 /////////// IMPORTANT ///////////
 // piece of code that should be used to match species name with
 // dropdown selection
-const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
+const taxaRequest = async (g, graphics, renderer, taxa, currentColor) => {
+  // const listOfRequests = []
   const taxaDb = taxa.replace(" ", "_")
   // return a promise for each query
-  return $.get("api/getaccession/", {"name": taxaDb}, (data, status) => {
+  const queryResults = await $.get("api/getaccession/", {"name": taxaDb}, (data, status) => {
     let listData = []
     for (let object in data) {
       if ({}.hasOwnProperty.call(data, object)) {
@@ -29,6 +31,10 @@ const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
     }
     colorNodes(g, graphics, renderer, listData, currentColor)
     //return listData
-    renderer.rerender() //TODO maybe remove?
+    // renderer.rerender() //TODO maybe remove?
   })
+  queryResults.map( (request) => {
+    listGiFilter.push(request.plasmid_id)
+  })
+  // return listOfRequests
 }

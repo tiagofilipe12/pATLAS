@@ -1305,11 +1305,11 @@ const onLoad = () => {
                 if ({}.hasOwnProperty.call(tempArray, sp)) {
                   promises.push(
                     taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                      .then((results) => {
-                        results.map((request) => {
-                          listGiFilter.push(request.plasmid_id)
-                        })
-                      })
+                      // .then((results) => {
+                      //   results.map((request) => {
+                      //     listGiFilter.push(request.plasmid_id)
+                      //   })
+                      // })
                   )
                 }
               }
@@ -1325,11 +1325,11 @@ const onLoad = () => {
                 if (tempArray.hasOwnProperty(sp)) {
                   promises.push(
                     taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                      .then((results) => {
-                        results.map((request) => {
-                          listGiFilter.push(request.plasmid_id)
-                        })
-                      })
+                      // .then((results) => {
+                      //   results.map((request) => {
+                      //     listGiFilter.push(request.plasmid_id)
+                      //   })
+                      // })
                   )
                 }
               }
@@ -1345,11 +1345,11 @@ const onLoad = () => {
                 if (tempArray.hasOwnProperty(sp)) {
                   promises.push(
                     taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                      .then((results) => {
-                        results.map((request) => {
-                          listGiFilter.push(request.plasmid_id)
-                        })
-                      })
+                      // .then((results) => {
+                      //   results.map((request) => {
+                      //     listGiFilter.push(request.plasmid_id)
+                      //   })
+                      // })
                   )
                 }
               }
@@ -1362,11 +1362,11 @@ const onLoad = () => {
             if (currentSelectionSpecies.hasOwnProperty(i)) {
               promises.push(
                 taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)//, reloadAccessionList)//, changed_nodes)
-                  .then((results) => {
-                    results.map((request) => {
-                      listGiFilter.push(request.plasmid_id)
-                    })
-                  })
+                  // .then((results) => {
+                  //   results.map((request) => {
+                  //     listGiFilter.push(request.plasmid_id)
+                  //   })
+                  // })
               )
             }
           }
@@ -1420,11 +1420,11 @@ const onLoad = () => {
                     for (const sp in tempArray) {
                       promises.push(
                         taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                          .then((results) => {
-                            results.map((request) => {
-                              listGiFilter.push(request.plasmid_id)
-                            })
-                          })
+                          // .then((results) => {
+                          //   results.map((request) => {
+                          //     listGiFilter.push(request.plasmid_id)
+                          //   })
+                          // })
                       )
                     }
                   }
@@ -1443,11 +1443,11 @@ const onLoad = () => {
                       if (tempArray.hasOwnProperty(sp)) {
                         promises.push(
                           taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                            .then((results) => {
-                              results.map((request) => {
-                                listGiFilter.push(request.plasmid_id)
-                              })
-                            })
+                            // .then((results) => {
+                            //   results.map((request) => {
+                            //     listGiFilter.push(request.plasmid_id)
+                            //   })
+                            // })
                         )
                       }
                     }
@@ -1469,11 +1469,11 @@ const onLoad = () => {
                       if (tempArray.hasOwnProperty(sp)) {
                         promises.push(
                           taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                            .then((results) => {
-                              results.map((request) => {
-                                listGiFilter.push(request.plasmid_id)
-                              })
-                            })
+                            // .then((results) => {
+                            //   results.map((request) => {
+                            //     listGiFilter.push(request.plasmid_id)
+                            //   })
+                            // })
                         )
                       }
                     }
@@ -1493,17 +1493,17 @@ const onLoad = () => {
                     promises.push(
                       taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, reloadAccessionList)
                       // })//, changed_nodes)
-                        .then( (results) => {
-                          results.map( (request) => {
-                            listGiFilter.push(request.plasmid_id)
-                          })
-                        })
+                      //   .then( (results) => {
+                      //     results.map( (request) => {
+                      //       listGiFilter.push(request.plasmid_id)
+                      //     })
+                      //   })
                     )
                   }
                 }
               }
               Promise.all(promises)
-                .then(() => {
+                .then( () => {
                   $("#loading").hide()
                   // showLegend.style.display = "block"
                   $("#colorLegend").show()
@@ -1755,7 +1755,7 @@ const onLoad = () => {
     //* *********************//
     $("#distancesSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
-      $("#loading").show()
+      // $("#loading").show()
       $("#scaleLegend").empty()
       showDiv().then( () => {
         linkColoring(g, graphics, renderer, "distance", toggleRatioStatus)
