@@ -47,8 +47,7 @@ let clickedPopupButtonVir = false
 
 // variable to control stats displayer
 let areaSelection = false
-// variable to freeze shift
-let freezeShift = true
+
 
 const getArray = (devel === true) ? $.getJSON("/test") : $.getJSON("/fullDS")
 // an array to store bootstrap table related list for downloads and coloring
@@ -184,6 +183,8 @@ const onLoadWelcome = (callback) => {
  * This function is executed after onLoadWelcome function
  */
 const onLoad = () => {
+  // variable to freeze shift
+  let freezeShift = true
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
   // define layout
@@ -258,6 +259,7 @@ const onLoad = () => {
     // event for shift key down
     // shows overlay div and exectures startMultiSelect
     document.addEventListener("keydown", (e) => {
+      console.log(multiSelectOverlay)
       if (e.which === 16 && multiSelectOverlay === false && freezeShift === false) { // shift key
         // should close popup open so it doesn't get into listGiFilter
         $("#closePop").click()
