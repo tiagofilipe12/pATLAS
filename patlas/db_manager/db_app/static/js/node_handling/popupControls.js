@@ -1,4 +1,17 @@
 /**
+ * Function to fix div string
+ * @param {Array} divNameList
+ * @returns {Array}
+ */
+const quickFixString = (divNameList) => {
+  let returnArray = []
+  for (const divName of divNameList) {
+    returnArray.push($(divName).text().replace(":", ",").trim())
+  }
+  return returnArray
+}
+
+/**
  * Array to export an array to an csv file. This function collects info in
  * an array and forces it to be downloaded to a file
  * @param {Array} array - the array of entries to be dumped into csv export.

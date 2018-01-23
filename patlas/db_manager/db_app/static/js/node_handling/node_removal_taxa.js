@@ -328,7 +328,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
  * @returns {*[]} - returns an array containing two arrays that control the
  * the displayed accessions, both in listGiFilter and in realodAccessionList.
  */
-const requesterDB = async (g, listGiFilter, counter, renderGraph, graphics,
+const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, listGi, readString,
                      assemblyJson) => {
   if (listGiFilter.length > 0) {

@@ -14,7 +14,8 @@
              slideToRight, slideToLeft, Mousetrap, initCallback,
               taxaRequest, pushToMasterReadArray, getArrayMapping,
                getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
-                getArrayAssembly, startMultiSelect, requesterDB*/
+                getArrayAssembly, startMultiSelect, requesterDB,
+                 addAllNodes, addAllLinks, quickFixString*/
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -140,6 +141,24 @@ let listGi = []
 // outside renderGraph
 let renderer
 
+// variable used to control if div is shown or not
+let multiSelectOverlay = false
+// store the node with more links
+let storeMasterNode = []    //cleared every instance of onload
+// start array that controls taxa filters
+const idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"]
+
+let counter = -1 //sets a counter for the loop between the inputs nodes
+// Sets parameters to be passed to WebglCircle in order to change
+// node shape, setting color and size.
+const nodeColor = 0x666370 // hex rrggbb
+const minNodeSize = 4 // a value that assures that the node is
+// displayed without increasing the size of big nodes too much
+
+let list = []   // list to store references already ploted as nodes
+// links between accession numbers
+let listLengths = [] // list to store the lengths of all nodes
+
 /**
  * forces welcomeModal to be the first thing the user sees when the page
  * is loaded.
@@ -165,24 +184,6 @@ const onLoadWelcome = (callback) => {
  * This function is executed after onLoadWelcome function
  */
 const onLoad = () => {
-  // variable used to control if div is shown or not
-  let multiSelectOverlay = false
-  // store the node with more links
-  let storeMasterNode = []    //cleared every instance of onload
-  // start array that controls taxa filters
-  const idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"]
-
-  let counter = -1 //sets a counter for the loop between the inputs nodes
-  // Sets parameters to be passed to WebglCircle in order to change
-  // node shape, setting color and size.
-  const nodeColor = 0x666370 // hex rrggbb
-  const minNodeSize = 4 // a value that assures that the node is
-  // displayed without increasing the size of big nodes too much
-
-  let list = []   // list to store references already ploted as nodes
-  // links between accession numbers
-  let listLengths = [] // list to store the lengths of all nodes
-
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
   // define layout
@@ -200,20 +201,10 @@ const onLoad = () => {
       spring.length = 100 * Math.log10(1 - link.data.distance) + 100
     }
   })
-  // buttons that are able to hide
-  let showRerun = document.getElementById("Re_run"),
-    showGoback = document.getElementById("go_back"),
-    showDownload = document.getElementById("download_ds"),
-    showLegend = document.getElementById("colorLegend"),
-    showTable = document.getElementById("tableShow"),
-    heatMap = document.getElementById("heatmapButtonTab"),
-    plotButton = document.getElementById("plotButton")
-
 
   const graphics = Viva.Graph.View.webglGraphics()
 
   //* Starts graphics renderer *//
-  // TODO without precompute we can easily pass parameters to renderGraph like links distances
   const renderGraph = (graphics) => {
     //const graphics = Viva.Graph.View.webglGraphics()
     //** block #1 for node customization **//
@@ -230,8 +221,6 @@ const onLoad = () => {
 
     //* * END block #1 for node customization **//
     // rerun precomputes 500
-    // const prerender = (devel === true || rerun === true) ? 500 : 0
-    // version that doesn't rerun
     const prerender = (devel === true) ? 500 :
         parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
 
@@ -275,15 +264,8 @@ const onLoad = () => {
         $(".graph-overlay").show()
         multiSelectOverlay = true
         multiSelectOverlayObj = startMultiSelect(g, renderer, layout)
-        showRerun.style.display = "block"
-        showGoback.style.display = "block"
-        showDownload.style.display = "block"
-        showTable.style.display = "block"
-        heatMap.style.display = "block"
-        plotButton.style.display = "block"
-        // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").show()
         areaSelection = true
         listGiFilter = [] //if selection is made listGiFilter should be empty
         previousTableList = []
@@ -391,8 +373,8 @@ const onLoad = () => {
 
       // this sets the popup internal buttons to allow them to run,
       // otherwise they won't run because its own function returns this
-      // variable to false, preveting the popup to expand with its
-      // respectiv functions
+      // variable to false, preventing the popup to expand with its
+      // respective functions
       clickedPopupButtonCard = true
       clickedPopupButtonRes = true
       clickedPopupButtonFamily = true
@@ -413,9 +395,7 @@ const onLoad = () => {
 
       if (currentQueryNode !== false) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
-      } //else {
-        //graphics.getNodeUI(currentQueryNode).color = 0x666370
-      //}
+      }
       currentQueryNode = false
       renderer.rerender()
     })
@@ -686,22 +666,13 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        showLegend.style.display = "none"
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton, #colorLegend").hide()
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").hide()
       }
     })
 
@@ -740,13 +711,8 @@ const onLoad = () => {
           pageReRun = false
           // just show legend if any selection is made at all
           if (legendInst === true) {
-            showLegend.style.display = "block"
-            showRerun.style.display = "block"
-            showGoback.style.display = "block"
-            showDownload.style.display = "block"
-            showTable.style.display = "block"
-            heatMap.style.display = "block"
-            plotButton.style.display = "block"
+            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+              " #plotButton, #colorLegend").show()
           }
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
@@ -818,22 +784,14 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        showLegend.style.display = "none"
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        // showLegend.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton, #colorLegend").hide()
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").hide()
       }
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
@@ -871,13 +829,8 @@ const onLoad = () => {
           pageReRun = false
           // just show legend if any selection is made at all
           if (legendInst === true) {
-            showLegend.style.display = "block"
-            showRerun.style.display = "block"
-            showGoback.style.display = "block"
-            showDownload.style.display = "block"
-            showTable.style.display = "block"
-            heatMap.style.display = "block"
-            plotButton.style.display = "block"
+            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+              " #plotButton, #colorLegend").show()
           }
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
@@ -941,22 +894,13 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        showLegend.style.display = "none"
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton, #colorLegend").hide()
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").hide()
       }
     })
 
@@ -995,13 +939,9 @@ const onLoad = () => {
           pageReRun = false
           // just show legend if any selection is made at all
           if (legendInst === true) {
-            showLegend.style.display = "block"
-            showRerun.style.display = "block"
-            showGoback.style.display = "block"
-            showDownload.style.display = "block"
-            showTable.style.display = "block"
-            heatMap.style.display = "block"
-            plotButton.style.display = "block"
+            // showLegend.style.display = "block"
+            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+              " #plotButton, #colorLegend").show()
           }
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
@@ -1088,24 +1028,14 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        showLegend.style.display = "none"
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        //document.getElementById("go_back").className += " disabled"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        // showLegend.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton, #colorLegend").hide()
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        //document.getElementById("go_back").className += " disabled"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").hide()
       }
     })
 
@@ -1127,7 +1057,6 @@ const onLoad = () => {
       $("#virList").selectpicker("deselectAll")
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
-      // noLegend = false // sets legend to hidden state by default
       // now processes the current selection
       const speciesQuery = document.getElementById("p_Species").innerHTML,
         genusQuery = document.getElementById("p_Genus").innerHTML,
@@ -1158,23 +1087,21 @@ const onLoad = () => {
       const divAlert = document.getElementById("alertId")
       let Alert = false
       for (const i in alertArrays) {
-        // if (alertArrays[i].length === 0) {
-        //   Alert = true
-        //   counter = 4  // counter used to check if more than one dropdown has selected options
-        if (alertArrays[i].length > 0) {
-          counter = counter + 1
-          Alert = false
-        } else if (alertArrays.order.length === 0 &&
-          alertArrays.family.length === 0 &&
+        if (alertArrays.hasOwnProperty(i)) {
+          if (alertArrays[i].length > 0) {
+            counter = counter + 1
+            Alert = false
+          } else if (alertArrays.order.length === 0 &&
+            alertArrays.family.length === 0 &&
             alertArrays.genus.length === 0 &&
             alertArrays.species.length === 0) {
-          Alert = true
+            Alert = true
+          }
         }
-
       }
       if (Alert === true) {
         divAlert.style.display = "block"
-        showLegend.style.display = "none" // removes legend when this
+        $("#colorLegend").hide()
         // warning is raised
         Alert = false
       }
@@ -1183,8 +1110,6 @@ const onLoad = () => {
       window.setTimeout( () => { $("#alertId").hide() }, 5000)
 
       //* *** End Alert for taxa filter ****//
-
-      // make tmpselectedGenus an associative array since it is the base of family and order arrays
 
       let assocFamilyGenus = {}
       let assocOrderGenus = {}
@@ -1257,7 +1182,6 @@ const onLoad = () => {
           storeLis = "<li class='centeredList'><button class='jscolor btn btn-default'" +
             " style='background-color:#f71735'></button>&nbsp;multi-level" +
             " selected taxa</li>"
-          // for (const i in alertArrays.order) {
           let currentSelectionOrder = alertArrays.order
           for (const i in currentSelectionOrder) {
             if (currentSelectionOrder.hasOwnProperty(i)) {
@@ -1265,19 +1189,12 @@ const onLoad = () => {
               for (const sp in tempArray) {
                 if ({}.hasOwnProperty.call(tempArray, sp)) {
                   promises.push(
-                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                      .then((results) => {
-                        results.map((request) => {
-                          listGiFilter.push(request.plasmid_id)
-                        })
-                      })
+                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                   )
                 }
               }
             }
           }
-          // }
-          // for (i in alertArrays.family) {
           let currentSelectionFamily = alertArrays.family
           for (const i in currentSelectionFamily) {
             if (currentSelectionFamily.hasOwnProperty(i)) {
@@ -1285,19 +1202,12 @@ const onLoad = () => {
               for (const sp in tempArray) {
                 if (tempArray.hasOwnProperty(sp)) {
                   promises.push(
-                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                      .then((results) => {
-                        results.map((request) => {
-                          listGiFilter.push(request.plasmid_id)
-                        })
-                      })
+                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                   )
                 }
               }
             }
           }
-          // }
-          // for (i in alertArrays.genus) {
           let currentSelectionGenus = alertArrays.genus
           for (const i in currentSelectionGenus) {
             if (currentSelectionGenus.hasOwnProperty(i)) {
@@ -1305,47 +1215,31 @@ const onLoad = () => {
               for (const sp in tempArray) {
                 if (tempArray.hasOwnProperty(sp)) {
                   promises.push(
-                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                      .then((results) => {
-                        results.map((request) => {
-                          listGiFilter.push(request.plasmid_id)
-                        })
-                      })
+                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                   )
                 }
               }
             }
           }
-          // }
-          // for (i in alertArrays.species) {
           let currentSelectionSpecies = alertArrays.species
           for (const i in currentSelectionSpecies) {
             if (currentSelectionSpecies.hasOwnProperty(i)) {
               promises.push(
-                taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)//, reloadAccessionList)//, changed_nodes)
-                  .then((results) => {
-                    results.map((request) => {
-                      listGiFilter.push(request.plasmid_id)
-                    })
-                  })
+                taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)
               )
             }
           }
           Promise.all(promises)
             .then( () => {
               $("#loading").hide()
-              showLegend.style.display = "block"
+              $("#colorLegend").show()
               document.getElementById("taxa_label").style.display = "block" // show label
               $("#colorLegendBox").empty()
                 .append(storeLis +
                   "<li class='centeredList'><button class='jscolor btn btn-default'" +
                   "style='background-color:#666370' ></button>&nbsp;unselected</li>")
-              showRerun.style.display = "block"
-              showGoback.style.display = "block"
-              showDownload.style.display = "block"
-              showTable.style.display = "block"
-              heatMap.style.display = "block"
-              plotButton.style.display = "block"
+              $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+                " #plotButton").show()
               // enables button group again
               $("#toolButtonGroup button").removeAttr("disabled")
             })
@@ -1376,14 +1270,11 @@ const onLoad = () => {
                       currentSelection[i] + "</li>"
                     // executres node function for family and orders
                     for (const sp in tempArray) {
-                      promises.push(
-                        taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                          .then((results) => {
-                            results.map((request) => {
-                              listGiFilter.push(request.plasmid_id)
-                            })
-                          })
-                      )
+                      if (tempArray.hasOwnProperty(sp)) {
+                        promises.push(
+                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
+                        )
+                      }
                     }
                   }
 
@@ -1400,12 +1291,7 @@ const onLoad = () => {
                     for (const sp in tempArray) {
                       if (tempArray.hasOwnProperty(sp)) {
                         promises.push(
-                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                            .then((results) => {
-                              results.map((request) => {
-                                listGiFilter.push(request.plasmid_id)
-                              })
-                            })
+                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                         )
                       }
                     }
@@ -1426,12 +1312,7 @@ const onLoad = () => {
                     for (const sp in tempArray) {
                       if (tempArray.hasOwnProperty(sp)) {
                         promises.push(
-                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                            .then((results) => {
-                              results.map((request) => {
-                                listGiFilter.push(request.plasmid_id)
-                              })
-                            })
+                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                         )
                       }
                     }
@@ -1449,32 +1330,23 @@ const onLoad = () => {
                     // requests taxa associated accession from db and colors
                     // respective nodes
                     promises.push(
-                      taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, reloadAccessionList)
-                      // })//, changed_nodes)
-                        .then( (results) => {
-                          results.map( (request) => {
-                            listGiFilter.push(request.plasmid_id)
-                          })
-                        })
+                      taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)
                     )
                   }
                 }
               }
               Promise.all(promises)
-                .then(() => {
+                .then( () => {
                   $("#loading").hide()
-                  showLegend.style.display = "block"
+                  // showLegend.style.display = "block"
+                  $("#colorLegend").show()
                   document.getElementById("taxa_label").style.display = "block" // show label
                   $("#colorLegendBox").empty()
                     .append(storeLis +
                       "<li class='centeredList'><button class='jscolor btn btn-default'" +
                       " style='background-color:#666370' ></button>&nbsp;unselected</li>")
-                  showRerun.style.display = "block"
-                  showGoback.style.display = "block"
-                  showDownload.style.display = "block"
-                  showTable.style.display = "block"
-                  heatMap.style.display = "block"
-                  plotButton.style.display = "block"
+                  $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+                    " #plotButton").show()
                   // enables button group again
                   $("#toolButtonGroup button").removeAttr("disabled")
                 })
@@ -1696,7 +1568,6 @@ const onLoad = () => {
       })
       setTimeout( () => {
         renderer.rerender()
-        // TODO raise a warning for users to press play if they want
       }, 100)
 
       // }
@@ -1711,7 +1582,7 @@ const onLoad = () => {
     //* *********************//
     $("#distancesSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
-      $("#loading").show()
+      // $("#loading").show()
       $("#scaleLegend").empty()
       showDiv().then( () => {
         linkColoring(g, graphics, renderer, "distance", toggleRatioStatus)
@@ -1737,12 +1608,7 @@ const onLoad = () => {
         if (div === "") {
           divCounter += 1
           if (divCounter === 5) {
-            // $("#scaleLegend").empty()
-            // $("#scaleString").empty()
-            // $("#distance_label").hide()
-            showLegend.style.display = "none"
-
-            //document.getElementById("reset-links").disabled = "disabled"
+            $("#colorLegend").hide()
           }
         }
       }
@@ -1843,10 +1709,6 @@ const onLoad = () => {
       reloadAccessionList = []  // needs to be killed every instance in
       // order for reload to allow reloading again
       //* * Loading Screen goes on **//
-      // removes disabled from class in go_back button
-      // document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      // document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      // document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       showDiv().then( () => {
         // removes nodes
         setTimeout( () => {
@@ -2113,12 +1975,14 @@ const onLoad = () => {
       colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
 
       // handles hidden buttons
-      showRerun.style.display = "block"
-      showGoback.style.display = "block"
-      showDownload.style.display = "block"
-      showTable.style.display = "block"
-      heatMap.style.display = "block"
-      plotButton.style.display = "block"
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton").show()
+      // showRerun.style.display = "block"
+      // showGoback.style.display = "block"
+      // showDownload.style.display = "block"
+      // showTable.style.display = "block"
+      // heatMap.style.display = "block"
+      // plotButton.style.display = "block"
       // sets listGiFilter to the selected nodes
       listGiFilter = bootstrapTableList
       bootstrapTableList = []
@@ -2151,13 +2015,6 @@ const onLoad = () => {
   $("#downloadCsv").unbind("click").bind("click", () => {
   // $(document).on("click", "#downloadCsv", () => {
 
-    const quickFixString = (divNameList) => {
-      let returnArray = []
-      for (const divName of divNameList) {
-        returnArray.push($(divName).text().replace(":", ",").trim())
-      }
-      return returnArray
-    }
     // execute the same replacement function for all this divs
     const targetArray = quickFixString([
       "#accessionPop",

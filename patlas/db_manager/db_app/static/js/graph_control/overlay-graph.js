@@ -118,6 +118,18 @@ const startMultiSelect = (graph, renderer, layout) => {
   const overlay = createOverlay(document.querySelector(".graph-overlay"), document.getElementById("couve-flor"))
   overlay.onAreaSelected( (area) => {
 
+    // For the sake of this demo we are using silly O(n) implementation.
+    // Could be improved with spatial indexing if required.
+    const topLeft = graphics.transformClientToGraphCoordinates({
+      x: area.x,
+      y: area.y
+    })
+
+    const bottomRight = graphics.transformClientToGraphCoordinates({
+      x: area.x + area.width,
+      y: area.y + area.height
+    })
+
     const higlightIfInside = (node) => {
 
       const nodeUI = graphics.getNodeUI(node.id)
@@ -130,18 +142,6 @@ const startMultiSelect = (graph, renderer, layout) => {
         }
       }
     }
-
-    // For the sake of this demo we are using silly O(n) implementation.
-    // Could be improved with spatial indexing if required.
-    const topLeft = graphics.transformClientToGraphCoordinates({
-      x: area.x,
-      y: area.y
-    })
-
-    const bottomRight = graphics.transformClientToGraphCoordinates({
-      x: area.x + area.width,
-      y: area.y + area.height
-    })
 
     graph.forEachNode(higlightIfInside)
     renderer.rerender()
