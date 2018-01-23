@@ -1,4 +1,4 @@
-/*globals listLengths, listGi, list, totalNumberOfLinks */
+/*globals listLengths, listGi, list, totalNumberOfLinks, counter */
 
 const addAllNodes = (g, json, layout) => {
   return new Promise((resolve, reject) => {

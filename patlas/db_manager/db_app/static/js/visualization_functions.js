@@ -14,7 +14,8 @@
              slideToRight, slideToLeft, Mousetrap, initCallback,
               taxaRequest, pushToMasterReadArray, getArrayMapping,
                getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
-                getArrayAssembly, startMultiSelect, requesterDB*/
+                getArrayAssembly, startMultiSelect, requesterDB,
+                 addAllNodes, addAllLinks*/
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -215,13 +216,13 @@ const onLoad = () => {
     }
   })
   // buttons that are able to hide
-  let showRerun = document.getElementById("Re_run"),
-    showGoback = document.getElementById("go_back"),
-    showDownload = document.getElementById("download_ds"),
-    showLegend = document.getElementById("colorLegend"),
-    showTable = document.getElementById("tableShow"),
-    heatMap = document.getElementById("heatmapButtonTab"),
-    plotButton = document.getElementById("plotButton")
+  // let showRerun = document.getElementById("Re_run"),
+  //   showGoback = document.getElementById("go_back"),
+  //   showDownload = document.getElementById("download_ds"),
+  let showLegend = document.getElementById("colorLegend")
+    // showTable = document.getElementById("tableShow"),
+    // heatMap = document.getElementById("heatmapButtonTab"),
+    // plotButton = document.getElementById("plotButton")
 
 
   const graphics = Viva.Graph.View.webglGraphics()
@@ -288,12 +289,14 @@ const onLoad = () => {
         $(".graph-overlay").show()
         multiSelectOverlay = true
         multiSelectOverlayObj = startMultiSelect(g, renderer, layout)
-        showRerun.style.display = "block"
-        showGoback.style.display = "block"
-        showDownload.style.display = "block"
-        showTable.style.display = "block"
-        heatMap.style.display = "block"
-        plotButton.style.display = "block"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").show()
+        // showRerun.style.display = "block"
+        // showGoback.style.display = "block"
+        // showDownload.style.display = "block"
+        // showTable.style.display = "block"
+        // heatMap.style.display = "block"
+        // plotButton.style.display = "block"
         // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
@@ -699,22 +702,26 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        showLegend.style.display = "none"
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        // showLegend.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton, #colorLegend").hide()
+        // showRerun.style.display = "none"
+        // showGoback.style.display = "none"
+        // showDownload.style.display = "none"
+        // showTable.style.display = "none"
+        // heatMap.style.display = "none"
+        // plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").hide()
+        // showRerun.style.display = "none"
+        // showGoback.style.display = "none"
+        // showDownload.style.display = "none"
+        // showTable.style.display = "none"
+        // heatMap.style.display = "none"
+        // plotButton.style.display = "none"
       }
     })
 
@@ -753,13 +760,15 @@ const onLoad = () => {
           pageReRun = false
           // just show legend if any selection is made at all
           if (legendInst === true) {
-            showLegend.style.display = "block"
-            showRerun.style.display = "block"
-            showGoback.style.display = "block"
-            showDownload.style.display = "block"
-            showTable.style.display = "block"
-            heatMap.style.display = "block"
-            plotButton.style.display = "block"
+            // showLegend.style.display = "block"
+            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+              " #plotButton, #colorLegend").show()
+            // showRerun.style.display = "block"
+            // showGoback.style.display = "block"
+            // showDownload.style.display = "block"
+            // showTable.style.display = "block"
+            // heatMap.style.display = "block"
+            // plotButton.style.display = "block"
           }
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
@@ -831,22 +840,26 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        showLegend.style.display = "none"
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        // showLegend.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton, #colorLegend").hide()
+        // showRerun.style.display = "none"
+        // showGoback.style.display = "none"
+        // showDownload.style.display = "none"
+        // showTable.style.display = "none"
+        // heatMap.style.display = "none"
+        // plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").hide()
+        // showRerun.style.display = "none"
+        // showGoback.style.display = "none"
+        // showDownload.style.display = "none"
+        // showTable.style.display = "none"
+        // heatMap.style.display = "none"
+        // plotButton.style.display = "none"
       }
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
@@ -884,13 +897,15 @@ const onLoad = () => {
           pageReRun = false
           // just show legend if any selection is made at all
           if (legendInst === true) {
-            showLegend.style.display = "block"
-            showRerun.style.display = "block"
-            showGoback.style.display = "block"
-            showDownload.style.display = "block"
-            showTable.style.display = "block"
-            heatMap.style.display = "block"
-            plotButton.style.display = "block"
+            // showLegend.style.display = "block"
+            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+              " #plotButton, #colorLegend").show()
+            // showRerun.style.display = "block"
+            // showGoback.style.display = "block"
+            // showDownload.style.display = "block"
+            // showTable.style.display = "block"
+            // heatMap.style.display = "block"
+            // plotButton.style.display = "block"
           }
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
@@ -954,22 +969,26 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        showLegend.style.display = "none"
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        // showLegend.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton, #colorLegend").hide()
+        // showRerun.style.display = "none"
+        // showGoback.style.display = "none"
+        // showDownload.style.display = "none"
+        // showTable.style.display = "none"
+        // heatMap.style.display = "none"
+        // plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").hide()
+        // showRerun.style.display = "none"
+        // showGoback.style.display = "none"
+        // showDownload.style.display = "none"
+        // showTable.style.display = "none"
+        // heatMap.style.display = "none"
+        // plotButton.style.display = "none"
       }
     })
 
@@ -1008,13 +1027,15 @@ const onLoad = () => {
           pageReRun = false
           // just show legend if any selection is made at all
           if (legendInst === true) {
-            showLegend.style.display = "block"
-            showRerun.style.display = "block"
-            showGoback.style.display = "block"
-            showDownload.style.display = "block"
-            showTable.style.display = "block"
-            heatMap.style.display = "block"
-            plotButton.style.display = "block"
+            // showLegend.style.display = "block"
+            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+              " #plotButton, #colorLegend").show()
+            // showRerun.style.display = "block"
+            // showGoback.style.display = "block"
+            // showDownload.style.display = "block"
+            // showTable.style.display = "block"
+            // heatMap.style.display = "block"
+            // plotButton.style.display = "block"
           }
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
@@ -1101,24 +1122,28 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        showLegend.style.display = "none"
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
+        // showLegend.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton, #colorLegend").hide()
+        // showRerun.style.display = "none"
+        // showGoback.style.display = "none"
         //document.getElementById("go_back").className += " disabled"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        // showDownload.style.display = "none"
+        // showTable.style.display = "none"
+        // heatMap.style.display = "none"
+        // plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
-        showRerun.style.display = "none"
-        showGoback.style.display = "none"
+        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+          " #plotButton").hide()
+        // showRerun.style.display = "none"
+        // showGoback.style.display = "none"
         //document.getElementById("go_back").className += " disabled"
-        showDownload.style.display = "none"
-        showTable.style.display = "none"
-        heatMap.style.display = "none"
-        plotButton.style.display = "none"
+        // showDownload.style.display = "none"
+        // showTable.style.display = "none"
+        // heatMap.style.display = "none"
+        // plotButton.style.display = "none"
       }
     })
 
@@ -1187,7 +1212,8 @@ const onLoad = () => {
       }
       if (Alert === true) {
         divAlert.style.display = "block"
-        showLegend.style.display = "none" // removes legend when this
+        $("#colorLegend").hide()
+        // showLegend.style.display = "none" // removes legend when this
         // warning is raised
         Alert = false
       }
@@ -1347,18 +1373,21 @@ const onLoad = () => {
           Promise.all(promises)
             .then( () => {
               $("#loading").hide()
-              showLegend.style.display = "block"
+              // showLegend.style.display = "block"
+              $("#colorLegend").show()
               document.getElementById("taxa_label").style.display = "block" // show label
               $("#colorLegendBox").empty()
                 .append(storeLis +
                   "<li class='centeredList'><button class='jscolor btn btn-default'" +
                   "style='background-color:#666370' ></button>&nbsp;unselected</li>")
-              showRerun.style.display = "block"
-              showGoback.style.display = "block"
-              showDownload.style.display = "block"
-              showTable.style.display = "block"
-              heatMap.style.display = "block"
-              plotButton.style.display = "block"
+              $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+                " #plotButton").show()
+              // showRerun.style.display = "block"
+              // showGoback.style.display = "block"
+              // showDownload.style.display = "block"
+              // showTable.style.display = "block"
+              // heatMap.style.display = "block"
+              // plotButton.style.display = "block"
               // enables button group again
               $("#toolButtonGroup button").removeAttr("disabled")
             })
@@ -1476,18 +1505,21 @@ const onLoad = () => {
               Promise.all(promises)
                 .then(() => {
                   $("#loading").hide()
-                  showLegend.style.display = "block"
+                  // showLegend.style.display = "block"
+                  $("#colorLegend").show()
                   document.getElementById("taxa_label").style.display = "block" // show label
                   $("#colorLegendBox").empty()
                     .append(storeLis +
                       "<li class='centeredList'><button class='jscolor btn btn-default'" +
                       " style='background-color:#666370' ></button>&nbsp;unselected</li>")
-                  showRerun.style.display = "block"
-                  showGoback.style.display = "block"
-                  showDownload.style.display = "block"
-                  showTable.style.display = "block"
-                  heatMap.style.display = "block"
-                  plotButton.style.display = "block"
+                  $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+                    " #plotButton").show()
+                  // showRerun.style.display = "block"
+                  // showGoback.style.display = "block"
+                  // showDownload.style.display = "block"
+                  // showTable.style.display = "block"
+                  // heatMap.style.display = "block"
+                  // plotButton.style.display = "block"
                   // enables button group again
                   $("#toolButtonGroup button").removeAttr("disabled")
                 })
@@ -1752,7 +1784,8 @@ const onLoad = () => {
             // $("#scaleLegend").empty()
             // $("#scaleString").empty()
             // $("#distance_label").hide()
-            showLegend.style.display = "none"
+            $("#colorLegend").hide()
+            // showLegend.style.display = "none"
 
             //document.getElementById("reset-links").disabled = "disabled"
           }
@@ -1910,7 +1943,6 @@ const onLoad = () => {
     })
 
   } // closes renderGraph
-  //}) //end of getArray
 
   const init = () => {
     if (firstInstace === true) {
@@ -1967,77 +1999,10 @@ const onLoad = () => {
         // file for loading the graph.
         getArray.done(function (json) {
           graphSize = json.nodes.length
-          // const addAllNodes = (json) => {
-          //   return new Promise((resolve, reject) => {
-          //     for (const i in json) {
-          //       if (json.hasOwnProperty(i)) {
-          //         const array = json[i]
-          //         counter++
-          //         const sequence = array.id
-          //         const seqLength = array.length
-          //         const logLength = Math.log(parseInt(seqLength))
-          //         listLengths.push(seqLength)
-          //         listGi.push(sequence)
-          //
-          //         if (list.indexOf(sequence) < 0) {
-          //           g.addNode(sequence, {
-          //             sequence: "<span style='color:#468499'>Accession:" +
-          //             " </span><a" +
-          //             " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-          //             seqLength: "<span" +
-          //             " style='color:#468499'>Sequence length:" +
-          //             " </span>" + seqLength,
-          //             logLength
-          //           })
-          //           list.push(sequence)
-          //           layout.setNodePosition(sequence, array.position.x, array.position.y)
-          //         } else {
-          //           reject(`node wasn't added: ${sequence}`)
-          //         }
-          //         if (i + 1 === json.length) {
-          //           resolve("sucessfully added all nodes")
-          //         }
-          //       }
-          //     }
-          //   })
-          // }
-          //
-          // const addAllLinks = (json) => {
-          //   totalNumberOfLinks = json.length
-          //   return new Promise( (resolve, reject) => {
-          //     for (const i in json) {
-          //       if (json.hasOwnProperty(i)) {
-          //         const array = json[i]
-          //         const sequence = array.parentId   // stores sequences
-          //         const reference = array.childId  // stores references
-          //         const distNSizes = array.distNSizes   // stores distances
-          //         // and sizeRatios
-          //         if (reference !== "") {
-          //           // here it adds only unique links because filtered.json file
-          //           // just stores unique links
-          //           g.addLink(sequence, reference, distNSizes)
-          //         } else {
-          //           // if there is no reference associated with sequence then
-          //           // there are no links
-          //           reject(new Error(`link wasn't added: ${array.childId} -> ${sequence}`))
-          //         }
-          //         if (i + 1 === json.lenght) {
-          //           resolve("sucessefully added all links")
-          //         }
-          //       }
-          //     }
-          //   })
-          // }
+
           addAllNodes(g, json.nodes, layout)
             .then(addAllLinks(g, json.links))
             .then(renderGraph(graphics))
-            // .then( () => {
-            //   $("#loading").hide()
-            //   $("#couve-flor").css("visibility", "visible")
-            // })
-            // .catch( (err) => {
-            //   console.log(err)
-            // })
         })
       }
     } else {
@@ -2189,12 +2154,14 @@ const onLoad = () => {
       colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
 
       // handles hidden buttons
-      showRerun.style.display = "block"
-      showGoback.style.display = "block"
-      showDownload.style.display = "block"
-      showTable.style.display = "block"
-      heatMap.style.display = "block"
-      plotButton.style.display = "block"
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton").show()
+      // showRerun.style.display = "block"
+      // showGoback.style.display = "block"
+      // showDownload.style.display = "block"
+      // showTable.style.display = "block"
+      // heatMap.style.display = "block"
+      // plotButton.style.display = "block"
       // sets listGiFilter to the selected nodes
       listGiFilter = bootstrapTableList
       bootstrapTableList = []
