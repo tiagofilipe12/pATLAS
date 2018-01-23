@@ -1830,10 +1830,11 @@ const onLoad = () => {
         // file for loading the graph.
         getArray.done(function (json) {
           graphSize = json.nodes.length
-
+          // sequentially runs the following functions
+          // this in fact runs sequentially
           addAllNodes(g, json.nodes, layout)
-            .then(addAllLinks(g, json.links))
-            .then(renderGraph(graphics))
+          addAllLinks(g, json.links)
+          renderGraph(graphics)
         })
       }
     } else {
