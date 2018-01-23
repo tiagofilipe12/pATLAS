@@ -1286,9 +1286,11 @@ const onLoad = () => {
                       currentSelection[i] + "</li>"
                     // executres node function for family and orders
                     for (const sp in tempArray) {
-                      promises.push(
-                        taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
-                      )
+                      if (tempArray.hasOwnProperty(sp)) {
+                        promises.push(
+                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
+                        )
+                      }
                     }
                   }
 

@@ -85,6 +85,26 @@ const createOverlay = (overlayDom, underElement) => {
 }
 
 /**
+ * Function that allows the nodes inside area selection to be colored and in
+ * fact selected
+ * @param {Object} layout - object that contains vivagraph associated
+ * functions or layout
+ * @param {String} nodeId - a string with the accession number of the nodes
+ * being checked to be inside the area selection
+ * @param {Object} topLeft - an object with the x and y coordinates of
+ * top left corner of area selection
+ * @param {Object} bottomRight - an object with the x and y coordinates of
+ * bottom right corner of area selectio
+ * @returns {boolean} - true if inside the area selection; otherwise it will
+ * return false
+ */
+const isInside = (layout, nodeId, topLeft, bottomRight) => {
+  const nodePos = layout.getNodePosition(nodeId)
+  return (topLeft.x < nodePos.x && nodePos.x < bottomRight.x &&
+    topLeft.y < nodePos.y && nodePos.y < bottomRight.y)
+}
+
+/**
  * Function to start multiple selections on graph
  * @param {Object} graph
  * @param {Object} renderer
@@ -100,15 +120,9 @@ const startMultiSelect = (graph, renderer, layout) => {
 
     const higlightIfInside = (node) => {
 
-      const isInside = (nodeId, topLeft, bottomRight) => {
-        const nodePos = layout.getNodePosition(nodeId)
-        return (topLeft.x < nodePos.x && nodePos.x < bottomRight.x &&
-          topLeft.y < nodePos.y && nodePos.y < bottomRight.y)
-      }
-
       const nodeUI = graphics.getNodeUI(node.id)
       if (nodeUI) {
-        if (isInside(node.id, topLeft, bottomRight)) {
+        if (isInside(layout, node.id, topLeft, bottomRight)) {
           nodeUI.backupColor = nodeUI.color
           nodeUI.color = 0x23A900 // green
         } else {
