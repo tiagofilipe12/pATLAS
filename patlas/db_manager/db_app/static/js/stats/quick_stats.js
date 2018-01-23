@@ -662,7 +662,6 @@ const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortV
       selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
         (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
         plasmids. The remaining ${tempList.length - results.length} are unknown.`
-
       $("#spanEntries").html(selector[taxaType].alertString)
       $("#alertPlotEntries").show()
 
@@ -996,7 +995,7 @@ const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFi
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton.replace(" ", "")].state === false
     || selector[clickerButton.replace(" ", "")].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
     previousTableList = listGiFilter
-    return (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+    return (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton.replace(" ", ""), false, false)
       : statsColor(g, graphics, renderer, clickerButton.replace(" ", ""), false, false)
   } else {
     // this code prevents plot from being queried again, since it is already
