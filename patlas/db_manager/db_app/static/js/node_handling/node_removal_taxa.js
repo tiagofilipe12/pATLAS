@@ -385,12 +385,14 @@ const requesterDB = async (g, listGiFilter, counter, renderGraph, graphics,
       })
       .then( () => {
         renderGraph(graphics)
-        if (readString !== false) {
+        if (readString !== false ) {
           readColoring(g, listGi, graphics, renderer, readString)
         } else if (assemblyJson !== false) {
-          let masterReadArray = [] //needs to reset this array for the assembly
-          // function to be successful
-          listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
+          const assemblyString = JSON.parse(Object.values(assemblyJson)[0])
+          readColoring(g, listGi, graphics, renderer, assemblyString)
+        //   let masterReadArray = [] //needs to reset this array for the assembly
+        //   // function to be successful
+        //   listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
         } else if ($("#p_Card").html() !== "Card:" ||
           $("#p_Resfinder").html() !== "Resfinder:") {
           $("#resSubmit").click()
