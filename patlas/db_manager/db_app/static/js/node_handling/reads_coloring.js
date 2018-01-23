@@ -102,10 +102,8 @@ const nodeIter = (g, readColor, gi, graphics, perc, copyNumber) => {
  * @param {boolean} readMode - boolean used to control if we are dealing
  * with imports from files or with distance or size ratio modes
  */
-const palette = (scale, x, readMode) => { // x is the number of colors
-// to the
-// gradient
-  showLegend = document.getElementById("colorLegend") // global variable to
+const palette = (scale, x, readMode) => {
+//   showLegend = document.getElementById("colorLegend") // global variable to
   // be reset by the button reset-filters
   showLegend.style.display = "block"
   const tmpArray = new Array(x)// create an empty array with length x
@@ -245,21 +243,10 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
     .append("<div class='med'>" +
       meanValue.toFixed(2).toString() + "</div>")
     .append("<div class='max'>1</div>")
-  document.getElementById("read_label").style.display = "block" // show label
+  $("#read_label").show()
   // control all related divs
-  // TODO this code is duplicated, should be fixed
-  let showRerun = document.getElementById("Re_run")
-  let showGoback = document.getElementById("go_back")
-  let showDownload = document.getElementById("download_ds")
-  let showTable = document.getElementById("tableShow")
-  let heatMap = document.getElementById("heatmapButtonTab")
-  let plotButton = document.getElementById("plotButton")
-  showRerun.style.display = "block"
-  showGoback.style.display = "block"
-  showDownload.style.display = "block"
-  showTable.style.display = "block"
-  heatMap.style.display = "block"
-  plotButton.style.display = "block"
+  $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+    " #plotButton, #colorLegend").show()
   renderer.rerender()
   $("#loading").hide()
   return [listGi, listGiFilter]
@@ -390,78 +377,33 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   nodeColorReset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
   if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-    showLegend.style.display = "none"
-    // showRerun.style.display = "none"
-    // showGoback.style.display = "none"
-    //document.getElementById("go_back").className += " disabled"
-    // showDownload.style.display = "none"
-    // showTable.style.display = "none"
-    document.getElementById("read_label").style.display = "none" // hide label
+    $("#colorLegend, #read_label").hide()
     $("#readLegend").empty()
   } else {
-    $("#colorLegend").hide()
-    $("#colorLegendBox").empty()
-    document.getElementById("taxa_label").style.display = "none" // hide label
-    // showRerun.style.display = "none"
-    // showGoback.style.display = "none"
-    //document.getElementById("go_back").className += " disabled"
-    // showDownload.style.display = "none"
-    // showTable.style.display = "none"
-    document.getElementById("read_label").style.display = "none" // hide label
-    $("#readLegend").empty()
+    $("#colorLegend, #taxa_label, #read_label").hide()
+    $("#colorLegendBox, #readLegend").empty()
   }
+  // reset text boxes in modals
   resetDisplayTaxaBox(idsArrays)
-  // hide and empty assembly related legend
-  $("#assemblyLabel").hide()
-  $("#assemblyLegend").empty()
-  // empty and hide legend for taxa
-  $("#taxa_label").hide()
-  $("#colorLegendBox").empty()
-  // empty and hide legend for resistances
-  $("#res_label").hide()
-  $("#colorLegendBoxRes").empty()
-  // empty and hide legend for plasmid families
-  $("#pf_label").hide()
-  $("#colorLegendBoxPf").empty()
-  // empty and hide legend for virulence factors
-  $("#vir_label").hide()
-  $("#colorLegendBoxVir").empty()
-  // empty and hide distances legend
-  // $("#distance_label").hide()
-  // $("#scaleLegend").empty()
-  // empty and hide read legend
-  $("#read_label").hide()
-  $("#readLegend").empty()
+  resetDisplayTaxaBox(["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Virulence"])
+  // hide and empty divs
+  $("#assemblyLabel, #taxa_label, #res_label, #pf_label, #vir_label, #read_label").hide()
+  $("#assemblyLegend, #colorLegendBox, #colorLegendBoxRes," +
+    " #colorLegendBoxPf, #colorLegendBoxVir, #readLegend").empty()
 
   // resets dropdown selections
-  $("#orderList").selectpicker("deselectAll")
-  $("#familyList").selectpicker("deselectAll")
-  $("#genusList").selectpicker("deselectAll")
-  $("#speciesList").selectpicker("deselectAll")
+  $("#orderList, #familyList, #genusList, #speciesList, #cardList, #resList," +
+    " #plasmidFamiliesList, #virList").selectpicker("deselectAll")
+
+  // function that forces the full removal of selectors
   forceSelectorFullRemoval("speciesList")
   forceSelectorFullRemoval("genusList")
   forceSelectorFullRemoval("familyList")
   forceSelectorFullRemoval("orderList")
-
-  // reset plasmid families and resistance associated divs
-  // this needs an array for reusability purposes
-  resetDisplayTaxaBox(["p_Plasmidfinder"])
   forceSelectorFullRemoval("plasmidFamiliesList")
-  // resets dropdown selections
-  $("#plasmidFamiliesList").selectpicker("deselectAll")
-
-  resetDisplayTaxaBox(["p_Resfinder", "p_Card"])
-  // resets dropdown selections
-  $("#cardList").selectpicker("deselectAll")
-  $("#resList").selectpicker("deselectAll")
   forceSelectorFullRemoval("cardList")
   forceSelectorFullRemoval("resList")
-
-  // resets dropdown selections for virulence factors
-  resetDisplayTaxaBox(["p_Virulence"])
   forceSelectorFullRemoval("virList")
-  // resets dropdown selections
-  $("#virList").selectpicker("deselectAll")
 }
 /**
  * Function to push value to masterReadArray

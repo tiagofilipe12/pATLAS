@@ -159,6 +159,9 @@ let list = []   // list to store references already ploted as nodes
 // links between accession numbers
 let listLengths = [] // list to store the lengths of all nodes
 
+// variable for if checks for that check if colorLegend is shown
+let showLegend = document.getElementById("colorLegend")
+
 /**
  * forces welcomeModal to be the first thing the user sees when the page
  * is loaded.
@@ -215,15 +218,6 @@ const onLoad = () => {
       spring.length = 100 * Math.log10(1 - link.data.distance) + 100
     }
   })
-  // buttons that are able to hide
-  // let showRerun = document.getElementById("Re_run"),
-  //   showGoback = document.getElementById("go_back"),
-  //   showDownload = document.getElementById("download_ds"),
-  let showLegend = document.getElementById("colorLegend")
-    // showTable = document.getElementById("tableShow"),
-    // heatMap = document.getElementById("heatmapButtonTab"),
-    // plotButton = document.getElementById("plotButton")
-
 
   const graphics = Viva.Graph.View.webglGraphics()
 
@@ -244,8 +238,6 @@ const onLoad = () => {
 
     //* * END block #1 for node customization **//
     // rerun precomputes 500
-    // const prerender = (devel === true || rerun === true) ? 500 : 0
-    // version that doesn't rerun
     const prerender = (devel === true) ? 500 :
         parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
 
@@ -291,15 +283,6 @@ const onLoad = () => {
         multiSelectOverlayObj = startMultiSelect(g, renderer, layout)
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton").show()
-        // showRerun.style.display = "block"
-        // showGoback.style.display = "block"
-        // showDownload.style.display = "block"
-        // showTable.style.display = "block"
-        // heatMap.style.display = "block"
-        // plotButton.style.display = "block"
-        // showGoback.className = showGoback.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        // showDownload.className = showDownload.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-        // showTable.className = showTable.className.replace(/(?:^|\s)disabled(?!\S)/g, "")
         areaSelection = true
         listGiFilter = [] //if selection is made listGiFilter should be empty
         previousTableList = []
@@ -407,8 +390,8 @@ const onLoad = () => {
 
       // this sets the popup internal buttons to allow them to run,
       // otherwise they won't run because its own function returns this
-      // variable to false, preveting the popup to expand with its
-      // respectiv functions
+      // variable to false, preventing the popup to expand with its
+      // respective functions
       clickedPopupButtonCard = true
       clickedPopupButtonRes = true
       clickedPopupButtonFamily = true
@@ -429,9 +412,7 @@ const onLoad = () => {
 
       if (currentQueryNode !== false) {
         graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
-      } //else {
-        //graphics.getNodeUI(currentQueryNode).color = 0x666370
-      //}
+      }
       currentQueryNode = false
       renderer.rerender()
     })
@@ -702,26 +683,13 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        // showLegend.style.display = "none"
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton, #colorLegend").hide()
-        // showRerun.style.display = "none"
-        // showGoback.style.display = "none"
-        // showDownload.style.display = "none"
-        // showTable.style.display = "none"
-        // heatMap.style.display = "none"
-        // plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton").hide()
-        // showRerun.style.display = "none"
-        // showGoback.style.display = "none"
-        // showDownload.style.display = "none"
-        // showTable.style.display = "none"
-        // heatMap.style.display = "none"
-        // plotButton.style.display = "none"
       }
     })
 
@@ -760,15 +728,8 @@ const onLoad = () => {
           pageReRun = false
           // just show legend if any selection is made at all
           if (legendInst === true) {
-            // showLegend.style.display = "block"
             $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
               " #plotButton, #colorLegend").show()
-            // showRerun.style.display = "block"
-            // showGoback.style.display = "block"
-            // showDownload.style.display = "block"
-            // showTable.style.display = "block"
-            // heatMap.style.display = "block"
-            // plotButton.style.display = "block"
           }
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
@@ -843,23 +804,11 @@ const onLoad = () => {
         // showLegend.style.display = "none"
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton, #colorLegend").hide()
-        // showRerun.style.display = "none"
-        // showGoback.style.display = "none"
-        // showDownload.style.display = "none"
-        // showTable.style.display = "none"
-        // heatMap.style.display = "none"
-        // plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton").hide()
-        // showRerun.style.display = "none"
-        // showGoback.style.display = "none"
-        // showDownload.style.display = "none"
-        // showTable.style.display = "none"
-        // heatMap.style.display = "none"
-        // plotButton.style.display = "none"
       }
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
@@ -897,15 +846,8 @@ const onLoad = () => {
           pageReRun = false
           // just show legend if any selection is made at all
           if (legendInst === true) {
-            // showLegend.style.display = "block"
             $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
               " #plotButton, #colorLegend").show()
-            // showRerun.style.display = "block"
-            // showGoback.style.display = "block"
-            // showDownload.style.display = "block"
-            // showTable.style.display = "block"
-            // heatMap.style.display = "block"
-            // plotButton.style.display = "block"
           }
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
@@ -969,26 +911,13 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-        // showLegend.style.display = "none"
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton, #colorLegend").hide()
-        // showRerun.style.display = "none"
-        // showGoback.style.display = "none"
-        // showDownload.style.display = "none"
-        // showTable.style.display = "none"
-        // heatMap.style.display = "none"
-        // plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton").hide()
-        // showRerun.style.display = "none"
-        // showGoback.style.display = "none"
-        // showDownload.style.display = "none"
-        // showTable.style.display = "none"
-        // heatMap.style.display = "none"
-        // plotButton.style.display = "none"
       }
     })
 
@@ -1030,12 +959,6 @@ const onLoad = () => {
             // showLegend.style.display = "block"
             $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
               " #plotButton, #colorLegend").show()
-            // showRerun.style.display = "block"
-            // showGoback.style.display = "block"
-            // showDownload.style.display = "block"
-            // showTable.style.display = "block"
-            // heatMap.style.display = "block"
-            // plotButton.style.display = "block"
           }
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
@@ -1125,25 +1048,11 @@ const onLoad = () => {
         // showLegend.style.display = "none"
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton, #colorLegend").hide()
-        // showRerun.style.display = "none"
-        // showGoback.style.display = "none"
-        //document.getElementById("go_back").className += " disabled"
-        // showDownload.style.display = "none"
-        // showTable.style.display = "none"
-        // heatMap.style.display = "none"
-        // plotButton.style.display = "none"
       } else {
         $("#colorLegendBox").empty()
         document.getElementById("taxa_label").style.display = "none" // hide label
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton").hide()
-        // showRerun.style.display = "none"
-        // showGoback.style.display = "none"
-        //document.getElementById("go_back").className += " disabled"
-        // showDownload.style.display = "none"
-        // showTable.style.display = "none"
-        // heatMap.style.display = "none"
-        // plotButton.style.display = "none"
       }
     })
 
@@ -1165,7 +1074,6 @@ const onLoad = () => {
       $("#virList").selectpicker("deselectAll")
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
-      // noLegend = false // sets legend to hidden state by default
       // now processes the current selection
       const speciesQuery = document.getElementById("p_Species").innerHTML,
         genusQuery = document.getElementById("p_Genus").innerHTML,
@@ -1196,9 +1104,6 @@ const onLoad = () => {
       const divAlert = document.getElementById("alertId")
       let Alert = false
       for (const i in alertArrays) {
-        // if (alertArrays[i].length === 0) {
-        //   Alert = true
-        //   counter = 4  // counter used to check if more than one dropdown has selected options
         if (alertArrays[i].length > 0) {
           counter = counter + 1
           Alert = false
@@ -1213,7 +1118,6 @@ const onLoad = () => {
       if (Alert === true) {
         divAlert.style.display = "block"
         $("#colorLegend").hide()
-        // showLegend.style.display = "none" // removes legend when this
         // warning is raised
         Alert = false
       }
@@ -1222,8 +1126,6 @@ const onLoad = () => {
       window.setTimeout( () => { $("#alertId").hide() }, 5000)
 
       //* *** End Alert for taxa filter ****//
-
-      // make tmpselectedGenus an associative array since it is the base of family and order arrays
 
       let assocFamilyGenus = {}
       let assocOrderGenus = {}
@@ -1296,7 +1198,6 @@ const onLoad = () => {
           storeLis = "<li class='centeredList'><button class='jscolor btn btn-default'" +
             " style='background-color:#f71735'></button>&nbsp;multi-level" +
             " selected taxa</li>"
-          // for (const i in alertArrays.order) {
           let currentSelectionOrder = alertArrays.order
           for (const i in currentSelectionOrder) {
             if (currentSelectionOrder.hasOwnProperty(i)) {
@@ -1304,19 +1205,12 @@ const onLoad = () => {
               for (const sp in tempArray) {
                 if ({}.hasOwnProperty.call(tempArray, sp)) {
                   promises.push(
-                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                      // .then((results) => {
-                      //   results.map((request) => {
-                      //     listGiFilter.push(request.plasmid_id)
-                      //   })
-                      // })
+                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                   )
                 }
               }
             }
           }
-          // }
-          // for (i in alertArrays.family) {
           let currentSelectionFamily = alertArrays.family
           for (const i in currentSelectionFamily) {
             if (currentSelectionFamily.hasOwnProperty(i)) {
@@ -1324,19 +1218,12 @@ const onLoad = () => {
               for (const sp in tempArray) {
                 if (tempArray.hasOwnProperty(sp)) {
                   promises.push(
-                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                      // .then((results) => {
-                      //   results.map((request) => {
-                      //     listGiFilter.push(request.plasmid_id)
-                      //   })
-                      // })
+                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                   )
                 }
               }
             }
           }
-          // }
-          // for (i in alertArrays.genus) {
           let currentSelectionGenus = alertArrays.genus
           for (const i in currentSelectionGenus) {
             if (currentSelectionGenus.hasOwnProperty(i)) {
@@ -1344,36 +1231,23 @@ const onLoad = () => {
               for (const sp in tempArray) {
                 if (tempArray.hasOwnProperty(sp)) {
                   promises.push(
-                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                      // .then((results) => {
-                      //   results.map((request) => {
-                      //     listGiFilter.push(request.plasmid_id)
-                      //   })
-                      // })
+                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                   )
                 }
               }
             }
           }
-          // }
-          // for (i in alertArrays.species) {
           let currentSelectionSpecies = alertArrays.species
           for (const i in currentSelectionSpecies) {
             if (currentSelectionSpecies.hasOwnProperty(i)) {
               promises.push(
-                taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)//, reloadAccessionList)//, changed_nodes)
-                  // .then((results) => {
-                  //   results.map((request) => {
-                  //     listGiFilter.push(request.plasmid_id)
-                  //   })
-                  // })
+                taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)
               )
             }
           }
           Promise.all(promises)
             .then( () => {
               $("#loading").hide()
-              // showLegend.style.display = "block"
               $("#colorLegend").show()
               document.getElementById("taxa_label").style.display = "block" // show label
               $("#colorLegendBox").empty()
@@ -1382,12 +1256,6 @@ const onLoad = () => {
                   "style='background-color:#666370' ></button>&nbsp;unselected</li>")
               $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
                 " #plotButton").show()
-              // showRerun.style.display = "block"
-              // showGoback.style.display = "block"
-              // showDownload.style.display = "block"
-              // showTable.style.display = "block"
-              // heatMap.style.display = "block"
-              // plotButton.style.display = "block"
               // enables button group again
               $("#toolButtonGroup button").removeAttr("disabled")
             })
@@ -1419,12 +1287,7 @@ const onLoad = () => {
                     // executres node function for family and orders
                     for (const sp in tempArray) {
                       promises.push(
-                        taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                          // .then((results) => {
-                          //   results.map((request) => {
-                          //     listGiFilter.push(request.plasmid_id)
-                          //   })
-                          // })
+                        taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                       )
                     }
                   }
@@ -1442,12 +1305,7 @@ const onLoad = () => {
                     for (const sp in tempArray) {
                       if (tempArray.hasOwnProperty(sp)) {
                         promises.push(
-                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                            // .then((results) => {
-                            //   results.map((request) => {
-                            //     listGiFilter.push(request.plasmid_id)
-                            //   })
-                            // })
+                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                         )
                       }
                     }
@@ -1468,12 +1326,7 @@ const onLoad = () => {
                     for (const sp in tempArray) {
                       if (tempArray.hasOwnProperty(sp)) {
                         promises.push(
-                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)//, reloadAccessionList)//, changed_nodes)
-                            // .then((results) => {
-                            //   results.map((request) => {
-                            //     listGiFilter.push(request.plasmid_id)
-                            //   })
-                            // })
+                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
                         )
                       }
                     }
@@ -1491,13 +1344,7 @@ const onLoad = () => {
                     // requests taxa associated accession from db and colors
                     // respective nodes
                     promises.push(
-                      taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)//, reloadAccessionList)
-                      // })//, changed_nodes)
-                      //   .then( (results) => {
-                      //     results.map( (request) => {
-                      //       listGiFilter.push(request.plasmid_id)
-                      //     })
-                      //   })
+                      taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)
                     )
                   }
                 }
@@ -1514,12 +1361,6 @@ const onLoad = () => {
                       " style='background-color:#666370' ></button>&nbsp;unselected</li>")
                   $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
                     " #plotButton").show()
-                  // showRerun.style.display = "block"
-                  // showGoback.style.display = "block"
-                  // showDownload.style.display = "block"
-                  // showTable.style.display = "block"
-                  // heatMap.style.display = "block"
-                  // plotButton.style.display = "block"
                   // enables button group again
                   $("#toolButtonGroup button").removeAttr("disabled")
                 })
@@ -1781,13 +1622,7 @@ const onLoad = () => {
         if (div === "") {
           divCounter += 1
           if (divCounter === 5) {
-            // $("#scaleLegend").empty()
-            // $("#scaleString").empty()
-            // $("#distance_label").hide()
             $("#colorLegend").hide()
-            // showLegend.style.display = "none"
-
-            //document.getElementById("reset-links").disabled = "disabled"
           }
         }
       }
@@ -1888,10 +1723,6 @@ const onLoad = () => {
       reloadAccessionList = []  // needs to be killed every instance in
       // order for reload to allow reloading again
       //* * Loading Screen goes on **//
-      // removes disabled from class in go_back button
-      // document.getElementById("go_back").className = document.getElementById("go_back").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      // document.getElementById("download_ds").className = document.getElementById("download_ds").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
-      // document.getElementById("tableShow").className = document.getElementById("tableShow").className.replace(/(?:^|\s)disabled(?!\S)/g, "")
       showDiv().then( () => {
         // removes nodes
         setTimeout( () => {
