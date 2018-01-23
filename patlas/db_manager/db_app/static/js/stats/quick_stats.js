@@ -390,9 +390,6 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
       }
     }
 
-    // enable sort buttons again
-    $("#sortGraph").removeAttr("disabled")
-    $("#sortGraphAlp").removeAttr("disabled")
   } else {
     //converts every element in finalArray to float and then sorts it
     const histoArray = finalArray.map( (e) => { return parseFloat(e) })
@@ -523,9 +520,6 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
       }
       layout.series = [defaultSeries]
     }
-    // disable sort buttons
-    $("#sortGraph").attr("disabled", true)
-    $("#sortGraphAlp").attr("disabled", true)
   }
   // Highcharts.chart(selector[taxaType.replace(" ", "").div], layout)
   Highcharts.chart(selector[taxaType.replace(" ", "")].div, layout)
@@ -878,6 +872,7 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
             // associativeObjAssigner(associativeObj, result.plasmid_id, speciesLength)
             accessionResultsList.push(result.plasmid_id)
             // assumes that it is length by default
+            // if length is selected disable sort buttons
           }
         } else {
           // TODO I think this is never ran

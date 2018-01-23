@@ -422,6 +422,7 @@ const onLoad = () => {
 
     $("#speciesStats").unbind("click").bind("click", () => {
       clickerButton = "species"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       setTimeout( () => {
         listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       },500)
@@ -429,6 +430,7 @@ const onLoad = () => {
 
     $("#genusStats").unbind("click").bind("click", () => {
       clickerButton = "genus"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       setTimeout( () => {
         listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
@@ -436,6 +438,7 @@ const onLoad = () => {
 
     $("#familyStats").unbind("click").bind("click", () => {
       clickerButton = "family"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       setTimeout( () => {
         listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
@@ -443,6 +446,7 @@ const onLoad = () => {
 
     $("#orderStats").unbind("click").bind("click", () => {
       clickerButton = "order"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       setTimeout( () => {
         listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
@@ -450,6 +454,7 @@ const onLoad = () => {
 
     $("#resistanceStats").unbind("click").bind("click", () => {
       clickerButton = "resistances"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       setTimeout( () => {
         listPlots = resRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
@@ -457,6 +462,7 @@ const onLoad = () => {
 
     $("#pfamilyStats").unbind("click").bind("click", () => {
       clickerButton = "plasmid families"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       setTimeout( () => {
         listPlots = pfRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
@@ -464,6 +470,7 @@ const onLoad = () => {
 
     $("#virStats").unbind("click").bind("click", () => {
       clickerButton = "virulence"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       setTimeout( () => {
         listPlots = virRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
@@ -472,6 +479,7 @@ const onLoad = () => {
     // redundant with speciesStats but may be useful in the future
     $("#lengthStats").unbind("click").bind("click", () => {
       clickerButton = "length"
+      $("#sortGraph, #sortGraphAlp").attr("disabled", true)
       setTimeout( () => {
         listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
@@ -479,6 +487,7 @@ const onLoad = () => {
 
     $("#clusterStats").unbind("click").bind("click", () => {
       clickerButton = "cluster"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       setTimeout( () => {
         listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
@@ -508,46 +517,55 @@ const onLoad = () => {
 
     $("#lengthPlot").unbind("click").bind("click", () => {
       clickerButton = "length"
+      $("#sortGraph, #sortGraphAlp").attr("disabled", true)
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#speciesPlot").unbind("click").bind("click", () => {
       clickerButton = "species"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#genusPlot").unbind("click").bind("click", () => {
       clickerButton = "genus"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#familyPlot").unbind("click").bind("click", () => {
       clickerButton = "family"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#orderPlot").unbind("click").bind("click", () => {
       clickerButton = "order"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#clusterPlot").unbind("click").bind("click", () => {
       clickerButton = "cluster"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#resPlot").unbind("click").bind("click", () => {
       clickerButton = "resistances"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       listPlots = resRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#pfPlot").unbind("click").bind("click", () => {
       clickerButton = "plasmid families"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       listPlots = pfRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
     $("#virPlot").unbind("click").bind("click", () => {
       clickerButton = "virulence"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       listPlots = virRepetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
