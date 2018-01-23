@@ -410,6 +410,7 @@ const onLoad = () => {
     $("#plotButton").unbind("click").bind("click", () => {
       $("#modalPlot").modal()
       clickerButton = "species"
+      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
       listGiFilter = (reloadAccessionList.length !== 0) ?
         // reduces listGiFilter to reloadAccessionList
         listGiFilter.filter( (n) => reloadAccessionList.includes(n)) :
