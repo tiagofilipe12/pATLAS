@@ -140,6 +140,24 @@ let listGi = []
 // outside renderGraph
 let renderer
 
+// variable used to control if div is shown or not
+let multiSelectOverlay = false
+// store the node with more links
+let storeMasterNode = []    //cleared every instance of onload
+// start array that controls taxa filters
+const idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"]
+
+let counter = -1 //sets a counter for the loop between the inputs nodes
+// Sets parameters to be passed to WebglCircle in order to change
+// node shape, setting color and size.
+const nodeColor = 0x666370 // hex rrggbb
+const minNodeSize = 4 // a value that assures that the node is
+// displayed without increasing the size of big nodes too much
+
+let list = []   // list to store references already ploted as nodes
+// links between accession numbers
+let listLengths = [] // list to store the lengths of all nodes
+
 /**
  * forces welcomeModal to be the first thing the user sees when the page
  * is loaded.
@@ -160,28 +178,24 @@ const onLoadWelcome = (callback) => {
 }
 
 /**
+ * Function to fix string on div names
+ * @param {Array} divNameList - an array of divs
+ * @returns {Array} returnArray - an array with the fixed names
+ */
+const quickFixString = (divNameList) => {
+  let returnArray = []
+  for (const divName of divNameList) {
+    returnArray.push($(divName).text().replace(":", ",").trim())
+  }
+  return returnArray
+}
+
+/**
  * initiates vivagraph main functions
  * onLoad consists of mainly three functions: init, precompute and renderGraph
  * This function is executed after onLoadWelcome function
  */
 const onLoad = () => {
-  // variable used to control if div is shown or not
-  let multiSelectOverlay = false
-  // store the node with more links
-  let storeMasterNode = []    //cleared every instance of onload
-  // start array that controls taxa filters
-  const idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"]
-
-  let counter = -1 //sets a counter for the loop between the inputs nodes
-  // Sets parameters to be passed to WebglCircle in order to change
-  // node shape, setting color and size.
-  const nodeColor = 0x666370 // hex rrggbb
-  const minNodeSize = 4 // a value that assures that the node is
-  // displayed without increasing the size of big nodes too much
-
-  let list = []   // list to store references already ploted as nodes
-  // links between accession numbers
-  let listLengths = [] // list to store the lengths of all nodes
 
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
@@ -213,7 +227,6 @@ const onLoad = () => {
   const graphics = Viva.Graph.View.webglGraphics()
 
   //* Starts graphics renderer *//
-  // TODO without precompute we can easily pass parameters to renderGraph like links distances
   const renderGraph = (graphics) => {
     //const graphics = Viva.Graph.View.webglGraphics()
     //** block #1 for node customization **//
@@ -1696,7 +1709,6 @@ const onLoad = () => {
       })
       setTimeout( () => {
         renderer.rerender()
-        // TODO raise a warning for users to press play if they want
       }, 100)
 
       // }
@@ -1955,69 +1967,69 @@ const onLoad = () => {
         // file for loading the graph.
         getArray.done(function (json) {
           graphSize = json.nodes.length
-          const addAllNodes = (json) => {
-            return new Promise((resolve, reject) => {
-              for (const i in json) {
-                if (json.hasOwnProperty(i)) {
-                  const array = json[i]
-                  counter++
-                  const sequence = array.id
-                  const seqLength = array.length
-                  const logLength = Math.log(parseInt(seqLength))
-                  listLengths.push(seqLength)
-                  listGi.push(sequence)
-
-                  if (list.indexOf(sequence) < 0) {
-                    g.addNode(sequence, {
-                      sequence: "<span style='color:#468499'>Accession:" +
-                      " </span><a" +
-                      " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                      seqLength: "<span" +
-                      " style='color:#468499'>Sequence length:" +
-                      " </span>" + seqLength,
-                      logLength
-                    })
-                    list.push(sequence)
-                    layout.setNodePosition(sequence, array.position.x, array.position.y)
-                  } else {
-                    reject(`node wasn't added: ${sequence}`)
-                  }
-                  if (i + 1 === json.length) {
-                    resolve("sucessfully added all nodes")
-                  }
-                }
-              }
-            })
-          }
-
-          const addAllLinks = (json) => {
-            totalNumberOfLinks = json.length
-            return new Promise( (resolve, reject) => {
-              for (const i in json) {
-                if (json.hasOwnProperty(i)) {
-                  const array = json[i]
-                  const sequence = array.parentId   // stores sequences
-                  const reference = array.childId  // stores references
-                  const distNSizes = array.distNSizes   // stores distances
-                  // and sizeRatios
-                  if (reference !== "") {
-                    // here it adds only unique links because filtered.json file
-                    // just stores unique links
-                    g.addLink(sequence, reference, distNSizes)
-                  } else {
-                    // if there is no reference associated with sequence then
-                    // there are no links
-                    reject(new Error(`link wasn't added: ${array.childId} -> ${sequence}`))
-                  }
-                  if (i + 1 === json.lenght) {
-                    resolve("sucessefully added all links")
-                  }
-                }
-              }
-            })
-          }
-          addAllNodes(json.nodes)
-            .then(addAllLinks(json.links))
+          // const addAllNodes = (json) => {
+          //   return new Promise((resolve, reject) => {
+          //     for (const i in json) {
+          //       if (json.hasOwnProperty(i)) {
+          //         const array = json[i]
+          //         counter++
+          //         const sequence = array.id
+          //         const seqLength = array.length
+          //         const logLength = Math.log(parseInt(seqLength))
+          //         listLengths.push(seqLength)
+          //         listGi.push(sequence)
+          //
+          //         if (list.indexOf(sequence) < 0) {
+          //           g.addNode(sequence, {
+          //             sequence: "<span style='color:#468499'>Accession:" +
+          //             " </span><a" +
+          //             " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
+          //             seqLength: "<span" +
+          //             " style='color:#468499'>Sequence length:" +
+          //             " </span>" + seqLength,
+          //             logLength
+          //           })
+          //           list.push(sequence)
+          //           layout.setNodePosition(sequence, array.position.x, array.position.y)
+          //         } else {
+          //           reject(`node wasn't added: ${sequence}`)
+          //         }
+          //         if (i + 1 === json.length) {
+          //           resolve("sucessfully added all nodes")
+          //         }
+          //       }
+          //     }
+          //   })
+          // }
+          //
+          // const addAllLinks = (json) => {
+          //   totalNumberOfLinks = json.length
+          //   return new Promise( (resolve, reject) => {
+          //     for (const i in json) {
+          //       if (json.hasOwnProperty(i)) {
+          //         const array = json[i]
+          //         const sequence = array.parentId   // stores sequences
+          //         const reference = array.childId  // stores references
+          //         const distNSizes = array.distNSizes   // stores distances
+          //         // and sizeRatios
+          //         if (reference !== "") {
+          //           // here it adds only unique links because filtered.json file
+          //           // just stores unique links
+          //           g.addLink(sequence, reference, distNSizes)
+          //         } else {
+          //           // if there is no reference associated with sequence then
+          //           // there are no links
+          //           reject(new Error(`link wasn't added: ${array.childId} -> ${sequence}`))
+          //         }
+          //         if (i + 1 === json.lenght) {
+          //           resolve("sucessefully added all links")
+          //         }
+          //       }
+          //     }
+          //   })
+          // }
+          addAllNodes(g, json.nodes, layout)
+            .then(addAllLinks(g, json.links))
             .then(renderGraph(graphics))
             // .then( () => {
             //   $("#loading").hide()
@@ -2215,13 +2227,6 @@ const onLoad = () => {
   $("#downloadCsv").unbind("click").bind("click", () => {
   // $(document).on("click", "#downloadCsv", () => {
 
-    const quickFixString = (divNameList) => {
-      let returnArray = []
-      for (const divName of divNameList) {
-        returnArray.push($(divName).text().replace(":", ",").trim())
-      }
-      return returnArray
-    }
     // execute the same replacement function for all this divs
     const targetArray = quickFixString([
       "#accessionPop",
