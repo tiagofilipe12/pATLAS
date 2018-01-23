@@ -365,7 +365,6 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
   })
 }
 
-// option to return links to their default color
 /**
  * A function to reset the color of all links to default color scheme.
  * @param {Object} g - graph related functions that iterate through nodes
@@ -423,7 +422,8 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   nodeColorReset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
   if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-    showLegend.style.display = "none"
+    // showLegend.style.display = "none"
+    $("#colorLegend").hide()
     // showRerun.style.display = "none"
     // showGoback.style.display = "none"
     //document.getElementById("go_back").className += " disabled"
