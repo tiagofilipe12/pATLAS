@@ -28,5 +28,3 @@ const defaultZooming = (layout, renderer) => {
   const desiredScale = screenSize / graphSize
   zoomOut(desiredScale, 1, renderer)
 }
-
-// TODO make a function that controls zoom in rather than zoom out for .on("dbl-click-cell.bs.table"

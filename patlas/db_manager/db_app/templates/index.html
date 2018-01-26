@@ -7,7 +7,8 @@
   <title>Plasmid Atlas</title>
   <!--Import dependencies using yarn + webpack-->
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='bundle.min.js') }}"></script>
-
+  <!-- Place this tag in your head or just before your close body tag. -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- custom js scripts -->
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/visualization_functions.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/alternative_loading.js') }}"></script>
@@ -59,34 +60,30 @@
       </div>
       <div class="modal-body">
         <h1>Welcome to Plasmid Atlas</h1>
-        <p class="mainText">Plasmid Atlas is a web interface that allows
+        <p class="mainText">Plasmid Atlas is a web interface that allow
           users to
           browse plasmid sequences available in the NCBI refseq
           database. Here you can obtain metadata related with the
-          available
-          plasmid sequences, such as species in which
+          available plasmid sequences, such as species in which
           they were described, antibiotic resistance information
           and much more.</p>
 
-        <p class="mainText"><b>Disclaimer:</b> We are always happy
+        <p class="mainText">We are always happy
           to improve user experience, so if you
-          find any issues please report them to us. You can report
-          them in
-          <a href="https://github.com/tiagofilipe12/pATLAS/issues"
-             target="_blank" style="color:#6292A9;">pATLAS github</a>
-          or
+          find any
+          <a class="github-button" href="https://github.com/tiagofilipe12/pATLAS/issues"
+             aria-label="Issue tiagofilipe12/pATLAS on GitHub">Issue</a>
+          please report them to us. You can also contact us in
           <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
             <img src="{{ url_for('static', filename='images/Lobby.png') }}"
                  alt="gitter" style="width: auto; height: auto"/>
           </a>.
         </p>
         <p class="mainText"><b>Note:</b> pATLAS was tested for Google
-          Chrome and Firefox, however
+          Chrome, Firefox, Safari and Microsoft Edge, however
           we recommend using Google Chrome
           <img src="{{ url_for('static', filename='images/chrome_logo.png') }}"
                style="width: 30px; height: 30px"/> for a better experience.
-          If you use other browser and find an issue please
-          report it to us.
         </p>
       </div>
       <div>
