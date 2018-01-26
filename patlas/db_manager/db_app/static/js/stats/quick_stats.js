@@ -380,7 +380,8 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
             stroke: "#313131"
           }
         }
-      }
+      },
+      filename: `pATLAS_plot_${taxaType}`
     }
 
     // this options allows column plots to show more than 10k plasmids
@@ -452,7 +453,8 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
             stroke: "#313131"
           }
         }
-      }
+      },
+      filename: `pATLAS_plot_${taxaType}`
     }
 
     // checks if all lengths in array are the same and if so... do not
@@ -578,8 +580,7 @@ const layoutGet = (taxaType) => {
       }
     },
     exporting: {
-      sourceWidth: 1000,
-      filename: `pATLAS_chart_${taxaType}`
+      sourceWidth: 1000
     },
     credits: {
       enabled: false
