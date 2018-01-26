@@ -205,34 +205,12 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        Cannot find your plasmid of interest?
+        Frequently asked questions
       </div>
       <div class="modal-body" id="formModalBody">
-        <div class="input-group col-md-12">
-          <label class="input-group-btn">
-            <span class="btn btn-info btn-file" id="span_listFile">
-              Upload file with accessions&hellip;
-              <input id="accessionListFile" type="file"
-                     name="file" style="display: none;" multiple>
-            </span>
-          </label>
-          <input type="text" class="form-control" id="listFileText" readonly
-                 autocomplete="off">
-        </div>
-        <div class="panel panel-info">
-          <div class="panel-heading">Instructions</div>
-          <div class="panel-body">
-            If you cannot find your desired plasmid(s), you can submit a
-            request to us, so that we can add plasmids that are not available
-            in NCBI's refseq database. Note that each accession number should
-            be in a separated line.
-          </div>
-        </div>
+        {% include 'faqs.html' %}
       </div>
-
       <div class="modal-footer">
-        <button type="submit" class="btn btn-default"
-                data-dismiss="modal" id="formSubmit">Submit</button>
         <button type="close" class="btn btn-danger"
                 data-dismiss="modal" id="formDismiss">Close
         </button>
@@ -1118,7 +1096,7 @@
                   data-target="#videoModal">Video tutorial
           </button>
           <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                  data-target="#formModal">Absent Plasmid
+                  data-target="#formModal">FAQs
           </button>
         </div>
       </li>
