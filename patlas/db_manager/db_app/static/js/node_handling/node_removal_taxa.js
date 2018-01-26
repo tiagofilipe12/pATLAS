@@ -453,17 +453,31 @@ const reGetListGi = (g, graphics) => {
  * re_run is triggered and true if go_back is triggered
  */
 const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
-  // removes all nodes from g using the same layout
-  // change play button in order to be properly set to pause
-  $("#couve-flor").empty()
-    .append(reAppendString)
-  // checks for area seletion
+  // checks for area selection
   if (forgetListGiFilter === false) {
     listGiFilter = (listGiFilter.length === 0) ? reGetListGi(g, graphics) : listGiFilter
   }
-
   // otherwise doesn't care for listGiFilter because is just a page reload
-  onload()
+  if (listGiFilter.length > 0 && forgetListGiFilter === false) {
+    // this is executed when re_run button is pressed and area selection or
+    // selections via menu are made
+    // removes all nodes from g using the same layout
+    // change play button in order to be properly set to pause
+    $("#couve-flor").empty()
+      .append(reAppendString)
+    onload()
+  } else if (forgetListGiFilter === true) {
+    // this statement is executed if go_back button is pressed
+    // removes all nodes from g using the same layout
+    // change play button in order to be properly set to pause
+    $("#couve-flor").empty()
+      .append(reAppendString)
+    onload()
+  } else {
+    // this is executed when re_run button is pressed but no selections are made
+    $("#loading").hide()
+    $("#alertNoSelection").show()
+  }
 }
 
 /**

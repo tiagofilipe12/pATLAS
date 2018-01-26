@@ -26,7 +26,7 @@ const devel = false
 
 // boolean that controls the prerender function if rerun
 // is activated
-let rerun = false
+// let rerun = false
 
 // helps set menu to close status
 let firstClickMenu = true
@@ -1725,7 +1725,7 @@ const onLoad = () => {
       // resets areaSelection
       areaSelection = false
       firstInstace = false
-      rerun = true
+      // rerun = true
       reloadAccessionList = []  // needs to be killed every instance in
       // order for reload to allow reloading again
       //* * Loading Screen goes on **//
@@ -2105,6 +2105,10 @@ const onLoad = () => {
   // control the alertClose button
   $("#alertClose").unbind("click").bind("click", () => {
     $("#alertId").hide()  // hide this div
+  })
+
+  $("#alertNoSelectionClose").unbind("click").bind("click", () => {
+    $("#alertNoSelection").hide()  // hide this div
   })
 
   $("#alertClose_search").unbind("click").bind("click", () => {
