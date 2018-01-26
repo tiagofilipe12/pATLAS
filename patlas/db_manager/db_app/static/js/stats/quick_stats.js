@@ -372,7 +372,7 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
         },
         clearHighlight: {
           text: "Clear highlights",
-          onclick() { resetAllBars(this, selector[taxaType.replace(" ", "")].color) }, // TODO add a function to remove
+          onclick() { resetAllBars(this, selector[taxaType.replace(" ", "")].color) },
           // all highlighted
           // bars
           buttonSpacing: 8,
@@ -579,6 +579,10 @@ const layoutGet = (taxaType) => {
     },
     exporting: {
       sourceWidth: 1000,
+      filename: `pATLAS_chart_${taxaType}`
+    },
+    credits: {
+      enabled: false
     }
   }
 }

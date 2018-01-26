@@ -232,6 +232,9 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
               //   return "<img src=\"{{ url_for('static'," +
               //     " filename='images/loading.gif') }}'\" />"
               // }
+              exportOptions: {
+                fileName: "pATLAS_table"
+              }
             })
             $("#loading").hide()
           })
@@ -378,7 +381,13 @@ const heatmapMaker = (masterReadArray, readObjects) => {
         enabled: true,
         color: "#000000"
       }
-    }]
+    }],
+    exporting: {
+      filename: "pATLAS_heatmap"
+    },
+    credits: {
+      enabled: false
+    }
   })
   $("#chartContainer2").show()
 }
