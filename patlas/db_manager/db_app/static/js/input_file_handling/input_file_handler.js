@@ -18,10 +18,12 @@ const abortRead = () => {
  * Function to handle one file at a time (per button).
  * @param {String} infileId - button id that loads the file
  * @param {String} textId - text form that reads the file id
+ * @param {Boolean} requestFile - a boolean that controls when it is an
+ * import of lists of accessions
  * @param {Function} callback - callback function to be executed after
  * reading this function, i.e., after reading all files
  */
-const handleFileSelect = (infileId, textId, callback) => {
+const handleFileSelect = (infileId, textId, requestFile, callback) => {
   document.getElementById(infileId).addEventListener("change", function (e) {
     let arrayOfObj = {}
     const files = e.target.files // FileList object
@@ -29,7 +31,7 @@ const handleFileSelect = (infileId, textId, callback) => {
     for (const file of files) {
       const fileName = file.name
       // checks if it is a json file extension
-      if (!file.name.includes(".json")) {
+      if (!file.name.includes(".json") && requestFile === false) {
         alert("File extension not supported. Only '.json' files are supported.")
       } else {
         // append the filename to the form

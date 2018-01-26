@@ -1878,18 +1878,25 @@ const onLoad = () => {
   // control the infile input and related functions //
   //* ***********************************************//
 
-  handleFileSelect("infile", "#file_text", (newReadJson) => {
+  handleFileSelect("infile", "#file_text", false, (newReadJson) => {
     readFilejson = newReadJson
     // $("#infile").val("")
   })
 
-  handleFileSelect("mashInfile", "#file_text_mash", function (newMashJson) {
+  handleFileSelect("mashInfile", "#file_text_mash", false, function (newMashJson) {
     mashJson = newMashJson
     // $("#mashInfile").val("")
   })
 
-  handleFileSelect("assemblyfile", "#assembly_text", function (newAssemblyJson) {
+  handleFileSelect("assemblyfile", "#assembly_text", false, function (newAssemblyJson) {
     assemblyJson = newAssemblyJson
+    // $("#assemblyfile").val("")
+  })
+
+  handleFileSelect("accessionListFile", "#listFileText", true, (newAssemblyJson) => {
+    requestedList = newAssemblyJson
+    console.log(requestedList)
+    // TODO then parse this to send an email? Or something else?
     // $("#assemblyfile").val("")
   })
 
