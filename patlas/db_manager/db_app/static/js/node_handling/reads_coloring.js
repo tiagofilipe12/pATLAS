@@ -1,4 +1,4 @@
-/*globals listGiFilter, resetDisplayTaxaBox, chroma, showLegend,
+/*globals listGiFilter, resetDisplayTaxaBox, chroma,
  nodeColorReset, assemblyJson */
 
 /**
@@ -116,7 +116,8 @@ const nodeIter = (g, readColor, gi, graphics, perc, copyNumber) => {
 const palette = (scale, x, readMode) => {
 //   showLegend = document.getElementById("colorLegend") // global variable to
   // be reset by the button reset-filters
-  showLegend.style.display = "block"
+  $("#colorLegend").show()
+  // showLegend.style.display = "block"
   const tmpArray = new Array(x)// create an empty array with length x
   const styleWidth = 100 / x
   // enters this statement for coloring the links and not the nodes
@@ -409,8 +410,8 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
   // first iters nodes to get nodeColor (default color)
   nodeColorReset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
-  if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
-    $("#colorLegend, #read_label").hide()
+  if ($("#scaleLegend").html() !== "") {
+    $("#read_label").hide()
     $("#readLegend").empty()
   } else {
     $("#colorLegend, #taxa_label, #read_label").hide()
