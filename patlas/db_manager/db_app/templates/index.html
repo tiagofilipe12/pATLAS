@@ -199,6 +199,46 @@
 
 <!--modal for video tutorials-->
 
+<div class="modal fade" id="formModal" data-backdrop="static"
+     role="dialog" tabindex="-1">
+  <div class="modal-dialog" id="formDialog" style="width: 60%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        Cannot find your plasmid of interest?
+      </div>
+      <div class="modal-body" id="formModalBody">
+        <div class="input-group col-md-12">
+          <label class="input-group-btn">
+            <span class="btn btn-info btn-file" id="span_1stFile">
+              Upload file with accessions&hellip;
+              <input id="accessionListFile" type="file"
+                     name="file" style="display: none;" multiple>
+            </span>
+          </label>
+          <input type="text" class="form-control" id="listFileText" readonly
+                 autocomplete="off">
+        </div>
+        <div class="panel panel-info">
+          <div class="panel-heading">Instructions</div>
+          <div class="panel-body">
+            If you cannot find your desired plasmid(s), you can submit a
+            request to us, so that we can add plasmids that are not available
+            in NCBI's refseq database. Note that each accession number should
+            be in a separated line.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="close" class="btn btn-default"
+                data-dismiss="modal" id="formDismiss">Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="videoModal" data-backdrop="static"
      role="dialog" tabindex="-1">
   <div class="modal-dialog" id="videoDialog" style="width: 60%">
@@ -1064,13 +1104,21 @@
           </ul>
         </div>
       </li>
-      <li class="collapse_groups">
-        <a href="https://tiagofilipe12.gitbooks.io/patlas/content/"
-           target="_blank">Documentaion</a>
-      </li>
-      <li class="collapse_groups">
-        <a href="#" data-toggle="modal" data-backdrop="static"
-           data-target="#videoModal">Video tutorial</a>
+      <li data-toggle="collapse" data-target="#collapse5"
+          class="collapse_groups">
+        <a href="#">Need help?</a>
+        <div id="collapse5" class="panel-collapse collapse">
+      <!--<li class="collapse_groups">-->
+          <button class="list-group-item"
+                  onclick='window.open("https://tiagofilipe12.gitbooks.io/patlas/content/")'>Documentation
+          </button>
+          <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                  data-target="#videoModal">Video tutorial
+          </button>
+          <!--<button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"-->
+                  <!--data-target="#formModal">Absent Plasmid-->
+          <!--</button>-->
+        </div>
       </li>
       <li class="collapse_groups">
         <a href="#" data-toggle="modal" data-backdrop="static"
@@ -1642,7 +1690,7 @@
       <div class="modal-body" id="modalBodyVir">
         <div class="row" id="modalBodyVir1">
           <div class="dropdown col-sm-12 " id="virDropdown">
-            <div class="header_taxa">Virulence factors</div>
+            <div class="header_taxa">VFDB</div>
             <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
                     data-selected-text-format="count" data-live-search="true"
                     title="No items selected"
