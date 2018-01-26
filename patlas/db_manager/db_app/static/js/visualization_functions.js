@@ -685,12 +685,12 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
-      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+      if ($("#scaleLegend").html() !== "") {
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton, #colorLegend").hide()
       } else {
         $("#colorLegendBox").empty()
-        document.getElementById("taxa_label").style.display = "none" // hide label
+        $("#taxa_label").hide()
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton").hide()
       }
@@ -803,7 +803,7 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
-      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+      if ($("#scaleLegend").html() !== "") {
         // showLegend.style.display = "none"
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton, #colorLegend").hide()
@@ -913,7 +913,7 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
-      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+      if ($("#scaleLegend").html() !== "") {
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton, #colorLegend").hide()
       } else {
@@ -1047,7 +1047,7 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
-      if (typeof showLegend !== "undefined" && $("#scaleLegend").html() === "") {
+      if ($("#scaleLegend").html() !== "") {
         // showLegend.style.display = "none"
         $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
           " #plotButton, #colorLegend").hide()
