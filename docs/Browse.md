@@ -86,7 +86,7 @@ plasmid multilocus sequence typing. Antimicrobial Agents and Chemotherapy,
 
 ## Resistances
 
-Resistances highlight plasmids with the selected resistances by the user.
+Resistances (CARD and Resfinder databases) highlight plasmids with the selected resistances by the user.
 
 Citations:
 * [Zankari, E., Hasman, H., Cosentino, S., Vestergaard, M.,
@@ -104,7 +104,12 @@ database. Nucleic Acids Research, 45(D1), D566–D573.](https://doi.org/10.1093/
 
 ## Virulence
 
-Coming soon...
+Virulence genes available in VFDB databsae
+
+Citation:
+* [Chen L, Yang J, Yu J, et al. VFDB: A reference database for
+bacterial virulence factors. Nucleic Acids Res. 2005;33(DATABASE ISS.)
+:D325-D328. doi:10.1093/nar/gki008.](https://academic.oup.com/nar/article/33/suppl_1/D325/2505203)
 
 ## Final note
 

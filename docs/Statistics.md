@@ -37,7 +37,7 @@ enabling to highlight its respective bar or points, respectively.
 
 ![](gitbook/images/plotlength.gif)
 
-### Resistances and plasmid families
+### Resistances, virulence and plasmid families
 
 Pretty much the same as [Taxa plots](#available-options), but for
 the information on resistances and plasmid families.
@@ -72,3 +72,17 @@ the information on resistances and plasmid families.
     i.e., this button will update the selection made in the plasmid network
     so that it will only highlight in **green** the selected plasmids.
 
+## Make selections using the barplots
+
+It is also possible to make selections using the bar plots available in pATLAS,
+ i.e. in Taxa related, resistancec, virulence and plasmid families plots.
+
+ Example usage:
+
+ ![](gitbook/images/barplot_selections.gif)
+ (Note: the final image doesn't seem to have selections but there are some nodes with an halo
+ around them. In pATLAS they will appear in green. Also, bars will not be grey but instead they
+ will be red when clicked.)
+
+Users can use `Clear highlights` button or click on a selected bar to deselect
+all or the clicked bar.

@@ -83,3 +83,10 @@ these export features only are able to export what is shown in the table.
 Double clicking on a cell will trigger an event that will pass almost
 unnoticed for those that are not very familiar with pATLAS. This will
 center on the double clicked plasmid and open the popup for that plasmid.
+
+### Submit button
+
+Submit button will allow to make new selections on the plasmid network,
+ highlighting the new selection on the network. This will close the table
+ and if you open the table again it will have the information regarding
+ the new selection.
