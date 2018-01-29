@@ -14,25 +14,25 @@ const selector = {
     state: false,
     alertString: false
   },
-  genus: {
+  genera: {
     color: "#50B432",
     div: "chartContainerGenus",
     state: false,
     alertString: false
   },
-  family: {
+  families: {
     color: "#ED561B",
     div: "chartContainerFamily",
     state: false,
     alertString: false
   },
-  order: {
+  orders: {
     color: "#DDDF00",
     div: "chartContainerOrder",
     state: false,
     alertString: false
   },
-  cluster: {
+  clusters: {
     color: "#DF565F",
     div: "chartContainerCluster",
     state: false,
@@ -565,6 +565,8 @@ const resetProgressBar = () => {
  * @returns {{chart: {zoomType: string, panKey: string, panning: boolean}, title: {text: string}, yAxis: {title: {text: string}}, exporting: {sourceWidth: number}}}
  */
 const layoutGet = (taxaType) => {
+  // this taxaType remains in this scope
+  if (taxaType === "plasmidfamilies") { taxaType = "plasmid families" }
   return {
     chart: {
       zoomType: "x",
@@ -633,11 +635,6 @@ const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortV
 
   $.post("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
-      // const noUnknowns = tempList.length - results.length
-      // for (let i=0; i < noUnknowns; i++) {
-      //   PFList.push("unknown")
-      // }
-
       results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
@@ -664,12 +661,8 @@ const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortV
       $("#spanEntries").html(selector[taxaType].alertString)
       $("#alertPlotEntries").show()
 
-      // EXECUTE STATS
-      // if (PFList.length >= tempList.length) {
-
       const layout = layoutGet(taxaType)
       statsParser(g, graphics, renderer, false, PFList, layout, taxaType, sortAlp, sortVal, associativeObj)
-      // }
     })
   return PFList
 }
@@ -702,11 +695,6 @@ const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
   let resList = []
   $.post("api/getresistances/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
-      // const noUnknowns = tempList.length - results.length
-      // for (let i=0; i < noUnknowns; i++) {
-      //   resList.push("unknown")
-      // }
-      // resList = Array.from([...Array(noUnknowns)], () => "unknown")
       results.map( (data) => {
         const pfName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
@@ -733,11 +721,8 @@ const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
       $("#spanEntries").html(selector[taxaType].alertString)
       $("#alertPlotEntries").show()
 
-      // EXECUTE STATS
-      // if (resList.length >= tempList.length) {
       const layout = layoutGet(taxaType)
       statsParser(g, graphics, renderer, false, resList, layout, taxaType, sortAlp, sortVal, associativeObj)
-      // }
     })
   return resList
 }
@@ -770,11 +755,6 @@ const getMetadataVir = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
   $.post("api/getvirulence/", { "accession": JSON.stringify(tempList) })
   // when all promises are gathered
     .then( (results) => {
-      // const noUnknowns = tempList.length - results.length
-      // for (let i=0; i < noUnknowns; i++) {
-      //   console.log(results)
-      //   virList.push("unknown")
-      // }
       results.map( (data) => {
         const virName = (data.json_entry.gene === null) ?
           "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
@@ -801,17 +781,31 @@ const getMetadataVir = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
       $("#spanEntries").html(selector[taxaType].alertString)
       $("#alertPlotEntries").show()
 
-      // EXECUTE STATS
-      // if (virList.length >= tempList.length) {
       // checks whether virList is empty meaning that there are no virulence
       // genes for this selection
       const layout = layoutGet(taxaType)
       statsParser(g, graphics, renderer, false, virList, layout, taxaType, sortAlp, sortVal, associativeObj)
-      // }
     })
 
   return virList
 }
+
+/**
+ * Case switch function for getMetadata for plots, instead of a combo else
+ * if statement
+ * @param {String} taxaType - The type of plot to be generated
+ * @param {Object} result - The return object from a single query
+ * @returns {String|number} - returns a string or a integer that is used to
+ * construct the arrays for plots.
+ */
+const plotSwitcher = (taxaType, result) => ({
+  "species": (result.json_entry.name === null) ? "unknown" : result.json_entry.name.split("_").join(" "),
+  "genera": (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[0].replace(/['[]/g, ""),
+  "families": (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[1].replace(/[']/g, ""),
+  "orders": (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[2].replace(/['\]]/g, ""),
+  "clusters": (result.json_entry.cluster === null) ? "singleton" : result.json_entry.cluster,
+  "length": (result.json_entry.length === null) ? "unknown" : result.json_entry.length
+})[taxaType]
 
 /**
  * Function to query the database, starting with a list of accession
@@ -842,43 +836,12 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
   $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
       const accessionResultsList = []
-      // const noUnknowns = tempList.length - results.length
-      // for (let i=0; i < noUnknowns; i++) {
-      //   speciesList.push("unknown")
-      // }
       results.map( (result) => {
         // checks if plasmid is present in db
         if (result.plasmid_id !== null) {
-          if (taxaType === "species") {
-            const speciesName = (result.json_entry.name === null) ? "unknown" : result.json_entry.name.split("_").join(" ")
-            // push to main list to control the final of the loop
-            speciesList.push(speciesName)
-            associativeObjAssigner(associativeObj, result.plasmid_id, speciesName)
-          } else if (taxaType === "genus") {
-            const genusName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[0].replace(/['[]/g, "")
-            // push to main list to control the final of the loop
-            speciesList.push(genusName)
-            associativeObjAssigner(associativeObj, result.plasmid_id, genusName)
-          } else if (taxaType === "family") {
-            const familyName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[1].replace(/[']/g, "")
-            speciesList.push(familyName)
-            associativeObjAssigner(associativeObj, result.plasmid_id, familyName)
-          } else if (taxaType === "order") {
-            const orderName = (result.json_entry.taxa === "unknown") ? "unknown" : result.json_entry.taxa.split(",")[2].replace(/['\]]/g, "")
-            speciesList.push(orderName)
-            associativeObjAssigner(associativeObj, result.plasmid_id, orderName)
-          } else if (taxaType === "cluster") {
-            const clusterName = (result.json_entry.cluster === null) ? "singleton" : result.json_entry.cluster
-            speciesList.push(clusterName)
-            associativeObjAssigner(associativeObj, result.plasmid_id, clusterName)
-          } else {
-            const speciesLength = (result.json_entry.length === null) ? "unknown" : result.json_entry.length
-            speciesList.push(speciesLength)
-            // associativeObjAssigner(associativeObj, result.plasmid_id, speciesLength)
-            accessionResultsList.push(result.plasmid_id)
-            // assumes that it is length by default
-            // if length is selected disable sort buttons
-          }
+          const speciesName = plotSwitcher(taxaType, result)
+          speciesList.push(speciesName)
+          associativeObjAssigner(associativeObj, result.plasmid_id, speciesName)
         } else {
           // TODO I think this is never ran
           // this adds in the case of singletons
@@ -895,7 +858,6 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
       $("#spanEntries").html(selector[taxaType].alertString)
       $("#alertPlotEntries").show()
 
-      // if (taxaType === "species") {
       const layout = layoutGet(taxaType)
       statsParser(g, graphics, renderer, accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal, associativeObj)
     })
