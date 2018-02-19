@@ -1,0 +1,68 @@
+<div class="tab-content panels-faq">
+  <div class="tab-pane active" id="tab1">
+    <div class="panel-group" id="mapping-accordion-1">
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <a href="#mapping1" data-toggle="collapse" aria-expanded="true"
+             data-parent="#mapping-accordion-1" style="text-decoration:none;">
+            <h4>The easy way (recommended)</h4>
+          </a>
+        </div>
+        <div id="mapping1" class="collapse">
+          <div class="panel-body">
+            <li>
+              <a href="https://github.com/tiagofilipe12/pATLASflow#requirements"
+                 target="_blank">Install instructions</a>
+            </li>
+            <li>
+              Execute command:<br>
+              <span style="color: grey">
+                nextflow run tiagofilipe12/pATLASflow --mapping
+              </span>
+            </li>
+            <li>
+              Import desired *.json results here.
+            </li>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+
+        <div class="panel-heading">
+          <a href="#mapping2" data-toggle="collapse"
+             data-parent="#mapping-accordion-1" style="text-decoration:none">
+            <h4>The hard way</h4>
+          </a>
+        </div>
+        <div id="mapping2" class="collapse">
+          <div class="panel-body">
+            <li>
+              <a href="https://github.com/tiagofilipe12/PlasmidCoverage#how-to-install"
+                 target="_blank">Download and install
+                instructions</a>
+            </li>
+            <li>
+              Execute command:<br>
+              <span style="color: grey">
+                            PlasmidUNCover.py -idx
+                            &ltpath/to/indexes_folder&gt
+                             -r &ltpath/to/reads_folder&gt
+                             -t 1 -o &ltyour_output_name&gt
+                             -c 0.6
+              </span>
+              <br>
+              Note: You may check further options with the -h
+              option.
+            </li>
+            <li>
+              Import desired *.json results here.
+            </li>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

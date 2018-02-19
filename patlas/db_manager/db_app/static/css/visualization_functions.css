@@ -724,7 +724,7 @@ Careful when using this in other popovers in the future*/
 }
 
 #modal-body-mash, #modal-body-file, #modal-body-fileAssembly{
-    max-height: 500px;
+    max-height: 600px;
     overflow-y: auto;
 }
 
@@ -767,4 +767,12 @@ Careful when using this in other popovers in the future*/
     height: 30px;
     line-height: 30px;
     padding: 0px 30px;
+}
+
+.panel-import{
+    border-color: #6292A9;
+}
+
+.panel-import-header{
+    background-color: #6292A9;
 }

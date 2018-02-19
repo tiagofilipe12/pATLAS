@@ -1,0 +1,64 @@
+<div class="tab-content panels-faq">
+  <div class="tab-pane active" id="tab1">
+    <div class="panel-group" id="mash-accordion-1">
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <a href="#mash1" data-toggle="collapse" aria-expanded="true"
+             data-parent="#mash-accordion-1" style="text-decoration:none;">
+            <h4>The easy way (recommended)</h4>
+          </a>
+        </div>
+        <div id="mash1" class="collapse">
+          <div class="panel-body">
+            <li>
+              <a href="https://github.com/tiagofilipe12/pATLASflow#requirements"
+                 target="_blank">Install instructions</a>
+            </li>
+            <li>
+              Execute command:<br>
+              <span style="color: grey">
+                nextflow run tiagofilipe12/pATLASflow --mash_screen
+              </span>
+            </li>
+            <li>
+              Import desired *.json results here.
+            </li>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+
+        <div class="panel-heading">
+          <a href="#mash2" data-toggle="collapse"
+             data-parent="#mash-accordion-1" style="text-decoration:none">
+            <h4>The hard way</h4>
+          </a>
+        </div>
+        <div id="mash2" class="collapse">
+          <div class="panel-body">
+            <li>
+              <a href="https://github.com/tiagofilipe12/mash_wrapper/tree/master#installating"
+                 target="_blank">Download and install
+                instructions</a>
+            </li>
+            <li>
+              Execute command:<br>
+              <span style="color: grey">
+                mash_wrapper.py -rs
+                &ltpatlas.msh&gt -r
+                &ltyour_read(s)&gt -j -ms -w -o
+                &ltyour_output_name&gt
+              </span>
+            </li>
+            <li>
+              Import desired *.json results here.
+            </li>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
