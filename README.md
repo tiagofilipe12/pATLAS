@@ -6,6 +6,12 @@
   <br/>
 </p>
 
+# Badges and more badges!
+
+[![Join the chat at https://gitter.im/plasmidATLAS/Lobby](https://badges.gitter.im/plasmidATLAS/Lobby.svg)](https://gitter.im/plasmidATLAS/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e4d557080bbb45d5b8ad414a97b9b6aa)](https://www.codacy.com/app/tiagofilipe12/pATLAS?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tiagofilipe12/pATLAS&amp;utm_campaign=Badge_Grade)
+
+
 # Description
 
 [Plasmid Atlas](http://www.patlas.site) is a web-base tool that empowers researchers to easily and rapidly access
