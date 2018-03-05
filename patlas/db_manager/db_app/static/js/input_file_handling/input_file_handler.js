@@ -47,3 +47,22 @@ const handleFileSelect = (infileId, textId, callback) => {
     callback(arrayOfObj)
   }, false)
 }
+
+/**
+ * Function to check if jsonObj is empty and warn the user for which entries
+ * might be empty upon loading.
+ * @param {Object} jsonObj - The object that collects all json files imported
+ */
+const fileChecks = (jsonObj) => {
+  // raise a warning if no files were added
+  if (jsonObj === false) {
+    $("#alertId_noFiles").show()
+  } else {
+    // checks if there are any empty file
+    if (Object.keys(jsonObj).length === 0 && jsonObj.constructor === Object) {
+      $("#alertJsonFileText").html("<strong>Error!</strong> Current selected JSON" +
+        " file is empty. No plasmids will be highlighted")
+      $("#alertJsonFile").show()
+    }
+  }
+}

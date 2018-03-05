@@ -1,4 +1,4 @@
-/* globals readColoring */
+/* globals readColoring, fileChecks */
 
 // function to slide to right
 /**
@@ -19,6 +19,7 @@ const slideToRight = (readJson, readIndex, g, listGi, graphics, renderer) => {
     // change div containing naming of the file
     $("#fileNameDiv").html(Object.keys(readJson)[readIndex])
     const nextFile = JSON.parse(Object.values(readJson)[readIndex])
+    fileChecks(nextFile)
     const listGiFilter = readColoring(g, listGi, graphics, renderer, nextFile)
     return [readIndex, listGiFilter]
   }
@@ -33,6 +34,7 @@ const slideToLeft = (readJson, readIndex, g, listGi, graphics, renderer) => {
     // change div containing naming of the file
     $("#fileNameDiv").html(Object.keys(readJson)[readIndex])
     const nextFile = JSON.parse(Object.values(readJson)[readIndex])
+    fileChecks(nextFile)
     const listGiFilter = readColoring(g, listGi, graphics, renderer, nextFile)
     return [readIndex, listGiFilter]
   }

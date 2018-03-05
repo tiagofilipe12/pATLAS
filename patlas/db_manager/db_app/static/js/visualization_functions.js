@@ -7,7 +7,7 @@
       centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
        filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
         defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor,
-         readColoring, assembly, handleFileSelect, downloadSeqByColor,
+         readColoring, handleFileSelect, downloadSeqByColor,
           downloadSeq, setupPopupDisplay, multiDownload, heatmapMaker,
            colorNodes, abortRead, makeTable, arrayToCsv, resGetter,
             plasmidFamilyGetter, virulenceGetter, linkColoring,
@@ -15,7 +15,7 @@
               taxaRequest, pushToMasterReadArray, getArrayMapping,
                getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
                 getArrayAssembly, startMultiSelect, requesterDB,
-                 addAllNodes, addAllLinks, quickFixString*/
+                 addAllNodes, addAllLinks, quickFixString, fileChecks*/
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -66,7 +66,7 @@ let readFilejson = false
 let mashJson = false
 let assemblyJson = false
 
-let readIndex = -1
+let readIndex = 0
 
 let clickedHighchart
 
@@ -1278,37 +1278,45 @@ const onLoad = () => {
 
     $("#fileSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
-      masterReadArray = []
-      assemblyJson = false
-      // feeds the first file
-      const readString = JSON.parse(Object.values(readFilejson)[0])
-      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
-        .show()
-      // readIndex will be used by slider buttons
-      readIndex = 0
-      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
-      $("#loading").show()
-      setTimeout( () => {
-        // colors each node for first element of readFilejson
-        const outLists = readColoring(g, listGi, graphics, renderer, readString)
-        listGi  = outLists[0]
-        listGiFilter = outLists[1]
-        masterReadArray = pushToMasterReadArray(readFilejson)
-      }, 100)
+      if (readFilejson !== false) {
+        masterReadArray = []
+        assemblyJson = false
+        // feeds the first file
+        const readString = JSON.parse(Object.values(readFilejson)[0])
+        fileChecks(readString)
+        $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+          .show()
+        // readIndex will be used by slider buttons
+        //readIndex = 0
+        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        previousTableList = []
+        // transform selector object that handles plots and hide their
+        // respective divs
+        Object.keys(selector).map((el) => {
+          selector[el].state = false
+        })
+        hideAllOtherPlots()
+        areaSelection = false
+        $("#loading").show()
+        setTimeout(() => {
+          // colors each node for first element of readFilejson
+          const outLists = readColoring(g, listGi, graphics, renderer, readString)
+          listGi = outLists[0]
+          listGiFilter = outLists[1]
+          masterReadArray = pushToMasterReadArray(readFilejson)
+        }, 100)
 
-      // }
-      // used to hide when function is not executed properly
-      setTimeout( () => {
-        $("#loading").hide()
-      }, 100)
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
+        // }
+        // used to hide when function is not executed properly
+        setTimeout(() => {
+          $("#loading").hide()
+        }, 100)
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+      } else {
+        // alert user that file may be empty or there is no imported file at all
+        fileChecks(readString)
+      }
     })
 
     $("#cancel_infile").unbind("click").bind("click", () => {
@@ -1320,7 +1328,7 @@ const onLoad = () => {
       masterReadArray = []
       assemblyJson = false
       // readIndex will be used by slider buttons
-      readIndex = 0
+      //readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -1353,40 +1361,46 @@ const onLoad = () => {
     //* ************//
 
     $("#fileSubmit_mash").unbind("click").bind("click", (event) => {
-      masterReadArray = []
-      assemblyJson = false
-      readFilejson = mashJson // converts mashJson into readFilejson to
-      const readString = JSON.parse(Object.values(mashJson)[0])
-      $("#fileNameDiv").html(Object.keys(mashJson)[0])
-        .show()
-      // readIndex will be used by slider buttons
-      readIndex += 1
-      // it and use the same function (readColoring)
-      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
       event.preventDefault()
-      $("#loading").show()
-      setTimeout( () => {
-        // TODO this readFilejson here must be a json object from 1 file
-        const outputList = readColoring(g, listGi, graphics, renderer, readString)
-        listGi = outputList[0]
-        listGiFilter = outputList[1]
-        masterReadArray = pushToMasterReadArray(readFilejson)
-      }, 100)
+      if (mashJson !== false) {
+        masterReadArray = []
+        assemblyJson = false
+        readFilejson = mashJson // converts mashJson into readFilejson to
+        const readString = JSON.parse(Object.values(mashJson)[0])
+        fileChecks(readString)
+        $("#fileNameDiv").html(Object.keys(mashJson)[0])
+          .show()
+        // readIndex will be used by slider buttons
+        //readIndex += 1
+        // it and use the same function (readColoring)
+        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        previousTableList = []
+        // transform selector object that handles plots and hide their
+        // respective divs
+        Object.keys(selector).map((el) => {
+          selector[el].state = false
+        })
+        hideAllOtherPlots()
+        areaSelection = false
+        $("#loading").show()
+        setTimeout(() => {
+          const outputList = readColoring(g, listGi, graphics, renderer, readString)
+          listGi = outputList[0]
+          listGiFilter = outputList[1]
+          masterReadArray = pushToMasterReadArray(readFilejson)
+        }, 100)
 
-      // }
-      // used to hide when function is not executed properly
-      setTimeout( () => {
-        $("#loading").hide()
-      }, 100)
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
-
+        // }
+        // used to hide when function is not executed properly
+        setTimeout(() => {
+          $("#loading").hide()
+        }, 100)
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+      } else {
+        // alert user that file may be empty or there is no imported file at all
+        fileChecks(readString)
+      }
     })
 
     $("#cancel_infile_mash").unbind("click").bind("click", () => {
@@ -1398,7 +1412,7 @@ const onLoad = () => {
       masterReadArray = []
       assemblyJson = false
       // readIndex will be used by slider buttons
-      readIndex = 0
+      //readIndex = 0
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -1431,30 +1445,39 @@ const onLoad = () => {
     //* * Assembly **//
     //* ********* ***//
     $("#assemblySubmit").unbind("click").bind("click", (event) => {
-      $("#alertAssembly").show()
-      masterReadArray = []
-      readFilejson = false
       event.preventDefault()
-      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
-      $("#loading").show()
-      // setTimeout( () => {
-      listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
-      // }, 100)
-      setTimeout( () => {
-        renderer.rerender()
-      }, 100)
+      if (assemblyJson !== false) {
+        const readString = JSON.parse(Object.values(assemblyJson)[0])
+        fileChecks(readString)
+        $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+          .show()
+        masterReadArray = []
+        readFilejson = assemblyJson
+        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        previousTableList = []
+        // transform selector object that handles plots and hide their
+        // respective divs
+        Object.keys(selector).map( (el) => { selector[el].state = false })
+        hideAllOtherPlots()
+        areaSelection = false
+        $("#loading").show()
+        setTimeout(() => {
+          const outputList = readColoring(g, listGi, graphics, renderer, readString)
+          listGi = outputList[0]
+          listGiFilter = outputList[1]
+          masterReadArray = pushToMasterReadArray(assemblyJson)
+        }, 100)
 
-      // }
-      // used to hide when function is not executed properly
-      setTimeout( () => {
-        $("#loading").hide()
-      }, 100)
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+        // used to hide when function is not executed properly
+        setTimeout( () => {
+          $("#loading").hide()
+        }, 100)
+      } else {
+        // alert user that file may be empty or there is no imported file at all
+        fileChecks(assemblyJson)
+      }
     })
 
     $("#cancel_assembly").unbind("click").bind("click", () => {
@@ -1462,7 +1485,6 @@ const onLoad = () => {
     })
 
     $("#sampleAssembly").unbind("click").bind("click", (event) => {
-      $("#alertAssembly").show()
       event.preventDefault()
       masterReadArray = []
       readFilejson = false
@@ -1474,17 +1496,21 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
-      // setTimeout( () => {
       getArrayAssembly().then( (results) => {
-        assemblyJson = results
-        listGiFilter = assembly(listGi, results, g, graphics, masterReadArray, listGiFilter)
-      // }, 100)
+        readFilejson = assemblyJson = results
+        console.log(assemblyJson)
+        const readString = JSON.parse(Object.values(results)[0])
+        fileChecks(readString)
+        $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+          .show()        //listGiFilter = assembly(listGi, results, g, graphics, masterReadArray, listGiFilter)
+        const outputList = readColoring(g, listGi, graphics, renderer, readString)
+        listGi = outputList[0]
+        listGiFilter = outputList[1]
+        masterReadArray = pushToMasterReadArray(assemblyJson)
       })
-      setTimeout( () => {
-        renderer.rerender()
-      }, 100)
 
-      // }
+      $("#slideRight").prop("disabled", false)
+      $("#slideLeft").prop("disabled", false)
       // used to hide when function is not executed properly
       setTimeout( () => {
         $("#loading").hide()
@@ -1778,7 +1804,11 @@ const onLoad = () => {
   })
 
   handleFileSelect("mashInfile", "#file_text_mash", (newMashJson) => {
-    mashJson = newMashJson
+    if (Object.keys(newMashJson).length !== 0) {
+      mashJson = newMashJson
+    } else {
+      console.log("tau")
+    }
     // $("#mashInfile").val("")
   })
 
@@ -2012,8 +2042,17 @@ const onLoad = () => {
   $("#alertCloseNCBI").unbind("click").bind("click", () => {
     $("#alertNCBI").hide()  // hide this div
   })
+
   $("#alertCloseAssembly").unbind("click").bind("click", () => {
     $("#alertAssembly").hide()  // hide this div
+  })
+
+  $("#alertClose_noFile").unbind("click").bind("click", () => {
+    $("#alertId_noFiles").hide()  // hide this div
+  })
+
+  $("#alertCloseJsonFile").unbind("click").bind("click", () => {
+    $("#alertJsonFile").hide()  // hide this div
   })
 
   // sets toggle for size ratio and handles status of this toggle

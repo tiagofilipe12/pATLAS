@@ -913,6 +913,22 @@
           data-hide="true">&times;</button>
 </div>
 
+<!--Alert message to check that some selection is made-->
+<div class="alert alert-danger alert-dismissable fade in" id="alertId_noFiles"
+     style="display: none">
+  <button type="button" class="close" id="alertClose_noFile" aria-hidden="true"
+          data-hide="true">&times;</button>
+  <strong>Warning!</strong> No files were added.
+</div>
+
+<!--Alert message to check that some selection is made-->
+<div class="alert alert-danger alert-dismissable fade in" id="alertJsonFile"
+     style="display: none">
+  <button type="button" class="close" id="alertCloseJsonFile" aria-hidden="true"
+          data-hide="true">&times;</button>
+  <div id="alertJsonFileText"><!--To be filled upon error handling --></div>
+</div>
+
 <div id="wrapper" class="toggled">
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
