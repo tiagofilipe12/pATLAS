@@ -1315,7 +1315,7 @@ const onLoad = () => {
         $("#slideLeft").prop("disabled", false)
       } else {
         // alert user that file may be empty or there is no imported file at all
-        fileChecks(readString)
+        fileChecks(readFilejson)
       }
     })
 
@@ -1399,7 +1399,7 @@ const onLoad = () => {
         $("#slideLeft").prop("disabled", false)
       } else {
         // alert user that file may be empty or there is no imported file at all
-        fileChecks(readString)
+        fileChecks(mashJson)
       }
     })
 
@@ -1498,7 +1498,6 @@ const onLoad = () => {
       $("#loading").show()
       getArrayAssembly().then( (results) => {
         readFilejson = assemblyJson = results
-        console.log(assemblyJson)
         const readString = JSON.parse(Object.values(results)[0])
         fileChecks(readString)
         $("#fileNameDiv").html(Object.keys(readFilejson)[0])
@@ -1804,11 +1803,7 @@ const onLoad = () => {
   })
 
   handleFileSelect("mashInfile", "#file_text_mash", (newMashJson) => {
-    if (Object.keys(newMashJson).length !== 0) {
-      mashJson = newMashJson
-    } else {
-      console.log("tau")
-    }
+    mashJson = newMashJson
     // $("#mashInfile").val("")
   })
 
