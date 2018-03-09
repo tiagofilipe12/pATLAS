@@ -427,7 +427,11 @@ const onLoad = () => {
       // this gets the clicked selector, gets its html, converts it to lower
       // case and trims for white spaces and new line chars
       clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
-      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
+      if (event.target.id === "lengthStats") {
+        $("#sortGraph, #sortGraphAlp").attr("disabled", true)
+      } else {
+        $("#sortGraph, #sortGraphAlp").attr("disabled", false)
+      }
       setTimeout( () => {
         listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
       }, 500)
@@ -460,7 +464,11 @@ const onLoad = () => {
       // this gets the clicked selector, gets its html, converts it to lower
       // case and trims for white spaces and new line chars
       clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
-      $("#sortGraph, #sortGraphAlp").attr("disabled", true)
+      if (event.target.id === "lengthPlot") {
+        $("#sortGraph, #sortGraphAlp").attr("disabled", true)
+      } else {
+        $("#sortGraph, #sortGraphAlp").attr("disabled", false)
+      }
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     })
 
