@@ -1457,7 +1457,7 @@ const onLoad = () => {
       if (assemblyJson !== false) {
         const readString = JSON.parse(Object.values(assemblyJson)[0])
         fileChecks(readString)
-        $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+        $("#fileNameDiv").html(Object.keys(assemblyJson)[0])
           .show()
         masterReadArray = []
         readFilejson = assemblyJson

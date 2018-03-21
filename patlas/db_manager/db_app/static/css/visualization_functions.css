@@ -47,7 +47,7 @@
 
 #buttonStuff{
     position: fixed;
-    bottom: 2%;
+    bottom: 3%;
     left: 50%;
     transform: translateX(-46%);
 }
@@ -211,7 +211,7 @@
 }
 
 /*resize search box for gi*/
-#cutoffValue, #cutoffValueMash, #copyNumberValue, #cutoffValueSeq{
+#cutoffValue, #cutoffValueMash, #copyNumberValue, #cutoffValueSeq, #cutoffHashSeq{
     width: 200px;
 }
 
@@ -657,8 +657,12 @@
 }
 
 #fileNameDiv{
-    margin-top: 5px;
-    padding: 5px;
+    position: fixed;
+    margin-top: 0;
+    padding: 0 5px 5px 5px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-46%);
     background: rgba(255, 255, 255, 0.8);
     display: none;
 }
