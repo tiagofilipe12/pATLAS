@@ -573,10 +573,10 @@
           </div>
           <div class="form-group">Provide a
             value for shared hashes between plasmids and query sequence ranging
-            from 0 to 1. Tip: default is 0.
+            from 0 to 1. Tip: default is 0.8.
             <input stype="text" id="cutoffHashSeq"
                    class="form-control"
-                   placeholder="0.0"/>
+                   placeholder="0.8"/>
           </div>
         </div>
         <div class="panel panel-info">
@@ -928,6 +928,14 @@
   <button type="button" class="close" id="alertClose_noFile" aria-hidden="true"
           data-hide="true">&times;</button>
   <strong>Warning!</strong> No files were added.
+</div>
+
+<div class="alert alert-info alert-dismissable fade in" id="alertId_noResults"
+     style="display: none">
+  <button type="button" class="close" id="alertClose_noResults" aria-hidden="true"
+          data-hide="true">&times;</button>
+  <strong>Warning!</strong> This file has no results for the filters applied.
+  Try to change the parameters provided through import menu.
 </div>
 
 <!--Alert message to check that some selection is made-->

@@ -2054,6 +2054,10 @@ const onLoad = () => {
     $("#alertId_noFiles").hide()  // hide this div
   })
 
+  $("#alertClose_noResults").unbind("click").bind("click", () => {
+    $("#alertId_noResults").hide()  // hide this div
+  })
+
   $("#alertCloseJsonFile").unbind("click").bind("click", () => {
     $("#alertJsonFile").hide()  // hide this div
   })

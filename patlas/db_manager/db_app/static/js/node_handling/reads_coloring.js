@@ -63,7 +63,7 @@ const cutoffParserSeq = () => {
 
 const cutoffHashSeq = () => {
   const cutoff = $("#cutoffHashSeq").val()
-  return (cutoff !== "") ? parseFloat(cutoff) : 0.0
+  return (cutoff !== "") ? parseFloat(cutoff) : 0.8
 }
 
 // function to iterate through nodes
@@ -282,6 +282,8 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
       }
     }
   }
+
+  // if any results are found for the query, show buttons to interact and legend
   if (listGiFilter.length !== 0) {
     $("#readString").append("<div class='min'>" +
       minValue.toString() + "</div>")
@@ -292,9 +294,14 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
     // control all related divs
     $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
       " #plotButton, #colorLegend").show()
+  } else {
+    // displays a warning if no results are found for this file
+    $("#alertId_noResults").show()
   }
+
   renderer.rerender()
   $("#loading").hide()
+
   return [listGi, listGiFilter]
 }
 

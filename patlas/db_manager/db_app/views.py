@@ -66,13 +66,13 @@ def map_sample():
 @app.route("/ass_sample1")
 def ass_sample1():
     return repetitiveFunction(
-        "db_app/static/json/samples/assembly1.fasta__distances.txt.json"
+        "db_app/static/json/samples/assembly1.json"
     )
 
 @app.route("/ass_sample2")
 def ass_sample2():
     return repetitiveFunction(
-        "db_app/static/json/samples/assembly2.fasta__distances.txt.json"
+        "db_app/static/json/samples/assembly2.json"
     )
 
 @app.route("/mash_sample")
