@@ -5,30 +5,30 @@ Import functions allow the users to import a json file (or multiple files) gener
  correspondence between the accession numbers and the results of this 
  auxiliary script as the value of that accession number key.
 
-**However, this is achieved by running auxiliary scripts, detailed on
-each specific section.**
+**However, this is achieved by running a [NextFlow](https://www.nextflow.io/)
+pipeline, with detailed instructions on each specific section.**
+
+## Download and install requirements to run the pipeline
+
+### Requirements
+
+* [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or higher.
+* [Docker](https://docs.docker.com/install/) or [Singularity](http://singularity.lbl.gov/install-linux).
+* [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html#installation) - follow the two installation steps (there is no need to read anything else).
+
+### Conda recipe for nextflow
+
+If you prefer you can use this conda recipe for nextflow: [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/nextflow/README.html)
+
+```
+conda install nextflow
+```
 
 ## Mapping results
 
-This `JSON` file allows the user to visualize the coverage of mapping results,
-displaying which plasmids are more likely to be in the set of reads of interest.
-
-### Download and install
-
-* First install [bowtie2](https://sourceforge.net/projects/bowtie-bio/files/bowtie2/) (v2.2.9 or higher) and
-[samtools](https://sourceforge.net/projects/samtools/files/samtools/) (v.1.3.1 or
-higher).
-
-* Second, download the [latest release](https://github.com/tiagofilipe12/PlasmidCoverage/releases/tag/v1.0.0) of this script
-(don't forget to download [indexes folder](https://github.com/tiagofilipe12/PlasmidCoverage/releases/download/v1.0.0/indexes.tar.gz))
-
-* Then, `pip3 install -r requirements.txt`
-
-* Finally, uncompress the `indexes.tar.gz` file.
-
 ### How to run
 
-`PlasmidUNCover.py -idx <path/to/indexes_folder> -r <path/to/reads_folder> -t 1 -o test -c 0.6`
+`nextflow run tiagofilipe12/pATLASflow --mapping --reads "your_folder/*.fastq"`
 
 ### Importing in pATLAS
 
@@ -37,19 +37,9 @@ After, the run of the script has finished you should have a `JSON` file
 
 ## Mash screen results
 
-### Download and install
-
-* Download [release 1.0.0 - popcorns & unicorns](https://github.com/tiagofilipe12/mash_wrapper/releases/tag/v1.0.0)
-(don't forget to download [index file](https://github.com/tiagofilipe12/mash_wrapper/releases/download/v1.0.0/assembly_reference.msh),
-that is used to run this script).
-
-* Download [mash 2.0.0](https://github.com/marbl/Mash/releases/tag/v2.0)
-
-* `pip3 install -r requirements.txt`
-
 ### How to run
 
-`mash_wrapper.py -rs assembly_reference.msh -r <read(s)> -o <output_name> -t <number_of_threads> -j -ms`
+`nextflow run tiagofilipe12/pATLASflow --mash_screen --reads "your_folder/*.fastq"`
 
 ### Importing in pATLAS
 
@@ -58,22 +48,9 @@ After, the run of the script has finished you should have a `JSON` file
 
 ## Sequence
 
-### Download and install
-
-Note: The download and install instructions are the same as for
-[Mash screen results](#mash-screen-results).
-
-* Download [release 1.0.0 - popcorns & unicorns](https://github.com/tiagofilipe12/mash_wrapper/releases/tag/v1.0.0)
-(don't forget to download [index file](https://github.com/tiagofilipe12/mash_wrapper/releases/download/v1.0.0/assembly_reference.msh),
-that is used to run this script).
-
-* Download [mash 2.0.0](https://github.com/marbl/Mash/releases/tag/v2.0)
-
-* `pip3 install -r requirements.txt`
-
 ### How to run
 
-`mash_wrapper.py -rs assembly_reference.msh -a <your_fasta> -j -o <tyour_output_folder>`
+`nextflow run tiagofilipe12/pATLASflow --assembly --fasta "your_folder/*.fasta"`
 
 ### Importing in pATLAS
 
