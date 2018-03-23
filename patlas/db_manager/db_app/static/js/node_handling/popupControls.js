@@ -44,20 +44,49 @@ const arrayToCsv = (array) => {
  * displayed
  */
 const setupPopupDisplay = (node, speciesName, plasmidName, clusterId) => {
-  // this will assure that even db doesn't return anything these divs are
-  // emptied before adding something new
-  $("#percentagePopSpan").html("")
-  $("#copyNumberPopSpan").html("")
-  // first needs to empty the popup in order to avoid having
-  // multiple entries from previous interactions
+
+  // empties individual divs for imports
+  $("#percentagePopMashDist, #hashPop, #percentagePopMash, #copyNumberPop, " +
+    "#percentagePop").hide()
+  $("#percentagePopSpan, #percentagePopSpanMash, #copyNumberPopSpan, " +
+    "#percentagePopMashDistSpan, #hashPopSpan").html("")
+
+  // adds everything that is common metadata to the database
   if (typeof node.data !== "undefined") {
     $("#accessionPop").html(node.data.sequence)
     $("#speciesNamePopSpan").html(speciesName)
     $("#lengthPop").html(node.data.seqLength)
     $("#plasmidNamePopSpan").html(plasmidName)
-    $("#percentagePopSpan").html(node.data.percentage)
-    $("#copyNumberPopSpan").html(node.data.copyNumber)
     $("#clusterIdPopSpan").html(clusterId)
+  }
+
+  if (node.data.percentage) {
+    //if statement to append to mapping divs in popup_description
+    $("#percentagePopSpan").html(node.data.percentage)
+
+    $("#percentagePop").show()
+    $("#importDiv").show()
+
+  } else if (node.data.percMash) {
+    //if statement to append to mash screen divs in popup_description
+    $("#percentagePopSpanMash").html(node.data.percMash)
+    $("#copyNumberPopSpan").html(node.data.copyNumber)
+
+    $("#copyNumberPop, #percentagePopMash").show()
+    $("#importDiv").show()
+
+  } else if (node.data.percMashDist) {
+    // if statement to append mash dist divs in popup_description
+    $("#percentagePopSpanMashDist").html(node.data.percMashDist)
+    $("#hashPopSpan").html(node.data.sharedHashes)
+
+    $("#percentagePopMashDist, #hashPop").show()
+    $("#importDiv").show()
+
+  } else {
+    // if none of the import data is associated with the node then hide
+    // the importDiv
+    $("#importDiv").hide()
   }
 
   $("#popup_description").show()

@@ -627,7 +627,7 @@
 }
 
 #popup_description {
-    max-width: 25%;
+    max-width: 30%;
     max-height: 60%;
     padding: 10px 30px 10px 30px;
     /*border: 1px solid grey;*/
@@ -784,6 +784,7 @@ Careful when using this in other popovers in the future*/
     background-color: #6292A9;
 }
 
-#percentagePop, #copyNumberPop, #popupImportSeparator, #popupHeaderImport{
+#importDiv, #percentagePop, #percentagePopMash, #copyNumberPop,
+#percentagePopMashDist, #hashPop{
     display: none;
 }

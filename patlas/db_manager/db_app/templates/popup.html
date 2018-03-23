@@ -20,14 +20,26 @@
     <span style='color: #468499'>Cluster no.: </span><span
           id="clusterIdPopSpan"></span>
   </div>
-
-  <div id="popupHeaderImport" class="popupHeaders">Import info</div>
-  <div id="popupImportSeparator" style='border-top: 3px solid #4588ba; position: relative;
+  <!--This div is dinamically used with jquery to render the appropriate information for the user-->
+  <div id="importDiv">
+    <div id="popupHeaderImport" class="popupHeaders">Import info</div>
+    <div id="popupImportSeparator" style='border-top: 3px solid #4588ba; position: relative;
                 top: 10px; margin-bottom: 10px;'>
-  </div>
-  <div id='percentagePop'><span style='color: #468499'>Percentage:</span><span id="percentagePopSpan"></span>
-  </div>
-  <div id='copyNumberPop'><span style='color: #468499'>Relative copy number:</span><span id="copyNumberPopSpan"></span>
+    </div>
+    <!--mapping divs-->
+    <div id='percentagePop'><span style='color: #468499'>Coverage Percentage (mapping): </span><span id="percentagePopSpan"></span>
+    </div>
+    <!--mash screen divs-->
+    <div id='percentagePopMash'><span style='color: #468499'>Percentage Identity (mash screen): </span><span id="percentagePopSpanMash"></span>
+    </div>
+    <div id='copyNumberPop'><span style='color: #468499'>Relative copy number (mash screen): </span><span id="copyNumberPopSpan"></span>
+    </div>
+    <!--mash dist divs-->
+    <div id='percentagePopMashDist'><span style='color: #468499'>Percentage Identity (assembly): </span><span id="percentagePopSpanMashDist"></span>
+    </div>
+    <div id='hashPop'><span style='color: #468499'>Percentage of shared hashes (assembly): </span><span id="hashPopSpan"></span>
+    </div>
+
   </div>
   <br />
 

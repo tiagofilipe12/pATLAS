@@ -1807,17 +1807,14 @@ const onLoad = () => {
 
   handleFileSelect("infile", "#file_text", (newReadJson) => {
     readFilejson = newReadJson
-    // $("#infile").val("")
   })
 
   handleFileSelect("mashInfile", "#file_text_mash", (newMashJson) => {
     mashJson = newMashJson
-    // $("#mashInfile").val("")
   })
 
   handleFileSelect("assemblyfile", "#assembly_text", (newAssemblyJson) => {
     assemblyJson = newAssemblyJson
-    // $("#assemblyfile").val("")
   })
 
   //* ****************************** *//

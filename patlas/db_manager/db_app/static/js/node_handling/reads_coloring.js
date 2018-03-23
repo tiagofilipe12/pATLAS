@@ -84,25 +84,35 @@ const cutoffHashSeq = () => {
  * plasmid that came from mash screen results. Other modules will not have
  * copy number for now
  */
-const nodeIter = (g, readColor, gi, graphics, perc, copyNumber) => {
+const nodeIter = (g, readColor, gi, graphics, perc, copyNumber, percMash,
+                  percMashDist, sharedHashes) => {
+
   g.forEachNode( (node) => {
-    // when filter removes all nodes and then adds them again. Looks like g
-    // was somehow affected.
-    // if statement added for parsing singletons into the graph visualization
-    // if (node.id.indexOf("singleton") > -1) {
-    //   nodeGI = node.id.split("_").slice(1, 4).join("_")
-    // } else {
+
     const nodeGI = node.id.split("_").slice(0, 3).join("_")
-    // }
+
     const nodeUI = graphics.getNodeUI(node.id)
 
     if (gi === nodeGI) {
       nodeUI.backupColor = nodeUI.color
       nodeUI.color = readColor
       perc = parseFloat(perc)
-      node.data["percentage"] =  perc.toFixed(2).toString()
-      if (copyNumber) {
+
+      // for mapping
+      if (perc) {
+        node.data["percentage"] = perc.toFixed(2).toString()
+      }
+
+      // for mash screen
+      if (percMash) {
         node.data["copyNumber"] = copyNumber.toString()
+        node.data["percMash"] = percMash.toFixed(2).toString()
+      }
+
+      // for mash dist aka assembly
+      if (percMashDist) {
+        node.data["sharedHashes"] = sharedHashes.toString()
+        node.data["percMashDist"] = percMashDist.toFixed(2).toString()
       }
     }
   })
@@ -197,7 +207,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
             const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
             const scale = chroma.scale(["lightsalmon", "maroon"])
             palette(scale, 10, readMode)
-            nodeIter(g, readColor, gi, graphics, identity, copyNumber)
+            nodeIter(g, readColor, gi, graphics, false, copyNumber, identity)
             if (listGi.includes(gi)) {
               listGiFilter.push(gi)
             }
@@ -218,7 +228,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
               const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
               const scale = chroma.scale(["lightsalmon", "maroon"])
               palette(scale, 10, readMode)
-              nodeIter(g, readColor, gi, graphics, identity)
+              nodeIter(g, readColor, gi, graphics, false, false, false, identity, copyNumber)
               if (listGi.includes(gi)) {
                 listGiFilter.push(gi)
               }
@@ -243,14 +253,14 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
             // and 1
             const readColor = chroma.mix("#eacc00", "maroon", (perc - 0.5) * 2).hex()
               .replace("#", "0x")
-            nodeIter(g, readColor, gi, graphics, perc)
+            nodeIter(g, readColor, gi, graphics, perc, false, false, false, false)
             if (listGi.includes(gi)) {
               listGiFilter.push(gi)
             }
           } else {
             const readColor = chroma.mix("blue", "#eacc00", perc * 2).hex()
               .replace("#", "0x")
-            nodeIter(g, readColor, gi, graphics, perc)
+            nodeIter(g, readColor, gi, graphics, perc, false, false, false, false)
             if (listGi.includes(gi)) {
               listGiFilter.push(gi)
             }
@@ -263,7 +273,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
             const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
             const scale = chroma.scale(["lightsalmon", "maroon"])
             palette(scale, 10, readMode)
-            nodeIter(g, readColor, gi, graphics, perc)
+            nodeIter(g, readColor, gi, graphics, perc, false, false, false, false)
             if (listGi.includes(gi)) {
               listGiFilter.push(gi)
             }
