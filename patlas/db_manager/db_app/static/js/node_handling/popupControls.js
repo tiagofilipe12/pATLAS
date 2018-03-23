@@ -32,6 +32,19 @@ const arrayToCsv = (array) => {
   link.click() // This will download the data file named "my_data.csv".
 }
 
+const removeImportInfo = (node) => {
+
+  const arrayDivs = [
+    "percentage",
+    "copyNumber",
+    "percMash",
+    "sharedHashes",
+    "percMashDist"
+  ]
+
+  arrayDivs.forEach( (e) => delete node.data[e])
+}
+
 /**
  * Function that prepares the top-right corner popup to display
  * @param {Object} node - node object that contains the metadata associated

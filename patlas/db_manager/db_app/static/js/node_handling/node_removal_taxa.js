@@ -1,5 +1,5 @@
 /*globals makeHash, reloadAccessionList, assembly, listGiFilter,
- colorNodes, readColoring */
+ colorNodes, readColoring, removeImportInfo */
 
 const reAppendString = "<div class='panel-group colorpicker-component' id='colorLegend' style='display: none'>\n" +
   "<div class='panel panel-default' >\n" +
@@ -506,6 +506,10 @@ const showDiv = () => {
 const nodeColorReset = (graphics, g, nodeColor, renderer) => {
   document.getElementById("taxa_label").style.display = "none" // hide label
   g.forEachNode( (node) => {
+
+    // remove import divs for all nodes
+    removeImportInfo(node)
+
     const nodeUI = graphics.getNodeUI(node.id)
     // reset all nodes before changing colors because of the second instance of filters
     if (nodeUI.color !== nodeColor) {

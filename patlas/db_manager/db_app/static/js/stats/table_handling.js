@@ -1,5 +1,5 @@
 /*globals Highcharts, cutoffParser, cutoffParserMash, assemblyJson,
- cutoffParserSeq */
+ cutoffParserSeq, cutoffParserMash */
 
 /**
  * Function to compare two arrays and check if they are equal, i.e. if they
