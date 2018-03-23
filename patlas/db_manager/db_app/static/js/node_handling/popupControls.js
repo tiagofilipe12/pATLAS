@@ -32,6 +32,12 @@ const arrayToCsv = (array) => {
   link.click() // This will download the data file named "my_data.csv".
 }
 
+
+/**
+ * Function to remove attribute from object, in this case the objects from nodes
+ * that are used to render popup_description
+ * @param {Object} node - this object contains all node associated data.
+ */
 const removeImportInfo = (node) => {
 
   const arrayDivs = [

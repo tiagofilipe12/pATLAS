@@ -83,6 +83,12 @@ const cutoffHashSeq = () => {
  * @param {number} copyNumber - The copy number value associated with this
  * plasmid that came from mash screen results. Other modules will not have
  * copy number for now
+ * @param {number} percMash - The percentage identity reported by mash and
+ * saved in the imported json file
+ * @param {number} percMashDist - The percentage identity reported by mash dist.
+ * This module is used in assembly mode or sequence import.
+ * @param {number} sharedHashes - The percentage of hashes shared between
+ * a reference plasmid and the query sequence.
  */
 const nodeIter = (g, readColor, gi, graphics, perc, copyNumber, percMash,
                   percMashDist, sharedHashes) => {
