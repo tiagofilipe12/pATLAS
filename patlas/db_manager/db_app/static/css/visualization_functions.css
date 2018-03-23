@@ -11,6 +11,8 @@
 /*fixes navigation bar to top of the page*/
 .navbar.navbar-default{
     width: 100%;
+    /*forces height on navbar in order to properly place popup_description*/
+    height: 50px;
     border: 1px;
     border-color: #524F52;
     background-color: #524F52;
@@ -628,14 +630,15 @@
     max-width: 25%;
     max-height: 60%;
     padding: 10px 30px 10px 30px;
-    border: 1px solid grey;
+    /*border: 1px solid grey;*/
     border-radius: 10px;
-    background-color: white;
-    right: 0%;
-    top: 5%;
+    background-color: #ffffff;
+    right: 0;
+    top: 51px;
     position: absolute;
     z-index: 2;
     overflow: auto;
+    box-shadow: 1px 2px 20px #333;
 }
 
 #close{
@@ -779,4 +782,8 @@ Careful when using this in other popovers in the future*/
 
 .panel-import-header{
     background-color: #6292A9;
+}
+
+#percentagePop, #copyNumberPop, #popupImportSeparator, #popupHeaderImport{
+    display: none;
 }
