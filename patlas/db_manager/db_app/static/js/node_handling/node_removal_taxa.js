@@ -230,12 +230,14 @@ const reAppendString = "<div class='panel-group colorpicker-component' id='color
  * This is used to avoid link duplication.
  */
 const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance, sizeRatio) => {
+
   const currentHash = makeHash(sequence, linkAccession)
-  console.log(sequence, linkAccession)
+
   if (newListHashes.indexOf(currentHash) < 0) {
     g.addLink(sequence, linkAccession, { distance: linkDistance, sizeRatio })
     newListHashes.push(currentHash)
   }
+
   return newListHashes
 }
 
@@ -259,7 +261,6 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
 
-  console.log(linksArray)
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
     g.addNode(sequence, {

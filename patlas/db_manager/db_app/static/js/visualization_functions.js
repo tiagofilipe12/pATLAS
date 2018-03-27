@@ -65,6 +65,7 @@ let masterReadArray = []
 let readFilejson = false
 let mashJson = false
 let assemblyJson = false
+let consensusJson = false
 
 let readIndex = 0
 
@@ -1522,6 +1523,50 @@ const onLoad = () => {
       }, 100)
     })
 
+    //* ********* ***//
+    //* * Consensus **//
+    //* ********* ***//
+
+    $("#consensusSubmit").unbind("click").bind("click", (event) => {
+      event.preventDefault()
+      if (consensusJson !== false) {
+        const readString = JSON.parse(Object.values(consensusJson)[0])
+        fileChecks(readString)
+        $("#fileNameDiv").html(Object.keys(consensusJson)[0])
+          .show()
+        masterReadArray = []
+        readFilejson = consensusJson
+        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        previousTableList = []
+        // transform selector object that handles plots and hide their
+        // respective divs
+        Object.keys(selector).map( (el) => { selector[el].state = false })
+        hideAllOtherPlots()
+        areaSelection = false
+        $("#loading").show()
+        setTimeout(() => {
+          const outputList = readColoring(g, listGi, graphics, renderer, readString)
+          listGi = outputList[0]
+          listGiFilter = outputList[1]
+          masterReadArray = pushToMasterReadArray(consensusJson)
+        }, 100)
+
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+        // used to hide when function is not executed properly
+        setTimeout( () => {
+          $("#loading").hide()
+        }, 100)
+      } else {
+        // alert user that file may be empty or there is no imported file at all
+        fileChecks(consensusJson)
+      }
+    })
+
+    $("#consensus_assembly").unbind("click").bind("click", () => {
+      consensusJson = abortRead()
+    })
+
     //* *********************//
     //* * Distances filter **//
     //* *********************//
@@ -1813,6 +1858,11 @@ const onLoad = () => {
 
   handleFileSelect("assemblyfile", "#assembly_text", (newAssemblyJson) => {
     assemblyJson = newAssemblyJson
+  })
+
+  handleFileSelect("consensusfile", "#consensus_text", (newConsensusJson) => {
+    consensusJson = newConsensusJson
+    console.log(consensusJson)
   })
 
   //* ****************************** *//
