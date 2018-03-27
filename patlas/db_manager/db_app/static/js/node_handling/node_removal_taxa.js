@@ -229,10 +229,11 @@ const reAppendString = "<div class='panel-group colorpicker-component' id='color
  * updated that will be stored until all nodes and links have been added.
  * This is used to avoid link duplication.
  */
-const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
+const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance, sizeRatio) => {
   const currentHash = makeHash(sequence, linkAccession)
+  console.log(sequence, linkAccession)
   if (newListHashes.indexOf(currentHash) < 0) {
-    g.addLink(sequence, linkAccession, { distance: linkDistance })
+    g.addLink(sequence, linkAccession, { distance: linkDistance, sizeRatio })
     newListHashes.push(currentHash)
   }
   return newListHashes
@@ -253,10 +254,12 @@ const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
  * by reAddLinks function
  */
 const reAddNode = (g, jsonObj, newList, newListHashes) => {
-  console.log(jsonObj.plasmidLenght, jsonObj.plasmidAccession)
+
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
+
+  console.log(linksArray)
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
     g.addNode(sequence, {
@@ -279,6 +282,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       const linkDistance = entry[1].split(":")[1]
       const linkLength = entry[2].split(":")[1]
       const linkAccession = entry[0].split(":")[1]
+      const sizeRatio = Math.min(length, linkLength) / Math.max(length, linkLength)
 
       if (newList.indexOf(linkAccession) < 0) {
         g.addNode(linkAccession, {
@@ -292,10 +296,12 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
         })
         newList.push(linkAccession) //adds to list every time a node is
         // added here
-        newListHashes = addLinks(g, newListHashes, sequence, linkAccession, linkDistance)
+        newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+          linkDistance, sizeRatio)
       } else {
         // if node exist, links still need to be added
-        newListHashes = addLinks(g, newListHashes, sequence, linkAccession, linkDistance)
+        newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+          linkDistance, sizeRatio)
       }
     }
   }

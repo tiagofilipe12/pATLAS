@@ -72,9 +72,7 @@ let clickedHighchart
 
 let graphSize
 
-let toggleRatioStatus = false
-
-let totalNumberOfLinks
+// let totalNumberOfLinks
 
 let multiSelectOverlayObj
 
@@ -328,7 +326,7 @@ const onLoad = () => {
 
     let toggleStatus = false // default state
     // $("#toggle-event").bootstrapToggle("off") // set to default off
-    $("#toggle-event").change(function () {   // jquery seems not to support es6
+    $("#toggle-event").change(function () {
       toggleStatus = $(this).prop("checked")
       toggleManager(toggleStatus)
     })
@@ -1532,7 +1530,7 @@ const onLoad = () => {
       // $("#loading").show()
       $("#scaleLegend").empty()
       showDiv().then( () => {
-        linkColoring(g, graphics, renderer, "distance", toggleRatioStatus)
+        linkColoring(g, graphics, renderer, "distance", false)
         // enables button group again
         $("#toolButtonGroup button").removeAttr("disabled")
       })
@@ -2062,29 +2060,25 @@ const onLoad = () => {
     $("#alertJsonFile").hide()  // hide this div
   })
 
-  // sets toggle for size ratio and handles status of this toggle
-  // this is used in "ratioSubmit" button
-  $("#toggleRatio").change(function () {   // jquery seems not to support es6
-    toggleRatioStatus = $(this).prop("checked")
-  })
-
   // function that submits the selection made in the modal
   $("#ratioSubmit").unbind("click").bind("click", () => {
+
     event.preventDefault()
+
+    const toggleRatioStatus = $("#toggleRatio").prop("checked")
+
     // clears all links before doing this
     $("#reset-links").click()
-    // $("#reset-links").click()
-    // $("#loading").show()
     $("#scaleLegend").empty()
+
     showDiv().then(
       setTimeout( () => {
-        linkColoring(g, graphics, renderer, "size", toggleRatioStatus, totalNumberOfLinks)
+        linkColoring(g, graphics, renderer, "size", toggleRatioStatus)//, totalNumberOfLinks)
         // enables button group again
         $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     )
-    // const readMode = false
-    // color_legend(readMode)
+
   })
 
   /** control the visualization of multiple files for read mode

@@ -12,11 +12,13 @@
  * @param {String} type - the type of the file to be created
  */
 const downloadJSON = (text, name, type) => {
+
   const a = document.createElement("a")
   const file = new Blob([text], {type})
   a.href = URL.createObjectURL(file)
   a.download = name
   a.click()
+
 }
 
 /**
@@ -37,21 +39,26 @@ const getPositions = (g, layout) => {
   let hashStore = []
 
   g.forEachNode( (node) => {
+
     const position = layout.getNodePosition(node.id)
+
     masterJSON.nodes.push({
       "id": node.id,
       "length": node.data.seqLength.split(">").slice(-1).toString(),
       position,
     })
+
   })
   // this doesn't filter for duplicated links
   g.forEachLink( (link) => {
+
     const currentHash = makeHash(link.fromId, link.toId)
       // gets size of fromId and toId nodes and calculates the ratio between
       // them
     const fromSize = parseFloat(g.getNode(link.fromId).data.seqLength.split("</span>").slice(-1)[0])
     const toSize = parseFloat(g.getNode(link.toId).data.seqLength.split("</span>").slice(-1)[0])
     const sizeRatio = Math.min(fromSize, toSize) / Math.max(fromSize, toSize)
+
     if (hashStore.indexOf(currentHash) < 0) {
       masterJSON.links.push({
         "parentId": link.fromId,
@@ -60,12 +67,10 @@ const getPositions = (g, layout) => {
       })
       hashStore.push(currentHash)
     }
+
   })
 
   return masterJSON
-  // somehow, and I don't know how, this is executed sync, i.e., after
-  // forEach loops
-  // downloadJSON(JSON.stringify(masterJSON), "filtered.json", "text/plain")
 }
 
 //*********************//
@@ -86,9 +91,11 @@ const getPositions = (g, layout) => {
  * must not be able to use this.
  */
 const initCallback = async (g, layout, devel) => {
+
   if (devel === true && layout !== false) {
   // if (layout !== false) {
     const masterJSON = await getPositions(g, layout)
     await downloadJSON(JSON.stringify(masterJSON), "filtered.json", "text/plain")
   }
+
 }

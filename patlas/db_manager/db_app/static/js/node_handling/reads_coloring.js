@@ -339,6 +339,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
  * removes the links or not, respectively
  */
 const linkColoring = (g, graphics, renderer, mode, toggle) => {
+
   const promises = []
   const storeLinks = []
   g.forEachLink( (link) => {
@@ -362,7 +363,9 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
     } else {
       // used for "size" mode
       // checks if link has size ratio inside the specified value
+      console.log(link.data.sizeRatio)
       if (100 - parseFloat($("#formRatio").val()) >= link.data.sizeRatio * 100) {
+        console.log(link)
         if (toggle === true) {
           // stores nodes in array to remove after this loop
           storeLinks.push(link)
@@ -377,11 +380,14 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
     }
   })
   Promise.all(promises).then( () => {
+
     for (let l of storeLinks) {
       g.removeLink(l)
     }
+
     $("#loading").hide()
     renderer.rerender()
+
   })
 }
 
