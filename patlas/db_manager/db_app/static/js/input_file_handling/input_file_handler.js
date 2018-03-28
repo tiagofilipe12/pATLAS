@@ -33,7 +33,7 @@ const handleFileSelect = (infileId, textId, callback) => {
         alert("File extension not supported. Only '.json' files are supported.")
       } else {
         // append the filename to the form
-        $(textId).val(files[0].name) // TODO handle this
+        $(textId).val(files[0].name)
         // opens the instance of the reader
         const reader = new FileReader()
 

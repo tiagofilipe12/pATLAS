@@ -1,0 +1,91 @@
+<div id="consensusModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <!-- Modal content for lenght-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Select input file (sequence import)</h4>
+      </div>
+      <div class="modal-body" id="modal-body-fileConsensus">
+        <div class="row uploadFile" id="uploadFileConsensus">
+          <div class="input-group col-md-12">
+            <label class="input-group-btn">
+                    <span class="btn btn-info btn-file"
+                          id="span_1stFileConsensus">
+                      Upload file&hellip;<input id="consensusfile" type="file"
+                                                name="file" style="display: none;"
+                                                multiple>
+                    </span>
+            </label>
+            <input type="text" class="form-control" id="consensus_text" readonly autocomplete="off">
+          </div>
+        </div>
+
+          <div class="form-group">Provide a
+            value for the combined value of mapping coverage and mash screen
+            identity. Value should range from 0 to 1. Tip: default is 0.9.
+            <input stype="text" id="cutoffValueCombined"
+                   class="form-control"
+                   placeholder="0.9"/>
+          </div>
+
+        <div class="panel panel-info">
+          <div class="panel-heading" style="background-color:#6292A9; color: white">How to run</div>
+          <div class="panel-body">
+
+            <li>
+              <a href="https://github.com/tiagofilipe12/pATLASflow#requirements"
+                 target="_blank">Install instructions</a>
+            </li>
+
+            <li>
+              Execute command:<br>
+              <span style="color: grey">
+                nextflow run tiagofilipe12/pATLASflow --mash_screen --mapping
+              </span>
+            </li>
+            <li>
+              Import desired *.json results here.
+            </li>
+
+          </div>
+        </div>
+        <!-- TODO add sample -->
+        <!--<div class="sampleImportWrapperClass">-->
+          <!--<button type="submit" class="btn btn-sm sampleImportClass"-->
+                  <!--data-dismiss="modal" id="sampleAssembly"-->
+                  <!--title="This will load an example dataset"-->
+          <!--&gt;Load sample dataset...-->
+          <!--</button>-->
+          <!--<button type="button" class="btn btn-default btn-circle"-->
+                  <!--data-toggle="popover"-->
+                  <!--data-trigger="focus"-->
+                  <!--data-original-title="Reference"-->
+                  <!--data-content="<b>Citation:</b> Stoesser, N.,-->
+                            <!--Sheppard, A. E., Peirano, G., Anson, L. W.,-->
+                            <!--Pankhurst, L., Sebra, R., Phan, H. T. T., Kasarskis,-->
+                            <!--A., Mathers, A. J., Peto, T. E. A., Bradford, P.,-->
+                            <!--Motyl, M. R., Walker, A. S., Crook, D. W. & Pitout, J. D. (2017).-->
+                            <!--Genomic epidemiology of global <i>Klebsiella pneumoniae</i>-->
+                            <!--carbapenemase (KPC)-producing <i>Escherichia coli</i>.-->
+                            <!--Scientific Reports, 7(1), 1–11.-->
+                            <!--<br>-->
+                            <!--<b>Accession numbers:</b> LT599828.1; LT599827.1"-->
+                  <!--data-html="true"-->
+                  <!--aria-describedby="tooltip"-->
+                  <!--id="infoAssembly">-->
+            <!--<span class="glyphicon glyphicon-info-sign"></span>-->
+          <!--</button>-->
+        <!--</div>-->
+      </div>
+
+      <div class="modal-footer">
+
+        <button type="submit" class="btn btn-default" data-dismiss="modal" id="consensusSubmit">Ok</button>
+        <button class="btn btn-danger" id="cancel_consensus">Clear selection</button>
+      </div>
+    </div>
+
+  </div>
+</div>

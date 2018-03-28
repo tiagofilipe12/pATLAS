@@ -207,7 +207,11 @@
     *overflow: hidden;
 }
 
-.uploadFile, .uploadFileCheck{
+#mappingCutoffWrapper{
+    margin-top: 2%;
+}
+
+.uploadFile{
     margin-left: 1%;
     margin-right: 1%;
 }
@@ -726,11 +730,12 @@ Careful when using this in other popovers in the future*/
     overflow-y: auto;
 }
 
-#uploadFileAssembly, #uploadFileMash{
+#uploadFileAssembly, #uploadFileMash, #uploadFileConsensus{
     margin-bottom: 5%;
 }
 
-#modal-body-mash, #modal-body-file, #modal-body-fileAssembly{
+#modal-body-mash, #modal-body-file, #modal-body-fileAssembly,
+#modal-body-fileConsensus{
     max-height: 600px;
     overflow-y: auto;
 }

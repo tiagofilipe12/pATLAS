@@ -55,6 +55,7 @@ const reAppendString = "<div class='panel-group colorpicker-component' id='color
   " type='button' disabled>" +
   "<span class='glyphicon glyphicon-chevron-right'></span></button>" +
   "</div>" +
+  "</div>" +
   "<div id='fileNameDiv'></div>" +
   "</div>\n" +
   "<div id='popup_description' style='display: none'>" +
@@ -229,12 +230,15 @@ const reAppendString = "<div class='panel-group colorpicker-component' id='color
  * updated that will be stored until all nodes and links have been added.
  * This is used to avoid link duplication.
  */
-const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
+const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance, sizeRatio) => {
+
   const currentHash = makeHash(sequence, linkAccession)
+
   if (newListHashes.indexOf(currentHash) < 0) {
-    g.addLink(sequence, linkAccession, { distance: linkDistance })
+    g.addLink(sequence, linkAccession, { distance: linkDistance, sizeRatio })
     newListHashes.push(currentHash)
   }
+
   return newListHashes
 }
 
@@ -253,9 +257,11 @@ const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance) => {
  * by reAddLinks function
  */
 const reAddNode = (g, jsonObj, newList, newListHashes) => {
+
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
   const linksArray = jsonObj.significantLinks
+
   // checks if sequence is within the queried accessions (newList)
   if (newList.indexOf(sequence) < 0) {
     g.addNode(sequence, {
@@ -278,6 +284,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
       const linkDistance = entry[1].split(":")[1]
       const linkLength = entry[2].split(":")[1]
       const linkAccession = entry[0].split(":")[1]
+      const sizeRatio = Math.min(length, linkLength) / Math.max(length, linkLength)
 
       if (newList.indexOf(linkAccession) < 0) {
         g.addNode(linkAccession, {
@@ -291,10 +298,12 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
         })
         newList.push(linkAccession) //adds to list every time a node is
         // added here
-        newListHashes = addLinks(g, newListHashes, sequence, linkAccession, linkDistance)
+        newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+          linkDistance, sizeRatio)
       } else {
         // if node exist, links still need to be added
-        newListHashes = addLinks(g, newListHashes, sequence, linkAccession, linkDistance)
+        newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+          linkDistance, sizeRatio)
       }
     }
   }
@@ -331,13 +340,17 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, listGi, readString,
                      assemblyJson) => {
+
   if (listGiFilter.length > 0) {
+
     let newListHashes = [] // similar to listHashes from first instance
+
     $.post("api/getspecies/", { "accession": JSON.stringify(listGiFilter)} ) //,
     // promise that waits for all the requests and nodes to be added to
     // vivagraph.... and only then precompute the graph.
       .then( (results) => {
         let plasmidName, speciesName, reAddNodeList
+
         for (const data of results) {
           // if request rtaeturn no speciesName or plasmidName
           // sometimes plasmids have no descriptor for one of these or both
@@ -351,43 +364,32 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           } else {
             plasmidName = data.json_entry.plasmid_name
           }
-          // if accession is not present in the database because singletons
-          // are not stored in database
-          if (data.json_entry.significantLinks === null) {
-            const jsonObj = {
-              "plasmidAccession": data.plasmid_id,
-              "plasmidLenght": "N/A",
-              "speciesName": "N/A",
-              "plasmidName": "N/A",
-              "significantLinks": "N/A"
-            }
-            //add node
-            reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
-            reloadAccessionList = reAddNodeList[0]
-            newListHashes = reAddNodeList[1]
 
-          } else {  // add node for every accession that has links and that is
-            // present in plasmid_db
-            const jsonObj = {
-              "plasmidAccession": data.plasmid_id,
-              "plasmidLenght": data.json_entry.length,
-              speciesName,
-              plasmidName,
-              // this splits the string into an array with each entry
-              "significantLinks": data.json_entry.significantLinks//.split("],")
-            }
-            //add node
-            reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
-            reloadAccessionList = reAddNodeList[0]
-            newListHashes = reAddNodeList[1]
+          // present in plasmid_db
+          const jsonObj = {
+            "plasmidAccession": data.plasmid_id,
+            "plasmidLenght": data.json_entry.length,
+            speciesName,
+            plasmidName,
+            // this splits the string into an array with each entry
+            "significantLinks": (data.json_entry.significantLinks) ?
+              data.json_entry.significantLinks : "N/A"
           }
+
+          //add node
+          reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+          reloadAccessionList = reAddNodeList[0]
+          newListHashes = reAddNodeList[1]
         }
       })
       .then( () => {
         renderGraph(graphics)
+
         if (readString !== false ) {
           readColoring(g, listGi, graphics, renderer, readString)
+
         } else if (assemblyJson !== false) {
+
           const assemblyString = JSON.parse(Object.values(assemblyJson)[0])
           readColoring(g, listGi, graphics, renderer, assemblyString)
         //   let masterReadArray = [] //needs to reset this array for the assembly
@@ -395,20 +397,29 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
         //   listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
         } else if ($("#p_Card").html() !== "Card:" ||
           $("#p_Resfinder").html() !== "Resfinder:") {
+
           $("#resSubmit").click()
+
         } else if ($("#p_Plasmidfinder").html() !== "Plasmidfinder:") {
+
           $("#pfSubmit").click()
+
         } else if ($("#p_Species").html() !== "Species:" ||
           $("#p_Genus").html() !== "Genus:" ||
           $("#p_Family").html() !== "Family:" ||
           $("#p_Order").html() !== "Order:") {
+
           // simulates the click of the button
           // which checks the divs that contain the species, color the as if
           // the button was clicked and makes the legends
           $("#taxaModalSubmit").click()
+
         } else if ($("#p_Virulence").html() !== "Virulence:") {
+
           $("#virSubmit").click()
+
         } else {
+
           colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
           // color for area selection
         }
@@ -416,7 +427,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
       // .catch( (error) => {
       //   console.log("Error! No query was made. Error message: ", error)
       // })
-    //}
   }
   return [listGiFilter, reloadAccessionList]
 }

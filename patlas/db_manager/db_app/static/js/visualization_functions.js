@@ -65,6 +65,7 @@ let masterReadArray = []
 let readFilejson = false
 let mashJson = false
 let assemblyJson = false
+let consensusJson = false
 
 let readIndex = 0
 
@@ -72,9 +73,7 @@ let clickedHighchart
 
 let graphSize
 
-let toggleRatioStatus = false
-
-let totalNumberOfLinks
+// let totalNumberOfLinks
 
 let multiSelectOverlayObj
 
@@ -328,7 +327,7 @@ const onLoad = () => {
 
     let toggleStatus = false // default state
     // $("#toggle-event").bootstrapToggle("off") // set to default off
-    $("#toggle-event").change(function () {   // jquery seems not to support es6
+    $("#toggle-event").change(function () {
       toggleStatus = $(this).prop("checked")
       toggleManager(toggleStatus)
     })
@@ -1524,6 +1523,50 @@ const onLoad = () => {
       }, 100)
     })
 
+    //* ********* ***//
+    //* * Consensus **//
+    //* ********* ***//
+
+    $("#consensusSubmit").unbind("click").bind("click", (event) => {
+      event.preventDefault()
+      if (consensusJson !== false) {
+        const readString = JSON.parse(Object.values(consensusJson)[0])
+        fileChecks(readString)
+        $("#fileNameDiv").html(Object.keys(consensusJson)[0])
+          .show()
+        masterReadArray = []
+        readFilejson = consensusJson
+        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        previousTableList = []
+        // transform selector object that handles plots and hide their
+        // respective divs
+        Object.keys(selector).map( (el) => { selector[el].state = false })
+        hideAllOtherPlots()
+        areaSelection = false
+        $("#loading").show()
+        setTimeout(() => {
+          const outputList = readColoring(g, listGi, graphics, renderer, readString)
+          listGi = outputList[0]
+          listGiFilter = outputList[1]
+          masterReadArray = pushToMasterReadArray(consensusJson)
+        }, 100)
+
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+        // used to hide when function is not executed properly
+        setTimeout( () => {
+          $("#loading").hide()
+        }, 100)
+      } else {
+        // alert user that file may be empty or there is no imported file at all
+        fileChecks(consensusJson)
+      }
+    })
+
+    $("#consensus_assembly").unbind("click").bind("click", () => {
+      consensusJson = abortRead()
+    })
+
     //* *********************//
     //* * Distances filter **//
     //* *********************//
@@ -1532,7 +1575,7 @@ const onLoad = () => {
       // $("#loading").show()
       $("#scaleLegend").empty()
       showDiv().then( () => {
-        linkColoring(g, graphics, renderer, "distance", toggleRatioStatus)
+        linkColoring(g, graphics, renderer, "distance", false)
         // enables button group again
         $("#toolButtonGroup button").removeAttr("disabled")
       })
@@ -1817,6 +1860,10 @@ const onLoad = () => {
     assemblyJson = newAssemblyJson
   })
 
+  handleFileSelect("consensusfile", "#consensus_text", (newConsensusJson) => {
+    consensusJson = newConsensusJson
+  })
+
   //* ****************************** *//
   //      Menu Button controls       //
   //* ****************************** *//
@@ -2062,29 +2109,25 @@ const onLoad = () => {
     $("#alertJsonFile").hide()  // hide this div
   })
 
-  // sets toggle for size ratio and handles status of this toggle
-  // this is used in "ratioSubmit" button
-  $("#toggleRatio").change(function () {   // jquery seems not to support es6
-    toggleRatioStatus = $(this).prop("checked")
-  })
-
   // function that submits the selection made in the modal
   $("#ratioSubmit").unbind("click").bind("click", () => {
+
     event.preventDefault()
+
+    const toggleRatioStatus = $("#toggleRatio").prop("checked")
+
     // clears all links before doing this
     $("#reset-links").click()
-    // $("#reset-links").click()
-    // $("#loading").show()
     $("#scaleLegend").empty()
+
     showDiv().then(
       setTimeout( () => {
-        linkColoring(g, graphics, renderer, "size", toggleRatioStatus, totalNumberOfLinks)
+        linkColoring(g, graphics, renderer, "size", toggleRatioStatus)//, totalNumberOfLinks)
         // enables button group again
         $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     )
-    // const readMode = false
-    // color_legend(readMode)
+
   })
 
   /** control the visualization of multiple files for read mode

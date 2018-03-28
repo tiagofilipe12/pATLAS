@@ -371,25 +371,25 @@
           </div>
         </div>
         <!--checkbox-->
-        <div class="row uploadFileCheck" id="uploadFileCheck">
-          <form>
-            <div>
-              <label class="label_file">
-                <input type="checkbox" class="check_file"
-                       autocomplete="off"/> Check for pairwise comparison mode
-              </label>
-            </div>
-          </form>
-          <div>
-            <div class="form-group">Provide a
-              value for percentage of plasmid converage between 0 and 1.
-              Tip: default is 0.6.
-              <input type="text" id="cutoffValue"
-                     class="form-control"
-                     placeholder="0.6"/>
-            </div>
+        <!--<div class="row uploadFileCheck" id="uploadFileCheck">-->
+        <!--<form>-->
+        <!--<div>-->
+        <!--<label class="label_file">-->
+        <!--<input type="checkbox" class="check_file"-->
+        <!--autocomplete="off"/> Check for pairwise comparison mode-->
+        <!--</label>-->
+        <!--</div>-->
+        <!--</form>-->
+        <div id="mappingCutoffWrapper">
+          <div class="form-group">Provide a
+            value for percentage of plasmid converage between 0 and 1.
+            Tip: default is 0.6.
+            <input type="text" id="cutoffValue"
+                   class="form-control"
+                   placeholder="0.6"/>
           </div>
         </div>
+        <!--</div>-->
         <div class="panel panel-info">
           <div class="panel-heading"  style="background-color:#6292A9; color: white">How to run</div>
           <div class="panel-body">
@@ -479,23 +479,23 @@
           </div>
         </div>
         <!--checkbox-->
-        <div class="row uploadFileCheck" id="uploadFileCheckMash">
+        <!--<div class="row uploadFileCheck" id="uploadFileCheckMash">-->
 
-          <div>
-            <div class="form-group">Provide a
-              value for the minimum identity to display. Tip: must be between 0
-              and 1.
-              <input id="cutoffValueMash" type="text" class="form-control"
-                     placeholder="0.9"/>
-            </div>
-            <div class="form-group" id="copyNumberCheck">Provide an integer
-              value for minimum copy number to represent. Tip: must be >= 2.
-              <input id="copyNumberValue" type="text" class="form-control"
-                     placeholder="1"/>
-            </div>
-
+        <div>
+          <div class="form-group">Provide a
+            value for the minimum identity to display. Tip: must be between 0
+            and 1.
+            <input id="cutoffValueMash" type="text" class="form-control"
+                   placeholder="0.9"/>
           </div>
+          <div class="form-group" id="copyNumberCheck">Provide an integer
+            value for minimum copy number to represent. Tip: must be >= 2.
+            <input id="copyNumberValue" type="text" class="form-control"
+                   placeholder="1"/>
+          </div>
+
         </div>
+        <!--</div>-->
         <div class="panel panel-info">
           <div class="panel-heading" style="background-color:#6292A9; color: white">How to run</div>
           <div class="panel-body">
@@ -622,6 +622,8 @@
 
   </div>
 </div>
+
+{% include 'consensus.html' %}
 
 <!-- Modal for distances-->
 <div id="distancesModal" class="modal fade" role="dialog" tabindex="-1">
@@ -1008,6 +1010,9 @@
             </button>
             <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                     data-target="#assemblyModal" id="assembly_filter">Sequence
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#consensusModal" id="consensus_filter">Consensus
             </button>
           </ul>
         </div>
