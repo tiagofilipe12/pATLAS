@@ -55,6 +55,7 @@ const reAppendString = "<div class='panel-group colorpicker-component' id='color
   " type='button' disabled>" +
   "<span class='glyphicon glyphicon-chevron-right'></span></button>" +
   "</div>" +
+  "</div>" +
   "<div id='fileNameDiv'></div>" +
   "</div>\n" +
   "<div id='popup_description' style='display: none'>" +
