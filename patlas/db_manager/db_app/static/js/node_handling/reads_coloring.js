@@ -61,9 +61,26 @@ const cutoffParserSeq = () => {
   return (cutoff !== "") ? parseFloat(cutoff) : 0.9
 }
 
+/**
+ * Function to check if the user set a cutoff value for import sequence results
+ * shared hashes percentage between pairs of sequences. If none is provided the
+ * default value will be set here.
+ * @returns {number}
+ */
 const cutoffHashSeq = () => {
   const cutoff = $("#cutoffHashSeq").val()
   return (cutoff !== "") ? parseFloat(cutoff) : 0.8
+}
+
+/**
+ * Function to check if the user set a cutoff value for the combined values
+ * between mapping percentage and mash_screen identity divided by 2
+ * (approximately). If none is provided the default value will be set here.
+ * @returns {number}
+ */
+const cutoffParserConsensus = () => {
+  const cutoff = $("#cutoffValueCombined").val()
+  return (cutoff !== "") ? parseFloat(cutoff) : 0.9
 }
 
 // function to iterate through nodes
@@ -273,22 +290,29 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           }
         }
 
-        //TODO implement similar filters (cutoffs) to the other modes
-        //TODO cutoffParser is probably not the best function to use... a custom one should be added
-        const newPerc = rangeConverter(combinedPerc, cutoffParser(), 2, 0, 1)
-        const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
-        const scale = chroma.scale(["lightsalmon", "maroon"])
-        palette(scale, 10, readMode)
-        nodeIter(g, readColor, gi, graphics, newPerc, false, false, false, false)
-        if (listGi.includes(gi) && !listGiFilter.includes(gi)) {
-          listGiFilter.push(gi)
+        // converts from range 0-2 to range 0-1
+        const newPerc = rangeConverter(combinedPerc, cutoffParserConsensus(), 2, 0, 1)
+
+        // plot only if the combined percentage value in the correct
+        // range match the cutoff value
+        if (newPerc >= cutoffParserConsensus() ) {
+          const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
+          const scale = chroma.scale(["lightsalmon", "maroon"])
+          palette(scale, 10, readMode)
+          nodeIter(g, readColor, gi, graphics, newPerc, false, false, false, false)
+
+          if (listGi.includes(gi) && !listGiFilter.includes(gi)) {
+            listGiFilter.push(gi)
+          }
+
         }
 
         if (Object.keys(readString).length === counter) {
           // min value is the one fetched from the input form or by default 0.6
           // values are fixed to two decimal
           minValue = parseFloat(
-            ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
+            ($("#cutoffValueCombined").val() !== "") ?
+              $("#cutoffValueCombined").val() : "0.90"
           ).toFixed(2)
           // mean value is the sum of the min value plus the range between the min
           // and max values divided by two
@@ -304,6 +328,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
           nodeIter(g, readColor, gi, graphics, perc, false, false, false, false)
+
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)
           }
