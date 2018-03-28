@@ -280,6 +280,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
       } else if (consensusJson !== false) {
 
         let combinedPerc = 0
+        let mappingPerc, mashScreenPerc, mashScreenCopy
 
         // loop between the keys of files within each accession number (gi)
         for (const key of Object.keys(perc)) {
@@ -287,14 +288,14 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           if (key.includes("mapping")) {
             // executed for mapping files
 
-            const mappingPerc = perc[key]
+            mappingPerc = perc[key]
             combinedPerc += mappingPerc
 
           } else {
             // executed for mash screen files
 
-            const mashScreenPerc = perc[key][0]
-            const mashScreenCopy = perc[key][1]
+            mashScreenPerc = perc[key][0]
+            mashScreenCopy = perc[key][1]
             combinedPerc += mashScreenPerc
 
           }
@@ -309,7 +310,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
-          nodeIter(g, readColor, gi, graphics, newPerc, false, false, false, false)
+          nodeIter(g, readColor, gi, graphics, mappingPerc, mashScreenCopy, mashScreenPerc, false, false)
 
           if (listGi.includes(gi) && !listGiFilter.includes(gi)) {
             listGiFilter.push(gi)
