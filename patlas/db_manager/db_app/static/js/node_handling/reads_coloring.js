@@ -109,7 +109,7 @@ const cutoffParserConsensus = () => {
  */
 const nodeIter = (g, readColor, gi, graphics, perc, copyNumber, percMash,
                   percMashDist, sharedHashes) => {
-
+  
   g.forEachNode( (node) => {
 
     const nodeGI = node.id.split("_").slice(0, 3).join("_")
@@ -288,14 +288,14 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           if (key.includes("mapping")) {
             // executed for mapping files
 
-            mappingPerc = perc[key]
+            mappingPerc = parseFloat(perc[key])
             combinedPerc += mappingPerc
 
           } else {
             // executed for mash screen files
 
-            mashScreenPerc = perc[key][0]
-            mashScreenCopy = perc[key][1]
+            mashScreenPerc = parseFloat(perc[key][0])
+            mashScreenCopy = parseFloat(perc[key][1])
             combinedPerc += mashScreenPerc
 
           }
