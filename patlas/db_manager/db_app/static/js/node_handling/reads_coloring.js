@@ -212,7 +212,16 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
   for (let string in readString) {
     if ({}.hasOwnProperty.call(readString, string)) {
       counter += 1
+
+      // the accession number
       const gi = string
+
+      /**
+       * perc variable can be a percentage (string), an array [percentage,
+       * (perc_hashes or copy_number)] or even an object with a file for
+       * each of the approaches used, like:
+       * {file1: {perc: 0.98, otherStuff: "lala"} , file2:...}
+       */
       const perc = readString[string]
 
       // adds node if it doesn't have links
@@ -272,6 +281,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
 
         let combinedPerc = 0
 
+        // loop between the keys of files within each accession number (gi)
         for (const key of Object.keys(perc)) {
 
           if (key.includes("mapping")) {
@@ -438,7 +448,6 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
   })
 }
 
-// option to return links to their default color
 /**
  * A function to reset the color of all links to default color scheme.
  * @param {Object} g - graph related functions that iterate through nodes
