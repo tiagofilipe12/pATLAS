@@ -730,7 +730,7 @@ Careful when using this in other popovers in the future*/
     overflow-y: auto;
 }
 
-#uploadFileAssembly, #uploadFileMash, uploadFileConsensus{
+#uploadFileAssembly, #uploadFileMash, #uploadFileConsensus{
     margin-bottom: 5%;
 }
 
