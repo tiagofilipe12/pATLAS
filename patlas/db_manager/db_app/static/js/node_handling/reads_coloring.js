@@ -255,7 +255,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
 
         let combinedPerc = 0
 
-        for (key of Object.keys(perc)) {
+        for (const key of Object.keys(perc)) {
 
           if (key.includes("mapping")) {
             // executed for mapping files
@@ -279,10 +279,8 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
         const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
         const scale = chroma.scale(["lightsalmon", "maroon"])
         palette(scale, 10, readMode)
-        console.log("before iter: ", gi, newPerc)
         nodeIter(g, readColor, gi, graphics, newPerc, false, false, false, false)
         if (listGi.includes(gi) && !listGiFilter.includes(gi)) {
-          console.log(gi)
           listGiFilter.push(gi)
         }
 
@@ -325,7 +323,6 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
     }
   }
 
-  console.log(listGiFilter)
   // if any results are found for the query, show buttons to interact and legend
   if (listGiFilter.length !== 0) {
     $("#readString").append("<div class='min'>" +

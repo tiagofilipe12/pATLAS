@@ -1862,7 +1862,6 @@ const onLoad = () => {
 
   handleFileSelect("consensusfile", "#consensus_text", (newConsensusJson) => {
     consensusJson = newConsensusJson
-    console.log(consensusJson)
   })
 
   //* ****************************** *//
