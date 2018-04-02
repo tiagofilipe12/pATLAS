@@ -88,7 +88,14 @@ let clickerButton, listPlots
 
 let requestDBList
 
-let legendSliderControler = []
+// legend slider controller vars
+let legendSliderControler = [
+  "#taxaModalSubmit",
+  "#resSubmit",
+  "#pfSubmit",
+  "#virSubmit"
+]
+let legendIndex = 0
 
 /**
  * load JSON file with taxa dictionary
@@ -606,8 +613,6 @@ const onLoad = () => {
     $("#pfSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
 
-      legendSliderControler.push("#pfSubmit")
-
       resetDisplayTaxaBox(
         ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
       )
@@ -727,8 +732,6 @@ const onLoad = () => {
     $("#resSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
 
-      legendSliderControler.push("#resSubmit")
-
       // clears previously selected nodes
       nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
@@ -826,18 +829,16 @@ const onLoad = () => {
     $("#virSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
 
-      legendSliderControler.push("#virSubmit")
-
-      resetDisplayTaxaBox(
-        ["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Order", "p_Family", "p_Genus", "p_Species"]
-      )
-      $("#orderList").selectpicker("deselectAll")
-      $("#familyList").selectpicker("deselectAll")
-      $("#genusList").selectpicker("deselectAll")
-      $("#speciesList").selectpicker("deselectAll")
-      $("#resList").selectpicker("deselectAll")
-      $("#cardList").selectpicker("deselectAll")
-      $("#plasmidFamiliesList").selectpicker("deselectAll")
+      // resetDisplayTaxaBox(
+      //   ["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Order", "p_Family", "p_Genus", "p_Species"]
+      // )
+      // $("#orderList").selectpicker("deselectAll")
+      // $("#familyList").selectpicker("deselectAll")
+      // $("#genusList").selectpicker("deselectAll")
+      // $("#speciesList").selectpicker("deselectAll")
+      // $("#resList").selectpicker("deselectAll")
+      // $("#cardList").selectpicker("deselectAll")
+      // $("#plasmidFamiliesList").selectpicker("deselectAll")
       // clears previous selected nodes
       nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
@@ -976,8 +977,6 @@ const onLoad = () => {
 
       event.preventDefault()
 
-      legendSliderControler.push("#taxaModalSubmit")
-
       pageReRun = false
 
       // clear legend from reads
@@ -1033,7 +1032,7 @@ const onLoad = () => {
             alertArrays.species.length === 0) {
 
             divAlert.style.display = "block"
-            $("#colorLegend").hide()
+            //$("#colorLegend").hide()
 
           }
         }
@@ -1136,6 +1135,7 @@ const onLoad = () => {
           // requests taxa associated accession from db and colors
           // respective nodes
           i += 1
+
           promises.push(
             taxaRequest(g, graphics, renderer, sp, currentColor)
           )
@@ -2054,11 +2054,25 @@ const onLoad = () => {
   })
 
   $("#slideLegendRight").unbind("click").bind("click", () => {
-    console.log("test")
+
+    // iterates through the array of filters
+    legendIndex = (legendIndex === 3) ? 0 : legendIndex +=1
+
+    // triggers the event click that will make the requests to the db and
+    // render the new legend
+    $(`${legendSliderControler[legendIndex]}`).click()
+
   })
 
   $("#slideLegendLeft").unbind("click").bind("click", () => {
-    console.log("test2")
+
+    // iterates through the array of filters
+    legendIndex = (legendIndex === 0) ? 3 : legendIndex -= 1
+
+    // triggers the event click that will make the requests to the db and
+    // render the new legend
+    $(`${legendSliderControler[legendIndex]}`).click()
+
   })
 
   // changes the behavior of tooltip to show only on click
