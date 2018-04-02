@@ -610,6 +610,8 @@ const onLoad = () => {
     $("#pfSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
 
+      legendIndex = 2
+
       // resetDisplayTaxaBox(
       //   ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
       // )
@@ -729,6 +731,8 @@ const onLoad = () => {
     $("#resSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
 
+      legendIndex = 1
+
       // clears previously selected nodes
       nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
@@ -741,7 +745,7 @@ const onLoad = () => {
       // empties all other legend
       $("#taxa_label").hide()
       $("#colorLegendBox").empty()
-      $("#res_label").hide()
+      $("#vir_label").hide()
       $("#colorLegendBoxVir").empty()
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
@@ -833,6 +837,8 @@ const onLoad = () => {
 
     $("#virSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+
+      legendIndex = 3
 
       // resetDisplayTaxaBox(
       //   ["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Order", "p_Family", "p_Genus", "p_Species"]
@@ -981,6 +987,8 @@ const onLoad = () => {
     $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
 
       event.preventDefault()
+
+      legendIndex = 0
 
       let i = 0
 
