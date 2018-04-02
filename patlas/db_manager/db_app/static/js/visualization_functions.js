@@ -1622,7 +1622,6 @@ const onLoad = () => {
     // runs the re run operation for the selected species
     $("#Re_run").unbind("click").bind("click", () => {
 
-      i = 0
       // resets areaSelection
       areaSelection = false
       firstInstace = false
