@@ -1600,9 +1600,6 @@ const onLoad = () => {
     // resets the slider
     $("#reset-sliders").unbind("click").bind("click", () => {
 
-      // resets color selection
-      i = 0
-
       listGiFilter = [] //resets listGiFilter
       previousTableList = []
       // transform selector object that handles plots and hide their

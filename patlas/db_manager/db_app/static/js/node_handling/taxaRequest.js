@@ -1,4 +1,4 @@
-/*globals listGiFilter, i */
+/*globals listGiFilter, colorList */
 // cycles nodes
 const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => {
   g.forEachNode( (node) => {
