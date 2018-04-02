@@ -793,3 +793,8 @@ Careful when using this in other popovers in the future*/
 #percentagePopMashDist, #hashPop{
     display: none;
 }
+
+#sliderLegend{
+    margin-bottom: 3px;
+    text-align: center;
+}

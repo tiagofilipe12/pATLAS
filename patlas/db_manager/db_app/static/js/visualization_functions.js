@@ -88,6 +88,8 @@ let clickerButton, listPlots
 
 let requestDBList
 
+let legendSliderControler = []
+
 /**
  * load JSON file with taxa dictionary
  * @returns {Object} - return is an object that perform matches between taxa
@@ -603,6 +605,9 @@ const onLoad = () => {
 
     $("#pfSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+
+      legendSliderControler.push("#pfSubmit")
+
       resetDisplayTaxaBox(
         ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
       )
@@ -721,15 +726,8 @@ const onLoad = () => {
     })
     $("#resSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
-      resetDisplayTaxaBox(
-        ["p_Plasmidfinder", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
-      )
-      $("#orderList").selectpicker("deselectAll")
-      $("#familyList").selectpicker("deselectAll")
-      $("#genusList").selectpicker("deselectAll")
-      $("#speciesList").selectpicker("deselectAll")
-      $("#plasmidFamiliesList").selectpicker("deselectAll")
-      $("#virList").selectpicker("deselectAll")
+
+      legendSliderControler.push("#resSubmit")
 
       // clears previously selected nodes
       nodeColorReset(graphics, g, nodeColor, renderer)
@@ -737,17 +735,13 @@ const onLoad = () => {
       // transform selector object that handles plots and hide their
       // respective divs
       Object.keys(selector).map( (el) => { selector[el].state = false })
+
       hideAllOtherPlots()
+
       areaSelection = false
-      // empties taxa and plasmidfinder legend
-      $("#taxa_label").hide()
-      $("#colorLegendBox").empty()
-      $("#pf_label").hide()
-      $("#colorLegendBoxPf").empty()
-      $("#vir_label").hide()
-      $("#colorLegendBoxVir").empty()
-      // same should be done for taxa filters submit button
+
       const tempPageReRun = pageReRun
+
       showDiv().then( () => {
         resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
           legendInst = results
@@ -831,6 +825,9 @@ const onLoad = () => {
 
     $("#virSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
+
+      legendSliderControler.push("#virSubmit")
+
       resetDisplayTaxaBox(
         ["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Order", "p_Family", "p_Genus", "p_Species"]
       )
@@ -978,6 +975,8 @@ const onLoad = () => {
     $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
 
       event.preventDefault()
+
+      legendSliderControler.push("#taxaModalSubmit")
 
       pageReRun = false
 
@@ -1143,21 +1142,25 @@ const onLoad = () => {
         }
       }
 
-      Promise.all(promises)
-        .then( () => {
-          $("#loading").hide()
-          // showLegend.style.display = "block"
-          $("#colorLegend").show()
-          document.getElementById("taxa_label").style.display = "block" // show label
-          $("#colorLegendBox").empty()
-            .append(storeLis +
-              "<li class='centeredList'><button class='jscolor btn btn-default'" +
-              " style='background-color:#666370' ></button>&nbsp;unselected</li>")
-          $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-            " #plotButton").show()
-          // enables button group again
-          $("#toolButtonGroup button").removeAttr("disabled")
-        })
+      if (promises.length !== 0) {
+        Promise.all(promises)
+          .then(() => {
+            $("#loading").hide()
+            // showLegend.style.display = "block"
+            $("#colorLegend").show()
+            document.getElementById("taxa_label").style.display = "block" // show label
+            $("#colorLegendBox").empty()
+              .append(storeLis +
+                "<li class='centeredList'><button class='jscolor btn btn-default'" +
+                " style='background-color:#666370' ></button>&nbsp;unselected</li>")
+            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+              " #plotButton").show()
+            // enables button group again
+            $("#toolButtonGroup button").removeAttr("disabled")
+          })
+      } else {
+        $("#loading").hide()
+      }
 
     })
 
@@ -2048,6 +2051,14 @@ const onLoad = () => {
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
     listGi = outArray[1][0]
+  })
+
+  $("#slideLegendRight").unbind("click").bind("click", () => {
+    console.log("test")
+  })
+
+  $("#slideLegendLeft").unbind("click").bind("click", () => {
+    console.log("test2")
   })
 
   // changes the behavior of tooltip to show only on click
