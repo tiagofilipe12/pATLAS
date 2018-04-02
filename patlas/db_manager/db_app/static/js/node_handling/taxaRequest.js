@@ -41,7 +41,7 @@ const taxaRequest = async (g, graphics, renderer, taxa, currentColor) => {
 
 
 const taxaRequestWrapper = (g, graphics, renderer, assocObj, storeLis,
-                            promises) => {
+                            promises, i) => {
 
   Object.entries(assocObj).forEach( ([key, value]) => {
 
@@ -64,5 +64,5 @@ const taxaRequestWrapper = (g, graphics, renderer, assocObj, storeLis,
     }
 
   })
-  return storeLis
+  return [storeLis, i]
 }

@@ -166,9 +166,6 @@ let list = []   // list to store references already ploted as nodes
 // links between accession numbers
 let listLengths = [] // list to store the lengths of all nodes
 
-// used to set colors for taxa filters
-let i = 0
-
 
 /**
  * forces welcomeModal to be the first thing the user sees when the page
@@ -613,16 +610,16 @@ const onLoad = () => {
     $("#pfSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
 
-      resetDisplayTaxaBox(
-        ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
-      )
-      $("#orderList").selectpicker("deselectAll")
-      $("#familyList").selectpicker("deselectAll")
-      $("#genusList").selectpicker("deselectAll")
-      $("#speciesList").selectpicker("deselectAll")
-      $("#resList").selectpicker("deselectAll")
-      $("#cardList").selectpicker("deselectAll")
-      $("#virList").selectpicker("deselectAll")
+      // resetDisplayTaxaBox(
+      //   ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
+      // )
+      // $("#orderList").selectpicker("deselectAll")
+      // $("#familyList").selectpicker("deselectAll")
+      // $("#genusList").selectpicker("deselectAll")
+      // $("#speciesList").selectpicker("deselectAll")
+      // $("#resList").selectpicker("deselectAll")
+      // $("#cardList").selectpicker("deselectAll")
+      // $("#virList").selectpicker("deselectAll")
       // clears previous selected nodes
       nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
@@ -740,6 +737,14 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
 
       hideAllOtherPlots()
+
+      // empties all other legend
+      $("#taxa_label").hide()
+      $("#colorLegendBox").empty()
+      $("#res_label").hide()
+      $("#colorLegendBoxVir").empty()
+      $("#pf_label").hide()
+      $("#colorLegendBoxPf").empty()
 
       areaSelection = false
 
@@ -977,6 +982,8 @@ const onLoad = () => {
 
       event.preventDefault()
 
+      let i = 0
+
       pageReRun = false
 
       // clear legend from reads
@@ -992,6 +999,9 @@ const onLoad = () => {
 
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
+
+      //clears nodes
+      nodeColorReset(graphics, g, nodeColor, renderer)
 
       // now processes the current selection
       const speciesQuery = document.getElementById("p_Species").innerHTML,
@@ -1049,6 +1059,8 @@ const onLoad = () => {
 
       // appends genus to selectedGenus according with the family and order for single-color selection
       // also appends to associative arrays for family and order for multi-color selection
+      // This is a key piece of code that makes the ASSOCIATIVE ARRAYS between
+      // species and all other taxonomic levels
       $.each(dictGenera, (species, pair) => {
         const genus = pair[0]
         const family = pair[1]
@@ -1091,33 +1103,38 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       // empties taxa and plasmidfinder legend
-      // $("#res_label").hide()
-      // $("#colorLegendBoxRes").empty()
-      // $("#pf_label").hide()
-      // $("#colorLegendBoxPf").empty()
-      // $("#vir_label").hide()
-      // $("#colorLegendBoxVir").empty()
+      $("#res_label").hide()
+      $("#colorLegendBoxRes").empty()
+      $("#pf_label").hide()
+      $("#colorLegendBoxPf").empty()
+      $("#vir_label").hide()
+      $("#colorLegendBoxVir").empty()
 
-      let currentSelection
       const promises = []
       $("#loading").show()
 
       // orders //
       if (alertArrays.order.length !== 0) {
-        storeLis = taxaRequestWrapper(g, graphics, renderer, assocOrderGenus,
-          storeLis, promises)
+        const outTaxaRequest = taxaRequestWrapper(g, graphics, renderer, assocOrderGenus,
+          storeLis, promises, i)
+        storeLis = outTaxaRequest[0]
+        i = outTaxaRequest[1]
       }
 
       // families //
       if (alertArrays.family.length !== 0) {
-        storeLis = taxaRequestWrapper(g, graphics, renderer, assocFamilyGenus,
-          storeLis, promises)
+        const outTaxaRequest = taxaRequestWrapper(g, graphics, renderer, assocFamilyGenus,
+          storeLis, promises, i)
+        storeLis = outTaxaRequest[0]
+        i = outTaxaRequest[1]
       }
 
       // genus //
       if (alertArrays.genus.length !== 0) {
-        storeLis = taxaRequestWrapper(g, graphics, renderer, assocGenus,
-          storeLis, promises)
+        const outTaxaRequest = taxaRequestWrapper(g, graphics, renderer, assocGenus,
+          storeLis, promises, i)
+        storeLis = outTaxaRequest[0]
+        i = outTaxaRequest[1]
       }
 
       // species //
