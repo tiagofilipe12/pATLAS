@@ -95,6 +95,7 @@ let legendSliderControler = [
   "#pfSubmit",
   "#virSubmit"
 ]
+let selectedFilter
 let legendIndex = 0
 
 /**
@@ -612,6 +613,8 @@ const onLoad = () => {
 
       legendIndex = 2
 
+      selectedFilter = "pf"
+
       // resetDisplayTaxaBox(
       //   ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
       // )
@@ -736,6 +739,8 @@ const onLoad = () => {
 
       legendIndex = 1
 
+      selectedFilter = "res"
+
       // clears previously selected nodes
       nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
@@ -844,6 +849,8 @@ const onLoad = () => {
       event.preventDefault()
 
       legendIndex = 3
+
+      selectedFilter = "vir"
 
       // resetDisplayTaxaBox(
       //   ["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Order", "p_Family", "p_Genus", "p_Species"]
@@ -997,6 +1004,8 @@ const onLoad = () => {
       event.preventDefault()
 
       legendIndex = 0
+
+      selectedFilter = "taxa"
 
       let i = 0
 
