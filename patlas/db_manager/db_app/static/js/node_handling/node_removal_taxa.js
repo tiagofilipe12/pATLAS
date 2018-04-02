@@ -5,14 +5,14 @@ const reAppendString = "<div class='panel-group colorpicker-component' id='color
   "<div class='panel panel-default' >\n" +
   "<div class='panel-heading'>Color legend</div>\n" +
   "<div class='panel-body'>" +
-  '<div id="sliderLegend">' +
-  '<div class="btn-group">' +
-  '<button id="slideLegendLeft" class="btn btn-sm btn-default" data-toggle="tooltip" title="Change selected filter" type="button">' +
-  '<span class="glyphicon glyphicon-chevron-left"></span>' +
-  '</button>' +
-  '<button id="slideLegendRight" class="btn btn-sm btn-default" data-toggle="tooltip" title="Change selected filter" type="button">' +
-  '<span class="glyphicon glyphicon-chevron-right"></span>' +
-  '</button></div></div>' +
+  "<div id='sliderLegend'>" +
+  "<div class='btn-group'>" +
+  "<button id='slideLegendLeft' class='btn btn-sm btn-default' data-toggle='tooltip' title='Change selected filter' type='button'>" +
+  "<span class='glyphicon glyphicon-chevron-left'></span>" +
+  "</button>" +
+  "<button id='slideLegendRight' class='btn btn-sm btn-default' data-toggle='tooltip' title='Change selected filter' type='button'>" +
+  "<span class='glyphicon glyphicon-chevron-right'></span>" +
+  "</button></div></div>" +
   "<label id='taxa_label' style='display: none'>Taxa</label>\n" +
   "<ul class='legend' id='colorLegendBox'></ul>\n" +
   "<label id='res_label' style='display: none'>Resistances</label>" +
@@ -348,7 +348,7 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
                      reloadAccessionList, renderer, listGi, readString,
                      assemblyJson) => {
-  
+
   if (listGiFilter.length > 0) {
 
     let newListHashes = [] // similar to listHashes from first instance

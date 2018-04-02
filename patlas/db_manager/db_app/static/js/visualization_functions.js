@@ -15,7 +15,8 @@
               taxaRequest, pushToMasterReadArray, getArrayMapping,
                getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
                 getArrayAssembly, startMultiSelect, requesterDB,
-                 addAllNodes, addAllLinks, quickFixString, fileChecks*/
+                 addAllNodes, addAllLinks, quickFixString, fileChecks,
+                 taxaRequestWrapper*/
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -965,9 +966,6 @@ const onLoad = () => {
       // clear = true;
 
       resetDisplayTaxaBox(idsArrays)
-
-      // sets colors to default value
-      i = 0
 
       // resets dropdown selections
       $("#orderList").selectpicker("deselectAll")
