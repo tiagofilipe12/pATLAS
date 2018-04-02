@@ -965,28 +965,36 @@ const onLoad = () => {
     // perform actions when submit button is clicked.
 
     $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
+
+      event.preventDefault()
+
       pageReRun = false
+
       // clear legend from reads
       $("#readString").empty()
       $("#readLegend").empty()
       $("#read_label").hide()
-      event.preventDefault()
-      resetDisplayTaxaBox(["p_PlasmidFinder", "p_Resfinder", "p_Card", "p_Virulence"])
-      $("#plasmidFamiliesList").selectpicker("deselectAll")
-      $("#resList").selectpicker("deselectAll")
-      $("#cardList").selectpicker("deselectAll")
-      $("#virList").selectpicker("deselectAll")
+
+      // resetDisplayTaxaBox(["p_PlasmidFinder", "p_Resfinder", "p_Card", "p_Virulence"])
+      // $("#plasmidFamiliesList").selectpicker("deselectAll")
+      // $("#resList").selectpicker("deselectAll")
+      // $("#cardList").selectpicker("deselectAll")
+      // $("#virList").selectpicker("deselectAll")
+
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
+
       // now processes the current selection
       const speciesQuery = document.getElementById("p_Species").innerHTML,
         genusQuery = document.getElementById("p_Genus").innerHTML,
         familyQuery = document.getElementById("p_Family").innerHTML,
         orderQuery = document.getElementById("p_Order").innerHTML
+
       let selectedSpecies = speciesQuery.replace("Species:", "").split(",").filter(Boolean),
         selectedGenus = genusQuery.replace("Genus:", "").split(",").filter(Boolean),
         selectedFamily = familyQuery.replace("Family:", "").split(",").filter(Boolean),
         selectedOrder = orderQuery.replace("Order:", "").split(",").filter(Boolean)
+
       // remove first char from selected* arrays
       selectedSpecies = removeFirstCharFromArray(selectedSpecies)
       selectedGenus = removeFirstCharFromArray(selectedGenus)
@@ -1006,27 +1014,26 @@ const onLoad = () => {
       }
 
       const divAlert = document.getElementById("alertId")
-      let Alert = false
+
       for (const i in alertArrays) {
+
         if (alertArrays.hasOwnProperty(i)) {
+
           if (alertArrays[i].length > 0) {
             counter = counter + 1
-            Alert = false
+            // Alert = false
           } else if (alertArrays.order.length === 0 &&
             alertArrays.family.length === 0 &&
             alertArrays.genus.length === 0 &&
             alertArrays.species.length === 0) {
-            Alert = true
+
+            divAlert.style.display = "block"
+            $("#colorLegend").hide()
+
           }
         }
       }
-      if (Alert === true) {
-        divAlert.style.display = "block"
-        $("#colorLegend").hide()
-        // warning is raised
-        Alert = false
-      }
-
+      
       // auto hide after 5 seconds without closing the div
       window.setTimeout( () => { $("#alertId").hide() }, 5000)
 

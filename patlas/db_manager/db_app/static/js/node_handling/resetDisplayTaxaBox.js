@@ -1,11 +1,13 @@
-// function to repopulate #displayCurrentBox
-// idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"] //global variable
+/**
+ * function to repopulate #displayCurrentBox
+ * @param array
+ */
 const resetDisplayTaxaBox = (array) => {
   for (let x = 0; x < array.length; x++) {
     // empty field
     $(`#${array[x]}`).empty()
     // reset to default of html
-    $(`#${array[x]}`).append(`${array[x].replace("p_", "")}:`)
+      .append(`${array[x].replace("p_", "")}:`)
   }
 }
 
