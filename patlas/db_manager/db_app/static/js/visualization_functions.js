@@ -630,6 +630,9 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
+
+      $("#pf_label").show()
+
       // empties taxa and plasmidfinder legend
       $("#taxa_label").hide()
       $("#colorLegendBox").empty()
@@ -741,6 +744,8 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
 
       hideAllOtherPlots()
+
+      $("#res_label").show()
 
       // empties all other legend
       $("#taxa_label").hide()
@@ -858,6 +863,9 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
+
+      $("#vir_label").show()
+
       // empties taxa and plasmidfinder legend
       $("#taxa_label").hide()
       $("#colorLegendBox").empty()
@@ -1110,6 +1118,9 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
+
+      $("#taxa_label").show()
+
       // empties taxa and plasmidfinder legend
       $("#res_label").hide()
       $("#colorLegendBoxRes").empty()
