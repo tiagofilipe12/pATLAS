@@ -157,6 +157,10 @@ let list = []   // list to store references already ploted as nodes
 // links between accession numbers
 let listLengths = [] // list to store the lengths of all nodes
 
+// used to set colors for taxa filters
+let i = 0
+
+
 /**
  * forces welcomeModal to be the first thing the user sees when the page
  * is loaded.
@@ -880,6 +884,7 @@ const onLoad = () => {
       listFamilies = [],
       listGenera = [],
       listSpecies = []
+
     if (firstInstace === true && pageReload === false) {
       getArrayTaxa().done((json) => {
         $.each(json, (sps, other) => {    // sps aka species
@@ -929,10 +934,16 @@ const onLoad = () => {
     //* **** Clear selection button *****//
     // clear = false; //added to control the colors being triggered after clearing
     $("#taxaModalClear").unbind("click").bind("click", (event) => {
+
+      event.preventDefault()
+
       document.getElementById("reset-sliders").click()
       // clear = true;
-      event.preventDefault()
+
       resetDisplayTaxaBox(idsArrays)
+
+      // sets colors to default value
+      i = 0
 
       // resets dropdown selections
       $("#orderList").selectpicker("deselectAll")
@@ -1002,9 +1013,6 @@ const onLoad = () => {
       selectedOrder = removeFirstCharFromArray(selectedOrder)
 
       //* *** Alert for taxa filter ****//
-      // print alert if no filters are selected
-      let counter = 0 // counts the number of taxa type that has not been
-      // selected
 
       const alertArrays = {
         "order": selectedOrder,
@@ -1015,14 +1023,12 @@ const onLoad = () => {
 
       const divAlert = document.getElementById("alertId")
 
+      // checks if any selection was made
       for (const i in alertArrays) {
 
         if (alertArrays.hasOwnProperty(i)) {
 
-          if (alertArrays[i].length > 0) {
-            counter = counter + 1
-            // Alert = false
-          } else if (alertArrays.order.length === 0 &&
+          if (alertArrays.order.length === 0 &&
             alertArrays.family.length === 0 &&
             alertArrays.genus.length === 0 &&
             alertArrays.species.length === 0) {
@@ -1033,7 +1039,7 @@ const onLoad = () => {
           }
         }
       }
-      
+
       // auto hide after 5 seconds without closing the div
       window.setTimeout( () => { $("#alertId").hide() }, 5000)
 
@@ -1050,7 +1056,6 @@ const onLoad = () => {
         const family = pair[1]
         const order = pair[2]
         if (selectedFamily.indexOf(family) >= 0) {
-          selectedGenus.push(species)
           if (!(family in assocFamilyGenus)) {
             assocFamilyGenus[family] = []
             assocFamilyGenus[family].push(species)
@@ -1058,7 +1063,6 @@ const onLoad = () => {
             assocFamilyGenus[family].push(species)
           }
         } else if (selectedOrder.indexOf(order) >= 0) {
-          selectedGenus.push(species)
           if (!(order in assocOrderGenus)) {
             assocOrderGenus[order] = []
             assocOrderGenus[order].push(species)
@@ -1077,11 +1081,11 @@ const onLoad = () => {
 
       // renders the graph for the desired taxon if more than one taxon type is selected
       let storeLis = "" // a variable to store all <li> generated for legend
-      let firstIteration = true // boolean to control the upper taxa level
+      // let firstIteration = true // boolean to control the upper taxa level
       // (order or family)
 
       // first restores all nodes to default color
-      nodeColorReset(graphics, g, nodeColor, renderer)
+      // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -1089,201 +1093,72 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       // empties taxa and plasmidfinder legend
-      $("#res_label").hide()
-      $("#colorLegendBoxRes").empty()
-      $("#pf_label").hide()
-      $("#colorLegendBoxPf").empty()
-      $("#vir_label").hide()
-      $("#colorLegendBoxVir").empty()
+      // $("#res_label").hide()
+      // $("#colorLegendBoxRes").empty()
+      // $("#pf_label").hide()
+      // $("#colorLegendBoxPf").empty()
+      // $("#vir_label").hide()
+      // $("#colorLegendBoxVir").empty()
 
-      // if multiple selections are made in different taxa levels
-      if (counter > 1 && counter <= 4) {
-        const styleColor = "background-color:" + colorList[2]
-        storeLis = storeLis + "<li" +
-          " class='centeredList'><button class='jscolor btn" +
-          " btn-default' style=" + styleColor + "></button>&nbsp;multi taxa" +
-          " selection</li>"
-        showDiv().then( () => {
-          const promises = []
-          const currentColor = 0xf71735   // sets color of all changes_nodes to
-          // be red
-          storeLis = "<li class='centeredList'><button class='jscolor btn btn-default'" +
-            " style='background-color:#f71735'></button>&nbsp;multi-level" +
-            " selected taxa</li>"
-          let currentSelectionOrder = alertArrays.order
-          for (const i in currentSelectionOrder) {
-            if (currentSelectionOrder.hasOwnProperty(i)) {
-              const tempArray = assocOrderGenus[currentSelectionOrder[i]]
-              for (const sp in tempArray) {
-                if ({}.hasOwnProperty.call(tempArray, sp)) {
-                  promises.push(
-                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
-                  )
-                }
-              }
-            }
-          }
-          let currentSelectionFamily = alertArrays.family
-          for (const i in currentSelectionFamily) {
-            if (currentSelectionFamily.hasOwnProperty(i)) {
-              const tempArray = assocFamilyGenus[currentSelectionFamily[i]]
-              for (const sp in tempArray) {
-                if (tempArray.hasOwnProperty(sp)) {
-                  promises.push(
-                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
-                  )
-                }
-              }
-            }
-          }
-          let currentSelectionGenus = alertArrays.genus
-          for (const i in currentSelectionGenus) {
-            if (currentSelectionGenus.hasOwnProperty(i)) {
-              const tempArray = assocGenus[currentSelectionGenus[i]]
-              for (const sp in tempArray) {
-                if (tempArray.hasOwnProperty(sp)) {
-                  promises.push(
-                    taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
-                  )
-                }
-              }
-            }
-          }
-          let currentSelectionSpecies = alertArrays.species
-          for (const i in currentSelectionSpecies) {
-            if (currentSelectionSpecies.hasOwnProperty(i)) {
-              promises.push(
-                taxaRequest(g, graphics, renderer, currentSelectionSpecies[i], currentColor)
-              )
-            }
-          }
-          Promise.all(promises)
-            .then( () => {
-              $("#loading").hide()
-              $("#colorLegend").show()
-              document.getElementById("taxa_label").style.display = "block" // show label
-              $("#colorLegendBox").empty()
-                .append(storeLis +
-                  "<li class='centeredList'><button class='jscolor btn btn-default'" +
-                  "style='background-color:#666370' ></button>&nbsp;unselected</li>")
-              $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-                " #plotButton").show()
-              // enables button group again
-              $("#toolButtonGroup button").removeAttr("disabled")
-            })
-        })
+      let currentSelection
+      const promises = []
+      $("#loading").show()
+
+      // orders //
+      if (alertArrays.order.length !== 0) {
+        storeLis = taxaRequestWrapper(g, graphics, renderer, assocOrderGenus,
+          storeLis, promises)
       }
-      // renders the graph for the desired taxon if one taxon type is selected
-      // allows for different colors between taxa of the same level
-      else if (counter === 1) {
-        let currentSelection
-        // first cycle between all the arrays to find which one is not empty
-        for (const array in alertArrays) {
-          // selects the not empty array
-          if (alertArrays[array].length !== 0 && firstIteration === true) {
-            currentSelection = alertArrays[array]
-            // performs the actual interaction for color picking and assigning
-            showDiv().then( () => {
-              const promises = []
-              for (const i in currentSelection) {
-                // orders //
-                if (currentSelection.hasOwnProperty(i)) {
-                  if (alertArrays.order.length !== 0) {
-                    const currentColor = colorList[i].replace("#", "0x")
-                    const tempArray = assocOrderGenus[currentSelection[i]]
-                    const styleColor = "background-color:" + colorList[i]
-                    storeLis = storeLis + "<li" +
-                      " class='centeredList'><button class='jscolor btn" +
-                      " btn-default' style=" + styleColor + "></button>&nbsp;" +
-                      currentSelection[i] + "</li>"
-                    // executres node function for family and orders
-                    for (const sp in tempArray) {
-                      if (tempArray.hasOwnProperty(sp)) {
-                        promises.push(
-                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
-                        )
-                      }
-                    }
-                  }
 
-                  // families //
-                  else if (alertArrays.family.length !== 0) {
-                    const currentColor = colorList[i].replace("#", "0x")
-                    const tempArray = assocFamilyGenus[currentSelection[i]]
-                    const styleColor = "background-color:" + colorList[i]
-                    storeLis = storeLis + "<li" +
-                      " class='centeredList'><button class='jscolor btn" +
-                      " btn-default' style=" + styleColor +
-                      "></button>&nbsp;" + currentSelection[i] + "</li>"
-                    // executres node function for family
-                    for (const sp in tempArray) {
-                      if (tempArray.hasOwnProperty(sp)) {
-                        promises.push(
-                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
-                        )
-                      }
-                    }
-                  }
+      // families //
+      if (alertArrays.family.length !== 0) {
+        storeLis = taxaRequestWrapper(g, graphics, renderer, assocFamilyGenus,
+          storeLis, promises)
+      }
 
-                  // genus //
-                  else if (alertArrays.genus.length !== 0) {
-                    const currentColor = colorList[i].replace("#", "0x")
-                    const tempArray = assocGenus[currentSelection[i]]
-                    const styleColor = "background-color:" + colorList[i]
-                    storeLis = storeLis + "<li class='centeredList'><button" +
-                      " class='jscolor btn btn-default' style=" +
-                      styleColor + "></button>&nbsp;" + currentSelection[i] +
-                      "</li>"
+      // genus //
+      if (alertArrays.genus.length !== 0) {
+        storeLis = taxaRequestWrapper(g, graphics, renderer, assocGenus,
+          storeLis, promises)
+      }
 
-                    // requests taxa associated accession from db and colors
-                    // respective nodes
-                    for (const sp in tempArray) {
-                      if (tempArray.hasOwnProperty(sp)) {
-                        promises.push(
-                          taxaRequest(g, graphics, renderer, tempArray[sp], currentColor)
-                        )
-                      }
-                    }
-                  }
+      // species //
+      if (alertArrays.species.length !== 0) {
 
-                  // species //
-                  else if (alertArrays.species.length !== 0) {
-                    const currentColor = colorList[i].replace("#", "0x")
-                    const styleColor = "background-color:" + colorList[i]
-                    storeLis = storeLis + "<li class='centeredList'><button" +
-                      " class='jscolor btn btn-default' style=" +
-                      styleColor + "></button>&nbsp;" + currentSelection[i] +
-                      "</li>"
+        for (const sp of alertArrays.species) {
 
-                    // requests taxa associated accession from db and colors
-                    // respective nodes
-                    promises.push(
-                      taxaRequest(g, graphics, renderer, currentSelection[i], currentColor)
-                    )
-                  }
-                }
-              }
-              Promise.all(promises)
-                .then( () => {
-                  $("#loading").hide()
-                  // showLegend.style.display = "block"
-                  $("#colorLegend").show()
-                  document.getElementById("taxa_label").style.display = "block" // show label
-                  $("#colorLegendBox").empty()
-                    .append(storeLis +
-                      "<li class='centeredList'><button class='jscolor btn btn-default'" +
-                      " style='background-color:#666370' ></button>&nbsp;unselected</li>")
-                  $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-                    " #plotButton").show()
-                  // enables button group again
-                  $("#toolButtonGroup button").removeAttr("disabled")
-                })
-            }) // ends showDiv
+          const currentColor = colorList[i].replace("#", "0x")
+          const styleColor = "background-color:" + colorList[i]
+          storeLis = storeLis + "<li class='centeredList'><button" +
+            " class='jscolor btn btn-default' style=" +
+            styleColor + "></button>&nbsp;" + sp +
+            "</li>"
 
-            firstIteration = false // stops getting lower levels
-          }
+          // requests taxa associated accession from db and colors
+          // respective nodes
+          i += 1
+          promises.push(
+            taxaRequest(g, graphics, renderer, sp, currentColor)
+          )
         }
       }
+
+      Promise.all(promises)
+        .then( () => {
+          $("#loading").hide()
+          // showLegend.style.display = "block"
+          $("#colorLegend").show()
+          document.getElementById("taxa_label").style.display = "block" // show label
+          $("#colorLegendBox").empty()
+            .append(storeLis +
+              "<li class='centeredList'><button class='jscolor btn btn-default'" +
+              " style='background-color:#666370' ></button>&nbsp;unselected</li>")
+          $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+            " #plotButton").show()
+          // enables button group again
+          $("#toolButtonGroup button").removeAttr("disabled")
+        })
+
     })
 
     //* ************//
@@ -1678,6 +1553,10 @@ const onLoad = () => {
 
     // resets the slider
     $("#reset-sliders").unbind("click").bind("click", () => {
+
+      // resets color selection
+      i = 0
+
       listGiFilter = [] //resets listGiFilter
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -1699,6 +1578,8 @@ const onLoad = () => {
     })
     // runs the re run operation for the selected species
     $("#Re_run").unbind("click").bind("click", () => {
+
+      i = 0
       // resets areaSelection
       areaSelection = false
       firstInstace = false

@@ -5,14 +5,14 @@ const reAppendString = "<div class='panel-group colorpicker-component' id='color
   "<div class='panel panel-default' >\n" +
   "<div class='panel-heading'>Color legend</div>\n" +
   "<div class='panel-body'>\n" +
-  "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
+  "<label id='taxa_label' style='display: none'>Filters</label>\n" +
   "<ul class='legend' id='colorLegendBox'></ul>\n" +
-  "<label id='res_label' style='display: none'>Resistances</label>" +
-  "<ul class='legend' id='colorLegendBoxRes'></ul>" +
-  "<label id='pf_label' style='display: none'>Plasmid Families</label>" +
-  "<ul class='legend' id='colorLegendBoxPf'></ul>" +
-  "<label id='vir_label' style='display: none'>Virulence factors</label>" +
-  "<ul class='legend' id='colorLegendBoxVir'></ul>" +
+  // "<label id='res_label' style='display: none'>Resistances</label>" +
+  // "<ul class='legend' id='colorLegendBoxRes'></ul>" +
+  // "<label id='pf_label' style='display: none'>Plasmid Families</label>" +
+  // "<ul class='legend' id='colorLegendBoxPf'></ul>" +
+  // "<label id='vir_label' style='display: none'>Virulence factors</label>" +
+  // "<ul class='legend' id='colorLegendBoxVir'></ul>" +
   "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
   "<div class='gradient' id='scaleLegend'></div>\n" +
   "<div id='scaleString'></div>" +

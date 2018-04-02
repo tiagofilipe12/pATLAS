@@ -1,4 +1,4 @@
-/*globals listGiFilter */
+/*globals listGiFilter, i */
 // cycles nodes
 const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => {
   g.forEachNode( (node) => {
@@ -37,4 +37,32 @@ const taxaRequest = async (g, graphics, renderer, taxa, currentColor) => {
     listGiFilter.push(request.plasmid_id)
   })
   // return listOfRequests
+}
+
+
+const taxaRequestWrapper = (g, graphics, renderer, assocObj, storeLis,
+                            promises) => {
+
+  Object.entries(assocObj).forEach( ([key, value]) => {
+
+    const currentColor = colorList[i].replace("#", "0x")
+    const styleColor = "background-color:" + colorList[i]
+
+    i += 1
+
+    storeLis = storeLis + "<li" +
+      " class='centeredList'><button class='jscolor btn" +
+      " btn-default' style=" + styleColor +
+      "></button>&nbsp;" + key + "</li>"
+
+    // executes node function for family
+    for (const sp of value) {
+
+      promises.push(
+        taxaRequest(g, graphics, renderer, sp, currentColor)
+      )
+    }
+
+  })
+  return storeLis
 }
