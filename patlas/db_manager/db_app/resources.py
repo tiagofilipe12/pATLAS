@@ -61,6 +61,8 @@ req_parser.add_argument("name", dest="name", type=str, help="taxa "
                                                               "to be queried")
 req_parser.add_argument("gene", dest="gene", type=str, help="gene "
                                                               "to be queried")
+req_parser.add_argument("taxa", dest="taxa", type=str, help="taxa "
+                                                              "to be queried")
 req_parser.add_argument("plasmid_name", dest="plasmid_name", type=str,
                           help="plasmid name to be queried")
 
@@ -162,6 +164,20 @@ class GetAccessionVir(Resource):
         # all objects that matched the args (json_entry, plasmid_id)
         records = db.session.query(Positive).filter(
             Positive.json_entry["gene"].astext.contains(args.gene)
+        ).all()
+        # contains method allows us to query in array that is converted to a
+        # string
+        return records
+
+class GetAccessionTaxa(Resource):
+    @marshal_with(entry_field)
+    def get(self):
+        # Put req_parser inside get function. Only this way it parses the request.
+        args = req_parser.parse_args()
+        # This queries name object in json_entry and retrieves an array with
+        # all objects that matched the args (json_entry, plasmid_id)
+        records = db.session.query(Plasmid).filter(
+            Plasmid.json_entry["taxa"].astext.contains(args.taxa)
         ).all()
         # contains method allows us to query in array that is converted to a
         # string

@@ -1138,74 +1138,9 @@ const onLoad = () => {
       $("#vir_label").hide()
       $("#colorLegendBoxVir").empty()
 
-      const promises = []
       $("#loading").show()
 
-      // orders //
-      if (alertArrays.order.length !== 0) {
-        const outTaxaRequest = taxaRequestWrapper(g, graphics, renderer, assocOrderGenus,
-          storeLis, promises, i)
-        storeLis = outTaxaRequest[0]
-        i = outTaxaRequest[1]
-      }
-
-      // families //
-      if (alertArrays.family.length !== 0) {
-        const outTaxaRequest = taxaRequestWrapper(g, graphics, renderer, assocFamilyGenus,
-          storeLis, promises, i)
-        storeLis = outTaxaRequest[0]
-        i = outTaxaRequest[1]
-      }
-
-      // genus //
-      if (alertArrays.genus.length !== 0) {
-        const outTaxaRequest = taxaRequestWrapper(g, graphics, renderer, assocGenus,
-          storeLis, promises, i)
-        storeLis = outTaxaRequest[0]
-        i = outTaxaRequest[1]
-      }
-
-      // species //
-      if (alertArrays.species.length !== 0) {
-
-        for (const sp of alertArrays.species) {
-
-          const currentColor = colorList[i].replace("#", "0x")
-          const styleColor = "background-color:" + colorList[i]
-          storeLis = storeLis + "<li class='centeredList'><button" +
-            " class='jscolor btn btn-default' style=" +
-            styleColor + "></button>&nbsp;" + sp +
-            "</li>"
-
-          // requests taxa associated accession from db and colors
-          // respective nodes
-          i += 1
-
-          promises.push(
-            taxaRequest(g, graphics, renderer, sp, currentColor)
-          )
-        }
-      }
-
-      if (promises.length !== 0) {
-        Promise.all(promises)
-          .then(() => {
-            $("#loading").hide()
-            // showLegend.style.display = "block"
-            $("#colorLegend").show()
-            document.getElementById("taxa_label").style.display = "block" // show label
-            $("#colorLegendBox").empty()
-              .append(storeLis +
-                "<li class='centeredList'><button class='jscolor btn btn-default'" +
-                " style='background-color:#666370' ></button>&nbsp;unselected</li>")
-            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-              " #plotButton").show()
-            // enables button group again
-            $("#toolButtonGroup button").removeAttr("disabled")
-          })
-      } else {
-        $("#loading").hide()
-      }
+      iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
 
     })
 
