@@ -1,5 +1,5 @@
 /*globals makeHash, reloadAccessionList, assembly, listGiFilter,
- colorNodes, readColoring, removeImportInfo, selectedFilter */
+ colorNodes, readColoring, removeImportInfo, selectedFilter, getLinkedNodes */
 
 const reAppendString = "<div class='panel-group colorpicker-component' id='colorLegend' style='display: none'>\n" +
   "<div class='panel panel-default' >\n" +
@@ -256,15 +256,18 @@ const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance, sizeR
  * @param {Object} g - object that stores vivagraph graph associated functions
  * @param {Object} jsonObj - an object that stores information to be added
  * to nodes and that was obtained from a db request
- * @param {Array} newList - an array with all the accession numbers that will bplottedloted
+ * @param {Array} newList - an array with all the accession numbers that will
+ * plotted.
  * @param {Array} newListHashes - an array with a list of hashes, each one
  * coding for an already added link.
+ * @param {Array} listGiFilter - The list of accession numbers that are
+ * currently selected.
  * @returns {Array} returns an array with the updated newList which will
  * contain all added nodes and another array with the list of hashes already
  * added that is used to avoid the duplication of links in the graph (user
  * by reAddLinks function
  */
-const reAddNode = (g, jsonObj, newList, newListHashes) => {
+const reAddNode = (g, jsonObj, newList, newListHashes, listGiFilter) => {
 
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
@@ -288,30 +291,48 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
     for (let i = 0; i < eachArray.length; i++) {
       // this constructs a sorted array
       // TODO try to make this array ordered in the database using MASHix.py
-      const entry = eachArray[i].replace(/[{}'u\[\] ]/g,"").split(",").slice(0).sort()
+      const entry = eachArray[i].replace(/[{}'u\[\] ]/g, "").split(",").slice(0).sort()
       const linkDistance = entry[1].split(":")[1]
       const linkLength = entry[2].split(":")[1]
       const linkAccession = entry[0].split(":")[1]
       const sizeRatio = Math.min(length, linkLength) / Math.max(length, linkLength)
 
-      if (newList.indexOf(linkAccession) < 0) {
-        g.addNode(linkAccession, {
-          sequence: "<span style='color:#468499'>Accession:" +
-          " </span><a" +
-          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
-          seqLength: "<span" +
-          " style='color:#468499'>Sequence length:" +
-          " </span>" + linkLength,
-          logLength: Math.log(parseInt(linkLength))
-        })
-        newList.push(linkAccession) //adds to list every time a node is
-        // added here
-        newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
-          linkDistance, sizeRatio)
+      if (getLinkedNodes === true) {
+        if (newList.indexOf(linkAccession) < 0) {
+          g.addNode(linkAccession, {
+            sequence: "<span style='color:#468499'>Accession:" +
+            " </span><a" +
+            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
+            seqLength: "<span" +
+            " style='color:#468499'>Sequence length:" +
+            " </span>" + linkLength,
+            logLength: Math.log(parseInt(linkLength))
+          })
+          newList.push(linkAccession) //adds to list every time a node is
+          // added here
+          newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+            linkDistance, sizeRatio)
+        } else {
+          // if node exist, links still need to be added
+          newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+            linkDistance, sizeRatio)
+        }
       } else {
-        // if node exist, links still need to be added
-        newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
-          linkDistance, sizeRatio)
+        if (newList.indexOf(linkAccession) < 0 && listGiFilter.indexOf(linkAccession) > -1) {
+          g.addNode(linkAccession, {
+            sequence: "<span style='color:#468499'>Accession:" +
+            " </span><a" +
+            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
+            seqLength: "<span" +
+            " style='color:#468499'>Sequence length:" +
+            " </span>" + linkLength,
+            logLength: Math.log(parseInt(linkLength))
+          })
+          newList.push(linkAccession) //adds to list every time a node is
+          // added here
+          newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+            linkDistance, sizeRatio)
+        }
       }
     }
   }
@@ -385,7 +406,9 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           }
 
           //add node
-          reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+          reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList,
+            newListHashes, listGiFilter)
+
           reloadAccessionList = reAddNodeList[0]
           newListHashes = reAddNodeList[1]
         }
@@ -394,15 +417,14 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
         renderGraph(graphics)
 
         if (readString !== false ) {
+
           readColoring(g, listGi, graphics, renderer, readString)
 
         } else if (assemblyJson !== false) {
 
           const assemblyString = JSON.parse(Object.values(assemblyJson)[0])
           readColoring(g, listGi, graphics, renderer, assemblyString)
-        //   let masterReadArray = [] //needs to reset this array for the assembly
-        //   // function to be successful
-        //   listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
+
         } else if (selectedFilter === "res") {
 
           $("#resSubmit").click()
@@ -427,10 +449,9 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
           // color for area selection
         }
+
       })
-      // .catch( (error) => {
-      //   console.log("Error! No query was made. Error message: ", error)
-      // })
+
   }
   return [listGiFilter, reloadAccessionList]
 }

@@ -1099,7 +1099,8 @@
                   title="Return to full tree view" style="display: none">
             <span class="glyphicon glyphicon-home"></span></button>
           <button class="btn btn-default" id="Re_run"
-                  type="button" data-toogle="tooptip"
+                  type="button" data-toggle="modal" data-backdrop="static"
+                  data-target="#reRunModal"
                   title="Apply filters" style="display: none">
             <span class="glyphicon glyphicon-filter"></span></button>
           <!--for now this button is disabled since it does not have funcitonality-->
@@ -1266,6 +1267,32 @@
 
 <div class="graph-overlay"></div>
 <span style="color: white; margin: 10px;">Use mouse to draw rectangle and select nodes</span>
+
+
+<!-- Modal for Re_run-->
+<div id="reRunModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Filtering graph for the current selection</h4>
+      </div>
+      <div class="modal-body" id="modalBodyReRun">
+
+        <p>Do you want to keep plasmids linked to selected nodes?</p>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success"
+                  data-dismiss="modal" id="reRunYes">Yes</button>
+          <button type="submit" class="btn btn-danger"
+                  data-dismiss="modal" id="reRunNo">No</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <div id="modalPlot" class="modal fade" role="dialog" tabindex="-1"
      data-backdrop="static">

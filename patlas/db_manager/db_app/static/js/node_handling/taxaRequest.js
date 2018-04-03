@@ -12,7 +12,6 @@ const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => 
       nodeUI.backupColor = nodeUI.color
     }
   })
-  renderer.rerender()
 }
 
 /////////// IMPORTANT ///////////
@@ -30,13 +29,11 @@ const taxaRequest = async (g, graphics, renderer, taxa, currentColor) => {
       }
     }
     colorNodes(g, graphics, renderer, listData, currentColor)
-    //return listData
-    // renderer.rerender() //TODO maybe remove?
   })
+
   queryResults.map( (request) => {
     listGiFilter.push(request.plasmid_id)
   })
-  // return listOfRequests
 }
 
 

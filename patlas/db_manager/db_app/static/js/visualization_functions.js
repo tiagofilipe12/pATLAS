@@ -168,6 +168,8 @@ let list = []   // list to store references already ploted as nodes
 // links between accession numbers
 let listLengths = [] // list to store the lengths of all nodes
 
+let getLinkedNodes = false // a boolean variable to control the Re_run behavior
+
 
 /**
  * forces welcomeModal to be the first thing the user sees when the page
@@ -1620,7 +1622,9 @@ const onLoad = () => {
       hideAllOtherPlots()
     })
     // runs the re run operation for the selected species
-    $("#Re_run").unbind("click").bind("click", () => {
+    $("#reRunYes, #reRunNo").unbind("click").bind("click", (e) => {
+
+      getLinkedNodes = (e.target.id !== "reRunNo")
 
       // resets areaSelection
       areaSelection = false
@@ -1767,10 +1771,12 @@ const onLoad = () => {
       reloadAccessionList = requestDBList[1] //list stores all nodes present
       // this listGi isn't the same as the initial but has information on
       // all the nodes that were used in filters
-      // wait a while before showing the colors
+
+      // forces renderer after a while, because for some reason renderer doesn't
+      // allways occur after re_run
       setTimeout( () => {
         renderer.rerender()
-      }, 100)
+      }, 1000)
     }
   }
 
