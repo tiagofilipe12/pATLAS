@@ -919,8 +919,7 @@ const onLoad = () => {
           const genus = other[0]
           const family = other[1]
           const order = other[2]
-          dictGenera[species] = [genus, family, order] // append the list to
-          // this dict to be used later
+
           if (listGenera.indexOf(genus) < 0) {
             listGenera.push(genus)
           }
@@ -1016,12 +1015,6 @@ const onLoad = () => {
       $("#readLegend").empty()
       $("#read_label").hide()
 
-      // resetDisplayTaxaBox(["p_PlasmidFinder", "p_Resfinder", "p_Card", "p_Virulence"])
-      // $("#plasmidFamiliesList").selectpicker("deselectAll")
-      // $("#resList").selectpicker("deselectAll")
-      // $("#cardList").selectpicker("deselectAll")
-      // $("#virList").selectpicker("deselectAll")
-
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
 
@@ -1067,7 +1060,6 @@ const onLoad = () => {
             alertArrays.species.length === 0) {
 
             divAlert.style.display = "block"
-            //$("#colorLegend").hide()
 
           }
         }
@@ -1078,49 +1070,10 @@ const onLoad = () => {
 
       //* *** End Alert for taxa filter ****//
 
-      let assocFamilyGenus = {}
-      let assocOrderGenus = {}
-      let assocGenus = {}
-
-      // appends genus to selectedGenus according with the family and order for single-color selection
-      // also appends to associative arrays for family and order for multi-color selection
-      // This is a key piece of code that makes the ASSOCIATIVE ARRAYS between
-      // species and all other taxonomic levels
-      $.each(dictGenera, (species, pair) => {
-        const genus = pair[0]
-        const family = pair[1]
-        const order = pair[2]
-        if (selectedFamily.indexOf(family) >= 0) {
-          if (!(family in assocFamilyGenus)) {
-            assocFamilyGenus[family] = []
-            assocFamilyGenus[family].push(species)
-          } else {
-            assocFamilyGenus[family].push(species)
-          }
-        } else if (selectedOrder.indexOf(order) >= 0) {
-          if (!(order in assocOrderGenus)) {
-            assocOrderGenus[order] = []
-            assocOrderGenus[order].push(species)
-          } else {
-            assocOrderGenus[order].push(species)
-          }
-        } else if (selectedGenus.indexOf(genus) >= 0) {
-          if (!(genus in assocGenus)) {
-            assocGenus[genus] = []
-            assocGenus[genus].push(species)
-          } else {
-            assocGenus[genus].push(species)
-          }
-        }
-      })
-
       // renders the graph for the desired taxon if more than one taxon type is selected
       let storeLis = "" // a variable to store all <li> generated for legend
-      // let firstIteration = true // boolean to control the upper taxa level
-      // (order or family)
 
-      // first restores all nodes to default color
-      // nodeColorReset(graphics, g, nodeColor, renderer)
+
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -1158,8 +1111,7 @@ const onLoad = () => {
         fileChecks(readString)
         $("#fileNameDiv").html(Object.keys(readFilejson)[0])
           .show()
-        // readIndex will be used by slider buttons
-        //readIndex = 0
+
         resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
         previousTableList = []
         // transform selector object that handles plots and hide their
@@ -1199,8 +1151,7 @@ const onLoad = () => {
       event.preventDefault()
       masterReadArray = []
       assemblyJson = false
-      // readIndex will be used by slider buttons
-      //readIndex = 0
+
       resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -1213,7 +1164,7 @@ const onLoad = () => {
         getArrayMapping().done( (result) => {
           // puts to readFilejson object that may store many files
           readFilejson = {
-            // has to be stringifyed to be passed to pushToMasterReadArray
+            // has to be stringified to be passed to pushToMasterReadArray
             "mapping_sample1": JSON.stringify(result)
           }
           const outLists = readColoring(g, listGi, graphics, renderer, result)
@@ -1242,8 +1193,7 @@ const onLoad = () => {
         fileChecks(readString)
         $("#fileNameDiv").html(Object.keys(mashJson)[0])
           .show()
-        // readIndex will be used by slider buttons
-        //readIndex += 1
+
         // it and use the same function (readColoring)
         resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
         previousTableList = []
@@ -1297,7 +1247,7 @@ const onLoad = () => {
         getArrayMash().done( (result) => {
           // puts to readFilejson object that may store many files
           mashJson = {
-            // has to be stringifyed to be passed to pushToMasterReadArray
+            // has to be stringified to be passed to pushToMasterReadArray
             "mash_sample1": JSON.stringify(result)
           }
           readFilejson = mashJson
@@ -1373,7 +1323,7 @@ const onLoad = () => {
         const readString = JSON.parse(Object.values(results)[0])
         fileChecks(readString)
         $("#fileNameDiv").html(Object.keys(readFilejson)[0])
-          .show()        //listGiFilter = assembly(listGi, results, g, graphics, masterReadArray, listGiFilter)
+          .show()
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
         listGiFilter = outputList[1]
@@ -1437,7 +1387,7 @@ const onLoad = () => {
     //* *********************//
     $("#distancesSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
-      // $("#loading").show()
+
       $("#scaleLegend").empty()
       showDiv().then( () => {
         linkColoring(g, graphics, renderer, "distance", false)
@@ -1487,7 +1437,7 @@ const onLoad = () => {
     if (sliderMinMax.length === 0) {
       sliderMinMax = [Math.log(Math.min.apply(null, listLengths)),
         Math.log(Math.max.apply(null, listLengths))]
-      // generates and costumizes slider itself
+      // generates and customizes slider itself
       const slider = document.getElementById("slider")
 
       noUiSlider.create(slider, {
@@ -1564,9 +1514,10 @@ const onLoad = () => {
       // resets areaSelection
       areaSelection = false
       firstInstace = false
-      // rerun = true
+
       reloadAccessionList = []  // needs to be killed every instance in
       // order for reload to allow reloading again
+
       //* * Loading Screen goes on **//
       showDiv().then( () => {
         // removes nodes
@@ -1581,7 +1532,7 @@ const onLoad = () => {
 
     // returns to the initial tree by reloading the page
     $("#go_back").unbind("click").bind("click", () => {
-      // window.location.reload()   // a temporary fix to go back to full dataset
+
       firstInstace = true
       pageReload = true
       list = []
@@ -1612,14 +1563,13 @@ const onLoad = () => {
         }
       }, 1000)
     }
-    // button to cancel cowntdown control
+    // button to cancel countdown control
     $("#counterClose").unbind("click").bind("click", () => {
       $("#counter").html("")
       $("#counterClose").hide()
     })
 
   } // closes renderGraph
-  //}) //end of getArray
 
   const init = () => {
     if (firstInstace === true) {
@@ -1708,7 +1658,7 @@ const onLoad = () => {
       // all the nodes that were used in filters
 
       // forces renderer after a while, because for some reason renderer doesn't
-      // allways occur after re_run
+      // always occur after re_run
       setTimeout( () => {
         renderer.rerender()
       }, 1000)
@@ -1839,12 +1789,7 @@ const onLoad = () => {
       // handles hidden buttons
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").show()
-      // showRerun.style.display = "block"
-      // showGoback.style.display = "block"
-      // showDownload.style.display = "block"
-      // showTable.style.display = "block"
-      // heatMap.style.display = "block"
-      // plotButton.style.display = "block"
+
       // sets listGiFilter to the selected nodes
       listGiFilter = bootstrapTableList
       bootstrapTableList = []
