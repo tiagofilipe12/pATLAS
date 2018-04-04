@@ -11,19 +11,25 @@
  * "fasta"
  */
 const multiDownload = (acc, dbType, exportType) => {
-  while (acc.length > 0) {
-    const link = document.createElement("a")
-    link.style.display = "none"
-    const chunk = acc.splice(0, 100)
-    const url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db" +
-      "=" + dbType + "&id=" + chunk.toString() + "&rettype=" + exportType + "&retmode=text"
 
-    link.setAttribute("download", "patlas_download.txt")
-    link.href = url
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
+  const link = document.createElement("a")
+  link.style.display = "none"
+  const chunk = acc.splice(0, 100)
+  const url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db" +
+    "=" + dbType + "&id=" + chunk.toString() + "&rettype=" + exportType + "&retmode=text"
+
+  // link.setAttribute("download", "patlas_download.txt")
+  link.href = url
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+
+  // since NCBI efetch is rejecting multiple queries at the same time
+  setTimeout( () => {
+    if (acc.length > 0) {
+      multiDownload(acc, dbType, exportType)
+    }
+  }, 1000)
 }
 
 /**
