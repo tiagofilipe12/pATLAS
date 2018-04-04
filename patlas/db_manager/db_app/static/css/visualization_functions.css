@@ -367,11 +367,13 @@
     max-width: 25%;
     z-index: 99;
     right: 1%;
+    border-radius: 10px;
+    box-shadow: 1px 2px 20px #333;
 }
 
-#colorLegend #colorLegend > .panel-default {
-    max-height: 200px;
-}
+/*#colorLegend #colorLegend > .panel-default {*/
+    /*max-height: 200px;*/
+/*}*/
 
 #colorLegend > .panel-default > .panel-body {
     max-height: 200px;
@@ -797,4 +799,9 @@ Careful when using this in other popovers in the future*/
 #sliderLegend{
     margin-bottom: 3px;
     text-align: center;
+}
+
+#assemblyLabel, #read_label, #distance_label, #vir_label, #pf_label, #res_label, #taxa_label {
+    display: none;
+    font-size: 16px;
 }

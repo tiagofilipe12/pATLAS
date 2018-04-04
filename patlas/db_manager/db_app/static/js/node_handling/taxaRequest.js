@@ -186,6 +186,8 @@ const renderAfterTaxaRequests = (storeLis) => {
 const iterateArrays = async (g, graphics, renderer, alertArrays, storeLis, i) => {
 
   if (alertArrays.order.length !== 0) {
+    storeLis = storeLis + "<div class='header_taxa'>Orders</div>"
+
     const outOrder = await taxaRequestWrapper(g, graphics, renderer, storeLis,
       i, alertArrays.order, "order")
 
@@ -194,6 +196,8 @@ const iterateArrays = async (g, graphics, renderer, alertArrays, storeLis, i) =>
   }
 
   if (alertArrays.family.length !== 0) {
+    storeLis = storeLis + "<div class='header_taxa'>Families</div>"
+
     const outFamily = await taxaRequestWrapper(g, graphics, renderer, storeLis,
       i, alertArrays.family, "family")
 
@@ -202,6 +206,8 @@ const iterateArrays = async (g, graphics, renderer, alertArrays, storeLis, i) =>
   }
 
   if (alertArrays.genus.length !== 0) {
+    storeLis = storeLis + "<div class='header_taxa'>Genera</div>"
+
     const outGenera = await taxaRequestWrapper(g, graphics, renderer, storeLis,
       i, alertArrays.genus, "genus")
 
@@ -210,6 +216,7 @@ const iterateArrays = async (g, graphics, renderer, alertArrays, storeLis, i) =>
   }
 
   if (alertArrays.species.length !== 0) {
+    storeLis = storeLis + "<div class='header_taxa'>Species</div>"
 
     const outSpecies = await taxaRequestWrapper(g, graphics, renderer, storeLis,
       i, alertArrays.species, "species")

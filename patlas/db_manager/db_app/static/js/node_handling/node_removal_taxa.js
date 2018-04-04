@@ -3,7 +3,7 @@
 
 const reAppendString = "<div class='panel-group colorpicker-component' id='colorLegend' style='display: none'>\n" +
   "<div class='panel panel-default' >\n" +
-  "<div class='panel-heading'>Color legend</div>\n" +
+  "<div class='panel-heading' style='font-size: 16px'>Color legend</div>\n" +
   "<div class='panel-body'>" +
   "<div id='sliderLegend'>" +
   "<div class='btn-group'>" +
@@ -13,21 +13,21 @@ const reAppendString = "<div class='panel-group colorpicker-component' id='color
   "<button id='slideLegendRight' class='btn btn-sm btn-default' data-toggle='tooltip' title='Change selected filter' type='button'>" +
   "<span class='glyphicon glyphicon-chevron-right'></span>" +
   "</button></div></div>" +
-  "<label id='taxa_label' style='display: none'>Taxa</label>\n" +
+  "<label id='taxa_label'>Taxa</label>\n" +
   "<ul class='legend' id='colorLegendBox'></ul>\n" +
-  "<label id='res_label' style='display: none'>Resistances</label>" +
+  "<label id='res_label'>Resistances</label>" +
   "<ul class='legend' id='colorLegendBoxRes'></ul>" +
-  "<label id='pf_label' style='display: none'>Plasmid Families</label>" +
+  "<label id='pf_label'>Plasmid Families</label>" +
   "<ul class='legend' id='colorLegendBoxPf'></ul>" +
-  "<label id='vir_label' style='display: none'>Virulence factors</label>" +
+  "<label id='vir_label'>Virulence factors</label>" +
   "<ul class='legend' id='colorLegendBoxVir'></ul>" +
-  "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
+  "<label id='distance_label'>Distance filters</label>\n" +
   "<div class='gradient' id='scaleLegend'></div>\n" +
   "<div id='scaleString'></div>" +
-  "<label id='read_label' style='display: none'>Read filters</label>\n" +
+  "<label id='read_label'>Read filters</label>\n" +
   "<div class='gradient' id='readLegend'></div>\n" +
   "<div id='readString'></div>" +
-  "<label id='assemblyLabel' style='display: none'>Assembly</label>" +
+  "<label id='assemblyLabel'>Assembly</label>" +
   "<div class='legend' id='assemblyLegend'></div>" +
   "</div>\n" +
   "</div>\n" +
