@@ -29,7 +29,7 @@ const multiDownload = (acc, dbType, exportType) => {
     if (acc.length > 0) {
       multiDownload(acc, dbType, exportType)
     }
-  }, 1000)
+  }, 4000)
 }
 
 /**
@@ -37,6 +37,9 @@ const multiDownload = (acc, dbType, exportType) => {
  * @param {Array} accList - an array of all the accessions to be downloaded
  */
 const downloadTypeHandler = (accList) => {
+
+  console.log(accList)
+
   const dbType = "nuccore"
   const exportType = "fasta"
   if (accList.length <= 100) {
