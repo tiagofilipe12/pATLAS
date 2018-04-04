@@ -1,7 +1,18 @@
 <!--hidden div for color legend-->
 <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">
+
   <div class="panel panel-default" >
-    <div class="panel-heading" style="font-size: 16px">Color legend</div>
+    <div class="panel-heading" >
+      <button id="resizeLegend" class="btn btn-sm btn-info" type="button" title="resize legend" style="position:absolute; top: 2px; left: 2px; color: white; border: none;
+">
+        <span class="glyphicon glyphicon-resize-horizontal" ></span>
+      </button>
+      <div style="font-size: 16px; text-align: center">
+        Color legend
+      </div>
+
+    </div>
+
     <div class="panel-body">
       <div id="sliderLegend">
         <div class="header_taxa">Slide between filters</div>
@@ -38,5 +49,7 @@
       <label id="assemblyLabel">Assembly</label>
       <div class="legend" id="assemblyLegend"></div>
     </div>
+
   </div>
+
 </div>

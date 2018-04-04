@@ -3,7 +3,7 @@
 
 const reAppendString = "<div class='panel-group colorpicker-component' id='colorLegend' style='display: none'>\n" +
   "<div class='panel panel-default' >\n" +
-  "<div class='panel-heading' style='font-size: 16px'>Color legend</div>\n" +
+  "<div class='panel-heading' style='font-size: 16px; text-align: center'>Color legend</div>\n" +
   "<div class='panel-body'>" +
   "<div id='sliderLegend'>" +
   "<div class='btn-group'>" +

@@ -365,10 +365,14 @@
     position: fixed;
     bottom: 1%;
     max-width: 25%;
+    max-height: 30%;
+    min-width: 15%;
+    min-height: 2%;
     z-index: 99;
     right: 1%;
     border-radius: 10px;
     box-shadow: 1px 2px 20px #333;
+    overflow: auto;
 }
 
 /*#colorLegend #colorLegend > .panel-default {*/
@@ -376,8 +380,9 @@
 /*}*/
 
 #colorLegend > .panel-default > .panel-body {
-    max-height: 200px;
-    overflow-y: scroll;
+
+    max-height: none;
+    /*overflow-y: scroll;*/
 }
 
 .legend {

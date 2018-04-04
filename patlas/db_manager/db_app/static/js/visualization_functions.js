@@ -16,7 +16,7 @@
                getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
                 getArrayAssembly, startMultiSelect, requesterDB,
                  addAllNodes, addAllLinks, quickFixString, fileChecks,
-                  iterateArrays*/
+                  iterateArrays, initResize*/
 
 /**
 * A bunch of global functions to be used throughout patlas
@@ -2045,4 +2045,12 @@ const onLoad = () => {
   Mousetrap.bind("shift+ctrl+space", () => {
     initCallback(g, layout, devel)
   })
+
+  /**
+   * Event to handle the resizing of color legend
+   */
+  $("#resizeLegend").mousedown( (e) => {
+    initResize()
+  })
+
 } // closes onload
