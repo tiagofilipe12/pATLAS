@@ -5,7 +5,7 @@ const Resize = (e) => {
     "90%" :
     $("#colorLegend .panel .panel-body").innerHeight() +
     $("#colorLegend .panel .panel-heading").height()
-  
+
   $("#colorLegend").css("max-height", setMaxHeight)
   $("#colorLegend").css("width", ($("#colorLegend").width() - e.clientX + $("#colorLegend").offset().left) + 'px')
     .css("height", ($("#colorLegend").height() - e.clientY + $("#colorLegend").offset().top) + 'px')
