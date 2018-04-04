@@ -16,7 +16,7 @@
                getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
                 getArrayAssembly, startMultiSelect, requesterDB,
                  addAllNodes, addAllLinks, quickFixString, fileChecks,
-                 taxaRequestWrapper*/
+                  iterateArrays*/
 
 /**
 * A bunch of global functions to be used throughout patlas

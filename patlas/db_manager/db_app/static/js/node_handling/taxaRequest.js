@@ -1,5 +1,17 @@
 /*globals listGiFilter, colorList */
-// cycles nodes
+
+
+/**
+ * Function to color nodes that are in the list under accessionRequested
+ * @param {Object} g - object that stores vivagraph graph associated functions.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Function} renderer - Function that forces the graph to be updated.
+ * @param {Array} accessionRequested - A list of accession numbers, for which
+ * the corresponding nodes will be colored by this function
+ * @param {String} currentColor the hex code with the color to use for this
+ * taxa.
+ */
 const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => {
   g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)
@@ -15,9 +27,20 @@ const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => 
   renderer.rerender()
 }
 
-/////////// IMPORTANT ///////////
-// piece of code that should be used to match species name with
-// dropdown selection
+
+/**
+ * Function that fetches the accession numbers from the database given a
+ * species. It searches in the psql database json_entry.name string for a
+ * matching species
+ * @param {Object} g - object that stores vivagraph graph associated functions.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Function} renderer - Function that forces the graph to be updated.
+ * @param {String} taxa - The speceis to be queried in the psql database
+ * @param {String} currentColor - the hex code with the color to use for this
+ * taxa.
+ * @returns {Promise}
+ */
 const speciesRequest = (g, graphics, renderer, taxa, currentColor) => {
   // const listOfRequests = []
   const taxaDb = taxa.replace(" ", "_")
@@ -33,9 +56,26 @@ const speciesRequest = (g, graphics, renderer, taxa, currentColor) => {
   })
 }
 
+
+/**
+ * Function that fetches the accession numbers from the database given a taxa
+ * (that is not a species). It searches in the psql database json_entry.taxa
+ * array for the existence of the queried taxa.
+ * @param {Object} g - object that stores vivagraph graph associated functions.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Function} renderer - Function that forces the graph to be updated.
+ * @param {String} taxa - The taxa to be queried in the psql database.
+ * @param {String} currentColor - the hex code with the color to use for this
+ * taxa.
+ * @returns {Promise}
+ */
 const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
 
-  return $.get("api/getaccessiontaxa/", {"taxa": taxa}, (data, status) => {
+  // this request searches for the presence of the queried taxa in the list
+  // under json_entry.taxa
+  return $.get("api/getaccessiontaxa/", {taxa}, (data, status) => {
+
     let listData = []
     for (let object in data) {
       if ({}.hasOwnProperty.call(data, object)) {
@@ -47,6 +87,21 @@ const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
 }
 
 
+/**
+ * This function handles the type of the request, when it is a query of species
+ * or taxa.
+ * @param {Object} g - object that stores vivagraph graph associated functions.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Function} renderer - Function that forces the graph to be updated.
+ * @param {String} storeLis - The string that will be appended to the legend.
+ * @param {Number} i - A number that is used to control the index of the colors
+ * stored in colorList variable
+ * @param {Array} arrayTaxa - The list of taxa to be queried
+ * @param {String} arrayType - A string that says if it is a species query or
+ * not
+ * @returns {Promise<*[]>}
+ */
 const taxaRequestWrapper = async (g, graphics, renderer, storeLis,
                                   i, arrayTaxa, arrayType) => {
 
@@ -81,6 +136,12 @@ const taxaRequestWrapper = async (g, graphics, renderer, storeLis,
   return [storeLis, i]
 }
 
+
+/**
+ * A function that will be executed after making all the queries to plot handle
+ * the showing and hiding of divs, namely the legend
+ * @param {String} storeLis - The string that will be appended to the legend.
+ */
 const renderAfterTaxaRequests = (storeLis) => {
   if (storeLis !== "") {
     // Promise.all(promises)
@@ -103,6 +164,25 @@ const renderAfterTaxaRequests = (storeLis) => {
   }
 }
 
+
+/**
+ * The key function that handles the order of the queries (order --> family
+ * --> genus --> species). This is important because this way nodes with lower
+ * taxonomic levels will be colored with priority (because they are the last to
+ * be queried). This way it avoids that higher taxonomic levels get priority
+ * instead of lower ones. This is the function that is executed under
+ * visualization_functions.js.
+ * @param {Object} g - object that stores vivagraph graph associated functions.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Function} renderer - Function that forces the graph to be updated.
+ * @param {Object} alertArrays - The object that stores a key: value with
+ * type_of_taxon: [queried_taxa]
+ * @param {String} storeLis - The string that will be appended to the legend.
+ * @param {Number} i - A number that is used to control the index of the colors
+ * stored in colorList variable.
+ * @returns {Promise<void>}
+ */
 const iterateArrays = async (g, graphics, renderer, alertArrays, storeLis, i) => {
 
   if (alertArrays.order.length !== 0) {
@@ -138,5 +218,6 @@ const iterateArrays = async (g, graphics, renderer, alertArrays, storeLis, i) =>
     i = outSpecies[1]
   }
 
+  // then after all request have been made, handle legends and buttons divs
   await renderAfterTaxaRequests(storeLis)
 }
