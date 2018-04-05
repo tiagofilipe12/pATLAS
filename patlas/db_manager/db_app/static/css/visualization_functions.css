@@ -286,17 +286,25 @@
     text-align: center;
 }
 
-#displayCurrent{
+#displayCurrent, #displayCurrentABR, #displayCurrentFAM, #displayCurrentVir,
+#displayCombined{
     position: relative;
     /*width: 96%;
     height: 80%;
     margin: 2%;*/
 }
-#displayCurrentBox{
+#displayCurrentBox, #displayCurrentBoxABR, #displayCurrentBoxFAM,
+#displayCurrentBoxVir, #displayCombinedBox{
     overflow-y: scroll;
     overflow-x: hidden;
 }
-#modal-body-taxa-1, #modalBodyFAM1, #modalBodyABR1, #modalBodyVir1{
+
+#displayCombinedBox{
+    text-align: left;
+}
+
+#modal-body-taxa-1, #modalBodyFAM1, #modalBodyABR1, #modalBodyVir1,
+#modal-body-intersections{
     margin-bottom: 5%;
 }
 
@@ -809,4 +817,14 @@ Careful when using this in other popovers in the future*/
 #assemblyLabel, #read_label, #distance_label, #vir_label, #pf_label, #res_label, #taxa_label {
     display: none;
     font-size: 16px;
+}
+
+#modal-body-intersections > div{
+    /*text-align: center;*/
+    padding-bottom: 10px;
+}
+
+#modal-body-intersections{
+    text-align: center;
+    height: 450px;
 }

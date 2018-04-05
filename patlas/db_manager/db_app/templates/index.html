@@ -965,6 +965,12 @@
                     id="virulenceFilter" >Virulence
             </button>
           </ul>
+          <ul class="list-group headerPanelGroup">Combos
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#combinedModal" id="combinedSelections">
+              Intersections</button>
+          </ul>
         </div>
       </li>
       <li data-toggle="collapse" data-target="#collapse3" class="collapse_groups">
@@ -1541,6 +1547,8 @@
 
   </div>
 </div>
+
+{% include 'combinedSelections.html' %}
 
 <!-- scripts that need to be loaded inside the body-->
 <script language="javascript" type="text/javascript"

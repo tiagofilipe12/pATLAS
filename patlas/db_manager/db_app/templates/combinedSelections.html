@@ -1,0 +1,146 @@
+<!-- Modal for taxa-->
+<div id="combinedModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <!-- Modal content for lenght-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Intersections between multiple filters</h4>
+      </div>
+      <div class="modal-body" id="modal-body-intersections">
+
+        <div class="row" style="font-weight: bold;">Taxa</div>
+
+        <div class="col-md-3">
+          <div class="header_taxa">Orders</div>
+
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="100%"
+                  data-selected-text-format="count"
+                  data-live-search="true"
+                  title="No items selected" id="orderList2"
+                  data-size="15">
+            <!--populated by visualization_function.js-->
+          </select>
+        </div>
+        <div class="col-md-3">
+          <div class="header_taxa">Families</div>
+
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="100%"
+                  data-selected-text-format="count"
+                  data-live-search="true"
+                  title="No items selected" id="familyList2"
+                  data-size="15">
+            <!--populated by visualization_function.js-->
+          </select>
+        </div>
+        <div class="col-md-3">
+          <div class="header_taxa">Genera</div>
+
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="100%"
+                  data-selected-text-format="count"
+                  data-live-search="true"
+                  title="No items selected" id="genusList2"
+                  data-size="15">
+            <!--populated by visualization_function.js-->
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <div class="header_taxa">Species</div>
+
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="100%"
+                  data-selected-text-format="count"
+                  data-live-search="true"
+                  title="No items selected" id="speciesList2"
+                  data-size="15">
+            <!--populated by visualization_function.js-->
+          </select>
+        </div>
+
+        <div style="font-weight: bold;">Plasmid Families</div>
+        <div class="col-md-12">
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="100%"
+                  data-selected-text-format="count"
+                  data-live-search="true"
+                  title="No items selected" id="pfList2"
+                  data-size="15">
+            <!--populated by visualization_function.js-->
+          </select>
+        </div>
+
+        <div style="font-weight: bold;">Resistances</div>
+        <div class="col-md-6">
+          <div class="header_taxa">ResFinder</div>
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="100%"
+                  data-selected-text-format="count"
+                  data-live-search="true"
+                  title="No items selected" id="resResfinderList2"
+                  data-size="15">
+            <!--populated by visualization_function.js-->
+          </select>
+        </div>
+        <div class="col-md-6">
+          <div class="header_taxa">Card</div>
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="100%"
+                  data-selected-text-format="count"
+                  data-live-search="true"
+                  title="No items selected" id="resCardList2"
+                  data-size="15">
+            <!--populated by visualization_function.js-->
+          </select>
+        </div>
+
+        <div class="col-md-12">
+
+          <div style="font-weight: bold;">Virulence</div>
+
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="100%"
+                  data-selected-text-format="count"
+                  data-live-search="true"
+                  title="No items selected" id="virList2"
+                  data-size="15">
+            <!--populated by visualization_function.js-->
+          </select>
+        </div>
+
+        <div>
+          <button type="button" class="btn btn-success"
+                  id="addCombinedSelection">+</button>
+        </div>
+
+        <div class="col-md-12">
+          <!--<div class="col-md-6" style="min-height: 400px;">-->
+          <div class="panel-group" id="displayCombined">
+            <div class="panel panel-info" >
+              <div class="panel-heading">
+                Selections</div>
+
+              <div class="panel-body"
+                   id="displayCombinedBox">
+                <!--Populated by visualization_functions.js-->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="intersectionsModalSubmit">Submit selections</button>
+        <button type="submit" class="btn btn-danger"
+                id="intersectionsModalClear">Clear selections</button>
+      </div>
+
+    </div>
+  </div>
+</div>
