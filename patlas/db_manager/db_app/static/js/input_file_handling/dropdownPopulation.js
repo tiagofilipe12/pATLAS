@@ -34,8 +34,10 @@ const resRequest = (g, graphics, renderer, gene, currentColor) => {
         listData.push(data[object].plasmid_id)
       }
     }
-    colorNodes(g, graphics, renderer, listData, currentColor)
-    renderer.rerender()
+    if (currentColor !== false) {
+      colorNodes(g, graphics, renderer, listData, currentColor)
+      renderer.rerender()
+    }
   })
 }
 
@@ -51,8 +53,10 @@ const pfRequest = (g, graphics, renderer, gene, currentColor) => {
         listData.push(data[object].plasmid_id)
       }
     }
-    colorNodes(g, graphics, renderer, listData, currentColor)
-    renderer.rerender()
+    if (currentColor !== false) {
+      colorNodes(g, graphics, renderer, listData, currentColor)
+      renderer.rerender()
+    }
   })
 }
 
@@ -68,8 +72,10 @@ const virRequest = (g, graphics, renderer, gene, currentColor) => {
         listData.push(data[object].plasmid_id)
       }
     }
-    colorNodes(g, graphics, renderer, listData, currentColor)
-    renderer.rerender()
+    if (currentColor !== false) {
+      colorNodes(g, graphics, renderer, listData, currentColor)
+      renderer.rerender()
+    }
   })
 }
 

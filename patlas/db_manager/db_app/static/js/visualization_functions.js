@@ -1015,25 +1015,26 @@ const onLoad = () => {
     })
 
     /**
-     * Button click for interseption
+     * Button click for intersection
      */
     $("#intersectionsModalSubmit").unbind("click").bind("click", (event) => {
-      virulence = $("#virList2").selectpicker("val")
-      card = $("#resCardList2").selectpicker("val")
-      resfinder = $("#resResfinderList2").selectpicker("val")
-      pfinder = $("#pfList2").selectpicker("val")
-      order = $("#orderList2").selectpicker("val")
-      family = $("#familyList2").selectpicker("val")
-      genus = $("#genusList2").selectpicker("val")
-      species = $("#speciesList2").selectpicker("val")
-      console.log(virulence)
-      console.log(card)
-      console.log(resfinder)
-      console.log(pfinder)
-      console.log(order)
-      console.log(family)
-      console.log(genus)
-      console.log(species)
+
+      let objectOfSelections = {
+
+        virulence: $("#virList2").selectpicker("val"),
+        card: $("#resCardList2").selectpicker("val"),
+        resfinder: $("#resResfinderList2").selectpicker("val"),
+        pfinder: $("#pfList2").selectpicker("val"),
+        order: $("#orderList2").selectpicker("val"),
+        family: $("#familyList2").selectpicker("val"),
+        genus: $("#genusList2").selectpicker("val"),
+        species: $("#speciesList2").selectpicker("val")
+
+      }
+
+      listGiFilter = parseQueriesIntersection(g, graphics, renderer,
+        objectOfSelections)
+
     })
 
 

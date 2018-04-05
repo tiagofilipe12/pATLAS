@@ -128,7 +128,7 @@ class GetAccession(Resource):
         return records
 
 class GetAccessionRes(Resource):
-    @marshal_with(entry_field)
+    @marshal_with(card_field)
     def get(self):
         # Put req_parser inside get function. Only this way it parses the request.
         args = req_parser.parse_args()
@@ -142,7 +142,7 @@ class GetAccessionRes(Resource):
         return records
 
 class GetAccessionPF(Resource):
-    @marshal_with(entry_field)
+    @marshal_with(card_field)
     def get(self):
         # Put req_parser inside get function. Only this way it parses the request.
         args = req_parser.parse_args()
@@ -156,7 +156,7 @@ class GetAccessionPF(Resource):
         return records
 
 class GetAccessionVir(Resource):
-    @marshal_with(entry_field)
+    @marshal_with(card_field)
     def get(self):
         # Put req_parser inside get function. Only this way it parses the request.
         args = req_parser.parse_args()

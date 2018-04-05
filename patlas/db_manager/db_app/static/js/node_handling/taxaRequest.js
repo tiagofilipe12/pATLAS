@@ -52,7 +52,10 @@ const speciesRequest = (g, graphics, renderer, taxa, currentColor) => {
         listData.push(data[object].plasmid_id)
       }
     }
-    colorNodes(g, graphics, renderer, listData, currentColor)
+    if (currentColor !== false) {
+      colorNodes(g, graphics, renderer, listData, currentColor)
+      renderer.rerender()
+    }
   })
 }
 
@@ -82,7 +85,10 @@ const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
         listData.push(data[object].plasmid_id)
       }
     }
-    colorNodes(g, graphics, renderer, listData, currentColor)
+    if (currentColor !== false) {
+      colorNodes(g, graphics, renderer, listData, currentColor)
+      renderer.rerender()
+    }
   })
 }
 

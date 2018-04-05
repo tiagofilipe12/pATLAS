@@ -7,8 +7,8 @@ const Resize = (e) => {
     $("#colorLegend .panel .panel-heading").height()
 
   $("#colorLegend").css("max-height", setMaxHeight)
-  $("#colorLegend").css("width", ($("#colorLegend").width() - e.clientX + $("#colorLegend").offset().left) + 'px')
-    .css("height", ($("#colorLegend").height() - e.clientY + $("#colorLegend").offset().top) + 'px')
+  $("#colorLegend").css("width", ($("#colorLegend").width() - e.clientX + $("#colorLegend").offset().left) + "px")
+    .css("height", ($("#colorLegend").height() - e.clientY + $("#colorLegend").offset().top) + "px")
 }
 const stopResize = (e) => {
   window.removeEventListener("mousemove", Resize, false)
