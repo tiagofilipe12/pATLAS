@@ -10,6 +10,9 @@ const removeFirstCharFromArray = (array) => {
 const singleDropdownPopulate = (divId, arrayToSort, className) => {
   // first sort the array alphabetically
   const sortedArray = arrayToSort.sort()
+
+  className = (className === false) ? "" : className
+
   // then iterate over the array to populate the div
   for (let i = 0; i < sortedArray.length; i++) {
     $(divId).append(`<option class=${className}>${sortedArray[i]}</option>`)

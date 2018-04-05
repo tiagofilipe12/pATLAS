@@ -566,8 +566,12 @@ const onLoad = () => {
             }
           }
         })
-        // populate the menus
+
+        // populate the menus for plasmid finder filter
         singleDropdownPopulate("#plasmidFamiliesList", listPF, "PlasmidfinderClass")
+
+        // populate the menus for the intercection filters
+        singleDropdownPopulate("#pfList2", listPF, false)
 
         $(".PlasmidfinderClass").on("click", function() {
           // fill panel group displaying current selected taxa filters //
@@ -689,9 +693,15 @@ const onLoad = () => {
             }
           }
         })
-        // populate the menus
+
+        // populate the menus for resistance filters
         singleDropdownPopulate("#cardList", listCard, "CardClass")
         singleDropdownPopulate("#resList", listRes, "ResfinderClass")
+
+        // populate the menus for intercection filters
+        singleDropdownPopulate("#resCardList2", listCard, false)
+        singleDropdownPopulate("#resResfinderList2", listRes, false)
+
 
         const classArray = [".CardClass", ".ResfinderClass"]
         for (let i = 0; i < classArray.length; i++) {
@@ -737,6 +747,7 @@ const onLoad = () => {
           " #plotButton").hide()
       }
     })
+
     $("#resSubmit").unbind("click").bind("click", (event) => {
       event.preventDefault()
 
@@ -803,8 +814,11 @@ const onLoad = () => {
           }
         })
 
-        // populate the menus
+        // populate the menus virulence filters
         singleDropdownPopulate("#virList", listVir, "VirulenceClass")
+
+        // populate the menus for the intercection filters
+        singleDropdownPopulate("#virList2", listVir, false)
 
         $(".VirulenceClass").on("click", function() {
           // fill panel group displaying current selected taxa filters //
@@ -934,11 +948,17 @@ const onLoad = () => {
           }
         })
 
-        // populate the menus
+        // populate the menus for taxa filters
         singleDropdownPopulate("#orderList", listOrders, "OrderClass")
         singleDropdownPopulate("#familyList", listFamilies, "FamilyClass")
         singleDropdownPopulate("#genusList", listGenera, "GenusClass")
         singleDropdownPopulate("#speciesList", listSpecies, "SpeciesClass")
+
+        // populate the menus for the intercection filters
+        singleDropdownPopulate("#orderList2", listOrders, false)
+        singleDropdownPopulate("#familyList2", listFamilies, false)
+        singleDropdownPopulate("#genusList2", listGenera, false)
+        singleDropdownPopulate("#speciesList2", listSpecies, false)
 
         // clickable <li> and control of displayer of current filters
         const classArray = [".OrderClass", ".FamilyClass", ".GenusClass", ".SpeciesClass"]
@@ -993,6 +1013,29 @@ const onLoad = () => {
           " #plotButton").hide()
       }
     })
+
+    /**
+     * Button click for interseption
+     */
+    $("#intersectionsModalSubmit").unbind("click").bind("click", (event) => {
+      virulence = $("#virList2").selectpicker("val")
+      card = $("#resCardList2").selectpicker("val")
+      resfinder = $("#resResfinderList2").selectpicker("val")
+      pfinder = $("#pfList2").selectpicker("val")
+      order = $("#orderList2").selectpicker("val")
+      family = $("#familyList2").selectpicker("val")
+      genus = $("#genusList2").selectpicker("val")
+      species = $("#speciesList2").selectpicker("val")
+      console.log(virulence)
+      console.log(card)
+      console.log(resfinder)
+      console.log(pfinder)
+      console.log(order)
+      console.log(family)
+      console.log(genus)
+      console.log(species)
+    })
+
 
     //* **** Submit button for taxa filter *****//
 
@@ -2052,5 +2095,43 @@ const onLoad = () => {
   $("#resizeLegend").mousedown( (e) => {
     initResize()
   })
+
+  /**
+   * Variable that controls the last taxa selector that was used under
+   * intersections menu
+   * @type {boolean|String}
+   */
+  let lastTaxaSelector = false
+
+  /**
+   * Variable that controls the last resistance selector taht was used under
+   * intersections menu
+   * @type {boolean|String}
+   */
+  let lastResSelector = false
+
+  /**
+   * Event that assures that only one of the selectors are used at once
+   */
+  $("#orderList2, #familyList2, #genusList2, #speciesList2")
+    .on("changed.bs.select", (e) => {
+
+      const arrayOfSelectors = ["orderList2", "familyList2",
+        "genusList2", "speciesList2"]
+
+      lastTaxaSelector = controlFiltersSameLevel(lastTaxaSelector, e, arrayOfSelectors)
+
+  })
+
+  /**
+   * Event that assures that only one of the selectors are used at once
+   */
+  $("#resResfinderList2, #resCardList2")
+    .on("changed.bs.select", (e) => {
+
+      const arrayOfSelectors = ["resResfinderList2", "resCardList2"]
+
+      lastResSelector = controlFiltersSameLevel(lastResSelector, e, arrayOfSelectors)
+    })
 
 } // closes onload
