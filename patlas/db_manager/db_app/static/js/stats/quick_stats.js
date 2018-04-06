@@ -633,6 +633,8 @@ const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortV
   resetProgressBar()
   let PFList = []
 
+  console.log(tempList)
+
   $.post("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
       results.map( (data) => {
@@ -691,6 +693,8 @@ const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
   // resets progressBar
   resetProgressBar()
   // let associativeObj = {}
+
+  console.log(tempList)
 
   let resList = []
   $.post("api/getresistances/", { "accession": JSON.stringify(tempList) })
@@ -833,6 +837,8 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
   let speciesList = []
   // let associativeObj = {}
 
+  console.log(taxaType)
+
   $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
       const accessionResultsList = []
@@ -884,6 +890,7 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
  */
 const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
   let tempListAccessions = []
+
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
     if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
@@ -916,12 +923,16 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
  * numbers at this strage)
  */
 const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
+  console.log(areaSelection)
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
     || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
     // previousTableList = listGiFilter
-    return (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-      : statsColor(g, graphics, renderer, clickerButton, false, false)
+    return (areaSelection === true) ? statsColor(g, graphics, renderer, clickerButton, false, false) :
+      (clickerButton === "plasmidfamilies") ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false) :
+        (clickerButton === "resistances") ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false) :
+          (clickerButton === "virulence") ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false) :
+            getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
   } else {
     // this code prevents plot from being queried again, since it is already
     // stored in a div it is just a matter of hidding all other and showing
