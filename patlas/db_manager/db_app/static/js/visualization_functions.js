@@ -1041,6 +1041,8 @@ const onLoad = () => {
 
       $("#reset-sliders").click()
 
+      selectedFilter = "multiple"
+
       let objectOfSelections = {
 
         virulence: $("#virList2").selectpicker("val"),

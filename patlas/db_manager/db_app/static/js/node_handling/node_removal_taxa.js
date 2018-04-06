@@ -444,6 +444,10 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
 
           $("#virSubmit").click()
 
+        } else if (selectedFilter === "multiple") {
+
+          $("#intersectionsModalSubmit").click()
+
         } else {
 
           colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green

@@ -1,5 +1,4 @@
-/*globals speciesRequest, taxaRequest, resRequest, pfRequest, virRequest,
-listGiFilter*/
+/*globals speciesRequest, taxaRequest, resRequest, pfRequest, virRequest, listGiFilter, colorNodes */
 
 /**
  * Function to calculate intersection between arrays. Note that this function
@@ -189,7 +188,7 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   }
 
   // remove empty arrays
-  arrayOfArrays = [listTaxa, listRes, listPf, listVir]
+  let arrayOfArrays = [listTaxa, listRes, listPf, listVir]
   arrayOfArrays = arrayOfArrays.filter( (n) => { return n.length !== 0 })
 
   // here arrayOfArrays must not have empty arrays
