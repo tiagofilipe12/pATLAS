@@ -633,8 +633,6 @@ const getMetadataPF = (g, graphics, renderer, tempList, taxaType, sortAlp, sortV
   resetProgressBar()
   let PFList = []
 
-  console.log(tempList)
-
   $.post("api/getplasmidfinder/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
       results.map( (data) => {
@@ -692,9 +690,6 @@ const getMetadataRes = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
   // TODO this should plot resfinder and card seperately
   // resets progressBar
   resetProgressBar()
-  // let associativeObj = {}
-
-  console.log(tempList)
 
   let resList = []
   $.post("api/getresistances/", { "accession": JSON.stringify(tempList) })
@@ -931,113 +926,6 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
         (clickerButton === "resistances") ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false) :
           (clickerButton === "virulence") ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false) :
             getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-  } else {
-    // this code prevents plot from being queried again, since it is already
-    // stored in a div it is just a matter of hidding all other and showing
-    // this one
-    hideAllOtherPlots()
-    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
-    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
-    $("#alertPlotEntries").show()
-    return
-  }
-}
-
-/**
- * Function that is used in several buttons that trigger the graph,
- * for plasmid finder associated plot
- * @param g - graph related functions that iterate through nodes
- * and links.
- * @param {Object} graphics - vivagraph functions related with node and link
- * data.
- * @param {Object} renderer - vivagraph object to render the graph.
- * @param {boolean} areaSelection
- * @param {Array} listGiFilter
- * @param {String} clickerButton
- * @param g - graph related functions that iterate through nodes
- * and links.
- * @param graphics - vivagraph functions related with node and link
- * data.
- * @returns {Array} - returns the list of plasmid to be plotted (accession
- * numbers at this stage)
- */
-const pfRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
-  $("#loadingImgPlots").show()
-  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton.replace(" ", "")].state === false
-    || selector[clickerButton.replace(" ", "")].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
-    previousTableList = listGiFilter
-    return (areaSelection === false) ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton.replace(" ", ""), false, false)
-      : statsColor(g, graphics, renderer, clickerButton.replace(" ", ""), false, false)
-  } else {
-    // this code prevents plot from being queried again, since it is already
-    // stored in a div it is just a matter of hidding all other and showing
-    // this one
-    hideAllOtherPlots()
-    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
-    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
-    $("#alertPlotEntries").show()
-    return
-  }
-}
-
-/**
- * Function that is used in several buttons that trigger the graph,
- * for resistance associated
- * @param g - graph related functions that iterate through nodes
- * and links.
- * @param {Object} graphics - vivagraph functions related with node and link
- * data.
- * @param {Object} renderer - vivagraph object to render the graph.
- * @param {boolean} areaSelection
- * @param {Array} listGiFilter
- * @param {String} clickerButton
- * @param g - graph related functions that iterate through nodes
- * and links.
- * @param graphics - vivagraph functions related with node and link
- * data.
- * @returns {Array} - returns the list of plasmid to be plotted (accession
- * numbers at this stage)
- */
-const resRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
-  $("#loadingImgPlots").show()
-  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
-    || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
-    previousTableList = listGiFilter
-    return (areaSelection === false) ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-      : statsColor(g, graphics, renderer, clickerButton, false, false)
-  } else {
-    // this code prevents plot from being queried again, since it is already
-    // stored in a div it is just a matter of hidding all other and showing
-    // this one
-    hideAllOtherPlots()
-    $(`#${selector[clickerButton.replace(" ", "")].div}`).show()
-    $("#spanEntries").html(selector[clickerButton.replace(" ", "")].alertString)
-    $("#alertPlotEntries").show()
-    return
-  }
-}
-
-/**
- * Function that is used in several buttons that trigger the graph,
- * for virulence associated plot
- * @param {boolean} areaSelection
- * @param {Array} listGiFilter
- * @param {String} clickerButton
- * @param g - graph related functions that iterate through nodes
- * and links.
- * @param {Object} graphics - vivagraph functions related with node and link
- * data.
- * @param {Object} renderer - vivagraph object to render the graph.
- * @returns {Array} - returns the list of plasmid to be plotted (accession
- * numbers at this stage)
- */
-const virRepetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
-  $("#loadingImgPlots").show()
-  if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
-  || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
-    previousTableList = listGiFilter
-    return (areaSelection === false) ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false)
-      : statsColor(g, graphics, renderer, clickerButton, false, false)
   } else {
     // this code prevents plot from being queried again, since it is already
     // stored in a div it is just a matter of hidding all other and showing
