@@ -1,3 +1,45 @@
+/*speciesRequest, taxaRequest, resRequest, pfRequest, virRequest*/
+
+/**
+ * Function to calculate intersection between arrays. Note that this function
+ * cannot receive empty arrays because that will cause the final intersection
+ * to be nothing.
+ * @param {Array} arr - This variable must be an array of arrays
+ * @returns {Array} - returns an array with all the entries that are common in
+ * all the arrays present in the initial array of arrays.
+ */
+const arraysIntersection = (arr) => {
+
+  // sort by asceding order of array lenght
+  arr.sort( (a, b) => {
+    return a.length - b.length
+  })
+
+  // get first array as reference and the remaining as others
+  const ref = arr[0],
+    other = arr.slice(1,)
+
+  let common = []
+  let save
+
+  // iterate through all reference entries. The rational is that each one of the other arrays must have the entries in ref.
+  for (const el of ref){
+    save = true
+    for (const lst of other) {
+      // if array lst doesn't have el then save is set to false, which will not save it to common list/array
+      if (!lst.includes(el)) {
+        save = false
+      }
+    }
+    if (save) {
+      common.push(el)
+    }
+  }
+
+  return common
+}
+
+
 /**
  * Function that controls if a selector is being clicked for the first time
  * or if it is being deselected in order to allow to use other selectors
@@ -45,29 +87,6 @@ const mapRequest = (requestConst) => {
   return requestList
 }
 
-
-const commonArrayEntries = async (arrayOfArrays) => {
-  // let returnList = []
-  let concatArray = []
-
-  // concatenates all the arrays given to this function
-  for (const arr of arrayOfArrays)
-    if (arr !== false)
-      concatArray = concatArray.concat(arr)
-
-  //now store all accessions that have multiple entries in concatArray
-  let returnList = concatArray.filter( (elem, pos, arr) => {
-    return arr.indexOf(elem) !== pos
-  })
-  // remove duplicated entries in the case many filters are applied
-  // (more than two)
-  returnList = returnList.filter( (elem, pos, arr) => {
-      return arr.indexOf(elem) === pos
-    })
-
-  return returnList
-}
-
 const parseQueriesIntersection = async (g, graphics, renderer,
                                         objectOfSelections) => {
 
@@ -102,17 +121,22 @@ const parseQueriesIntersection = async (g, graphics, renderer,
     await virRequest(g, graphics, renderer, objectOfSelections.virulence[0],
       false) : false
 
+  // get accessions from requests
   const listTaxa = mapRequest(taxaQueryResults)
   const listRes = mapRequest(resHandle)
   const listPf = mapRequest(pfHandle)
   const listVir = mapRequest(virHandle)
 
-  tempList = await commonArrayEntries([listTaxa, listRes, listPf, listVir])
+  arrayOfArrays = [listTaxa, listRes, listPf, listVir]
 
-  // console.log(listTaxa, listRes, listPf, listVir)
+  // remove empty arrays
+  arrayOfArrays = arrayOfArrays.filter( (n) => { return n.length !== 0 })
 
-  console.log(tempList)
+  // here arrayOfArrays must not have empty arrays
+  tempList = await arraysIntersection(arrayOfArrays)
 
+  // color nodes after having tempList
   colorNodes(g, graphics, renderer, tempList, 0xff1c00)
+
   return tempList
 }
