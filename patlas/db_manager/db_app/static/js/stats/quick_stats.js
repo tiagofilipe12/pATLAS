@@ -541,7 +541,7 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
 const hideAllOtherPlots = () => {
   // first force every contained that is true to be removed from the modal
   Object.keys(selector).map( (el) => {
-      $(`#${selector[el].div}`).hide()
+    $(`#${selector[el].div}`).hide()
   })
 }
 
@@ -836,8 +836,6 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
   resetProgressBar()
   let speciesList = []
   // let associativeObj = {}
-
-  console.log(taxaType)
 
   $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {

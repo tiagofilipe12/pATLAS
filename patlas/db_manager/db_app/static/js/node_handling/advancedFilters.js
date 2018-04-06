@@ -1,4 +1,5 @@
-/*speciesRequest, taxaRequest, resRequest, pfRequest, virRequest, listGiFilter*/
+/*globals speciesRequest, taxaRequest, resRequest, pfRequest, virRequest,
+listGiFilter*/
 
 /**
  * Function to calculate intersection between arrays. Note that this function
@@ -100,7 +101,7 @@ const controlFiltersSameLevel = (lastTaxaSelector, e, arrayOfSelectors) => {
  * @returns {Array} - returns a list of accession numbers as an array
  */
 const mapRequest = (requestConst) => {
-  requestList = []
+  let requestList = []
   if (requestConst !==  false) {
     requestConst.map( (request) => {
       requestList.push(request.plasmid_id)

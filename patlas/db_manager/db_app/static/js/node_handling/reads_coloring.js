@@ -484,9 +484,6 @@ const colorLegendFunction = (readMode) => {
   palette(scale, 10, readMode)
 }
 
-const forceSelectorFullRemoval = (selector) => {
-  $(`#${selector}`).val("").trigger("change")
-}
 
 // Clear nodes function for reset-sliders button
 /**
@@ -499,9 +496,8 @@ const forceSelectorFullRemoval = (selector) => {
  * @param {number} nodeColor - a variable that stores the hex code in
  * vivagraph readable style: 0xrrggbb.
  * @param {Object} renderer - vivagraph object to render the graph.
- * @param {Array} idsArrays - array that store ids names for taxa related labels
  */
-const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
+const resetAllNodes = (graphics, g, nodeColor, renderer) => {
   // first iters nodes to get nodeColor (default color)
   nodeColorReset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
@@ -512,28 +508,14 @@ const resetAllNodes = (graphics, g, nodeColor, renderer, idsArrays) => {
     $("#colorLegend, #taxa_label, #read_label").hide()
     $("#colorLegendBox, #readLegend").empty()
   }
-  // reset text boxes in modals
-  resetDisplayTaxaBox(idsArrays)
-  resetDisplayTaxaBox(["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Virulence"])
+
   // hide and empty divs
   $("#assemblyLabel, #taxa_label, #res_label, #pf_label, #vir_label, #read_label").hide()
   $("#assemblyLegend, #colorLegendBox, #colorLegendBoxRes," +
     " #colorLegendBoxPf, #colorLegendBoxVir, #readLegend").empty()
-
-  // resets dropdown selections
-  $("#orderList, #familyList, #genusList, #speciesList, #cardList, #resList," +
-    " #plasmidFamiliesList, #virList").selectpicker("deselectAll")
-
-  // function that forces the full removal of selectors
-  forceSelectorFullRemoval("speciesList")
-  forceSelectorFullRemoval("genusList")
-  forceSelectorFullRemoval("familyList")
-  forceSelectorFullRemoval("orderList")
-  forceSelectorFullRemoval("plasmidFamiliesList")
-  forceSelectorFullRemoval("cardList")
-  forceSelectorFullRemoval("resList")
-  forceSelectorFullRemoval("virList")
 }
+
+
 /**
  * Function to push value to masterReadArray
  * @param {Object} readFilejson - the object that contains the files to be

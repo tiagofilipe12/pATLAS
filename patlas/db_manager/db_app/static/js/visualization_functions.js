@@ -16,11 +16,12 @@
                getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
                 getArrayAssembly, startMultiSelect, requesterDB,
                  addAllNodes, addAllLinks, quickFixString, fileChecks,
-                  iterateArrays, initResize*/
+                  iterateArrays, initResize, parseQueriesIntersection,
+                  controlFiltersSameLevel*/
 
 /**
-* A bunch of global functions to be used throughout patlas
-*/
+ * A bunch of global functions to be used throughout patlas
+ */
 
 // if this is a developer session please enable the below line of code
 const devel = false
@@ -293,7 +294,7 @@ const onLoad = () => {
         // respective divs
         Object.keys(selector).map( (el) => { selector[el].state = false })
         hideAllOtherPlots()
-        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        resetAllNodes(graphics, g, nodeColor, renderer)
         // also reset file handlers that interfere with Re_run
         readFilejson = false
         assemblyJson = false
@@ -593,7 +594,7 @@ const onLoad = () => {
 
     // setup clear button for plasmidfinder functions
     $("#pfClear").unbind("click").bind("click", (event) => {
-      document.getElementById("reset-sliders").click()
+      // document.getElementById("reset-sliders").click()
       // clear = true;
       event.preventDefault()
       // this needs an array for reusability purposes
@@ -603,7 +604,7 @@ const onLoad = () => {
       $("#plasmidFamiliesList").selectpicker("deselectAll")
 
       slider.noUiSlider.set([min, max])
-      nodeColorReset(graphics, g, nodeColor, renderer)
+      // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -727,7 +728,7 @@ const onLoad = () => {
 
     $("#resClear").unbind("click").bind("click", (event) => {
       event.preventDefault()
-      document.getElementById("reset-sliders").click()
+      // document.getElementById("reset-sliders").click()
       resetDisplayTaxaBox(["p_Resfinder", "p_Card"])
 
       // resets dropdown selections
@@ -735,7 +736,7 @@ const onLoad = () => {
       $("#resList").selectpicker("deselectAll")
 
       slider.noUiSlider.set([min, max])
-      nodeColorReset(graphics, g, nodeColor, renderer)
+      // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -840,7 +841,7 @@ const onLoad = () => {
 
     // setup clear button for plasmidfinder functions
     $("#virClear").unbind("click").bind("click", (event) => {
-      document.getElementById("reset-sliders").click()
+      // document.getElementById("reset-sliders").click()
       // clear = true;
       event.preventDefault()
       // this needs an array for reusability purposes
@@ -850,7 +851,7 @@ const onLoad = () => {
       $("#virList").selectpicker("deselectAll")
 
       slider.noUiSlider.set([min, max])
-      nodeColorReset(graphics, g, nodeColor, renderer)
+      // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -984,13 +985,11 @@ const onLoad = () => {
     }
 
     //* **** Clear selection button *****//
-    // clear = false; //added to control the colors being triggered after clearing
     $("#taxaModalClear").unbind("click").bind("click", (event) => {
 
       event.preventDefault()
 
-      document.getElementById("reset-sliders").click()
-      // clear = true;
+      // document.getElementById("reset-sliders").click()
 
       resetDisplayTaxaBox(idsArrays)
 
@@ -1001,7 +1000,7 @@ const onLoad = () => {
       $("#speciesList").selectpicker("deselectAll")
 
       slider.noUiSlider.set([min, max])
-      nodeColorReset(graphics, g, nodeColor, renderer)
+
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -1021,9 +1020,26 @@ const onLoad = () => {
     })
 
     /**
-     * Button click for intersection
+     * Button click event to clear all the selections made through the
+     * intersections menu
+     */
+    $("#intersectionsModalClear").unbind("click").bind("click", (event) => {
+      // unselect all the selected options from dropdowns
+      $("#virList2, #resCardList2, #resResfinderList2, #pfList2," +
+        " #speciesList2, #genusList2, #familyList2, #orderList2")
+        .selectpicker("deselectAll")
+
+      // hide divs for buttons when selections are not made
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton, #colorLegend").hide()
+    })
+
+    /**
+     * Button click event for intersection displays
      */
     $("#intersectionsModalSubmit").unbind("click").bind("click", (event) => {
+
+      $("#reset-sliders").click()
 
       let objectOfSelections = {
 
@@ -1042,8 +1058,6 @@ const onLoad = () => {
         listGiFilter = parseQueriesIntersection(g, graphics, renderer,
           objectOfSelections)
       })
-
-
 
     })
 
@@ -1166,7 +1180,7 @@ const onLoad = () => {
         $("#fileNameDiv").html(Object.keys(readFilejson)[0])
           .show()
 
-        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        resetAllNodes(graphics, g, nodeColor, renderer)
         previousTableList = []
         // transform selector object that handles plots and hide their
         // respective divs
@@ -1206,7 +1220,7 @@ const onLoad = () => {
       masterReadArray = []
       assemblyJson = false
 
-      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      resetAllNodes(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -1249,7 +1263,7 @@ const onLoad = () => {
           .show()
 
         // it and use the same function (readColoring)
-        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        resetAllNodes(graphics, g, nodeColor, renderer)
         previousTableList = []
         // transform selector object that handles plots and hide their
         // respective divs
@@ -1289,7 +1303,7 @@ const onLoad = () => {
       assemblyJson = false
       // readIndex will be used by slider buttons
       //readIndex = 0
-      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      resetAllNodes(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -1329,7 +1343,7 @@ const onLoad = () => {
           .show()
         masterReadArray = []
         readFilejson = assemblyJson
-        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        resetAllNodes(graphics, g, nodeColor, renderer)
         previousTableList = []
         // transform selector object that handles plots and hide their
         // respective divs
@@ -1364,7 +1378,7 @@ const onLoad = () => {
       event.preventDefault()
       masterReadArray = []
       readFilejson = false
-      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      resetAllNodes(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
@@ -1405,7 +1419,7 @@ const onLoad = () => {
           .show()
         masterReadArray = []
         readFilejson = consensusJson
-        resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+        resetAllNodes(graphics, g, nodeColor, renderer)
         previousTableList = []
         // transform selector object that handles plots and hide their
         // respective divs
@@ -1543,23 +1557,21 @@ const onLoad = () => {
 
       listGiFilter = [] //resets listGiFilter
       previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
+
       areaSelection = false
       readFilejson = false // makes file selection empty again
       assemblyJson = false
       mashJson = false
       currentQueryNode = false
       slider.noUiSlider.set(sliderMinMax)
-      resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+      resetAllNodes(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
       // respective divs
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
     })
+
     // runs the re run operation for the selected species
     $("#reRunYes, #reRunNo").unbind("click").bind("click", (e) => {
 
@@ -2005,7 +2017,7 @@ const onLoad = () => {
   * one to be loaded when uploading then everything else should use cycler
   */
   $("#slideRight").unbind("click").bind("click", () => {
-    resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+    resetAllNodes(graphics, g, nodeColor, renderer)
     previousTableList = []
     // transform selector object that handles plots and hide their
     // respective divs
@@ -2019,7 +2031,7 @@ const onLoad = () => {
   })
 
   $("#slideLeft").unbind("click").bind("click", () => {
-    resetAllNodes(graphics, g, nodeColor, renderer, idsArrays)
+    resetAllNodes(graphics, g, nodeColor, renderer)
     previousTableList = []
     // transform selector object that handles plots and hide their
     // respective divs
