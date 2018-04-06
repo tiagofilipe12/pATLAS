@@ -288,7 +288,7 @@ const resetAllBars = (chartElement, defaultColor) => {
 const highlightVivagraph = (g, graphics, renderer, objectHighlight) => {
   // highlights nodes in vivagraph
   // uses the same color as areaSelection
-  const currentColor = 0x23A900
+  const currentColor = "0x" + "#fa5e00".replace("#", "")
   // resets nodes before making the requests and changing the
   // color again
   $("#reset-sliders").click()
@@ -886,7 +886,9 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
 
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
-    if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
+    if (currentNodeUI.color === "0x" + "#fa5e00".replace("#", "")) {
+      tempListAccessions.push(node.id)
+    }
   })
   // function to get the data from the accessions on the list
   return (mode === "plasmidfamilies") ? getMetadataPF(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
@@ -916,7 +918,7 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
  * numbers at this strage)
  */
 const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
-  console.log(areaSelection)
+
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
     || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {

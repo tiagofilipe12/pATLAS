@@ -1037,11 +1037,11 @@ const onLoad = () => {
     /**
      * Button click event for intersection displays
      */
-    $("#intersectionsModalSubmit").unbind("click").bind("click", (event) => {
+    $("#intersectionsModalSubmit, #unionModalSubmit").unbind("click").bind("click", (event) => {
 
       $("#reset-sliders").click()
 
-      selectedFilter = "multiple"
+      const typeOfSubmission = event.target.id
 
       let objectOfSelections = {
 
@@ -1058,7 +1058,7 @@ const onLoad = () => {
 
       showDiv().then( () => {
         listGiFilter = parseQueriesIntersection(g, graphics, renderer,
-          objectOfSelections)
+          objectOfSelections, typeOfSubmission)
       })
 
     })

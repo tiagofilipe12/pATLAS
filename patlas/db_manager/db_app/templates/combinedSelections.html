@@ -116,8 +116,18 @@
       </div>
 
       <div class="modal-footer">
-        <button type="submit" class="btn btn-default"
-                data-dismiss="modal" id="intersectionsModalSubmit">Submit intersection</button>
+
+        <div class="btn-group" style="position: absolute; left: 2%;">
+        <button type="submit" class="btn btn-info"
+                data-dismiss="modal" id="intersectionsModalSubmit"
+                style="background-color: #4486c3">
+          Submit intersection</button>
+        <button type="submit" class="btn btn-success"
+                data-dismiss="modal" id="unionModalSubmit"
+                style="background-color: #5c9e63">
+          Submit union</button>
+        </div>
+
         <button type="submit" class="btn btn-danger"
                 id="intersectionsModalClear">Clear selections</button>
       </div>

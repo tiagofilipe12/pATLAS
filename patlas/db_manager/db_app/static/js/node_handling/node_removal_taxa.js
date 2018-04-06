@@ -444,13 +444,18 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
 
           $("#virSubmit").click()
 
-        } else if (selectedFilter === "multiple") {
+        } else if (selectedFilter === "intersect") {
 
           $("#intersectionsModalSubmit").click()
 
+        } else if (selectedFilter === "union") {
+
+          $("#unionModalSubmit").click()
+
         } else {
 
-          colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
+          colorNodes(g, graphics, renderer, listGiFilter,
+            "0x" + "#fa5e00".replace("#", ""))
           // color for area selection
         }
 
@@ -474,7 +479,9 @@ const reGetListGi = (g, graphics) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
-    if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
+    if (currentNodeUI.color === "0x" + "#fa5e00".replace("#", "")) {
+      tempListAccessions.push(node.id)
+    }
   })
   return tempListAccessions
 }

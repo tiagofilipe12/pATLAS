@@ -120,7 +120,8 @@ const mapRequest = (requestConst) => {
  * @returns {Promise<*>}
  */
 const parseQueriesIntersection = async (g, graphics, renderer,
-                                        objectOfSelections) => {
+                                        objectOfSelections,
+                                        typeOfSubmission) => {
 
   // first parse the multitude of taxa entries and resistance entries available
   const taxa = (objectOfSelections.order.length > 0) ? objectOfSelections.order
@@ -192,10 +193,25 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   arrayOfArrays = arrayOfArrays.filter( (n) => { return n.length !== 0 })
 
   // here arrayOfArrays must not have empty arrays
-  listGiFilter = await arraysIntersection(arrayOfArrays)
+
+  let selectedColor
+
+  if (typeOfSubmission === "intersectionsModalSubmit") {
+
+    listGiFilter = await arraysIntersection(arrayOfArrays)
+    selectedColor = "0x" + "#0076c3".replace("#", "")
+    selectedFilter = "intersect"
+
+  } else {
+
+    listGiFilter = await mergeNRemoveDuplicatesFromArray(arrayOfArrays)
+    selectedColor = "0x" + "#339e0b".replace("#", "")
+    selectedFilter = "union"
+
+  }
 
   // color nodes after having tempList
-  await colorNodes(g, graphics, renderer, listGiFilter, 0xff1c00)
+  await colorNodes(g, graphics, renderer, listGiFilter, selectedColor)
 
   // after everything is done then render the respective divs
   $("#loading").hide()

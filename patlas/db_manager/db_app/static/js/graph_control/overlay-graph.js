@@ -136,7 +136,7 @@ const startMultiSelect = (graph, renderer, layout) => {
       if (nodeUI) {
         if (isInside(layout, node.id, topLeft, bottomRight)) {
           nodeUI.backupColor = nodeUI.color
-          nodeUI.color = 0x23A900 // green
+          nodeUI.color = "0x" + "#fa5e00".replace("#", "")
         } else {
           nodeUI.color = 0x666370 // default grey
         }
