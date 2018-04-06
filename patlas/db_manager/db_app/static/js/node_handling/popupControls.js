@@ -78,31 +78,34 @@ const setupPopupDisplay = (node, speciesName, plasmidName, clusterId) => {
     $("#plasmidNamePopSpan").html(plasmidName)
     $("#clusterIdPopSpan").html(clusterId)
   }
-
+  
   if (node.data.percentage) {
     //if statement to append to mapping divs in popup_description
     $("#percentagePopSpan").html(node.data.percentage)
 
     $("#percentagePop").show()
     $("#importDiv").show()
+  }
 
-  } else if (node.data.percMash) {
+  if (node.data.percMash) {
     //if statement to append to mash screen divs in popup_description
     $("#percentagePopSpanMash").html(node.data.percMash)
     $("#copyNumberPopSpan").html(node.data.copyNumber)
 
     $("#copyNumberPop, #percentagePopMash").show()
     $("#importDiv").show()
+  }
 
-  } else if (node.data.percMashDist) {
+  if (node.data.percMashDist) {
     // if statement to append mash dist divs in popup_description
     $("#percentagePopSpanMashDist").html(node.data.percMashDist)
     $("#hashPopSpan").html(node.data.sharedHashes)
 
     $("#percentagePopMashDist, #hashPop").show()
     $("#importDiv").show()
+  }
 
-  } else {
+  if (!node.data.percentage && !node.data.percMash && !node.data.percMashDist) {
     // if none of the import data is associated with the node then hide
     // the importDiv
     $("#importDiv").hide()

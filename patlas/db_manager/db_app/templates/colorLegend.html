@@ -1,0 +1,55 @@
+<!--hidden div for color legend-->
+<div class="panel-group colorpicker-component" id="colorLegend" style="display: none">
+
+  <div class="panel panel-default" >
+    <div class="panel-heading" >
+      <button id="resizeLegend" class="btn btn-sm btn-info" type="button" title="resize legend" style="position:absolute; top: 2px; left: 2px; color: white; border: none;
+">
+        <span class="glyphicon glyphicon-resize-horizontal" ></span>
+      </button>
+      <div style="font-size: 16px; text-align: center">
+        Color legend
+      </div>
+
+    </div>
+
+    <div class="panel-body">
+      <div id="sliderLegend">
+        <div class="header_taxa">Slide between filters</div>
+        <div class="btn-group">
+          <button id="slideLegendLeft" class="btn btn-sm btn-default"
+                  data-toggle="tooltip" title="Change selected filter"
+                  type="button">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+          </button>
+          <button id="slideLegendRight" class="btn btn-sm btn-default"
+                  data-toggle="tooltip" title="Change selected filter"
+                  type="button">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+          </button>
+        </div>
+      </div>
+      <!--Populated by visualization_functions.js-->
+      <label id="taxa_label">Taxa</label>
+      <ul class="legend" id="colorLegendBox"></ul>
+      <label id="res_label">Resistances</label>
+      <ul class="legend" id="colorLegendBoxRes"></ul>
+      <label id="pf_label">Plasmid Families</label>
+      <ul class="legend" id="colorLegendBoxPf"></ul>
+      <label id="vir_label">Virulence factors</label>
+      <ul class="legend" id="colorLegendBoxVir"></ul>
+      <!--Populated by visualization_functions.js-->
+      <label id="distance_label">Distances scale</label>
+      <div class="gradient" id="scaleLegend"></div>
+      <div id="scaleString"></div>
+      <!--Populated by visualization_functions.js-->
+      <label id="read_label">Read scale</label>
+      <div class="gradient" id="readLegend"></div>
+      <div id="readString"></div>
+      <label id="assemblyLabel">Assembly</label>
+      <div class="legend" id="assemblyLegend"></div>
+    </div>
+
+  </div>
+
+</div>

@@ -1,25 +1,33 @@
 /*globals makeHash, reloadAccessionList, assembly, listGiFilter,
- colorNodes, readColoring, removeImportInfo */
+ colorNodes, readColoring, removeImportInfo, selectedFilter, getLinkedNodes */
 
 const reAppendString = "<div class='panel-group colorpicker-component' id='colorLegend' style='display: none'>\n" +
   "<div class='panel panel-default' >\n" +
-  "<div class='panel-heading'>Color legend</div>\n" +
-  "<div class='panel-body'>\n" +
-  "<label id='taxa_label' style='display: none'>Taxa filters</label>\n" +
+  "<div class='panel-heading' style='font-size: 16px; text-align: center'>Color legend</div>\n" +
+  "<div class='panel-body'>" +
+  "<div id='sliderLegend'>" +
+  "<div class='btn-group'>" +
+  "<button id='slideLegendLeft' class='btn btn-sm btn-default' data-toggle='tooltip' title='Change selected filter' type='button'>" +
+  "<span class='glyphicon glyphicon-chevron-left'></span>" +
+  "</button>" +
+  "<button id='slideLegendRight' class='btn btn-sm btn-default' data-toggle='tooltip' title='Change selected filter' type='button'>" +
+  "<span class='glyphicon glyphicon-chevron-right'></span>" +
+  "</button></div></div>" +
+  "<label id='taxa_label'>Taxa</label>\n" +
   "<ul class='legend' id='colorLegendBox'></ul>\n" +
-  "<label id='res_label' style='display: none'>Resistances</label>" +
+  "<label id='res_label'>Resistances</label>" +
   "<ul class='legend' id='colorLegendBoxRes'></ul>" +
-  "<label id='pf_label' style='display: none'>Plasmid Families</label>" +
+  "<label id='pf_label'>Plasmid Families</label>" +
   "<ul class='legend' id='colorLegendBoxPf'></ul>" +
-  "<label id='vir_label' style='display: none'>Virulence factors</label>" +
+  "<label id='vir_label'>Virulence factors</label>" +
   "<ul class='legend' id='colorLegendBoxVir'></ul>" +
-  "<label id='distance_label' style='display: none'>Distance filters</label>\n" +
+  "<label id='distance_label'>Distance filters</label>\n" +
   "<div class='gradient' id='scaleLegend'></div>\n" +
   "<div id='scaleString'></div>" +
-  "<label id='read_label' style='display: none'>Read filters</label>\n" +
+  "<label id='read_label'>Read filters</label>\n" +
   "<div class='gradient' id='readLegend'></div>\n" +
   "<div id='readString'></div>" +
-  "<label id='assemblyLabel' style='display: none'>Assembly</label>" +
+  "<label id='assemblyLabel'>Assembly</label>" +
   "<div class='legend' id='assemblyLegend'></div>" +
   "</div>\n" +
   "</div>\n" +
@@ -248,15 +256,18 @@ const addLinks = (g, newListHashes, sequence, linkAccession, linkDistance, sizeR
  * @param {Object} g - object that stores vivagraph graph associated functions
  * @param {Object} jsonObj - an object that stores information to be added
  * to nodes and that was obtained from a db request
- * @param {Array} newList - an array with all the accession numbers that will bplottedloted
+ * @param {Array} newList - an array with all the accession numbers that will
+ * plotted.
  * @param {Array} newListHashes - an array with a list of hashes, each one
  * coding for an already added link.
+ * @param {Array} listGiFilter - The list of accession numbers that are
+ * currently selected.
  * @returns {Array} returns an array with the updated newList which will
  * contain all added nodes and another array with the list of hashes already
  * added that is used to avoid the duplication of links in the graph (user
  * by reAddLinks function
  */
-const reAddNode = (g, jsonObj, newList, newListHashes) => {
+const reAddNode = (g, jsonObj, newList, newListHashes, listGiFilter) => {
 
   const sequence = jsonObj.plasmidAccession
   let length = jsonObj.plasmidLenght
@@ -280,30 +291,48 @@ const reAddNode = (g, jsonObj, newList, newListHashes) => {
     for (let i = 0; i < eachArray.length; i++) {
       // this constructs a sorted array
       // TODO try to make this array ordered in the database using MASHix.py
-      const entry = eachArray[i].replace(/[{}'u\[\] ]/g,"").split(",").slice(0).sort()
+      const entry = eachArray[i].replace(/[{}'u\[\] ]/g, "").split(",").slice(0).sort()
       const linkDistance = entry[1].split(":")[1]
       const linkLength = entry[2].split(":")[1]
       const linkAccession = entry[0].split(":")[1]
       const sizeRatio = Math.min(length, linkLength) / Math.max(length, linkLength)
 
-      if (newList.indexOf(linkAccession) < 0) {
-        g.addNode(linkAccession, {
-          sequence: "<span style='color:#468499'>Accession:" +
-          " </span><a" +
-          " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
-          seqLength: "<span" +
-          " style='color:#468499'>Sequence length:" +
-          " </span>" + linkLength,
-          logLength: Math.log(parseInt(linkLength))
-        })
-        newList.push(linkAccession) //adds to list every time a node is
-        // added here
-        newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
-          linkDistance, sizeRatio)
+      if (getLinkedNodes === true) {
+        if (newList.indexOf(linkAccession) < 0) {
+          g.addNode(linkAccession, {
+            sequence: "<span style='color:#468499'>Accession:" +
+            " </span><a" +
+            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
+            seqLength: "<span" +
+            " style='color:#468499'>Sequence length:" +
+            " </span>" + linkLength,
+            logLength: Math.log(parseInt(linkLength))
+          })
+          newList.push(linkAccession) //adds to list every time a node is
+          // added here
+          newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+            linkDistance, sizeRatio)
+        } else {
+          // if node exist, links still need to be added
+          newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+            linkDistance, sizeRatio)
+        }
       } else {
-        // if node exist, links still need to be added
-        newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
-          linkDistance, sizeRatio)
+        if (newList.indexOf(linkAccession) < 0 && listGiFilter.indexOf(linkAccession) > -1) {
+          g.addNode(linkAccession, {
+            sequence: "<span style='color:#468499'>Accession:" +
+            " </span><a" +
+            " href='https://www.ncbi.nlm.nih.gov/nuccore/" + linkAccession.split("_").slice(0, 2).join("_") + "' target='_blank'>" + linkAccession + "</a>",
+            seqLength: "<span" +
+            " style='color:#468499'>Sequence length:" +
+            " </span>" + linkLength,
+            logLength: Math.log(parseInt(linkLength))
+          })
+          newList.push(linkAccession) //adds to list every time a node is
+          // added here
+          newListHashes = addLinks(g, newListHashes, sequence, linkAccession,
+            linkDistance, sizeRatio)
+        }
       }
     }
   }
@@ -377,7 +406,9 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
           }
 
           //add node
-          reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList, newListHashes)
+          reAddNodeList = reAddNode(g, jsonObj, reloadAccessionList,
+            newListHashes, listGiFilter)
+
           reloadAccessionList = reAddNodeList[0]
           newListHashes = reAddNodeList[1]
         }
@@ -386,47 +417,50 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
         renderGraph(graphics)
 
         if (readString !== false ) {
+
           readColoring(g, listGi, graphics, renderer, readString)
 
         } else if (assemblyJson !== false) {
 
           const assemblyString = JSON.parse(Object.values(assemblyJson)[0])
           readColoring(g, listGi, graphics, renderer, assemblyString)
-        //   let masterReadArray = [] //needs to reset this array for the assembly
-        //   // function to be successful
-        //   listGiFilter = assembly(listGi, assemblyJson, g, graphics, masterReadArray, listGiFilter)
-        } else if ($("#p_Card").html() !== "Card:" ||
-          $("#p_Resfinder").html() !== "Resfinder:") {
+
+        } else if (selectedFilter === "res") {
 
           $("#resSubmit").click()
 
-        } else if ($("#p_Plasmidfinder").html() !== "Plasmidfinder:") {
+        } else if (selectedFilter === "pf") {
 
           $("#pfSubmit").click()
 
-        } else if ($("#p_Species").html() !== "Species:" ||
-          $("#p_Genus").html() !== "Genus:" ||
-          $("#p_Family").html() !== "Family:" ||
-          $("#p_Order").html() !== "Order:") {
+        } else if (selectedFilter === "taxa") {
 
           // simulates the click of the button
           // which checks the divs that contain the species, color the as if
           // the button was clicked and makes the legends
           $("#taxaModalSubmit").click()
 
-        } else if ($("#p_Virulence").html() !== "Virulence:") {
+        } else if (selectedFilter === "vir") {
 
           $("#virSubmit").click()
 
+        } else if (selectedFilter === "intersect") {
+
+          $("#intersectionsModalSubmit").click()
+
+        } else if (selectedFilter === "union") {
+
+          $("#unionModalSubmit").click()
+
         } else {
 
-          colorNodes(g, graphics, renderer, listGiFilter, 0x23A900) //green
+          colorNodes(g, graphics, renderer, listGiFilter,
+            "0x" + "#fa5e00".replace("#", ""))
           // color for area selection
         }
+
       })
-      // .catch( (error) => {
-      //   console.log("Error! No query was made. Error message: ", error)
-      // })
+
   }
   return [listGiFilter, reloadAccessionList]
 }
@@ -445,7 +479,9 @@ const reGetListGi = (g, graphics) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
-    if (currentNodeUI.color === 0x23A900) { tempListAccessions.push(node.id) }
+    if (currentNodeUI.color === "0x" + "#fa5e00".replace("#", "")) {
+      tempListAccessions.push(node.id)
+    }
   })
   return tempListAccessions
 }

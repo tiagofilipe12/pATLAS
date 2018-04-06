@@ -10,6 +10,9 @@ const removeFirstCharFromArray = (array) => {
 const singleDropdownPopulate = (divId, arrayToSort, className) => {
   // first sort the array alphabetically
   const sortedArray = arrayToSort.sort()
+
+  className = (className === false) ? "" : className
+
   // then iterate over the array to populate the div
   for (let i = 0; i < sortedArray.length; i++) {
     $(divId).append(`<option class=${className}>${sortedArray[i]}</option>`)
@@ -31,8 +34,10 @@ const resRequest = (g, graphics, renderer, gene, currentColor) => {
         listData.push(data[object].plasmid_id)
       }
     }
-    colorNodes(g, graphics, renderer, listData, currentColor)
-    renderer.rerender()
+    if (currentColor !== false) {
+      colorNodes(g, graphics, renderer, listData, currentColor)
+      renderer.rerender()
+    }
   })
 }
 
@@ -48,8 +53,10 @@ const pfRequest = (g, graphics, renderer, gene, currentColor) => {
         listData.push(data[object].plasmid_id)
       }
     }
-    colorNodes(g, graphics, renderer, listData, currentColor)
-    renderer.rerender()
+    if (currentColor !== false) {
+      colorNodes(g, graphics, renderer, listData, currentColor)
+      renderer.rerender()
+    }
   })
 }
 
@@ -65,8 +72,10 @@ const virRequest = (g, graphics, renderer, gene, currentColor) => {
         listData.push(data[object].plasmid_id)
       }
     }
-    colorNodes(g, graphics, renderer, listData, currentColor)
-    renderer.rerender()
+    if (currentColor !== false) {
+      colorNodes(g, graphics, renderer, listData, currentColor)
+      renderer.rerender()
+    }
   })
 }
 
@@ -219,14 +228,7 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
             listGiFilter.push(request.plasmid_id)
           }
         })
-          // .then( (results) => {
-          //   results.map( (request) => {
-          //     if (tempPageReRun === false) {
-          //       listGiFilter.push(request.plasmid_id)
-          //     }
-          //   })
-          // })
-        // )
+
       }
     }
     legendInst = true

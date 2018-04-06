@@ -81,7 +81,7 @@ const downloadSeqByColor = (g, graphics) => {
   let tempListAccessions = []
   g.forEachNode( (node) => {
     const currentNodeUI = graphics.getNodeUI(node.id)
-    if (currentNodeUI.color === 0x23A900) {
+    if (currentNodeUI.color === "0x" + "#fa5e00".replace("#", "")) {
       tempListAccessions.push(node.id.split("_").splice(0,2).join("_"))
     }
   })

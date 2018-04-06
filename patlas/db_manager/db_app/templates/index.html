@@ -1,5 +1,6 @@
 <html>
 <head>
+
   <meta charset="UTF-8"/>
   <link rel="icon" type="image/png"
         href="{{ url_for('static', filename='images/pATLAS.png') }}"
@@ -23,10 +24,12 @@
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/AddAllNodesLinks.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/popupControls.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/advancedFilters.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/importJsonSamples.js') }}"></script>
   <!--<script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/assembly_file_handler.js') }}"></script>-->
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/zooming_control.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/legendFunctions.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/dropdownPopulation.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/abrPlusFamilies.js') }}"></script>
@@ -36,6 +39,8 @@
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/sort_array_by_value.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
+
+  <!--<link rel="stylesheet" type="text/css" href="patlas/db_manager/db_app/static/css/visualization_functions.css"/>-->
 
 </head>
 
@@ -781,61 +786,10 @@
         <h4 class="modal-title">Filter nodes by species taxa</h4>
       </div>
       <div class="modal-body" id="modal-body-taxa">
-        <div class="row" id="modal-body-taxa-1">
 
-          <!--dropdown for order-->
-          <div class="dropdown col-sm-3" id="order_dropdown">
-            <div class="header_taxa">Order filter</div>
+        <!--adds taxa dropdowns-->
+        {% include 'taxa_filters.html' %}
 
-            <!--</ul> -->
-            <select class="selectpicker" data-dropup-auto="false"
-                    multiple data-width="80%"
-                    data-selected-text-format="count"
-                    data-live-search="true"
-                    title="No items selected" id="orderList"
-                    data-size="15">
-              <!--populated by visualization_function.js-->
-              <div id="loadMore">Load more</div>
-            </select>
-          </div>
-          <!--dropdown for family-->
-          <div class="dropdown col-sm-3" id="family_dropdown">
-            <div class="header_taxa">Family filter</div>
-
-            <!--</ul> -->
-            <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
-                    data-selected-text-format="count" data-live-search="true"
-                    title="No items selected" id="familyList" data-size="15">
-              <!--populated by visualization_function.js-->
-            </select>
-          </div>
-          <!--dropdown for genus-->
-          <div class="dropdown col-sm-3" id="genus_dropdown">
-            <div class="header_taxa">Genus filter</div>
-
-            <select class="selectpicker" data-dropup-auto="false"
-                    multiple data-width="80%"
-                    data-selected-text-format="count" data-live-search="true"
-                    title="No items selected" id="genusList"
-                    data-size="15">
-              <!--populated by visualization_function.js-->
-            </select>
-          </div>
-          <!--dropdown for species-->
-
-          <div class="dropdown col-sm-3 " id="species_dropdown">
-            <div class="header_taxa">Species filter</div>
-
-            <!--example select dropdown-->
-            <select class="selectpicker" data-dropup-auto="false"
-                    multiple data-width="80%"
-                    data-selected-text-format="count" data-live-search="true"
-                    title="No items selected" id="speciesList"
-                    data-size="15" data-hide-disabled="true">
-              <!--populated by visualization_function.js-->
-            </select>
-          </div>
-        </div>
         <div class="row" id="modal-body-taxa-2">
           <div class='col-md-12'>
             <div class="panel-group" id="displayCurrent">
@@ -852,6 +806,25 @@
             </div>
           </div>
         </div>
+
+        <div style="text-align: center">
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#plasmidFamiliesModal"
+                  id="familiesCombined" >+ Plasmid families
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#resModal"
+                  id="resistancesCombined" >+ Resistances
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#virModal"
+                  id="virulenceCombined" >+ Virulence
+          </button>
+        </div>
+
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default"
@@ -860,7 +833,6 @@
                 id="taxaModalClear">Clear selection</button>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -995,18 +967,23 @@
                     id="virulenceFilter" >Virulence
             </button>
           </ul>
+          <ul class="list-group headerPanelGroup">Advanced
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#combinedModal" id="combinedSelections">
+              Multiple</button>
+          </ul>
         </div>
       </li>
       <li data-toggle="collapse" data-target="#collapse3" class="collapse_groups">
-        <a href="#">Import</a>
+        <a href="#">Import results</a>
         <div id="collapse3" class="panel-collapse collapse">
           <ul class="list-group">
             <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                    data-target="#fileModal" id="reads_filter">Mapping results
+                    data-target="#fileModal" id="reads_filter">Mapping
             </button>
             <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
-                    data-target="#mashModal" id="mash_filter">Mash
-              results
+                    data-target="#mashModal" id="mash_filter">Mash screen
             </button>
             <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                     data-target="#assemblyModal" id="assembly_filter">Sequence
@@ -1133,7 +1110,8 @@
                   title="Return to full tree view" style="display: none">
             <span class="glyphicon glyphicon-home"></span></button>
           <button class="btn btn-default" id="Re_run"
-                  type="button" data-toogle="tooptip"
+                  type="button" data-toggle="modal" data-backdrop="static"
+                  data-target="#reRunModal"
                   title="Apply filters" style="display: none">
             <span class="glyphicon glyphicon-filter"></span></button>
           <!--for now this button is disabled since it does not have funcitonality-->
@@ -1203,34 +1181,9 @@
 
 {% include 'popup.html' %}
 
+{% include 'colorLegend.html' %}
+
 <div id="couve-flor">
-  <!--hidden div for color legend-->
-  <div class="panel-group colorpicker-component" id="colorLegend" style="display: none">
-    <div class="panel panel-default" >
-      <div class="panel-heading">Color legend</div>
-      <div class="panel-body">
-        <!--Populated by visualization_functions.js-->
-        <label id="taxa_label" style="display: none">Taxa</label>
-        <ul class="legend" id="colorLegendBox"></ul>
-        <label id="res_label" style="display: none">Resistances</label>
-        <ul class="legend" id="colorLegendBoxRes"></ul>
-        <label id="pf_label" style="display: none">Plasmid Families</label>
-        <ul class="legend" id="colorLegendBoxPf"></ul>
-        <label id="vir_label" style="display: none">Virulence factors</label>
-        <ul class="legend" id="colorLegendBoxVir"></ul>
-        <!--Populated by visualization_functions.js-->
-        <label id="distance_label" style="display: none">Distances scale</label>
-        <div class="gradient" id="scaleLegend"></div>
-        <div id="scaleString"></div>
-        <!--Populated by visualization_functions.js-->
-        <label id="read_label" style="display: none">Read scale</label>
-        <div class="gradient" id="readLegend"></div>
-        <div id="readString"></div>
-        <label id="assemblyLabel" style="display: none">Assembly</label>
-        <div class="legend" id="assemblyLegend"></div>
-      </div>
-    </div>
-  </div>
 
   <div id="buttonStuff">
     <div class="btn-group">
@@ -1286,6 +1239,32 @@
 
 <div class="graph-overlay"></div>
 <span style="color: white; margin: 10px;">Use mouse to draw rectangle and select nodes</span>
+
+
+<!-- Modal for Re_run-->
+<div id="reRunModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Filtering graph for the current selection</h4>
+      </div>
+      <div class="modal-body" id="modalBodyReRun">
+
+        <p>Do you want to keep plasmids linked to selected nodes?</p>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success"
+                  data-dismiss="modal" id="reRunYes">Yes</button>
+          <button type="submit" class="btn btn-danger"
+                  data-dismiss="modal" id="reRunNo">No</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <div id="modalPlot" class="modal fade" role="dialog" tabindex="-1"
      data-backdrop="static">
@@ -1404,27 +1383,10 @@
           resistance genes</h4>
       </div>
       <div class="modal-body" id="modalBodyABR">
-        <div class="row" id="modalBodyABR1">
-          <div class="dropdown col-sm-6 " id="resDropdown">
-            <div class="header_taxa">ResFinder</div>
-            <select class="selectpicker" data-dropup-auto="false"
-                    multiple data-width="80%"
-                    data-selected-text-format="count" data-live-search="true"
-                    title="No items selected" id="resList"
-                    data-size="15" data-hide-disabled="true">
-              <!--populated by visualization_function.js-->
-            </select>
-          </div>
-          <div class="dropdown col-sm-6 " id="cardDropdown">
-            <div class="header_taxa">Card</div>
-            <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
-                    data-selected-text-format="count" data-live-search="true"
-                    title="No items selected" id="cardList"
-                    data-size="15" data-hide-disabled="true">
-              <!--populated by visualization_function.js-->
-            </select>
-          </div>
-        </div>
+
+        <!--resistance dropdowns-->
+        {% include 'res_filters.html' %}
+
         <div class="row" id="modalBodyABR2">
           <div class='col-md-12'>
             <div class="panel-group" id="displayCurrentABR">
@@ -1441,6 +1403,25 @@
             </div>
           </div>
         </div>
+
+        <div style="text-align: center">
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#taxaModal"
+          >+ Taxa
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#plasmidFamiliesModal"
+                  >+ Plasmid families
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#virModal"
+                  >+ Virulence
+          </button>
+        </div>
+
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default"
@@ -1464,18 +1445,10 @@
           plasmid family genes</h4>
       </div>
       <div class="modal-body" id="modalBodyFAM">
-        <div class="row" id="modalBodyFAM1">
-          <div class="dropdown col-sm-12 " id="famDropdown">
-            <div class="header_taxa">PlasmidFinder</div>
-            <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
-                    data-selected-text-format="count" data-live-search="true"
-                    title="No items selected"
-                    id="plasmidFamiliesList"
-                    data-size="15" data-hide-disabled="true">
-              <!--populated by visualization_function.js-->
-            </select>
-          </div>
-        </div>
+
+        <!--plasmid finder dropdowns-->
+        {% include 'pf_filters.html' %}
+
         <div class="row" id="modalBodyFAM2">
           <div class='col-md-12'>
             <div class="panel-group" id="displayCurrentFAM">
@@ -1491,6 +1464,22 @@
             </div>
           </div>
         </div>
+
+        <div style="text-align: center">
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#taxaModal">+ Taxa
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#resModal">+ Resistances
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#virModal">+ Virulence
+          </button>
+        </div>
+
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default"
@@ -1514,18 +1503,10 @@
           virulence factor genes</h4>
       </div>
       <div class="modal-body" id="modalBodyVir">
-        <div class="row" id="modalBodyVir1">
-          <div class="dropdown col-sm-12 " id="virDropdown">
-            <div class="header_taxa">VFDB</div>
-            <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
-                    data-selected-text-format="count" data-live-search="true"
-                    title="No items selected"
-                    id="virList"
-                    data-size="15" data-hide-disabled="true">
-              <!--populated by visualization_function.js-->
-            </select>
-          </div>
-        </div>
+
+        <!--virulence dropdowns-->
+        {% include 'vir_filters.html' %}
+
         <div class="row" id="modalBodyVir2">
           <div class='col-md-12'>
             <div class="panel-group" id="displayCurrentVir">
@@ -1541,6 +1522,22 @@
             </div>
           </div>
         </div>
+
+        <div style="text-align: center">
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#taxaModal">+ Taxa
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#plasmidFamiliesModal">+ Plasmid families
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#resModal">+ Resistances
+          </button>
+        </div>
+
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default"
@@ -1552,6 +1549,8 @@
 
   </div>
 </div>
+
+{% include 'combinedSelections.html' %}
 
 <!-- scripts that need to be loaded inside the body-->
 <script language="javascript" type="text/javascript"

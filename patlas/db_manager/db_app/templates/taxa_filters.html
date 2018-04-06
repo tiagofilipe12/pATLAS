@@ -1,0 +1,53 @@
+<div class="row" id="modal-body-taxa-1">
+
+  <!--dropdown for order-->
+  <div class="dropdown col-sm-3" id="order_dropdown">
+    <div class="header_taxa">Order filter</div>
+
+    <!--</ul> -->
+    <select class="selectpicker" data-dropup-auto="false"
+            multiple data-width="80%"
+            data-selected-text-format="count"
+            data-live-search="true"
+            title="No items selected" id="orderList"
+            data-size="15">
+      <!--populated by visualization_function.js-->
+      <!--<div id="loadMore">Load more</div>-->
+    </select>
+  </div>
+  <!--dropdown for family-->
+  <div class="dropdown col-sm-3" id="family_dropdown">
+    <div class="header_taxa">Family filter</div>
+
+    <!--</ul> -->
+    <select class="selectpicker" data-dropup-auto="false" multiple data-width="80%"
+            data-selected-text-format="count" data-live-search="true"
+            title="No items selected" id="familyList" data-size="15">
+      <!--populated by visualization_function.js-->
+    </select>
+  </div>
+  <!--dropdown for genus-->
+  <div class="dropdown col-sm-3" id="genus_dropdown">
+    <div class="header_taxa">Genus filter</div>
+
+    <select class="selectpicker" data-dropup-auto="false"
+            multiple data-width="80%"
+            data-selected-text-format="count" data-live-search="true"
+            title="No items selected" id="genusList"
+            data-size="15">
+      <!--populated by visualization_function.js-->
+    </select>
+  </div>
+  <div class="dropdown col-sm-3 " id="species_dropdown">
+    <div class="header_taxa">Species filter</div>
+
+    <!--example select dropdown-->
+    <select class="selectpicker" data-dropup-auto="false"
+            multiple data-width="80%"
+            data-selected-text-format="count" data-live-search="true"
+            title="No items selected" id="speciesList"
+            data-size="15" data-hide-disabled="true">
+      <!--populated by visualization_function.js-->
+    </select>
+  </div>
+</div>

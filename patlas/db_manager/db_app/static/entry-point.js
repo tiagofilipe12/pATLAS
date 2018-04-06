@@ -32,8 +32,6 @@ require("highcharts/modules/boost")(Highcharts)
 // import custom packages/scripts
 require("./js/pATLASColorpicker")
 require("./js/keyboard_shortcuts")
-// TODO add other custom js
-// require("./js/visualization_functions")
 
 // import styles from yarn
 require("bootstrap/dist/css/bootstrap.min.css")
