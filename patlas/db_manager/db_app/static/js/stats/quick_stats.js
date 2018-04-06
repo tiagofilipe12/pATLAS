@@ -919,7 +919,7 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
   $("#loadingImgPlots").show()
   if (arraysEqual(listGiFilter, previousTableList) === false && selector[clickerButton].state === false
     || selector[clickerButton].state === false && arraysEqual(listGiFilter, previousTableList) === true) {
-    previousTableList = listGiFilter
+    // previousTableList = listGiFilter
     return (areaSelection === false) ? getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
       : statsColor(g, graphics, renderer, clickerButton, false, false)
   } else {

@@ -95,6 +95,7 @@ const promiseGather = async (listGiFilter) => {
  */
 const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) => {
   let promises = []
+  
   // redefines listGiFilter if area selection is used
   // IMPORTANT: in this case listGiFilter doesn't exit this function scope
   // which is the intended behavior
