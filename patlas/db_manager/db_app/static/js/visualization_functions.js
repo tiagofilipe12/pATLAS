@@ -1601,6 +1601,7 @@ const onLoad = () => {
     // returns to the initial tree by reloading the page
     $("#go_back").unbind("click").bind("click", () => {
 
+      areaSelection = false
       firstInstace = true
       pageReload = true
       list = []
@@ -1611,6 +1612,7 @@ const onLoad = () => {
         // removes nodes and forces adding same nodes
         setTimeout( () => {
           actualRemoval(g, graphics, onLoad, true)
+          freezeShift = true
           // enables button group again
           $("#toolButtonGroup button").removeAttr("disabled")
         }, 100)
