@@ -40,3 +40,6 @@ require("nouislider/distribute/nouislider.min.css")
 require("bootstrap-table/dist/bootstrap-table.min.css")
 require("bootstrap-select/dist/css/bootstrap-select.min.css")
 require("bootstrap-toggle/css/bootstrap-toggle.min.css")
+
+// import custom stylesheet
+require("./css/visualization_functions.css")
