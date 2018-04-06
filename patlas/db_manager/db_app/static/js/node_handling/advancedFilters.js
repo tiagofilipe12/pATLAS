@@ -1,4 +1,4 @@
-/*speciesRequest, taxaRequest, resRequest, pfRequest, virRequest*/
+/*speciesRequest, taxaRequest, resRequest, pfRequest, virRequest, listGiFilter*/
 
 /**
  * Function to calculate intersection between arrays. Note that this function
@@ -109,6 +109,16 @@ const mapRequest = (requestConst) => {
   return requestList
 }
 
+
+/**
+ * A Function to parse the intersections menu queries
+ * @param {Object} g - object that stores vivagraph graph associated functions.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Function} renderer - Function that forces the graph to be updated.
+ * @param objectOfSelections
+ * @returns {Promise<*>}
+ */
 const parseQueriesIntersection = async (g, graphics, renderer,
                                         objectOfSelections) => {
 
@@ -182,10 +192,16 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   arrayOfArrays = arrayOfArrays.filter( (n) => { return n.length !== 0 })
 
   // here arrayOfArrays must not have empty arrays
-  tempList = await arraysIntersection(arrayOfArrays)
+  listGiFilter = await arraysIntersection(arrayOfArrays)
 
   // color nodes after having tempList
-  colorNodes(g, graphics, renderer, tempList, 0xff1c00)
+  await colorNodes(g, graphics, renderer, listGiFilter, 0xff1c00)
 
-  return tempList
+  // after everything is done then render the respective divs
+  $("#loading").hide()
+  $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+    " #plotButton").show()
+  // enables button group again
+  $("#toolButtonGroup button").removeAttr("disabled")
+
 }

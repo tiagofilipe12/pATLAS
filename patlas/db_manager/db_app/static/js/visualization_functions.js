@@ -135,8 +135,14 @@ const getArrayVir = () => {
   return $.getJSON("/virulence")
 }
 
-// list used to store for re-run button (apply filters)
+/**
+ * This is list is the master list that controls every selection made in patlas.
+ * It controls selections made through filters, file input and is used for
+ * construct plots, tables allow to filter current visualization of the graph.
+ * @type {Array}
+ */
 let listGiFilter = []
+
 let reloadAccessionList = []
 
 // variable to store previous list of accessions that iterate through table
@@ -1032,8 +1038,12 @@ const onLoad = () => {
 
       }
 
-      listGiFilter = parseQueriesIntersection(g, graphics, renderer,
-        objectOfSelections)
+      showDiv().then( () => {
+        listGiFilter = parseQueriesIntersection(g, graphics, renderer,
+          objectOfSelections)
+      })
+
+
 
     })
 
