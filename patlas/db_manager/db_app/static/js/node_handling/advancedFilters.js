@@ -1,4 +1,4 @@
-/*globals speciesRequest, taxaRequest, resRequest, pfRequest, virRequest, listGiFilter, colorNodes */
+/*globals speciesRequest, taxaRequest, resRequest, pfRequest, virRequest, listGiFilter, colorNodes, selectedFilter */
 
 /**
  * Function to calculate intersection between arrays. Note that this function
