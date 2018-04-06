@@ -228,14 +228,7 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
             listGiFilter.push(request.plasmid_id)
           }
         })
-          // .then( (results) => {
-          //   results.map( (request) => {
-          //     if (tempPageReRun === false) {
-          //       listGiFilter.push(request.plasmid_id)
-          //     }
-          //   })
-          // })
-        // )
+
       }
     }
     legendInst = true

@@ -1,4 +1,4 @@
-/*globals listGiFilter, colorList */
+/*globals listGiFilter, colorList, mapRequest */
 
 
 /**
@@ -127,16 +127,13 @@ const taxaRequestWrapper = async (g, graphics, renderer, storeLis,
       const speciesQueryResults = await speciesRequest(g, graphics, renderer,
         sp, currentColor)
 
-      speciesQueryResults.map( (request) => {
-        listGiFilter.push(request.plasmid_id)
-      })
+      listGiFilter = mapRequest(speciesQueryResults)
+
     } else {
       const taxaQueryResults = await taxaRequest(g, graphics, renderer, sp,
         currentColor)
 
-      taxaQueryResults.map( (request) => {
-        listGiFilter.push(request.plasmid_id)
-      })
+      listGiFilter = mapRequest(taxaQueryResults)
     }
   }
   return [storeLis, i]

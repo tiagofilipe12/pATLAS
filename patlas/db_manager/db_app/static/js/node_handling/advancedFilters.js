@@ -39,6 +39,23 @@ const arraysIntersection = (arr) => {
   return common
 }
 
+/**
+ * Function that merges an array of arrays and removes the duplicates entries
+ * from the resulting array
+ * @param {Array} arr - Any array of arrays with strings
+ * @returns {Array} - A unique array with unique entries
+ */
+const mergeNRemoveDuplicatesFromArray = (arr) => {
+  // sum arrays
+  let mergedListRes = [].concat.apply([], arr)
+  // remove duplicates from array
+  mergedListRes = mergedListRes.filter( (item, pos, self)  => {
+    return self.indexOf(item) === pos
+  })
+
+  return mergedListRes
+}
+
 
 /**
  * Function that controls if a selector is being clicked for the first time
@@ -76,7 +93,12 @@ const controlFiltersSameLevel = (lastTaxaSelector, e, arrayOfSelectors) => {
   return lastTaxaSelector
 }
 
-
+/**
+ * A function that is used to parse promises resulting from requests to psql db
+ * and retrieves a list of the accession numbers queried
+ * @param {Array} requestConst - An array of promises from post requests
+ * @returns {Array} - returns a list of accession numbers as an array
+ */
 const mapRequest = (requestConst) => {
   requestList = []
   if (requestConst !==  false) {
@@ -107,29 +129,56 @@ const parseQueriesIntersection = async (g, graphics, renderer,
       await taxaRequest(g, graphics, renderer, taxa[0], false) :
       false
 
-
-  const resHandle = (res !== false) ?
-    await resRequest(g, graphics, renderer, res[0], false) : false
-
-
-  const pfHandle = (objectOfSelections.pfinder.length > 0) ?
-    await pfRequest(g, graphics, renderer, objectOfSelections.pfinder[0],
-      false) : false
-
-
-  const virHandle = (objectOfSelections.virulence.length > 0) ?
-    await virRequest(g, graphics, renderer, objectOfSelections.virulence[0],
-      false) : false
-
-  // get accessions from requests
+  // get accessions from taxa requests
   const listTaxa = mapRequest(taxaQueryResults)
-  const listRes = mapRequest(resHandle)
-  const listPf = mapRequest(pfHandle)
-  const listVir = mapRequest(virHandle)
 
-  arrayOfArrays = [listTaxa, listRes, listPf, listVir]
+  let listRes = []
+
+  if (res !== false) {
+    // since it is possible to select more than one resistance it is necessary
+    // to iterate through each resistance and append the results to a list
+    // (listRes).
+    for (const r of res) {
+      const resHandle = await resRequest(g, graphics, renderer, r, false)
+      listRes.push(mapRequest(resHandle))
+    }
+
+    // merge results and remove duplicates
+    listRes = mergeNRemoveDuplicatesFromArray(listRes)
+  }
+
+  let listPf = []
+
+  if (objectOfSelections.pfinder.length > 0) {
+
+    for (const pf of objectOfSelections.pfinder) {
+      // since it is possible to select more than one plasmid family it is necessary
+      // to iterate through each resistance and append the results to a list
+      // (listPf).
+      const pfHandle = await pfRequest(g, graphics, renderer, pf, false)
+      listPf.push(mapRequest(pfHandle))
+    }
+
+    // merge results and remove duplicates
+    listPf = mergeNRemoveDuplicatesFromArray(listPf)
+  }
+
+  let listVir = []
+
+  if (objectOfSelections.virulence.length > 0) {
+
+    for (const vir of objectOfSelections.virulence) {
+
+      const virHandle = await virRequest(g, graphics, renderer, vir, false)
+      listVir.push(mapRequest(virHandle))
+    }
+
+    // merge results and remove duplicates
+    listVir = mergeNRemoveDuplicatesFromArray(listVir)
+  }
 
   // remove empty arrays
+  arrayOfArrays = [listTaxa, listRes, listPf, listVir]
   arrayOfArrays = arrayOfArrays.filter( (n) => { return n.length !== 0 })
 
   // here arrayOfArrays must not have empty arrays
