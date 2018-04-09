@@ -110,6 +110,18 @@ const mapRequest = (requestConst) => {
 }
 
 
+const setStoreLis = (objectOfSelections, currentColor, selectedFilter) => {
+
+  console.log(currentColor.toString().replace("0x", "#"))
+
+  let storeLis = "<li class='centeredList'><button" +
+    " class='jscolor btn btn-default' style='background-color: " +
+    currentColor.toString().replace("0x", "#") + "'></button>&nbsp;" +
+    selectedFilter + " selection</li>"
+
+  return storeLis + "</li>"
+}
+
 /**
  * A Function to parse the intersections menu queries
  * @param {Object} g - object that stores vivagraph graph associated functions.
@@ -137,7 +149,7 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   let listTaxa = []
 
   if (taxa !== false) {
-    
+
     for (const t of taxa) {
 
       const taxaQueryResults = (taxa === objectOfSelections.species) ?
@@ -229,6 +241,17 @@ const parseQueriesIntersection = async (g, graphics, renderer,
 
   // after everything is done then render the respective divs
   $("#loading").hide()
+
+  const storeLis = setStoreLis(objectOfSelections, selectedColor, selectedFilter)
+
+  // show legend
+  $("#colorLegend").show()
+  document.getElementById("taxa_label").style.display = "block" // show label
+  $("#colorLegendBox").empty()
+    .append(storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>")
+
   $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
     " #plotButton").show()
   // enables button group again

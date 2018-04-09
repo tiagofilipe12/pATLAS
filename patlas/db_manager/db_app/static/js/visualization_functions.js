@@ -97,6 +97,7 @@ let legendSliderControler = [
   "#pfSubmit",
   "#virSubmit"
 ]
+
 let selectedFilter
 let legendIndex = 0
 
@@ -650,6 +651,8 @@ const onLoad = () => {
 
       $("#pf_label").show()
 
+      $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
+
       // empties taxa and plasmidfinder legend
       $("#taxa_label").hide()
       $("#colorLegendBox").empty()
@@ -772,6 +775,8 @@ const onLoad = () => {
       hideAllOtherPlots()
 
       $("#res_label").show()
+
+      $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
       // empties all other legend
       $("#taxa_label").hide()
@@ -896,6 +901,8 @@ const onLoad = () => {
       areaSelection = false
 
       $("#vir_label").show()
+
+      $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
       // empties taxa and plasmidfinder legend
       $("#taxa_label").hide()
@@ -1153,6 +1160,8 @@ const onLoad = () => {
       areaSelection = false
 
       $("#taxa_label").show()
+
+      $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
       // empties taxa and plasmidfinder legend
       $("#res_label").hide()
@@ -1572,6 +1581,9 @@ const onLoad = () => {
       // transform selector object that handles plots and hide their
       // respective divs
       Object.keys(selector).map( (el) => { selector[el].state = false })
+
+      $("#slideLegendLeft, #slideLegendRight").prop("disabled", true)
+
       hideAllOtherPlots()
     })
 
