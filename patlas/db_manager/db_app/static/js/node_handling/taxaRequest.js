@@ -1,4 +1,4 @@
-/*globals listGiFilter, colorList, mapRequest */
+/*globals listGiFilter, colorList, mapRequest, typeOfProject */
 
 
 /**
@@ -135,6 +135,9 @@ const taxaRequestWrapper = async (g, graphics, renderer, storeLis,
 
       listGiFilter = mapRequest(taxaQueryResults)
     }
+
+    typeOfProject["taxa_filters"] = listGiFilter
+
   }
   return [storeLis, i]
 }

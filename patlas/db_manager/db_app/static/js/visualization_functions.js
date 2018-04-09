@@ -23,6 +23,13 @@
  * A bunch of global functions to be used throughout patlas
  */
 
+/**
+ * variable that will store the object to be exported to a json file on
+ * "projects export"
+ * @type {Object}
+ */
+let typeOfProject = {}
+
 // if this is a developer session please enable the below line of code
 const devel = false
 
@@ -2173,5 +2180,9 @@ const onLoad = () => {
 
       lastResSelector = controlFiltersSameLevel(lastResSelector, e, arrayOfSelectors)
     })
+
+  $("#projectExport").unbind("click").bind("click", () => {
+    exportProject()
+  })
 
 } // closes onload

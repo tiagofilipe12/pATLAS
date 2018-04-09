@@ -39,6 +39,7 @@
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/sort_array_by_value.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/projects/importProjects.js') }}"></script>
 
   <!--<link rel="stylesheet" type="text/css" href="patlas/db_manager/db_app/static/css/visualization_functions.css"/>-->
 
@@ -1037,6 +1038,17 @@
             <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                     data-target="#modalPlot"
                     id="clusterStats">Clusters
+            </button>
+          </ul>
+        </div>
+      </li>
+      <li data-toggle="collapse" data-target="#collapse6" class="collapse_groups">
+        <a href="#">Projects</a>
+        <div id="collapse6" class="panel-collapse collapse">
+          <ul class="list-group">
+            <button class="list-group-item" href="#" id="projectExport">Export
+            </button>
+            <button class="list-group-item" href="#" id="projectImport">Import
             </button>
           </ul>
         </div>
