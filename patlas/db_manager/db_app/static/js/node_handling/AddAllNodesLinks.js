@@ -14,11 +14,11 @@ const addAllNodes = (g, json, layout) => {
 
         if (list.indexOf(sequence) < 0) {
           g.addNode(sequence, {
-            sequence: "<span style='color:#468499'>Accession:" +
+            sequence: "<span style='color:#468499; font-weight: bold;'>Accession:" +
             " </span><a" +
             " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
             seqLength: "<span" +
-            " style='color:#468499'>Sequence length:" +
+            " style='color:#468499; font-weight: bold;'>Sequence length:" +
             " </span>" + seqLength,
             logLength
           })

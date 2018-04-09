@@ -21,6 +21,7 @@ const toggleManager = (toggleStatus) => {
   }
 }
 
+
 /**
  * Function that handles the request of a single node click opening the
  * top-right side popup, with metadata about a plasmid
@@ -32,7 +33,6 @@ const toggleManager = (toggleStatus) => {
 const requestPlasmidTable = (node, setupPopupDisplay) => {
   // if statement to check if node is in database or is a new import
   // from mapping
-  // if (node.data !== undefined) {
   if (typeof node.data.seqLength !== "undefined") {
     $.post("api/getspecies/", {"accession": JSON.stringify([node.id])}, (data, status) => {
       // this request uses nested json object to access json entries
@@ -60,6 +60,7 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
     setupPopupDisplay(node, speciesName, plasmidName, clusterId) //callback
   }
 }
+
 
 /**
  * function that iterates all nodes and when it finds a match recenters the dom
@@ -129,8 +130,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
   return (queriedNode === true) ? query : currentQueryNode
 }
 
-// function to search plasmidnames when toggle is on
-// async function returns a promise which results can then be parsed by .then()
+
 /**
  * Function to search plasmid names when toggle is on. This function is
  * async and returns a promise which results can then be parsed by .then()
@@ -148,7 +148,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
  * @param {Boolean} clickedPopupButtonRes - checks if ResFinder section of
  * the popup was previously set
  * @param {Boolean} clickedPopupButtonFamily - checks if plasmid finder
- * button was previosuly opened
+ * button was previously opened
  * @returns {Promise<String|*>} currentQueryNode - returns currentQueryNode to be
  * stored globally for future executions of this functions
  */

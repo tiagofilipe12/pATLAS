@@ -68,7 +68,7 @@ const resGetter = (nodeId) => {
       const rangeList = data[0].json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
       const aroList = data[0].json_entry.aro_accession.replace(/['u\[\] ]/g, "").split(",")
 
-      // consts to control the numbering of each database entry
+      // variables to control the numbering of each database entry
       let num = 0
       let num2 = 0
 
@@ -80,15 +80,15 @@ const resGetter = (nodeId) => {
           if (databaseList[i].indexOf("card") > -1) {
             num = num + 1
             const numString = num.toString()
-            queryArrayCardGenes.push(numString + ": " + totalLenght[i])
+            queryArrayCardGenes.push(" " + numString + ": " + totalLenght[i])
             // card retrieves some odd numbers after the accession... that
             // prevent to form a linkable item to genbank
-            queryArrayCardAccession.push(numString + ": " +
+            queryArrayCardAccession.push(" " + numString + ": " +
               makeItClickable(acessionList[i].split(":")[0]))
-            queryArrayCardCoverage.push(numString + ": " + coverageList[i])
-            queryArrayCardIdentity.push(numString + ": " + identityList[i])
-            queryArrayCardRange.push(numString + ": " + rangeEntry)
-            queryArrayCardARO.push(numString + ": " +  makeCardClickable(aroList[i]))
+            queryArrayCardCoverage.push(" " + numString + ": " + coverageList[i])
+            queryArrayCardIdentity.push(" " + numString + ": " + identityList[i])
+            queryArrayCardRange.push(" " +  + ": " + rangeEntry)
+            queryArrayCardARO.push(" " + numString + ": " +  makeCardClickable(aroList[i]))
           } else {
             num2 = num2 + 1
             const numString2 = num2.toString()

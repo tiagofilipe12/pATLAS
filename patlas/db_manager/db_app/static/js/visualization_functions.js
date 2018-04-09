@@ -1660,13 +1660,13 @@ const onLoad = () => {
             //checks if sequence is not in list to prevent adding multiple nodes for each sequence
             if (list.indexOf(sequence) < 0) {
               g.addNode(sequence, {
-                sequence: "<span style='color:#468499'>Accession:" +
+                sequence: "<span style='color:#468499; font-weight: bold;'>Accession:" +
                 " </span><a" +
                 " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
                 //species:"<font color='#468499'>Species:
                 // </font>" + species,
                 seqLength: "<span" +
-                " style='color:#468499'>Sequence length:" +
+                " style='color:#468499; font-weight: bold;'>Sequence length:" +
                 " </span>" + seqLength,
                 logLength
               })
