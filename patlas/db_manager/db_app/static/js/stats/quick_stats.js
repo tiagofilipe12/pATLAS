@@ -326,10 +326,12 @@ const highlightVivagraph = (g, graphics, renderer, objectHighlight) => {
  * @param {Object} associativeObj - An object that makes an association
  * between x labels and their matching accession numbers
  */
-const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, layout, taxaType, sortAlp, sortVal, associativeObj) => {
+const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
+                     layout, taxaType, sortAlp, sortVal, associativeObj) => {
+
   $("#loadingImgPlots").hide()
   $("#alertPlot").hide()
-  // $("#alertPlotEntries").hide()
+
   // controls progress bar div
   $("#progressDiv").hide()
 
@@ -337,12 +339,16 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
 
   // parse the final array
   // here it assures that sorts are made just once
-  const finalArray = (sortAlp === true) ? masterObj.sort() : (sortVal === true) ? arraytByValue(masterObj) : masterObj
+  const finalArray = (sortAlp === true) ? masterObj.sort() :
+    (sortVal === true) ? arraytByValue(masterObj) : masterObj
+
   const doubleArray = arraytoHighcharts(finalArray)
 
   // categories have to be added to the xAxis labels
   if (taxaType !== "length") {
+
     layout.xAxis = {categories: doubleArray[1]}
+
     // then add the series to the graph itself
     layout.series = [{
       type: "column",
@@ -354,17 +360,21 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
       point: {
         events: {
           click() {
-            highlightBar(this, selector[taxaType.replace(" ", "")].color, objectHighlights, associativeObj[this.name])
+            highlightBar(this, selector[taxaType.replace(" ", "")].color,
+              objectHighlights, associativeObj[this.name])
           }
         }
       }
     }]
+
     // adds button to highlight nodes on vivagraph
     layout.exporting = {
       buttons: {
         highlight: {
           text: "Highlight on plasmid network",
-          onclick() { highlightVivagraph(g, graphics, renderer, objectHighlights) },
+          onclick() {
+            highlightVivagraph(g, graphics, renderer, objectHighlights)
+          },
           buttonSpacing: 8,
           theme: {
             stroke: "#313131"
@@ -372,9 +382,10 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
         },
         clearHighlight: {
           text: "Clear highlights",
-          onclick() { resetAllBars(this, selector[taxaType.replace(" ", "")].color) },
-          // all highlighted
-          // bars
+          onclick() {
+            resetAllBars(this, selector[taxaType.replace(" ", "")].color)
+          },
+          // all highlighted bars
           buttonSpacing: 8,
           theme: {
             stroke: "#313131"
@@ -392,17 +403,20 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj, lay
     }
 
   } else {
+
     //converts every element in finalArray to float and then sorts it
     const histoArray = finalArray.map( (e) => { return parseFloat(e) })
       .sort( (a, b) => {
         return a - b
       })
+
     // returns true if all elements have the same size and thus make only a
     // scatter
     const allEqual = (histoArray) => histoArray.every( (v) => v === histoArray[0] )
 
     // some defaults comment to both graphs instances, when there are
     // several bins or just one
+
     const defaultXAxis = {
       labels: {enabled: false},
       categories: accessionResultsList,
@@ -567,6 +581,7 @@ const resetProgressBar = () => {
 const layoutGet = (taxaType) => {
   // this taxaType remains in this scope
   if (taxaType === "plasmidfamilies") { taxaType = "plasmid families" }
+
   return {
     chart: {
       zoomType: "x",
@@ -827,10 +842,10 @@ const plotSwitcher = (taxaType, result) => ({
  * a taxaType.
  */
 const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
+
   // resets progressBar
   resetProgressBar()
   let speciesList = []
-  // let associativeObj = {}
 
   $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
@@ -838,14 +853,12 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
       results.map( (result) => {
         // checks if plasmid is present in db
         if (result.plasmid_id !== null) {
+
           const speciesName = plotSwitcher(taxaType, result)
           speciesList.push(speciesName)
+          accessionResultsList.push(result.plasmid_id)
           associativeObjAssigner(associativeObj, result.plasmid_id, speciesName)
-        } else {
-          // TODO I think this is never ran
-          // this adds in the case of singletons
-          speciesList.push("singletons") // have no way to know since it is
-          // not in db
+
         }
       })
 
@@ -858,7 +871,9 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
       $("#alertPlotEntries").show()
 
       const layout = layoutGet(taxaType)
-      statsParser(g, graphics, renderer, accessionResultsList, speciesList, layout, taxaType, sortAlp, sortVal, associativeObj)
+
+      statsParser(g, graphics, renderer, accessionResultsList, speciesList,
+        layout, taxaType, sortAlp, sortVal, associativeObj)
     })
     // .catch( (error) => {
     //   console.log("Error: ", error)
