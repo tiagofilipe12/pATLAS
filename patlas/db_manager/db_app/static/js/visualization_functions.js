@@ -1037,7 +1037,8 @@ const onLoad = () => {
     /**
      * Button click event for intersection displays
      */
-    $("#intersectionsModalSubmit, #unionModalSubmit").unbind("click").bind("click", (event) => {
+    $("#intersectionsModalSubmit, #unionModalSubmit").unbind("click").bind(
+      "click", (event) => {
 
       $("#reset-sliders").click()
 

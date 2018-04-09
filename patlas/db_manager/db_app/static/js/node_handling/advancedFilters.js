@@ -134,14 +134,28 @@ const parseQueriesIntersection = async (g, graphics, renderer,
     : (objectOfSelections.resfinder.length > 0) ? objectOfSelections.resfinder
       : false
 
-  const taxaQueryResults = (taxa === objectOfSelections.species) ?
-    await speciesRequest(g, graphics, renderer, taxa[0], false) :
-    (taxa !== false) ?
-      await taxaRequest(g, graphics, renderer, taxa[0], false) :
-      false
+  let listTaxa = []
+
+  if (taxa !== false) {
+    
+    for (const t of taxa) {
+
+      const taxaQueryResults = (taxa === objectOfSelections.species) ?
+        await speciesRequest(g, graphics, renderer, t, false) :
+        await taxaRequest(g, graphics, renderer, t, false)
+
+      // get accessions from taxa requests
+      listTaxa.push(mapRequest(taxaQueryResults))
+
+    }
+
+    // merge results and remove duplicates
+    listTaxa = mergeNRemoveDuplicatesFromArray(listTaxa)
+
+  }
 
   // get accessions from taxa requests
-  const listTaxa = mapRequest(taxaQueryResults)
+  // const listTaxa = mapRequest(taxaQueryResults)
 
   let listRes = []
 
