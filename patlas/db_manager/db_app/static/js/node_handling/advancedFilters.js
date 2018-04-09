@@ -112,8 +112,6 @@ const mapRequest = (requestConst) => {
 
 const setStoreLis = (objectOfSelections, currentColor, selectedFilter) => {
 
-  console.log(currentColor.toString().replace("0x", "#"))
-
   let storeLis = "<li class='centeredList'><button" +
     " class='jscolor btn btn-default' style='background-color: " +
     currentColor.toString().replace("0x", "#") + "'></button>&nbsp;" +
