@@ -87,17 +87,17 @@ const resGetter = (nodeId) => {
               makeItClickable(acessionList[i].split(":")[0]))
             queryArrayCardCoverage.push(" " + numString + ": " + coverageList[i])
             queryArrayCardIdentity.push(" " + numString + ": " + identityList[i])
-            queryArrayCardRange.push(" " +  + ": " + rangeEntry)
+            queryArrayCardRange.push(" " + numString + ": " + rangeEntry)
             queryArrayCardARO.push(" " + numString + ": " +  makeCardClickable(aroList[i]))
           } else {
             num2 = num2 + 1
             const numString2 = num2.toString()
-            queryArrayResfinderGenes.push(numString2 + ": " + totalLenght[i])
-            queryArrayResfinderAccession.push(numString2 + ": " +
+            queryArrayResfinderGenes.push(" " + numString2 + ": " + totalLenght[i])
+            queryArrayResfinderAccession.push(" " + numString2 + ": " +
               makeItClickable(acessionList[i]))
-            queryArrayResfinderCoverage.push(numString2 + ": " + coverageList[i])
-            queryArrayResfinderIdentity.push(numString2 + ": " + identityList[i])
-            queryArrayResfinderRange.push(numString2 + ": " + rangeEntry)
+            queryArrayResfinderCoverage.push(" " + numString2 + ": " + coverageList[i])
+            queryArrayResfinderIdentity.push(" " + numString2 + ": " + identityList[i])
+            queryArrayResfinderRange.push(" " + numString2 + ": " + rangeEntry)
           }
         }
       }
@@ -166,14 +166,14 @@ const plasmidFamilyGetter = (nodeId) => {
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
             rangeList[i].replace(" ", "").replace(",", ":") :
             (rangeList[i] + "]").replace(", ", ":")
-          queryArrayPFGenes.push(num + ": " + totalLength[i])
+          queryArrayPFGenes.push(" " + num + ": " + totalLength[i])
           // card retrieves some odd numbers after the accession... that
           // prevent to form a linkable item to genbank
-          queryArrayPFAccession.push(num + ": " +
+          queryArrayPFAccession.push(" " + num + ": " +
             makeItClickable(accessionList[i].split(":")[0]))
-          queryArrayPFCoverage.push(num + ": " + coverageList[i])
-          queryArrayPFIdentity.push(num + ": " + identityList[i])
-          queryArrayPFRange.push(num + ": " + rangeEntry)
+          queryArrayPFCoverage.push(" " + num + ": " + coverageList[i])
+          queryArrayPFIdentity.push(" " + num + ": " + identityList[i])
+          queryArrayPFRange.push(" " + num + ": " + rangeEntry)
         }
       }
       // then actually add it to popup_description div
@@ -230,14 +230,14 @@ const virulenceGetter = (nodeId) => {
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
             rangeList[i].replace(" ", "").replace(",", ":") :
             (rangeList[i] + "]").replace(", ", ":")
-          queryArrayVirGenes.push(num + ": " + totalLength[i])
+          queryArrayVirGenes.push(" " + num + ": " + totalLength[i])
           // card retrieves some odd numbers after the accession... that
           // prevent to form a linkable item to genbank
-          queryArrayVirAccession.push(num + ": " +
+          queryArrayVirAccession.push(" " + num + ": " +
             makeItClickable(accessionList[i].split(":")[0]))
-          queryArrayVirCoverage.push(num + ": " + coverageList[i])
-          queryArrayVirIdentity.push(num + ": " + identityList[i])
-          queryArrayVirRange.push(num + ": " + rangeEntry)
+          queryArrayVirCoverage.push(" " + num + ": " + coverageList[i])
+          queryArrayVirIdentity.push(" " + num + ": " + identityList[i])
+          queryArrayVirRange.push(" " + num + ": " + rangeEntry)
         }
       }
       // then actually add it to popup_description div
