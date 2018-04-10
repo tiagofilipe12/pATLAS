@@ -75,6 +75,7 @@ let readFilejson = false
 let mashJson = false
 let assemblyJson = false
 let consensusJson = false
+let projectJson = false
 
 let readIndex = 0
 
@@ -1795,6 +1796,11 @@ const onLoad = () => {
     consensusJson = newConsensusJson
   })
 
+
+  handleFileSelect("projectFile", "#project_text", (newProjectJson) => {
+    projectJson = newProjectJson
+  })
+
   //* ****************************** *//
   //      Menu Button controls       //
   //* ****************************** *//
@@ -2216,7 +2222,8 @@ const onLoad = () => {
   })
 
   $("#projectLoadSubmit").unbind("click").bind("click", () => {
-    importProject()
+    const importedFileProject = JSON.parse(projectJson[Object.keys(projectJson)[0]])
+    importProject(importedFileProject)
   })
 
 } // closes onload

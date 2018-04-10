@@ -14,7 +14,6 @@ const fileDownloader = (fileName, typeOfFile, textToExport) => {
   FileSaver.saveAs(file, fileName)
 }
 
-const importProject = () => {
-  console.log("test")
-  // TODO add function to control import
+const importProject = (importedFileProject) => {
+  console.log(importedFileProject)
 }
