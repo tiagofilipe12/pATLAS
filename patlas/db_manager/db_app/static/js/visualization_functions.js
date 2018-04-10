@@ -17,7 +17,7 @@
                 getArrayAssembly, startMultiSelect, requesterDB,
                  addAllNodes, addAllLinks, quickFixString, fileChecks,
                   iterateArrays, initResize, parseQueriesIntersection,
-                  controlFiltersSameLevel*/
+                  controlFiltersSameLevel, fileDownloader*/
 
 /**
  * A bunch of global functions to be used throughout patlas
@@ -1074,6 +1074,9 @@ const onLoad = () => {
       showDiv().then( () => {
         listGiFilter = parseQueriesIntersection(g, graphics, renderer,
           objectOfSelections, typeOfSubmission)
+
+        typeOfProject[typeOfSubmission] = objectOfSelections
+
       })
 
     })
@@ -2210,6 +2213,10 @@ const onLoad = () => {
     // downloads the file
     fileDownloader(`${projectName}.json`, "data:application/json;charset=utf-8",
       [textToExport])
+  })
+
+  $("#projectLoadSubmit").unbind("click").bind("click", () => {
+    importProject()
   })
 
 } // closes onload

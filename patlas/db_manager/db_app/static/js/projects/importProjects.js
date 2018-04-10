@@ -1,4 +1,4 @@
-/*globals */
+/*globals FileSaver*/
 
 /**
  * A function to save files to output
@@ -9,13 +9,12 @@
  */
 const fileDownloader = (fileName, typeOfFile, textToExport) => {
 
-  console.log(typeOfFile, textToExport)
-
   const file = new Blob(textToExport, {type: textToExport})
 
   FileSaver.saveAs(file, fileName)
 }
 
 const importProject = () => {
+  console.log("test")
   // TODO add function to control import
 }
