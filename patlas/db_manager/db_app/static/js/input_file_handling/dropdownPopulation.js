@@ -125,7 +125,13 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   // remove first char from selected* arrays
   selectedCard = removeFirstCharFromArray(selectedCard)
   selectedResfinder = removeFirstCharFromArray(selectedResfinder)
-  // const promises = []
+
+  // stores all resistance queries
+  typeOfProject["resistance"] = {
+    "card": selectedCard,
+    "resfinder": selectedResfinder
+  }
+
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
@@ -143,6 +149,7 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
     legendInst = true
     const mergedSelectedArray = selectedCard.concat(selectedResfinder)
     // in this case selected color must be the same and constant
+
     for (let i in mergedSelectedArray) {
       if ({}.hasOwnProperty.call(mergedSelectedArray, i)) {
         const gene = mergedSelectedArray[i]
@@ -153,16 +160,6 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
             listGiFilter.push(request.plasmid_id)
           }
         })
-        // promises.push(
-        //   resRequest(g, graphics, renderer, gene, currentColor)
-        //     .then( (results) => {
-        //       results.map( (request) => {
-        //         if (tempPageReRun === false) {
-        //           listGiFilter.push(request.plasmid_id)
-        //         }
-        //       })
-        //     })
-        // )
       }
     }
   } else {
@@ -174,6 +171,7 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   // return Promise.all(promises)
   //   .then( () => {
   if (legendInst === true) {
+
     $("#res_label").show()
     $("#colorLegendBoxRes").empty()
       .append(
@@ -196,10 +194,11 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   // now processes the current selection
   const pfQuery = document.getElementById("p_Plasmidfinder").innerHTML
   let selectedPf = pfQuery.replace("Plasmidfinder:", "").split(",").filter(Boolean)
-  // remove first char from selected* arrays
-  // selectedPf = removeFirstCharFromArray(selectedPf)
+
+  // adds plasmid_finder selection to typeOfProject
+  typeOfProject["plasmidFinder"] = selectedPf
+
   // check if arrays are empty
-  // const promises = []
   if (selectedPf.length !== 0) {
     // if only card has selected entries
     for (let i in selectedPf) {
@@ -263,10 +262,11 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   // now processes the current selection
   const pfQuery = document.getElementById("p_Virulence").innerHTML
   let selectedVir = pfQuery.replace("Virulence:", "").split(",").filter(Boolean)
-  // remove first char from selected* arrays
-  // selectedPf = removeFirstCharFromArray(selectedPf)
+
+  // adds selected virulence to typeOfProject
+  typeOfProject["virulence"] = selectedVir
+
   // check if arrays are empty
-  // const promises = []
   if (selectedVir.length !== 0) {
     // if only card has selected entries
     for (let i in selectedVir) {
@@ -295,14 +295,6 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
             listGiFilter.push(request.plasmid_id)
           }
         })
-        //     .then( (results) => {
-        //       results.map( (request) => {
-        //         if (tempPageReRun === false) {
-        //           listGiFilter.push(request.plasmid_id)
-        //         }
-        //       })
-        //     })
-        // )
       }
     }
     legendInst = true

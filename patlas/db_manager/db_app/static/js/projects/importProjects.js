@@ -17,5 +17,5 @@ const fileDownloader = (fileName, typeOfFile, textToExport) => {
 }
 
 const importProject = () => {
-
+  // TODO add function to control import
 }

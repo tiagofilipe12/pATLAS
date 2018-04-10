@@ -1195,6 +1195,7 @@ const onLoad = () => {
         assemblyJson = false
         // feeds the first file
         const readString = JSON.parse(Object.values(readFilejson)[0])
+
         fileChecks(readString)
         $("#fileNameDiv").html(Object.keys(readFilejson)[0])
           .show()
@@ -1214,6 +1215,10 @@ const onLoad = () => {
           const outLists = readColoring(g, listGi, graphics, renderer, readString)
           listGi = outLists[0]
           listGiFilter = outLists[1]
+
+          // adds read queries to the typeOfProject
+          typeOfProject["inputFiles"] = readFilejson
+
           masterReadArray = pushToMasterReadArray(readFilejson)
         }, 100)
 
@@ -1296,6 +1301,10 @@ const onLoad = () => {
           const outputList = readColoring(g, listGi, graphics, renderer, readString)
           listGi = outputList[0]
           listGiFilter = outputList[1]
+
+          // adds mash screen queries to the typeOfProject
+          typeOfProject["inputFiles"] = mashJson
+
           masterReadArray = pushToMasterReadArray(readFilejson)
         }, 100)
 
@@ -1374,6 +1383,10 @@ const onLoad = () => {
           const outputList = readColoring(g, listGi, graphics, renderer, readString)
           listGi = outputList[0]
           listGiFilter = outputList[1]
+
+          // adds mash screen queries to the typeOfProject
+          typeOfProject["inputFiles"] = assemblyJson
+
           masterReadArray = pushToMasterReadArray(assemblyJson)
         }, 100)
 
@@ -1450,6 +1463,10 @@ const onLoad = () => {
           const outputList = readColoring(g, listGi, graphics, renderer, readString)
           listGi = outputList[0]
           listGiFilter = outputList[1]
+
+          // adds read queries to the typeOfProject
+          typeOfProject["inputFiles"] = consensusJson
+
           masterReadArray = pushToMasterReadArray(consensusJson)
         }, 100)
 
