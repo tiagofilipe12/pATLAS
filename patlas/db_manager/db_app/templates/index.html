@@ -1046,7 +1046,9 @@
         <a href="#">Projects</a>
         <div id="collapse6" class="panel-collapse collapse">
           <ul class="list-group">
-            <button class="list-group-item" href="#" id="projectExport">Export
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#projectModal">Export
             </button>
             <button class="list-group-item" href="#" id="projectImport">Import
             </button>
@@ -1194,6 +1196,8 @@
 {% include 'popup.html' %}
 
 {% include 'colorLegend.html' %}
+
+{% include 'fileInputModal.html' %}
 
 <div id="couve-flor">
 

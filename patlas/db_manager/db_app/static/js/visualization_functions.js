@@ -2181,8 +2181,18 @@ const onLoad = () => {
       lastResSelector = controlFiltersSameLevel(lastResSelector, e, arrayOfSelectors)
     })
 
-  $("#projectExport").unbind("click").bind("click", () => {
-    exportProject()
+  $("#projectSubmit").unbind("click").bind("click", () => {
+    // the variable that contains the project to export
+    const textToExport = JSON.stringify(typeOfProject)
+
+    // checks if div is empty and if so gives a default name, otherwise
+    // fetches user defined name
+    const projectName = ($("#projectName").val() === "") ?
+      "my-patlas-project" :  $("#projectName").val()
+
+    // downloads the file
+    fileDownloader(`${projectName}.json`, "data:application/json;charset=utf-8",
+      [textToExport])
   })
 
 } // closes onload
