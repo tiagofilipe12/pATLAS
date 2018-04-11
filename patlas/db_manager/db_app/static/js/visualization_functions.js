@@ -1671,6 +1671,9 @@ const onLoad = () => {
       listGi = []
       listLengths = []
       listGiFilter = []
+
+      resetAllNodes(graphics, g, nodeColor, renderer)
+
       showDiv().then( () => {
         // removes nodes and forces adding same nodes
         setTimeout( () => {
