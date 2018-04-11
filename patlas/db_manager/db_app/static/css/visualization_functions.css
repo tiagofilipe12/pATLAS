@@ -828,3 +828,8 @@ Careful when using this in other popovers in the future*/
     text-align: center;
     height: 440px;
 }
+
+.dropdown-header{
+    background-color: #524F52;
+    color: white;
+}

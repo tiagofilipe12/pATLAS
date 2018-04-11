@@ -17,7 +17,7 @@
                 getArrayAssembly, startMultiSelect, requesterDB,
                  addAllNodes, addAllLinks, quickFixString, fileChecks,
                   iterateArrays, initResize, parseQueriesIntersection,
-                  controlFiltersSameLevel, fileDownloader*/
+                    controlFiltersSameLevel, fileDownloader, importProject*/
 
 /**
  * A bunch of global functions to be used throughout patlas
@@ -28,7 +28,24 @@
  * "projects export"
  * @type {Object}
  */
-let typeOfProject = {}
+let typeOfProject = {
+  "taxa": false,
+  "resistance": false,
+  "plasmidfinder": false,
+  "virulence": false,
+  "intersection": false,
+  "union": false,
+  "mapping": false,
+  "mashscreen": false,
+  "assembly": false,
+  "consensus": false
+}
+
+/**
+ * A global variable that will store a string that will be used for displaying
+ * current project views. By default it is undefined.
+ */
+let currentView
 
 // if this is a developer session please enable the below line of code
 const devel = false
@@ -976,7 +993,7 @@ const onLoad = () => {
         singleDropdownPopulate("#genusList", listGenera, "GenusClass")
         singleDropdownPopulate("#speciesList", listSpecies, "SpeciesClass")
 
-        // populate the menus for the intercection filters
+        // populate the menus for the intersection filters
         singleDropdownPopulate("#orderList2", listOrders, false)
         singleDropdownPopulate("#familyList2", listFamilies, false)
         singleDropdownPopulate("#genusList2", listGenera, false)
@@ -1076,7 +1093,11 @@ const onLoad = () => {
         listGiFilter = parseQueriesIntersection(g, graphics, renderer,
           objectOfSelections, typeOfSubmission)
 
-        typeOfProject[typeOfSubmission] = objectOfSelections
+
+        const typeToProject = (typeOfSubmission === "intersectionsModalSubmit") ?
+          "intersection" : "union"
+
+        typeOfProject[typeToProject] = objectOfSelections
 
       })
 
@@ -1221,7 +1242,7 @@ const onLoad = () => {
           listGiFilter = outLists[1]
 
           // adds read queries to the typeOfProject
-          typeOfProject["inputFiles"] = readFilejson
+          typeOfProject["mapping"] = readFilejson
 
           masterReadArray = pushToMasterReadArray(readFilejson)
         }, 100)
@@ -1307,7 +1328,7 @@ const onLoad = () => {
           listGiFilter = outputList[1]
 
           // adds mash screen queries to the typeOfProject
-          typeOfProject["inputFiles"] = mashJson
+          typeOfProject["mashscreen"] = mashJson
 
           masterReadArray = pushToMasterReadArray(readFilejson)
         }, 100)
@@ -1389,7 +1410,7 @@ const onLoad = () => {
           listGiFilter = outputList[1]
 
           // adds mash screen queries to the typeOfProject
-          typeOfProject["inputFiles"] = assemblyJson
+          typeOfProject["assembly"] = assemblyJson
 
           masterReadArray = pushToMasterReadArray(assemblyJson)
         }, 100)
@@ -1469,7 +1490,7 @@ const onLoad = () => {
           listGiFilter = outputList[1]
 
           // adds read queries to the typeOfProject
-          typeOfProject["inputFiles"] = consensusJson
+          typeOfProject["consensus"] = consensusJson
 
           masterReadArray = pushToMasterReadArray(consensusJson)
         }, 100)
@@ -1796,7 +1817,6 @@ const onLoad = () => {
     consensusJson = newConsensusJson
   })
 
-
   handleFileSelect("projectFile", "#project_text", (newProjectJson) => {
     projectJson = newProjectJson
   })
@@ -1983,15 +2003,15 @@ const onLoad = () => {
     assemblyJson = false
   }
 
-  $("#uploadFile").unbind("click").bind("click", () => {
+  $("#uploadFile, #uploadFileMash, #uploadFileAssembly").unbind("click").bind("click", () => {
     emptyFiles()
   })
-  $("#uploadFileMash").unbind("click").bind("click", () => {
-    emptyFiles()
-  })
-  $("#uploadFileAssembly").unbind("click").bind("click", () => {
-    emptyFiles()
-  })
+  // $("#uploadFileMash").unbind("click").bind("click", () => {
+  //   emptyFiles()
+  // })
+  // $("#uploadFileAssembly").unbind("click").bind("click", () => {
+  //   emptyFiles()
+  // })
 
   // resistance button control //
   $("#resButton").unbind("click").bind("click", () => {
@@ -2222,8 +2242,13 @@ const onLoad = () => {
   })
 
   $("#projectLoadSubmit").unbind("click").bind("click", () => {
-    const importedFileProject = JSON.parse(projectJson[Object.keys(projectJson)[0]])
-    importProject(importedFileProject)
+    // makes value from div comparable with the projectJson object so that they
+    // can be used as keys for that object
+    const viewParsed = $("#viewList").val().toLowerCase().replace(" ", "")
+
+    const projectInitialView = importProject(projectJson, viewParsed)
+
+    setProject(g, graphics, renderer, projectInitialView, viewParsed)
   })
 
 } // closes onload

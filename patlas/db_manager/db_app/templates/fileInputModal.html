@@ -53,6 +53,34 @@
             <input type="text" class="form-control" id="project_text" readonly autocomplete="off">
           </div>
         </div>
+        <div class="row">
+          <div style="text-align: center">
+
+            <div class="header_taxa">Select a view</div>
+
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="50%"
+                    data-selected-text-format="count"
+                    title="No items selected" id="viewList">
+
+              <optgroup label="Browse">
+                <option>Taxa</option>
+                <option>Resistance</option>
+                <option>PlasmidFinder</option>
+                <option>Virulence</option>
+                <option>Intersection</option>
+                <option>Union</option>
+              </optgroup>
+              <optgroup label="Import results">
+                <option>Mapping</option>
+                <option>Mash screen</option>
+                <option>Assembly</option>
+                <option>Consensus</option>
+              </optgroup>
+
+            </select>
+          </div>
+        </div>
 
       </div>
 

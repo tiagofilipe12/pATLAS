@@ -1,4 +1,4 @@
-/*globals colorList, listGiFilter, colorNodes, legendInst */
+/*globals colorList, listGiFilter, colorNodes, legendInst, typeOfProject */
 
 // function to remove first char from every string in array
 // of course array must have strings
@@ -17,7 +17,6 @@ const singleDropdownPopulate = (divId, arrayToSort, className) => {
   for (let i = 0; i < sortedArray.length; i++) {
     $(divId).append(`<option class=${className}>${sortedArray[i]}</option>`)
   }
-  // $(divId).append(`<option class=${className}><em>unknown</em></option>`)
   // populate the select with the newly added options
   $(divId).selectpicker("refresh")
 }
@@ -99,13 +98,6 @@ const iterateSelectedArrays = async (array, g, graphics, renderer, tempPageReRun
           listGiFilter.push(request.plasmid_id)
         }
       })
-        // .then( (results) => {
-        //   results.map( (request) => {
-        //     if (tempPageReRun === false) {
-        //       listGiFilter.push(request.plasmid_id)
-        //     }
-        //   })
-        // })
     }
   }
   return storeLis
@@ -168,8 +160,6 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  // return Promise.all(promises)
-  //   .then( () => {
   if (legendInst === true) {
 
     $("#res_label").show()
@@ -182,7 +172,6 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
       .show()
   }
   return legendInst
-  // })
 }
 
 // function to display resistances after clicking resSubmit button
@@ -237,8 +226,6 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  // return Promise.all(promises)
-  //   .then( () => {
   if (legendInst === true) {
     $("#pf_label").show()
     $("#colorLegendBoxPf").empty()
@@ -250,7 +237,6 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
       .show()
   }
   return legendInst
-  // })
 }
 
 // function to display resistances after clicking resSubmit button
@@ -304,8 +290,6 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  // return Promise.all(promises)
-  //   .then( () => {
   if (legendInst === true) {
     $("#vir_label").show()
     $("#colorLegendBoxVir").empty()
@@ -317,5 +301,4 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
       .show()
   }
   return legendInst
-  // })
 }

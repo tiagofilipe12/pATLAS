@@ -22,7 +22,7 @@ const abortRead = () => {
  * reading this function, i.e., after reading all files
  */
 const handleFileSelect = (infileId, textId, callback) => {
-  document.getElementById(infileId).addEventListener("change", function (e) {
+  document.getElementById(infileId).addEventListener("change", (e) => {
     let arrayOfObj = {}
     const files = e.target.files // FileList object
     // append fle name to text fomr displaying current selection
