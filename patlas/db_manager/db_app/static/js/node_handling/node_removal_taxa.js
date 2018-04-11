@@ -1,37 +1,7 @@
 /*globals makeHash, reloadAccessionList, assembly, listGiFilter,
  colorNodes, readColoring, removeImportInfo, selectedFilter, getLinkedNodes */
 
-const reAppendString = "<div class='panel-group colorpicker-component' id='colorLegend' style='display: none'>\n" +
-  "<div class='panel panel-default' >\n" +
-  "<div class='panel-heading' style='font-size: 16px; text-align: center'>Color legend</div>\n" +
-  "<div class='panel-body'>" +
-  "<div id='sliderLegend'>" +
-  "<div class='btn-group'>" +
-  "<button id='slideLegendLeft' class='btn btn-sm btn-default' data-toggle='tooltip' title='Change selected filter' type='button'>" +
-  "<span class='glyphicon glyphicon-chevron-left'></span>" +
-  "</button>" +
-  "<button id='slideLegendRight' class='btn btn-sm btn-default' data-toggle='tooltip' title='Change selected filter' type='button'>" +
-  "<span class='glyphicon glyphicon-chevron-right'></span>" +
-  "</button></div></div>" +
-  "<label id='taxa_label'>Taxa</label>\n" +
-  "<ul class='legend' id='colorLegendBox'></ul>\n" +
-  "<label id='res_label'>Resistances</label>" +
-  "<ul class='legend' id='colorLegendBoxRes'></ul>" +
-  "<label id='pf_label'>Plasmid Families</label>" +
-  "<ul class='legend' id='colorLegendBoxPf'></ul>" +
-  "<label id='vir_label'>Virulence factors</label>" +
-  "<ul class='legend' id='colorLegendBoxVir'></ul>" +
-  "<label id='distance_label'>Distance filters</label>\n" +
-  "<div class='gradient' id='scaleLegend'></div>\n" +
-  "<div id='scaleString'></div>" +
-  "<label id='read_label'>Read filters</label>\n" +
-  "<div class='gradient' id='readLegend'></div>\n" +
-  "<div id='readString'></div>" +
-  "<label id='assemblyLabel'>Assembly</label>" +
-  "<div class='legend' id='assemblyLegend'></div>" +
-  "</div>\n" +
-  "</div>\n" +
-  "</div>\n" +
+const reAppendString =
   "<div id='buttonStuff'>\n" +
   "<div class='btn-group'>\n" +
   "<button id='playpauseButton' data-toggle='tooltip'" +
@@ -501,7 +471,8 @@ const reGetListGi = (g, graphics) => {
 const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
   // checks for area selection
   if (forgetListGiFilter === false) {
-    listGiFilter = (listGiFilter.length === 0) ? reGetListGi(g, graphics) : listGiFilter
+    listGiFilter = (listGiFilter.length === 0) ?
+      reGetListGi(g, graphics) : listGiFilter
   }
   // otherwise doesn't care for listGiFilter because is just a page reload
   if (listGiFilter.length > 0 && forgetListGiFilter === false) {

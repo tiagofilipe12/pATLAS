@@ -1,4 +1,4 @@
-/*globals FileSaver, iterateArrays, selectedFilter*/
+/*globals FileSaver, iterateArrays, selectedFilter, filterDisplayer*/
 
 /**
  * A function to save files to output
@@ -34,12 +34,17 @@ const importProject = (importedFileProject, view) => {
   return firstProject[view]
 }
 
+/**
+ * The objective of this function is to populate the respective displayers in
+ * each menu and trigger the event for the selected view
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param projectInitialView
+ * @param view
+ * @returns {Promise<void>}
+ */
 const setProjectView = async (g, graphics, renderer, projectInitialView, view) => {
-
-  let storeLis = ""
-  let i = 0
-
-  selectedFilter = (view === "resistance") ? "res" : view
 
   // instance when view is resistance or taxa
   if (projectInitialView.constructor !== Array) {
@@ -62,7 +67,6 @@ const setProjectView = async (g, graphics, renderer, projectInitialView, view) =
     }
   }
 
-  // for taxa use iterateArrays function to color nodes
   if (view === "taxa") {
     $("#taxaModalSubmit").click()
   } else if (view === "resistance") {
