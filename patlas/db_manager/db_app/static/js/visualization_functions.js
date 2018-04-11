@@ -17,7 +17,8 @@
                 getArrayAssembly, startMultiSelect, requesterDB,
                  addAllNodes, addAllLinks, quickFixString, fileChecks,
                   iterateArrays, initResize, parseQueriesIntersection,
-                    controlFiltersSameLevel, fileDownloader, importProject*/
+                    controlFiltersSameLevel, fileDownloader, importProject,
+                      setProjectView*/
 
 /**
  * A bunch of global functions to be used throughout patlas
@@ -2248,7 +2249,7 @@ const onLoad = () => {
 
     const projectInitialView = importProject(projectJson, viewParsed)
 
-    setProject(g, graphics, renderer, projectInitialView, viewParsed)
+    setProjectView(g, graphics, renderer, projectInitialView, viewParsed)
   })
 
 } // closes onload

@@ -134,6 +134,7 @@ const taxaRequestWrapper = async (g, graphics, renderer, storeLis,
         currentColor)
 
       listGiFilter = mapRequest(taxaQueryResults)
+
     }
 
   }
