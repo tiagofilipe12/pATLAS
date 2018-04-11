@@ -1,0 +1,48 @@
+<div id="buttonStuff">
+  <div class="btn-group">
+
+    <!-- Buttons that overlay the graph and interact with it -->
+    <button id="playpauseButton" data-toggle="tooltip"
+            title="Play/Pause" type="button"
+            class="btn btn-default">
+      <span class="glyphicon glyphicon-play"></span>
+    </button>
+
+    <button class="btn btn-default" data-toggle="tooltip"
+            title="Trigger area selection (uses shift key)"
+            type="button"
+            id="refreshButton">
+      <span class="glyphicon glyphicon-screenshot"></span>
+    </button>
+
+  </div>
+  <!--zoom buttons-->
+  <div class="btn-group">
+    <button id="zoom_in" class="zoom in btn btn-default"
+            data-toggle="tooltip" title="Zoom in"
+            type="button">
+      <span class="glyphicon glyphicon-zoom-in"></span>
+    </button>
+    <button id="zoom_out" class="zoom out btn btn-default"
+            data-toggle="tooltip" title="Zoom out"
+            type="button">
+      <span class="glyphicon glyphicon-zoom-out"></span>
+    </button>
+  </div>
+  <!-- slider buttons -->
+  <div class="btn-group">
+    <button id="slideLeft" class="btn btn-default"
+            data-toggle="tooltip" title="Change file"
+            type="button" disabled>
+      <span class="glyphicon glyphicon-chevron-left"></span>
+    </button>
+    <button id="slideRight" class="btn btn-default"
+            data-toggle="tooltip" title="Change file"
+            type="button" disabled>
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </button>
+  </div>
+  <!-- End buttons -->
+</div>
+
+<div id="fileNameDiv"></div>
