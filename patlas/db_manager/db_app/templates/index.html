@@ -929,6 +929,7 @@
       <li class="sidebar-brand">
         <!--unused space filled with img-->
       </li>
+      <div id="collapseGroup">
       <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
         <a href="#">Browse</a>
         <div id="collapse1" class="panel-collapse collapse">
@@ -1077,6 +1078,7 @@
         <a href="#" data-toggle="modal" data-backdrop="static"
            data-target="#aboutModal">About</a>
       </li>
+      </div>
     </ul>
   </div>
 </div> <!--closes wrapper div-->
@@ -1280,13 +1282,7 @@
           <div id="plotWait">Please wait...
             <img id="loadingImgPlots"
                  src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..."/>
-            <!--loading bar div-->
-            <!--<div class="progress" id="progressBar">-->
-            <!--<div class="progress-bar progress-bar-success progress-bar-striped"-->
-            <!--role="progressbar" id="actualProgress">-->
-            <!--0% complete-->
-            <!--</div>-->
-            <!--</div>-->
+
           </div>
         </div>
         <!--div to put the plot-->

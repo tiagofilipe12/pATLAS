@@ -2255,4 +2255,14 @@ const onLoad = () => {
     setProjectView(g, graphics, renderer, projectInitialView, viewParsed)
   })
 
+
+  /**
+   * Function that controls the behavior of the side bar menu, collapsing the
+   * buttons that are not in use when other collapsible is clicked
+   */
+  $("#collapseGroup").on("show.bs.collapse",".collapse", () => {
+    $("#collapseGroup").find(".collapse.in").collapse("hide")
+  })
+
 } // closes onload
+

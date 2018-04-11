@@ -5,7 +5,7 @@
  * Variable to append to html when couve-flor is emptied
  * @type {string}
  */
-const reAppendString = "{% include couve-flor.html %}"
+const reAppendString = "{% include 'couve-flor.html' %}"
 
 // function that adds links, avoiding duplication below on reAddNode function
 /**
