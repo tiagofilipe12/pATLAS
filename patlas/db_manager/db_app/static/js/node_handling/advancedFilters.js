@@ -243,6 +243,12 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   const storeLis = setStoreLis(objectOfSelections, selectedColor, selectedFilter)
 
   // show legend
+
+  $("#readString").empty()
+  $("#readLegend").empty()
+  $("#read_label").hide()
+  $("#fileNameDiv").hide()
+
   $("#colorLegend").show()
   document.getElementById("taxa_label").style.display = "block" // show label
   $("#colorLegendBox").empty()

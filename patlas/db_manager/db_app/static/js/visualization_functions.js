@@ -670,6 +670,12 @@ const onLoad = () => {
       $("#colorLegendBoxRes").empty()
       $("#vir_label").hide()
       $("#colorLegendBoxVir").empty()
+
+      $("#readString").empty()
+      $("#readLegend").empty()
+      $("#read_label").hide()
+      $("#fileNameDiv").hide()
+
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
       showDiv().then( () => {
@@ -796,6 +802,11 @@ const onLoad = () => {
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
 
+      $("#readString").empty()
+      $("#readLegend").empty()
+      $("#read_label").hide()
+      $("#fileNameDiv").hide()
+
       areaSelection = false
 
       const tempPageReRun = pageReRun
@@ -921,6 +932,12 @@ const onLoad = () => {
       $("#colorLegendBoxRes").empty()
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
+
+      $("#readString").empty()
+      $("#readLegend").empty()
+      $("#read_label").hide()
+      $("#fileNameDiv").hide()
+
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
       showDiv().then( () => {
@@ -1107,6 +1124,7 @@ const onLoad = () => {
       $("#readString").empty()
       $("#readLegend").empty()
       $("#read_label").hide()
+      $("#fileNameDiv").hide()
 
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
@@ -2265,6 +2283,8 @@ const onLoad = () => {
     // clicks every clear button in each modal and reset-sliders
     $("#reset-sliders, #pfClear, #virClear, #resClear, #taxaModalClear, " +
       "#intersectionsModalClear").click()
+    // hides fileNameDiv
+    $("#fileNameDiv").hide()
 
   })
 
