@@ -53,6 +53,12 @@
     left: 50%;
     transform: translateX(-46%);
 }
+
+#slideLeft, #slideRight, #zoom_out, #zoom_in, #refreshButton, #playpauseButton,
+#closeProject{
+    height: 34px;
+}
+
 /*resize search box for gi*/
 #formValueId{
     width: 200px;

@@ -41,6 +41,37 @@
       <span class="glyphicon glyphicon-chevron-right"></span>
     </button>
   </div>
+
+  <div class="btn-group" id="viewWrapper" style="display: none">
+    <select class="selectpicker dropup" data-dropup-auto="false"
+            data-width="auto"
+            data-selected-text-format="count"
+            title="Select a view" id="viewList2">
+
+      <optgroup label="Browse">
+        <option>Taxa</option>
+        <option>Resistance</option>
+        <option>PlasmidFinder</option>
+        <option>Virulence</option>
+        <option>Intersection</option>
+        <option>Union</option>
+      </optgroup>
+      <optgroup label="Import results">
+        <option>Mapping</option>
+        <option>Mash screen</option>
+        <option>Assembly</option>
+        <option>Consensus</option>
+      </optgroup>
+
+    </select>
+    <button id="closeProject" class="btn btn-danger pull-right"
+            data-toggle="tooltip" title="Close current project"
+            type="button">
+      <span class="glyphicon glyphicon-remove"></span>
+    </button>
+  </div>
+
+
   <!-- End buttons -->
 </div>
 

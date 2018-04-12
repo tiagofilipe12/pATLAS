@@ -624,7 +624,7 @@ const onLoad = () => {
       // resets dropdown selections
       $("#plasmidFamiliesList").selectpicker("deselectAll")
 
-      slider.noUiSlider.set([min, max])
+      // slider.noUiSlider.set([min, max])
       // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -748,7 +748,7 @@ const onLoad = () => {
       $("#cardList").selectpicker("deselectAll")
       $("#resList").selectpicker("deselectAll")
 
-      slider.noUiSlider.set([min, max])
+      // slider.noUiSlider.set([min, max])
       // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -865,7 +865,7 @@ const onLoad = () => {
       // resets dropdown selections
       $("#virList").selectpicker("deselectAll")
 
-      slider.noUiSlider.set([min, max])
+      // slider.noUiSlider.set([min, max])
       // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -1016,7 +1016,7 @@ const onLoad = () => {
       $("#genusList").selectpicker("deselectAll")
       $("#speciesList").selectpicker("deselectAll")
 
-      slider.noUiSlider.set([min, max])
+      // slider.noUiSlider.set([min, max])
 
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -2234,6 +2234,8 @@ const onLoad = () => {
 
     const projectInitialView = importProject(projectJson, viewParsed)
 
+    $("#viewWrapper").show()
+
     setProjectView(projectInitialView, viewParsed)
   })
 
@@ -2244,6 +2246,28 @@ const onLoad = () => {
   $("#collapseGroup").on("show.bs.collapse",".collapse", () => {
     $("#collapseGroup").find(".collapse.in").collapse("hide")
   })
+
+  $("#viewList, #viewList2").on("changed.bs.select", (e) => {
+
+    $("#viewList, #viewList2").selectpicker("val", $(`#${e.target.id}`).val())
+
+    if (e.target.id === "viewList2") {
+      $("#projectLoadSubmit").click()
+    }
+
+  })
+
+  $("#closeProject").unbind("click").bind("click", () => {
+    // hide the div with the dropdown and close button itself
+    $("#viewWrapper").hide()
+    // clears the input div with the text with the project input file
+    document.getElementById("project_text").value = ""
+    // clicks every clear button in each modal and reset-sliders
+    $("#reset-sliders, #pfClear, #virClear, #resClear, #taxaModalClear, " +
+      "#intersectionsModalClear").click()
+
+  })
+
 
 } // closes onload
 
