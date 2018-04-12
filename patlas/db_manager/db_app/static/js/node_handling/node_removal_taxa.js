@@ -1,12 +1,6 @@
 /*globals makeHash, reloadAccessionList, assembly, listGiFilter,
  colorNodes, readColoring, removeImportInfo, selectedFilter, getLinkedNodes */
 
-/**
- * Variable to append to html when couve-flor is emptied
- * @type {string}
- */
-const reAppendString = "{% include 'couve-flor.html' %}"
-
 // function that adds links, avoiding duplication below on reAddNode function
 /**
  * A function that adds links, avoiding duplication below on reAddNode
@@ -297,14 +291,12 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
     // removes all nodes from g using the same layout
     // change play button in order to be properly set to pause
     $("#couve-flor").empty()
-      .append(reAppendString)
     onload()
   } else if (forgetListGiFilter === true) {
     // this statement is executed if go_back button is pressed
     // removes all nodes from g using the same layout
     // change play button in order to be properly set to pause
     $("#couve-flor").empty()
-      .append(reAppendString)
     onload()
   } else {
     // this is executed when re_run button is pressed but no selections are made

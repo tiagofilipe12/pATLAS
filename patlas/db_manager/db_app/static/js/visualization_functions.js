@@ -656,16 +656,6 @@ const onLoad = () => {
 
       selectedFilter = "pf"
 
-      // resetDisplayTaxaBox(
-      //   ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
-      // )
-      // $("#orderList").selectpicker("deselectAll")
-      // $("#familyList").selectpicker("deselectAll")
-      // $("#genusList").selectpicker("deselectAll")
-      // $("#speciesList").selectpicker("deselectAll")
-      // $("#resList").selectpicker("deselectAll")
-      // $("#cardList").selectpicker("deselectAll")
-      // $("#virList").selectpicker("deselectAll")
       // clears previous selected nodes
       nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
@@ -2252,9 +2242,8 @@ const onLoad = () => {
 
     const projectInitialView = importProject(projectJson, viewParsed)
 
-    setProjectView(g, graphics, renderer, projectInitialView, viewParsed)
+    setProjectView(projectInitialView, viewParsed)
   })
-
 
   /**
    * Function that controls the behavior of the side bar menu, collapsing the

@@ -31,40 +31,49 @@ const importProject = (importedFileProject, view) => {
     importedFileProject[Object.keys(importedFileProject)[0]]
   )
 
+  console.log(firstProject)
+
   return firstProject[view]
 }
 
 /**
  * The objective of this function is to populate the respective displayers in
  * each menu and trigger the event for the selected view
- * @param g
- * @param graphics
- * @param renderer
  * @param projectInitialView
  * @param view
  * @returns {Promise<void>}
  */
-const setProjectView = async (g, graphics, renderer, projectInitialView, view) => {
+const setProjectView = async (projectInitialView, view) => {
 
-  // instance when view is resistance or taxa
+  // instance when view is resistance or taxa or results imports -
+  // projectInitialView will be an object
   if (projectInitialView.constructor !== Array) {
 
-    // iterate through each taxa level
-    for (let k in projectInitialView) {
+    // if taxa or resistance do this...
+    if (view === "taxa" || view === "resistance") {
 
-      if (projectInitialView.hasOwnProperty(k)) {
-        const stringClass = k.charAt(0).toUpperCase() + k.slice(1)
+      // iterate through each taxa level
+      for (let k in projectInitialView) {
 
-        // iterate through the array of taxa selected within each taxa level to
-        // append things to displayer in respective taxaModal
-        for (const item in projectInitialView[k]) {
-          if (projectInitialView[k].hasOwnProperty(item)) {
-            filterDisplayer(projectInitialView[k][item], stringClass,
-              `#p_${stringClass}`)
+        if (projectInitialView.hasOwnProperty(k)) {
+          const stringClass = k.charAt(0).toUpperCase() + k.slice(1)
+
+          // iterate through the array of taxa selected within each taxa level to
+          // append things to displayer in respective taxaModal
+          for (const item in projectInitialView[k]) {
+            if (projectInitialView[k].hasOwnProperty(item)) {
+              filterDisplayer(projectInitialView[k][item], stringClass,
+                `#p_${stringClass}`)
+            }
           }
         }
       }
+    } else {
+      // TODO other stuff for file inputs
     }
+  } else {
+    // if it is an array it will be a plasmidfinder or virulence view
+
   }
 
   if (view === "taxa") {
