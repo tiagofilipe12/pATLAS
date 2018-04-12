@@ -3,7 +3,7 @@
 // function to remove first char from every string in array
 // of course array must have strings
 const removeFirstCharFromArray = (array) => {
-  return array.map( (el) => el.slice(1))
+  return array.map( (el) => el.replace(" ", ""))
 }
 
 // function to populate any dropdown menu with select
@@ -112,6 +112,7 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   // now processes the current selection
   const cardQuery = document.getElementById("p_Card").innerHTML,
     resfinderQuery = document.getElementById("p_Resfinder").innerHTML
+
   let selectedCard = cardQuery.replace("Card:", "").split(",").filter(Boolean),
     selectedResfinder = resfinderQuery.replace("Resfinder:", "").split(",").filter(Boolean)
   // remove first char from selected* arrays
@@ -182,7 +183,10 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const pfQuery = document.getElementById("p_Plasmidfinder").innerHTML
-  let selectedPf = pfQuery.replace("Plasmidfinder:", "").split(",").filter(Boolean)
+
+  let selectedPf = pfQuery.replace("Plasmidfinder: ", "").split(",").filter(Boolean)
+
+  selectedPf = removeFirstCharFromArray(selectedPf)
 
   // adds plasmid_finder selection to typeOfProject
   typeOfProject["plasmidFinder"] = selectedPf
@@ -247,7 +251,9 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const pfQuery = document.getElementById("p_Virulence").innerHTML
-  let selectedVir = pfQuery.replace("Virulence:", "").split(",").filter(Boolean)
+  let selectedVir = pfQuery.replace("Virulence: ", "").split(",").filter(Boolean)
+
+  selectedVir = removeFirstCharFromArray(selectedVir)
 
   // adds selected virulence to typeOfProject
   typeOfProject["virulence"] = selectedVir

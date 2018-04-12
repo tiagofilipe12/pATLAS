@@ -73,13 +73,20 @@ const setProjectView = async (projectInitialView, view) => {
     }
   } else {
     // if it is an array it will be a plasmidfinder or virulence view
-
+    for (const item of projectInitialView) {
+      const stringClass = view.charAt(0).toUpperCase() + view.slice(1)
+      filterDisplayer(item, stringClass, `#p_${stringClass}`)
+    }
   }
 
   if (view === "taxa") {
     $("#taxaModalSubmit").click()
   } else if (view === "resistance") {
     $("#resSubmit").click()
+  } else if (view === "plasmidfinder") {
+    $("#pfSubmit").click()
+  } else if (view === "virulence") {
+    $("#virSubmit").click()
   }
 
 }
