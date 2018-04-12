@@ -32,8 +32,19 @@ const importProject = (importedFileProject, view) => {
     importedFileProject[Object.keys(importedFileProject)[0]]
   )
 
+
+  for (const k in firstProject) {
+    if (firstProject[k] === false) {
+      // disables options from the two dropdowns by using the classes that
+      // match the k value
+      $(`.${k}`).prop("disabled", true)
+      $("#viewList, #viewList2").selectpicker("refresh")
+    }
+  }
+
   return firstProject[view]
 }
+
 
 /**
  * The objective of this function is to populate the respective displayers in

@@ -2069,6 +2069,10 @@ const onLoad = () => {
     $("#alertIdnoSelectedview").hide()  // hide this div
   })
 
+  $("#alertCloseEmptySelectedview").unbind("click").bind("click", () => {
+    $("#alertIdEmptySelectedview").hide()  // hide this div
+  })
+
   // function that submits the selection made in the modal
   $("#ratioSubmit").unbind("click").bind("click", () => {
 
@@ -2262,14 +2266,21 @@ const onLoad = () => {
 
       const projectInitialView = importProject(projectJson, viewParsed)
 
-      //TODO needs a parsing to check if current selected view isn't false
+      // check if current selected view isn't false
+      if (projectInitialView !== false) {
 
-      // hides modal if successful
-      $("#projectModal").modal("hide")
+        // hides modal if successful
+        $("#importProjectModal").modal("hide")
 
-      $("#viewWrapper").show()
+        // show project dropdown switcher and close button
+        $("#viewWrapper").show()
 
-      setProjectView(projectInitialView, viewParsed)
+        // sets the project in the current patlas view
+        setProjectView(projectInitialView, viewParsed)
+
+      } else {
+        $("#alertIdEmptySelectedview").show()
+      }
     }
   })
 
@@ -2302,8 +2313,14 @@ const onLoad = () => {
     // hides fileNameDiv
     $("#fileNameDiv").hide()
 
-  })
+    // re-allow any selection from the dropdown menus
+    $("#viewList option").each( (idx, el) => {
+      // fetch the classNames of each el (options)
+      $(`.${el.className}`).prop("disabled", false)
+      $("#viewList, #viewList2").selectpicker("refresh")
+    })
 
+  })
 
 } // closes onload
 

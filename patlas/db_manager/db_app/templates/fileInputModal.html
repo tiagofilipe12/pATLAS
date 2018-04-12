@@ -64,18 +64,18 @@
                     title="No items selected" id="viewList">
 
               <optgroup label="Browse">
-                <option>Taxa</option>
-                <option>Resistance</option>
-                <option>PlasmidFinder</option>
-                <option>Virulence</option>
-                <option>Intersection</option>
-                <option>Union</option>
+                <option class="taxa">Taxa</option>
+                <option class="resistance">Resistance</option>
+                <option class="plasmidfinder">PlasmidFinder</option>
+                <option class="virulence">Virulence</option>
+                <option class="intersection">Intersection</option>
+                <option class="union">Union</option>
               </optgroup>
               <optgroup label="Import results">
-                <option>Mapping</option>
-                <option>Mash screen</option>
-                <option>Assembly</option>
-                <option>Consensus</option>
+                <option class="mapping">Mapping</option>
+                <option class="mashscreen">Mash screen</option>
+                <option class="assembly">Assembly</option>
+                <option class="consensus">Consensus</option>
               </optgroup>
 
             </select>
@@ -93,12 +93,18 @@
 
   </div>
 
-  <!--Alert message to check that some selection is made-->
   <div class="alert alert-danger alert-dismissable fade in" id="alertIdnoSelectedview"
        style="display: none">
     <button type="button" class="close" id="alertClosenoSelectedview" aria-hidden="true"
             data-hide="true">&times;</button>
     <strong>Warning!</strong> Please select one view to display from the dropdown menu.
+  </div>
+
+  <div class="alert alert-danger alert-dismissable fade in" id="alertIdEmptySelectedview"
+       style="display: none">
+    <button type="button" class="close" id="alertCloseEmptySelectedview" aria-hidden="true"
+            data-hide="true">&times;</button>
+    <strong>Warning!</strong> No results for the currently selected view!
   </div>
 
 </div>
