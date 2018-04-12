@@ -1508,7 +1508,7 @@ const onLoad = () => {
       }
     })
 
-    $("#consensus_assembly").unbind("click").bind("click", () => {
+    $("#cancel_consensus").unbind("click").bind("click", () => {
       consensusJson = abortRead()
     })
 
@@ -2002,12 +2002,17 @@ const onLoad = () => {
     $("#infile").val("")
     $("#mashInfile").val("")
     $("#assemblyfile").val("")
+    $("#consensusfile").val("")
+    $("#projectFile").val("")
     readFilejson = false
     mashJson = false
     assemblyJson = false
+    consensusJson = false
+    projectJson = false
   }
 
-  $("#uploadFile, #uploadFileMash, #uploadFileAssembly").unbind("click").bind("click", () => {
+  $("#uploadFile, #uploadFileMash, #uploadFileAssembly, #uploadFileConsensus, #uploadFileProject")
+    .unbind("click").bind("click", () => {
     emptyFiles()
   })
   // $("#uploadFileMash").unbind("click").bind("click", () => {
@@ -2071,6 +2076,10 @@ const onLoad = () => {
 
   $("#alertCloseEmptySelectedview").unbind("click").bind("click", () => {
     $("#alertIdEmptySelectedview").hide()  // hide this div
+  })
+
+  $("#alertCloseNoProject").unbind("click").bind("click", () => {
+    $("#alertIdNoProject").hide()  // hide this div
   })
 
   // function that submits the selection made in the modal
@@ -2258,6 +2267,8 @@ const onLoad = () => {
     // first check if viewList has nothing selected
     if ($("#viewList").val() === "") {
       $("#alertIdnoSelectedview").show()
+    } else if ($("#project_text").val() === "") {
+      $("#alertIdNoProject").show()
     } else {
 
       // makes value from div comparable with the projectJson object so that they
@@ -2305,8 +2316,6 @@ const onLoad = () => {
   $("#closeProject").unbind("click").bind("click", () => {
     // hide the div with the dropdown and close button itself
     $("#viewWrapper").hide()
-    // clears the input div with the text with the project input file
-    document.getElementById("project_text").value = ""
     // clicks every clear button in each modal and reset-sliders
     $("#reset-sliders, #pfClear, #virClear, #resClear, #taxaModalClear, " +
       "#intersectionsModalClear").click()
@@ -2319,6 +2328,8 @@ const onLoad = () => {
       $(`.${el.className}`).prop("disabled", false)
       $("#viewList, #viewList2").selectpicker("refresh")
     })
+
+    emptyFiles()
 
   })
 
