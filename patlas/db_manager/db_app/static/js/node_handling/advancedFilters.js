@@ -133,6 +133,8 @@ const parseQueriesIntersection = async (g, graphics, renderer,
                                         objectOfSelections,
                                         typeOfSubmission) => {
 
+  console.log(objectOfSelections)
+
   // first parse the multitude of taxa entries and resistance entries available
   const taxa = (objectOfSelections.order.length > 0) ? objectOfSelections.order
     : (objectOfSelections.family.length > 0) ? objectOfSelections.family
@@ -220,7 +222,7 @@ const parseQueriesIntersection = async (g, graphics, renderer,
 
   let selectedColor
 
-  if (typeOfSubmission === "intersectionsModalSubmit") {
+  if (typeOfSubmission === "intersection") {
 
     listGiFilter = await arraysIntersection(arrayOfArrays)
     selectedColor = "0x" + "#0076c3".replace("#", "")

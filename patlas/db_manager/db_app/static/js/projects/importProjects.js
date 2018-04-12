@@ -31,8 +31,6 @@ const importProject = (importedFileProject, view) => {
     importedFileProject[Object.keys(importedFileProject)[0]]
   )
 
-  console.log(firstProject)
-
   return firstProject[view]
 }
 
@@ -44,6 +42,8 @@ const importProject = (importedFileProject, view) => {
  * @returns {Promise<void>}
  */
 const setProjectView = async (projectInitialView, view) => {
+
+  console.log(projectInitialView)
 
   // instance when view is resistance or taxa or results imports -
   // projectInitialView will be an object
@@ -68,8 +68,47 @@ const setProjectView = async (projectInitialView, view) => {
           }
         }
       }
+
+    } else if (view === "intersection" || view === "union") {
+
+      // iterate through object to populate the dropdowns
+      for (const key in projectInitialView){
+
+        if (key === "virulence") $("#virList2").selectpicker("val",
+          projectInitialView[key])
+
+        if (key === "card") $("#resCardList2").selectpicker("val",
+          projectInitialView[key])
+
+        if (key === "resfinder") $("#resResfinderList2").selectpicker("val",
+          projectInitialView[key])
+
+        if (key === "pfinder") $("#pfList2").selectpicker("val",
+          projectInitialView[key])
+
+        if (key === "species") $("#speciesList2").selectpicker("val",
+          projectInitialView[key])
+
+        if (key === "genus") $("#genusList2").selectpicker("val",
+          projectInitialView[key])
+
+        if (key === "family") $("#familyList2").selectpicker("val",
+          projectInitialView[key])
+
+        if (key === "order") $("#orderList2").selectpicker("val",
+          projectInitialView[key])
+      }
+
+      if (view === "union") {
+        $("#unionModalSubmit").click()
+      } else {
+        $("#intersectionsModalSubmit").click()
+      }
+
     } else {
+
       // TODO other stuff for file inputs
+
     }
   } else {
     // if it is an array it will be a plasmidfinder or virulence view

@@ -1063,34 +1063,32 @@ const onLoad = () => {
     $("#intersectionsModalSubmit, #unionModalSubmit").unbind("click").bind(
       "click", (event) => {
 
-      $("#reset-sliders").click()
+        $("#reset-sliders").click()
 
-      const typeOfSubmission = event.target.id
+        const typeOfSubmission = event.target.id
 
-      let objectOfSelections = {
+        let objectOfSelections = {
 
-        virulence: $("#virList2").selectpicker("val"),
-        card: $("#resCardList2").selectpicker("val"),
-        resfinder: $("#resResfinderList2").selectpicker("val"),
-        pfinder: $("#pfList2").selectpicker("val"),
-        order: $("#orderList2").selectpicker("val"),
-        family: $("#familyList2").selectpicker("val"),
-        genus: $("#genusList2").selectpicker("val"),
-        species: $("#speciesList2").selectpicker("val")
+          virulence: $("#virList2").selectpicker("val"),
+          card: $("#resCardList2").selectpicker("val"),
+          resfinder: $("#resResfinderList2").selectpicker("val"),
+          pfinder: $("#pfList2").selectpicker("val"),
+          order: $("#orderList2").selectpicker("val"),
+          family: $("#familyList2").selectpicker("val"),
+          genus: $("#genusList2").selectpicker("val"),
+          species: $("#speciesList2").selectpicker("val")
 
-      }
-
-      showDiv().then( () => {
-        listGiFilter = parseQueriesIntersection(g, graphics, renderer,
-          objectOfSelections, typeOfSubmission)
-
+        }
 
         const typeToProject = (typeOfSubmission === "intersectionsModalSubmit") ?
           "intersection" : "union"
 
         typeOfProject[typeToProject] = objectOfSelections
 
-      })
+        showDiv().then( () => {
+          listGiFilter = parseQueriesIntersection(g, graphics, renderer,
+            objectOfSelections, typeToProject)
+        })
 
     })
 
