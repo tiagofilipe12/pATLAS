@@ -133,8 +133,6 @@ const parseQueriesIntersection = async (g, graphics, renderer,
                                         objectOfSelections,
                                         typeOfSubmission) => {
 
-  console.log(objectOfSelections)
-
   // first parse the multitude of taxa entries and resistance entries available
   const taxa = (objectOfSelections.order.length > 0) ? objectOfSelections.order
     : (objectOfSelections.family.length > 0) ? objectOfSelections.family

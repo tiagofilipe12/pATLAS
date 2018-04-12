@@ -32,8 +32,6 @@ const importProject = (importedFileProject, view) => {
     importedFileProject[Object.keys(importedFileProject)[0]]
   )
 
-  console.log(firstProject)
-
   return firstProject[view]
 }
 
