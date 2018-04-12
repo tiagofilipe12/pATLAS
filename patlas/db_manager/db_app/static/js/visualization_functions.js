@@ -2065,6 +2065,10 @@ const onLoad = () => {
     $("#alertJsonFile").hide()  // hide this div
   })
 
+  $("#alertClosenoSelectedview").unbind("click").bind("click", () => {
+    $("#alertIdnoSelectedview").hide()  // hide this div
+  })
+
   // function that submits the selection made in the modal
   $("#ratioSubmit").unbind("click").bind("click", () => {
 
@@ -2246,15 +2250,27 @@ const onLoad = () => {
   })
 
   $("#projectLoadSubmit").unbind("click").bind("click", () => {
-    // makes value from div comparable with the projectJson object so that they
-    // can be used as keys for that object
-    const viewParsed = $("#viewList").val().toLowerCase().replace(" ", "")
 
-    const projectInitialView = importProject(projectJson, viewParsed)
+    // first check if viewList has nothing selected
+    if ($("#viewList").val() === "") {
+      $("#alertIdnoSelectedview").show()
+    } else {
 
-    $("#viewWrapper").show()
+      // makes value from div comparable with the projectJson object so that they
+      // can be used as keys for that object
+      const viewParsed = $("#viewList").val().toLowerCase().replace(" ", "")
 
-    setProjectView(projectInitialView, viewParsed)
+      const projectInitialView = importProject(projectJson, viewParsed)
+
+      //TODO needs a parsing to check if current selected view isn't false
+
+      // hides modal if successful
+      $("#projectModal").modal("hide")
+
+      $("#viewWrapper").show()
+
+      setProjectView(projectInitialView, viewParsed)
+    }
   })
 
   /**

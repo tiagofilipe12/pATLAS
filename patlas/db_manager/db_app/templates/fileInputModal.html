@@ -86,10 +86,19 @@
 
       <div class="modal-footer">
 
-        <button type="submit" class="btn btn-info" data-dismiss="modal"
+        <button type="submit" class="btn btn-info"
                 id="projectLoadSubmit">Load Project</button>
       </div>
     </div>
 
   </div>
+
+  <!--Alert message to check that some selection is made-->
+  <div class="alert alert-danger alert-dismissable fade in" id="alertIdnoSelectedview"
+       style="display: none">
+    <button type="button" class="close" id="alertClosenoSelectedview" aria-hidden="true"
+            data-hide="true">&times;</button>
+    <strong>Warning!</strong> Please select one view to display from the dropdown menu.
+  </div>
+
 </div>
