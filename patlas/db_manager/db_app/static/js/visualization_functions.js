@@ -42,12 +42,6 @@ let typeOfProject = {
   "consensus": false
 }
 
-/**
- * A global variable that will store a string that will be used for displaying
- * current project views. By default it is undefined.
- */
-let currentView
-
 // if this is a developer session please enable the below line of code
 const devel = false
 
