@@ -28,6 +28,7 @@ require("highcharts/modules/offline-exporting")(Highcharts)
 require("highcharts/modules/no-data-to-display")(Highcharts)
 require("highcharts/modules/boost")(Highcharts)
 //require("nouislider") // nouislider needs to be loaded in body...
+window.FileSaver = require("file-saver")
 
 // import custom packages/scripts
 require("./js/pATLASColorpicker")

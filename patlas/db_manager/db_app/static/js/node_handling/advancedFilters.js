@@ -220,7 +220,7 @@ const parseQueriesIntersection = async (g, graphics, renderer,
 
   let selectedColor
 
-  if (typeOfSubmission === "intersectionsModalSubmit") {
+  if (typeOfSubmission === "intersection") {
 
     listGiFilter = await arraysIntersection(arrayOfArrays)
     selectedColor = "0x" + "#0076c3".replace("#", "")
@@ -243,6 +243,12 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   const storeLis = setStoreLis(objectOfSelections, selectedColor, selectedFilter)
 
   // show legend
+
+  $("#readString").empty()
+  $("#readLegend").empty()
+  $("#read_label").hide()
+  $("#fileNameDiv").hide()
+
   $("#colorLegend").show()
   document.getElementById("taxa_label").style.display = "block" // show label
   $("#colorLegendBox").empty()

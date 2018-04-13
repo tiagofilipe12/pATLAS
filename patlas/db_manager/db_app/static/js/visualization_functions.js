@@ -17,11 +17,30 @@
                 getArrayAssembly, startMultiSelect, requesterDB,
                  addAllNodes, addAllLinks, quickFixString, fileChecks,
                   iterateArrays, initResize, parseQueriesIntersection,
-                  controlFiltersSameLevel*/
+                    controlFiltersSameLevel, fileDownloader, importProject,
+                      setProjectView*/
 
 /**
  * A bunch of global functions to be used throughout patlas
  */
+
+/**
+ * variable that will store the object to be exported to a json file on
+ * "projects export"
+ * @type {Object}
+ */
+let typeOfProject = {
+  "taxa": false,
+  "resistance": false,
+  "plasmidfinder": false,
+  "virulence": false,
+  "intersection": false,
+  "union": false,
+  "mapping": false,
+  "mashscreen": false,
+  "assembly": false,
+  "consensus": false
+}
 
 // if this is a developer session please enable the below line of code
 const devel = false
@@ -68,6 +87,7 @@ let readFilejson = false
 let mashJson = false
 let assemblyJson = false
 let consensusJson = false
+let projectJson = false
 
 let readIndex = 0
 
@@ -604,7 +624,7 @@ const onLoad = () => {
       // resets dropdown selections
       $("#plasmidFamiliesList").selectpicker("deselectAll")
 
-      slider.noUiSlider.set([min, max])
+      // slider.noUiSlider.set([min, max])
       // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -630,16 +650,6 @@ const onLoad = () => {
 
       selectedFilter = "pf"
 
-      // resetDisplayTaxaBox(
-      //   ["p_Resfinder", "p_Card", "p_Virulence", "p_Order", "p_Family", "p_Genus", "p_Species"]
-      // )
-      // $("#orderList").selectpicker("deselectAll")
-      // $("#familyList").selectpicker("deselectAll")
-      // $("#genusList").selectpicker("deselectAll")
-      // $("#speciesList").selectpicker("deselectAll")
-      // $("#resList").selectpicker("deselectAll")
-      // $("#cardList").selectpicker("deselectAll")
-      // $("#virList").selectpicker("deselectAll")
       // clears previous selected nodes
       nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
@@ -660,6 +670,12 @@ const onLoad = () => {
       $("#colorLegendBoxRes").empty()
       $("#vir_label").hide()
       $("#colorLegendBoxVir").empty()
+
+      $("#readString").empty()
+      $("#readLegend").empty()
+      $("#read_label").hide()
+      $("#fileNameDiv").hide()
+
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
       showDiv().then( () => {
@@ -738,7 +754,7 @@ const onLoad = () => {
       $("#cardList").selectpicker("deselectAll")
       $("#resList").selectpicker("deselectAll")
 
-      slider.noUiSlider.set([min, max])
+      // slider.noUiSlider.set([min, max])
       // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -785,6 +801,11 @@ const onLoad = () => {
       $("#colorLegendBoxVir").empty()
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
+
+      $("#readString").empty()
+      $("#readLegend").empty()
+      $("#read_label").hide()
+      $("#fileNameDiv").hide()
 
       areaSelection = false
 
@@ -855,7 +876,7 @@ const onLoad = () => {
       // resets dropdown selections
       $("#virList").selectpicker("deselectAll")
 
-      slider.noUiSlider.set([min, max])
+      // slider.noUiSlider.set([min, max])
       // nodeColorReset(graphics, g, nodeColor, renderer)
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -911,6 +932,12 @@ const onLoad = () => {
       $("#colorLegendBoxRes").empty()
       $("#pf_label").hide()
       $("#colorLegendBoxPf").empty()
+
+      $("#readString").empty()
+      $("#readLegend").empty()
+      $("#read_label").hide()
+      $("#fileNameDiv").hide()
+
       // reset nodes before submitting new colors
       const tempPageReRun = pageReRun
       showDiv().then( () => {
@@ -968,7 +995,7 @@ const onLoad = () => {
         singleDropdownPopulate("#genusList", listGenera, "GenusClass")
         singleDropdownPopulate("#speciesList", listSpecies, "SpeciesClass")
 
-        // populate the menus for the intercection filters
+        // populate the menus for the intersection filters
         singleDropdownPopulate("#orderList2", listOrders, false)
         singleDropdownPopulate("#familyList2", listFamilies, false)
         singleDropdownPopulate("#genusList2", listGenera, false)
@@ -1006,7 +1033,7 @@ const onLoad = () => {
       $("#genusList").selectpicker("deselectAll")
       $("#speciesList").selectpicker("deselectAll")
 
-      slider.noUiSlider.set([min, max])
+      // slider.noUiSlider.set([min, max])
 
       previousTableList = []
       // transform selector object that handles plots and hide their
@@ -1047,27 +1074,32 @@ const onLoad = () => {
     $("#intersectionsModalSubmit, #unionModalSubmit").unbind("click").bind(
       "click", (event) => {
 
-      $("#reset-sliders").click()
+        $("#reset-sliders").click()
 
-      const typeOfSubmission = event.target.id
+        const typeOfSubmission = event.target.id
 
-      let objectOfSelections = {
+        let objectOfSelections = {
 
-        virulence: $("#virList2").selectpicker("val"),
-        card: $("#resCardList2").selectpicker("val"),
-        resfinder: $("#resResfinderList2").selectpicker("val"),
-        pfinder: $("#pfList2").selectpicker("val"),
-        order: $("#orderList2").selectpicker("val"),
-        family: $("#familyList2").selectpicker("val"),
-        genus: $("#genusList2").selectpicker("val"),
-        species: $("#speciesList2").selectpicker("val")
+          virulence: $("#virList2").selectpicker("val"),
+          card: $("#resCardList2").selectpicker("val"),
+          resfinder: $("#resResfinderList2").selectpicker("val"),
+          pfinder: $("#pfList2").selectpicker("val"),
+          order: $("#orderList2").selectpicker("val"),
+          family: $("#familyList2").selectpicker("val"),
+          genus: $("#genusList2").selectpicker("val"),
+          species: $("#speciesList2").selectpicker("val")
 
-      }
+        }
 
-      showDiv().then( () => {
-        listGiFilter = parseQueriesIntersection(g, graphics, renderer,
-          objectOfSelections, typeOfSubmission)
-      })
+        const typeToProject = (typeOfSubmission === "intersectionsModalSubmit") ?
+          "intersection" : "union"
+
+        typeOfProject[typeToProject] = objectOfSelections
+
+        showDiv().then( () => {
+          listGiFilter = parseQueriesIntersection(g, graphics, renderer,
+            objectOfSelections, typeToProject)
+        })
 
     })
 
@@ -1092,6 +1124,7 @@ const onLoad = () => {
       $("#readString").empty()
       $("#readLegend").empty()
       $("#read_label").hide()
+      $("#fileNameDiv").hide()
 
       // changed nodes is reset every instance of taxaModalSubmit button
       listGiFilter = []   // makes listGiFilter an empty array
@@ -1188,6 +1221,7 @@ const onLoad = () => {
         assemblyJson = false
         // feeds the first file
         const readString = JSON.parse(Object.values(readFilejson)[0])
+
         fileChecks(readString)
         $("#fileNameDiv").html(Object.keys(readFilejson)[0])
           .show()
@@ -1207,6 +1241,10 @@ const onLoad = () => {
           const outLists = readColoring(g, listGi, graphics, renderer, readString)
           listGi = outLists[0]
           listGiFilter = outLists[1]
+
+          // adds read queries to the typeOfProject
+          typeOfProject["mapping"] = readFilejson
+
           masterReadArray = pushToMasterReadArray(readFilejson)
         }, 100)
 
@@ -1289,6 +1327,10 @@ const onLoad = () => {
           const outputList = readColoring(g, listGi, graphics, renderer, readString)
           listGi = outputList[0]
           listGiFilter = outputList[1]
+
+          // adds mash screen queries to the typeOfProject
+          typeOfProject["mashscreen"] = mashJson
+
           masterReadArray = pushToMasterReadArray(readFilejson)
         }, 100)
 
@@ -1367,6 +1409,10 @@ const onLoad = () => {
           const outputList = readColoring(g, listGi, graphics, renderer, readString)
           listGi = outputList[0]
           listGiFilter = outputList[1]
+
+          // adds mash screen queries to the typeOfProject
+          typeOfProject["assembly"] = assemblyJson
+
           masterReadArray = pushToMasterReadArray(assemblyJson)
         }, 100)
 
@@ -1443,6 +1489,10 @@ const onLoad = () => {
           const outputList = readColoring(g, listGi, graphics, renderer, readString)
           listGi = outputList[0]
           listGiFilter = outputList[1]
+
+          // adds read queries to the typeOfProject
+          typeOfProject["consensus"] = consensusJson
+
           masterReadArray = pushToMasterReadArray(consensusJson)
         }, 100)
 
@@ -1458,7 +1508,7 @@ const onLoad = () => {
       }
     })
 
-    $("#consensus_assembly").unbind("click").bind("click", () => {
+    $("#cancel_consensus").unbind("click").bind("click", () => {
       consensusJson = abortRead()
     })
 
@@ -1621,6 +1671,9 @@ const onLoad = () => {
       listGi = []
       listLengths = []
       listGiFilter = []
+
+      resetAllNodes(graphics, g, nodeColor, renderer)
+
       showDiv().then( () => {
         // removes nodes and forces adding same nodes
         setTimeout( () => {
@@ -1766,6 +1819,10 @@ const onLoad = () => {
 
   handleFileSelect("consensusfile", "#consensus_text", (newConsensusJson) => {
     consensusJson = newConsensusJson
+  })
+
+  handleFileSelect("projectFile", "#project_text", (newProjectJson) => {
+    projectJson = newProjectJson
   })
 
   //* ****************************** *//
@@ -1945,18 +2002,17 @@ const onLoad = () => {
     $("#infile").val("")
     $("#mashInfile").val("")
     $("#assemblyfile").val("")
+    $("#consensusfile").val("")
+    $("#projectFile").val("")
     readFilejson = false
     mashJson = false
     assemblyJson = false
+    consensusJson = false
+    projectJson = false
   }
 
-  $("#uploadFile").unbind("click").bind("click", () => {
-    emptyFiles()
-  })
-  $("#uploadFileMash").unbind("click").bind("click", () => {
-    emptyFiles()
-  })
-  $("#uploadFileAssembly").unbind("click").bind("click", () => {
+  $("#uploadFile, #uploadFileMash, #uploadFileAssembly, #uploadFileConsensus, #uploadFileProject")
+    .unbind("click").bind("click", () => {
     emptyFiles()
   })
 
@@ -2006,6 +2062,18 @@ const onLoad = () => {
 
   $("#alertCloseJsonFile").unbind("click").bind("click", () => {
     $("#alertJsonFile").hide()  // hide this div
+  })
+
+  $("#alertClosenoSelectedview").unbind("click").bind("click", () => {
+    $("#alertIdnoSelectedview").hide()  // hide this div
+  })
+
+  $("#alertCloseEmptySelectedview").unbind("click").bind("click", () => {
+    $("#alertIdEmptySelectedview").hide()  // hide this div
+  })
+
+  $("#alertCloseNoProject").unbind("click").bind("click", () => {
+    $("#alertIdNoProject").hide()  // hide this div
   })
 
   // function that submits the selection made in the modal
@@ -2174,4 +2242,107 @@ const onLoad = () => {
       lastResSelector = controlFiltersSameLevel(lastResSelector, e, arrayOfSelectors)
     })
 
+  $("#projectSubmit").unbind("click").bind("click", () => {
+    // the variable that contains the project to export
+    const textToExport = JSON.stringify(typeOfProject)
+
+    // checks if div is empty and if so gives a default name, otherwise
+    // fetches user defined name
+    const projectName = ($("#projectName").val() === "") ?
+      "my-patlas-project" :  $("#projectName").val()
+
+    // downloads the file
+    fileDownloader(`${projectName}.json`, "data:application/json;charset=utf-8",
+      [textToExport])
+  })
+
+  /**
+   * Function that controls the behavior of the side bar menu, collapsing the
+   * buttons that are not in use when other collapsible is clicked
+   */
+  $("#collapseGroup").on("show.bs.collapse",".collapse", () => {
+    $("#collapseGroup").find(".collapse.in").collapse("hide")
+  })
+
+  /**
+   * Function that handles for the first time the projectJson file. It will
+   * parse for the first time the dropdowns associated with the import from
+   * project files. Therefore, in the first iteration it will parse the
+   * projectJson to update the viewList and viewList2 dropdowns. However, it
+   * will raise an error if that view doesn't exist and update the dropdowns
+   * immediately.
+   */
+  $("#projectLoadSubmit").unbind("click").bind("click", () => {
+
+    // first check if viewList has nothing selected
+    if ($("#viewList").val() === "") {
+      $("#alertIdnoSelectedview").show()
+    } else if ($("#project_text").val() === "") {
+      $("#alertIdNoProject").show()
+    } else {
+
+      // makes value from div comparable with the projectJson object so that they
+      // can be used as keys for that object
+      const viewParsed = $("#viewList").val().toLowerCase().replace(" ", "")
+
+      const projectInitialView = importProject(projectJson, viewParsed)
+
+      // check if current selected view isn't false
+      if (projectInitialView !== false) {
+
+        // hides modal if successful
+        $("#importProjectModal").modal("hide")
+
+        // show project dropdown switcher and close button
+        $("#viewWrapper").show()
+
+        // sets the project in the current patlas view
+        setProjectView(projectInitialView, viewParsed)
+
+      } else {
+        $("#alertIdEmptySelectedview").show()
+      }
+    }
+  })
+
+  /**
+   * Dynamically updates each one of the dropdowns and if the click is on the
+   * viewList2 dropdown it will fire the projectLoadSubmit click event.
+   */
+  $("#viewList, #viewList2").on("changed.bs.select", (e) => {
+
+    $("#viewList, #viewList2").selectpicker("val", $(`#${e.target.id}`).val())
+
+    // fires the click event if the selection is on viewList2
+    if (e.target.id === "viewList2") {
+      $("#projectLoadSubmit").click()
+    }
+
+  })
+
+  /**
+   * Function to close the current project and handle the respective selections
+   * made throughout pATLAS.
+   */
+  $("#closeProject").unbind("click").bind("click", () => {
+    // hide the div with the dropdown and close button itself
+    $("#viewWrapper").hide()
+    // clicks every clear button in each modal and reset-sliders
+    $("#reset-sliders, #pfClear, #virClear, #resClear, #taxaModalClear, " +
+      "#intersectionsModalClear").click()
+    // hides fileNameDiv
+    $("#fileNameDiv").hide()
+
+    // re-allow any selection from the dropdown menus
+    $("#viewList option").each( (idx, el) => {
+      // fetch the classNames of each el (options)
+      $(`.${el.className}`).prop("disabled", false)
+      $("#viewList, #viewList2").selectpicker("refresh")
+    })
+
+    emptyFiles()
+
+  })
+
 } // closes onload
+

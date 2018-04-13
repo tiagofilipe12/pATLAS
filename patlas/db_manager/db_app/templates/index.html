@@ -39,6 +39,7 @@
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/sort_array_by_value.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/projects/importProjects.js') }}"></script>
 
   <!--<link rel="stylesheet" type="text/css" href="patlas/db_manager/db_app/static/css/visualization_functions.css"/>-->
 
@@ -139,7 +140,7 @@
           contained in High Throughput Sequencing data.
         </p>
 
-        <h3><b>Version:</b> 1.1.0</h3>
+        <h3><b>Version:</b> 1.2.0</h3>
         <p class="mainText">
         </p>
         <h3><b>Last database update:</b> 19 January 2017</h3>
@@ -928,6 +929,7 @@
       <li class="sidebar-brand">
         <!--unused space filled with img-->
       </li>
+      <div id="collapseGroup">
       <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
         <a href="#">Browse</a>
         <div id="collapse1" class="panel-collapse collapse">
@@ -1041,6 +1043,22 @@
           </ul>
         </div>
       </li>
+      <li data-toggle="collapse" data-target="#collapse6" class="collapse_groups">
+        <a href="#">Projects</a>
+        <div id="collapse6" class="panel-collapse collapse">
+          <ul class="list-group">
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#projectModal">Export
+            </button>
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#importProjectModal">Import
+            </button>
+
+          </ul>
+        </div>
+      </li>
       <li data-toggle="collapse" data-target="#collapse5"
           class="collapse_groups">
         <a href="#">Need help?</a>
@@ -1061,6 +1079,7 @@
         <a href="#" data-toggle="modal" data-backdrop="static"
            data-target="#aboutModal">About</a>
       </li>
+      </div>
     </ul>
   </div>
 </div> <!--closes wrapper div-->
@@ -1183,59 +1202,12 @@
 
 {% include 'colorLegend.html' %}
 
-<div id="couve-flor">
+{% include 'fileInputModal.html' %}
 
-  <div id="buttonStuff">
-    <div class="btn-group">
+<!--main div that contains vivagraph-->
+<div id="couve-flor"></div>
 
-      <!-- Buttons that overlay the graph and interact with it -->
-      <button id="playpauseButton" data-toggle="tooltip"
-              title="Play/Pause" type="button"
-              class="btn btn-default">
-        <span class="glyphicon glyphicon-play"></span>
-      </button>
-
-      <button class="btn btn-default" data-toggle="tooltip"
-              title="Trigger area selection (uses shift key)"
-              type="button"
-              id="refreshButton">
-        <span class="glyphicon glyphicon-screenshot"></span>
-      </button>
-
-    </div>
-    <!--zoom buttons-->
-    <div class="btn-group">
-      <button id="zoom_in" class="zoom in btn btn-default"
-              data-toggle="tooltip" title="Zoom in"
-              type="button">
-        <span class="glyphicon glyphicon-zoom-in"></span>
-      </button>
-      <button id="zoom_out" class="zoom out btn btn-default"
-              data-toggle="tooltip" title="Zoom out"
-              type="button">
-        <span class="glyphicon glyphicon-zoom-out"></span>
-      </button>
-    </div>
-    <!-- slider buttons -->
-    <div class="btn-group">
-      <button id="slideLeft" class="btn btn-default"
-              data-toggle="tooltip" title="Change file"
-              type="button" disabled>
-        <span class="glyphicon glyphicon-chevron-left"></span>
-      </button>
-      <button id="slideRight" class="btn btn-default"
-              data-toggle="tooltip" title="Change file"
-              type="button" disabled>
-        <span class="glyphicon glyphicon-chevron-right"></span>
-      </button>
-    </div>
-    <!-- End buttons -->
-  </div>
-
-  <div id="fileNameDiv"></div>
-
-
-</div>
+{% include 'buttonsVivagraph.html' %}
 
 <div class="graph-overlay"></div>
 <span style="color: white; margin: 10px;">Use mouse to draw rectangle and select nodes</span>
@@ -1311,13 +1283,7 @@
           <div id="plotWait">Please wait...
             <img id="loadingImgPlots"
                  src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..."/>
-            <!--loading bar div-->
-            <!--<div class="progress" id="progressBar">-->
-            <!--<div class="progress-bar progress-bar-success progress-bar-striped"-->
-            <!--role="progressbar" id="actualProgress">-->
-            <!--0% complete-->
-            <!--</div>-->
-            <!--</div>-->
+
           </div>
         </div>
         <!--div to put the plot-->

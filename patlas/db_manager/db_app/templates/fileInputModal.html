@@ -1,0 +1,117 @@
+<div id="projectModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Provide a file name to save</h4>
+      </div>
+      <div class="modal-body" id="modal-body-project">
+
+        <div class="row">
+          <div class="col-md-10">
+            <input type="text" class="form-control" id="projectName"
+                   placeholder="Insert desired file name here! Default: 'my-patlas-project.json'">
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-default" disabled>.json
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button type="submit" class="btn btn-info" data-dismiss="modal"
+                id="projectSubmit">Save Project</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="importProjectModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Specify the project that you want to load</h4>
+      </div>
+      <div class="modal-body" id="modal-body-importProject">
+
+        <div class="row uploadFile" id="uploadFileProject">
+          <div class="input-group col-md-12">
+            <label class="input-group-btn">
+                    <span class="btn btn-info btn-file">
+                      Select a file&hellip;<input id="projectFile" type="file"
+                                                name="file" style="display: none;"
+                                                multiple>
+                    </span>
+            </label>
+            <input type="text" class="form-control" id="project_text" readonly autocomplete="off">
+          </div>
+        </div>
+        <div class="row" style="margin-top: 20px">
+          <div style="text-align: center">
+
+            <div class="header_taxa">Select a view</div>
+
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="50%"
+                    data-selected-text-format="count"
+                    title="No items selected" id="viewList">
+
+              <optgroup label="Browse">
+                <option class="taxa">Taxa</option>
+                <option class="resistance">Resistance</option>
+                <option class="plasmidfinder">PlasmidFinder</option>
+                <option class="virulence">Virulence</option>
+                <option class="intersection">Intersection</option>
+                <option class="union">Union</option>
+              </optgroup>
+              <optgroup label="Import results">
+                <option class="mapping">Mapping</option>
+                <option class="mashscreen">Mash screen</option>
+                <option class="assembly">Assembly</option>
+                <option class="consensus">Consensus</option>
+              </optgroup>
+
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button type="submit" class="btn btn-info"
+                id="projectLoadSubmit">Load Project</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="alert alert-danger alert-dismissable fade in" id="alertIdnoSelectedview"
+       style="display: none">
+    <button type="button" class="close" id="alertClosenoSelectedview" aria-hidden="true"
+            data-hide="true">&times;</button>
+    <strong>Warning!</strong> Please select one view to display from the dropdown menu.
+  </div>
+
+  <div class="alert alert-danger alert-dismissable fade in" id="alertIdEmptySelectedview"
+       style="display: none">
+    <button type="button" class="close" id="alertCloseEmptySelectedview" aria-hidden="true"
+            data-hide="true">&times;</button>
+    <strong>Warning!</strong> No results for the currently selected view!
+  </div>
+
+  <div class="alert alert-danger alert-dismissable fade in" id="alertIdNoProject"
+       style="display: none">
+    <button type="button" class="close" id="alertCloseNoProject" aria-hidden="true"
+            data-hide="true">&times;</button>
+    <strong>Warning!</strong> No files were added.
+  </div>
+
+</div>

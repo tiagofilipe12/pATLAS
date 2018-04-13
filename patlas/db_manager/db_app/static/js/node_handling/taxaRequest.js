@@ -1,4 +1,4 @@
-/*globals listGiFilter, colorList, mapRequest */
+/*globals listGiFilter, colorList, mapRequest, typeOfProject */
 
 
 /**
@@ -134,7 +134,9 @@ const taxaRequestWrapper = async (g, graphics, renderer, storeLis,
         currentColor)
 
       listGiFilter = mapRequest(taxaQueryResults)
+
     }
+
   }
   return [storeLis, i]
 }
@@ -187,6 +189,9 @@ const renderAfterTaxaRequests = (storeLis) => {
  * @returns {Promise<void>}
  */
 const iterateArrays = async (g, graphics, renderer, alertArrays, storeLis, i) => {
+
+  // stores all queried taxa in typeOfProject
+  typeOfProject["taxa"] = alertArrays
 
   if (alertArrays.order.length !== 0) {
     storeLis = storeLis + "<div class='header_taxa'>Orders</div>"

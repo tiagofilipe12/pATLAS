@@ -1,0 +1,78 @@
+<div id="buttonStuff">
+  <div class="btn-group">
+
+    <button id="playpauseButton" data-toggle="tooltip"
+            title="Play/Pause" type="button"
+            class="btn btn-default">
+      <span class="glyphicon glyphicon-play"></span>
+    </button>
+
+    <button class="btn btn-default" data-toggle="tooltip"
+            title="Trigger area selection (uses shift key)"
+            type="button"
+            id="refreshButton">
+      <span class="glyphicon glyphicon-screenshot"></span>
+    </button>
+
+  </div>
+  <!--zoom buttons-->
+  <div class="btn-group">
+    <button id="zoom_in" class="zoom in btn btn-default"
+            data-toggle="tooltip" title="Zoom in"
+            type="button">
+      <span class="glyphicon glyphicon-zoom-in"></span>
+    </button>
+    <button id="zoom_out" class="zoom out btn btn-default"
+            data-toggle="tooltip" title="Zoom out"
+            type="button">
+      <span class="glyphicon glyphicon-zoom-out"></span>
+    </button>
+  </div>
+  <!-- slider buttons -->
+  <div class="btn-group">
+    <button id="slideLeft" class="btn btn-default"
+            data-toggle="tooltip" title="Change file"
+            type="button" disabled>
+      <span class="glyphicon glyphicon-chevron-left"></span>
+    </button>
+    <button id="slideRight" class="btn btn-default"
+            data-toggle="tooltip" title="Change file"
+            type="button" disabled>
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </button>
+  </div>
+
+  <div class="btn-group" id="viewWrapper" style="display: none">
+    <select class="selectpicker dropup" data-dropup-auto="false"
+            data-width="auto"
+            data-selected-text-format="count"
+            title="Select a view" id="viewList2">
+
+      <optgroup label="Browse">
+        <option class="taxa">Taxa</option>
+        <option class="resistance">Resistance</option>
+        <option class="plasmidfinder">PlasmidFinder</option>
+        <option class="virulence">Virulence</option>
+        <option class="intersection">Intersection</option>
+        <option class="union">Union</option>
+      </optgroup>
+      <optgroup label="Import results">
+        <option class="mapping">Mapping</option>
+        <option class="mashscreen">Mash screen</option>
+        <option class="assembly">Assembly</option>
+        <option class="consensus">Consensus</option>
+      </optgroup>
+
+    </select>
+    <button id="closeProject" class="btn btn-danger pull-right"
+            data-toggle="tooltip" title="Close current project"
+            type="button">
+      <span class="glyphicon glyphicon-remove"></span>
+    </button>
+  </div>
+
+
+  <!-- End buttons -->
+</div>
+
+<div id="fileNameDiv"></div>
