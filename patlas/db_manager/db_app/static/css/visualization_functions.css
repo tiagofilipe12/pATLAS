@@ -839,3 +839,8 @@ Careful when using this in other popovers in the future*/
     background-color: #524F52;
     color: white;
 }
+
+#buttonStuff > .btn-group{
+    border-radius: 5px;
+    box-shadow: 1px 2px 5px #333;
+}

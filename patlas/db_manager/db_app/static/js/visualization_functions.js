@@ -2015,12 +2015,6 @@ const onLoad = () => {
     .unbind("click").bind("click", () => {
     emptyFiles()
   })
-  // $("#uploadFileMash").unbind("click").bind("click", () => {
-  //   emptyFiles()
-  // })
-  // $("#uploadFileAssembly").unbind("click").bind("click", () => {
-  //   emptyFiles()
-  // })
 
   // resistance button control //
   $("#resButton").unbind("click").bind("click", () => {
@@ -2262,6 +2256,22 @@ const onLoad = () => {
       [textToExport])
   })
 
+  /**
+   * Function that controls the behavior of the side bar menu, collapsing the
+   * buttons that are not in use when other collapsible is clicked
+   */
+  $("#collapseGroup").on("show.bs.collapse",".collapse", () => {
+    $("#collapseGroup").find(".collapse.in").collapse("hide")
+  })
+
+  /**
+   * Function that handles for the first time the projectJson file. It will
+   * parse for the first time the dropdowns associated with the import from
+   * project files. Therefore, in the first iteration it will parse the
+   * projectJson to update the viewList and viewList2 dropdowns. However, it
+   * will raise an error if that view doesn't exist and update the dropdowns
+   * immediately.
+   */
   $("#projectLoadSubmit").unbind("click").bind("click", () => {
 
     // first check if viewList has nothing selected
@@ -2296,23 +2306,24 @@ const onLoad = () => {
   })
 
   /**
-   * Function that controls the behavior of the side bar menu, collapsing the
-   * buttons that are not in use when other collapsible is clicked
+   * Dynamically updates each one of the dropdowns and if the click is on the
+   * viewList2 dropdown it will fire the projectLoadSubmit click event.
    */
-  $("#collapseGroup").on("show.bs.collapse",".collapse", () => {
-    $("#collapseGroup").find(".collapse.in").collapse("hide")
-  })
-
   $("#viewList, #viewList2").on("changed.bs.select", (e) => {
 
     $("#viewList, #viewList2").selectpicker("val", $(`#${e.target.id}`).val())
 
+    // fires the click event if the selection is on viewList2
     if (e.target.id === "viewList2") {
       $("#projectLoadSubmit").click()
     }
 
   })
 
+  /**
+   * Function to close the current project and handle the respective selections
+   * made throughout pATLAS.
+   */
   $("#closeProject").unbind("click").bind("click", () => {
     // hide the div with the dropdown and close button itself
     $("#viewWrapper").hide()
