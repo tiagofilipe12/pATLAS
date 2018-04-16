@@ -10,7 +10,7 @@
  */
 const fileDownloader = (fileName, typeOfFile, textToExport) => {
 
-  const file = new Blob(textToExport, {type: textToExport})
+  const file = new Blob(textToExport, {type: typeOfFile})
 
   FileSaver.saveAs(file, fileName)
 }
