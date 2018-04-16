@@ -23,6 +23,22 @@
 
       <div class="modal-footer">
 
+        <button type="button" class="btn btn-default btn-circle"
+                data-toggle="popover"
+                data-trigger="focus"
+                data-original-title="Export project"
+                data-content="This menu allows the user to save a project
+                      file that can be loaded later into pATLAS using the
+                      import Project menu.<br>
+                      Default file name: 'my-patlas-project.json'. If you want
+                      to change it please fill the above input box."
+                data-html="true"
+                aria-describedby="tooltip" style="position: absolute;
+                        left:2%;"
+                id="exportProjectQuestion">
+          <span class="glyphicon glyphicon-question-sign"></span>
+        </button>
+
         <button type="submit" class="btn btn-info" data-dismiss="modal"
                 id="projectSubmit">Save Project</button>
       </div>
@@ -85,6 +101,28 @@
       </div>
 
       <div class="modal-footer">
+
+        <button type="button" class="btn btn-default btn-circle"
+                data-toggle="popover"
+                data-trigger="focus"
+                data-original-title="Import project"
+                data-content="This menu allows the user to select a project
+                        saved in the user local computer to the visualization.
+                        Users have to choose a 'view' which they want to
+                        display.<br>
+                        A <b>view</b> is an instance of one of the selections made
+                        through pATLAS will generating the project. For example,
+                        selecting the 'taxa view' is equivalent to select the
+                        same taxa through the Browse --> taxa menu but with
+                        a pre-made selection, saved in the project file that
+                        the user will import.<br>
+                        Users may change the desired view <i>a posteriori</i>."
+                data-html="true"
+                aria-describedby="tooltip" style="position: absolute;
+                        left:2%;"
+                id="importProjectQuestion">
+          <span class="glyphicon glyphicon-question-sign"></span>
+        </button>
 
         <button type="submit" class="btn btn-info"
                 id="projectLoadSubmit">Load Project</button>

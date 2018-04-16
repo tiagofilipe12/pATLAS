@@ -2152,15 +2152,10 @@ const onLoad = () => {
   })
 
   // changes the behavior of tooltip to show only on click
-  $("#questionPlots").popover()
-  $("#questionTable").popover()
-  $("#questionHeatmap").popover()
-  $("#questionMap").popover()
-  $("#questionRatio").popover()
+  $("#questionPlots, #questionTable, #questionHeatmap, #questionMap, " +
+    "#questionRatio, #exportProjectQuestion, #importProjectQuestion").popover()
 
-  $("#infoMap").popover( { container: "body" } )
-  $("#infoMash").popover( { container: "body" } )
-  $("#infoAssembly").popover( { container: "body" } )
+  $("#infoMap, #infoMash, #infoAssembly").popover( { container: "body" } )
 
   // function to avoid shift key to be triggered when any modal is open
   $(".modal").on("shown.bs.modal", () => {
@@ -2174,14 +2169,9 @@ const onLoad = () => {
       multiSelectOverlay = false
       // this force question buttons to close if tableModal and modalPlot are
       // closed
-      $("#questionTable").popover("hide")
-      $("#questionHeatmap").popover("hide")
-      $("#questionPlots").popover("hide")
-      $("#questionMap").popover("hide")
-      $("#questionRatio").popover("hide")
-      $("#infoMap").popover("hide")
-      $("#infoMash").popover("hide")
-      $("#infoAssembly").popover("hide")
+      $("#questionTable, #questionHeatmap, #questionPlots, #questionMap, " +
+        "#questionRatio, #infoMap, #infoMash, #infoAssembly, " +
+        "#exportProjectQuestion, #importProjectQuestion").popover("hide")
     })
 
   // this forces the entire script to run
