@@ -8,7 +8,25 @@ plasmids. For a more detailed explanation on how are these relationships
 handled and displayed, please refer to [Relationships and distances estimations]
 (distances.md)
 
-## Distances
+**TOC**
+
+* [Browse](#browse)
+    * [Distances](#distances)
+    * [Length](#length)
+    * [Size ratio](#size-ratio)
+    * [Taxa](#taxa)
+* [Annotatio](#annotation)
+    * [Plasmid families](#plasmid-families)
+    * [Resistances](#resistances)
+    * [Virulence](#virulence)
+* [Advanced](#advanced)
+    * [Multiple](#multiple)
+
+
+
+## Browse
+
+### Distances
 
 Distances are represented in **pATLAS** as grey links between nodes (dark grey 
 circles). This options allows the user to display how closely related are a 
@@ -26,20 +44,20 @@ by the link.
 
 ![](gitbook/images/distance_result.png)
 
-## Length
+### Length
 
 You may also filter by lenght of the plasmids present in the database. To do 
 so, you select the **By Length** option under the **Browse** submenu, which 
 will open a smaller windows above the visualization. Then, you may use both 
 the slider and the boxes for minimum and maximum limits which will change the
  selected nodes (plasmids). Dark grey plasmids are within the current 
- interval of selected lengths, whereas ligher grey plasmids are outside the 
+ interval of selected lengths, whereas lighter grey plasmids are outside the
  selected interval.
  
  ![](gitbook/images/lenght_example.png)
 
 
-## Size ratio
+### Size ratio
 
 This option allows users to filter links that have plasmids with very different
 sizes. E.g. some plasmids may have a high mash dist (> 0.9) but one of the
@@ -54,7 +72,7 @@ percentage difference between the two plasmids. So, if we set it
 to 30 (30% in fact) this will tell pATLAS to highlight or remove all the connections that
 have more than 30% difference in size between pairs of plasmids.
 
-## Taxa
+### Taxa
 
 In this option you may select a multitude of taxa filters ranging from order,
  family, genus to species. This will select with different colors each of the
@@ -70,7 +88,9 @@ In this option you may select a multitude of taxa filters ranging from order,
   species
   (and so on), this will color all the selected plasmids in red.
 
-## Plasmid families
+## Annotation
+
+### Plasmid families
 
 This option allows users to color plasmids (nodes) present in pATLAS by
 selecting genes available in PlasmidFinder database. For that a dropdown
@@ -84,7 +104,7 @@ Larsen, M. V., Lund, O., Villa, L., Aarestrup, F. M., Hasman, H.
 plasmid multilocus sequence typing. Antimicrobial Agents and Chemotherapy,
 58(7), 3895–3903.](https://doi.org/10.1128/AAC.02412-14).
 
-## Resistances
+### Resistances
 
 Resistances (CARD and Resfinder databases) highlight plasmids with the selected resistances by the user.
 
@@ -102,7 +122,7 @@ Brinkman F. S., Wright G. D.,
 model-centric curation of the comprehensive antibiotic resistance
 database. Nucleic Acids Research, 45(D1), D566–D573.](https://doi.org/10.1093/nar/gkw1004)
 
-## Virulence
+### Virulence
 
 Virulence genes available in VFDB databsae
 
@@ -111,8 +131,47 @@ Citation:
 bacterial virulence factors. Nucleic Acids Res. 2005;33(DATABASE ISS.)
 :D325-D328. doi:10.1093/nar/gki008.](https://academic.oup.com/nar/article/33/suppl_1/D325/2505203)
 
-## Final note
+## Advanced
 
-This covers for now everything that **pATLAS** has to explore. If you have 
-any suggestions that can improve browsing features or add some other browsing
- features, feel free to open an issue in [pATLAS github]().
+A set of filters with advanced filters for users that want to combined
+multiple browsing filters.
+
+### Multiple
+
+In this menu the users may combined different filter between each one
+of the available levels of browsing filters:
+
+* Taxa,
+* Plasmid Families,
+* Resistances,
+* Virulence.
+
+It is allowed to select multiple entries in one of the dropdowns for
+each level. So, for instance if you are interested in selecting
+`Straphyloccocus` **OR** `Enterococcus` from the genera dropdown, you
+are allowed to do it. The selection made within each filter level will
+behave as a sum of the selected entries. However, if you select a filter
+from another level, for example, select `VanA` gene from the CARD
+dropdown will behave as a intersection or union depending on which one
+of the following buttons is clicked:
+
+![](gitbook/images/multiple_buttons.png)
+
+
+The **`Submit intersection`** button will make an intersection between two
+taxa levels. For example:
+
+<img height="250" width="400" src="gitbook/images/intersection.png" alt="Drawing"/>
+
+In the above example the resulting visualization will highlight the
+plasmids that share in common the selected Taxa **AND** the selected
+resistance. So, you will get the purple intersection.
+
+The **`Submit union`** button will make a literal union between each one
+of the levels. For example:
+
+<img height="250" width="400" src="gitbook/images/union.png" alt="Drawing"/>
+
+In the above illustration the taxa and resistance selections will be
+summed and displayed as a single color. So you will get the full red
+universe.
