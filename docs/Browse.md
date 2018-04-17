@@ -15,7 +15,7 @@ handled and displayed, please refer to [Relationships and distances estimations]
     * [Length](#length)
     * [Size ratio](#size-ratio)
     * [Taxa](#taxa)
-* [Annotatio](#annotation)
+* [Annotation](#annotation)
     * [Plasmid families](#plasmid-families)
     * [Resistances](#resistances)
     * [Virulence](#virulence)
