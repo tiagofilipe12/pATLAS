@@ -154,14 +154,34 @@
       <div class="modal-footer">
 
         <div style="position: absolute; left: 2%;">
-        <button type="submit" class="btn btn-info"
-                data-dismiss="modal" id="intersectionsModalSubmit"
-                style="background-color: #4486c3">
-          Submit intersection</button>
-        <button type="submit" class="btn btn-success"
-                data-dismiss="modal" id="unionModalSubmit"
-                style="background-color: #5c9e63">
-          Submit union</button>
+          <button type="button" class="btn btn-default btn-circle"
+                  data-toggle="popover" data-placement="right"
+                  data-trigger="focus"
+                  data-original-title="Multiple filters help"
+                  data-content="<li><b>Intersection</b> button will display the
+                  intersection of all the selected filters in the different
+                  levels. E.g. The shared plasmids between Taxa and Resistance
+                  selections.</li>
+                  <li><b>Union</b> button will display the union of all the
+                  selected filters in the different levels. E.g. The sum of the
+                  plasmids in the selected Taxa and Resistance selections.</li>
+                  <li>If you need further information go to the respective
+                  <a href='https://tiagofilipe12.gitbooks.io/patlas/content/Browse.html#multiple'>
+                  pATLAS documentation page</a>.
+                  </li>"
+                  data-html="true"
+                  aria-describedby="tooltip" id="questionCombined">
+            <span class="glyphicon glyphicon-question-sign"></span>
+          </button>
+
+          <button type="submit" class="btn btn-info"
+                  data-dismiss="modal" id="intersectionsModalSubmit"
+                  style="background-color: #4486c3">
+            Submit intersection</button>
+          <button type="submit" class="btn btn-success"
+                  data-dismiss="modal" id="unionModalSubmit"
+                  style="background-color: #5c9e63">
+            Submit union</button>
         </div>
 
         <button type="submit" class="btn btn-danger"
