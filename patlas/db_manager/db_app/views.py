@@ -147,7 +147,6 @@ def generate_metadata_download():
         This function will generate a file from the front-end with the metadata
         for each accession in an array
 
-
         """
         yield "["
         for x, record in enumerate(query):
