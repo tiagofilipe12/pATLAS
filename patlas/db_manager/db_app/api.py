@@ -17,7 +17,8 @@ except ImportError:
         from patlas.db_manager.db_app import app
         from patlas.db_manager.db_app.resources import GetSpecies, GetAccession, \
             GetResistances, GetPlasmidFinder, GetAccessionRes, \
-            GetAccessionPF, GetPlasmidName, GetAccessionVir, GetVirulence, GetAccessionTaxa
+            GetAccessionPF, GetPlasmidName, GetAccessionVir, GetVirulence, \
+            GetAccessionTaxa
 
 ## start api
 api = Api(app)
