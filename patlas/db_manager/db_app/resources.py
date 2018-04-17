@@ -188,12 +188,11 @@ class GetPlasmidName(Resource):
     def get(self):
         # Put req_parser inside get function. Only this way it parses the request.
         args = req_parser.parse_args()
-        print(args.plasmid_name)
         # This queries if input plasmid name is present in db
         # func.lower() function from sqalchemy allows the user to make case insensitive searches
         records = db.session.query(Plasmid).filter(func.lower(
-            Plasmid.json_entry["plasmid_name"].astext) == func.lower(args.plasmid_name)
-        ).first()
+            Plasmid.json_entry["plasmid_name"].astext) == func.lower(
+            args.plasmid_name)).first()
         # contains method allows us to query in array that is converted to a
         # string
         return records
