@@ -1,12 +1,17 @@
 try:
-    from db_manager.db_app import app
+    from db_manager.db_app import app, db
+    from db_manager.db_app.models import Plasmid
 except ImportError:
     try:
-        from db_app import app
+        from db_app import app, db
+        from db_app.models import Plasmid
     except ImportError:
-        from patlas.db_manager.db_app import app
+        from patlas.db_manager.db_app import app, db
+        from patlas.db_manager.db_app.models import Plasmid
 
-from flask import json, render_template
+
+from flask import json, render_template, Response
+from flask_restful import request
 
 
 def repetitiveFunction(path):
@@ -87,3 +92,72 @@ def make_summary(path):
     with open(path) as data_file:
         data = json.load(data_file)
     return data
+
+
+@app.route("/api/senddownload/", methods=["get"])
+def generate_download():
+    """Api to download fasta files
+
+    This route is intended to provide API to download fasta sequences from
+    pATLAS. In fact it can be used by anyone anyone using the following API:
+    http://www.patlas.site/api/senddownload/?accession=<list_of_accessions>
+
+    Returns
+    -------
+    A response with the stream of the file to be generated in the client side
+    """
+
+    var_response = request.args["accession"].replace("[", "") \
+        .replace("]", "").replace('"', "").split(",")
+
+    query = db.session.query(Plasmid).filter(
+        Plasmid.plasmid_id.in_(var_response)).all()
+
+    def generate():
+        for record in query:
+            # TODO change this response in the future when the db contains entries of fastas
+            yield ">" + record.plasmid_id + "\n" + json.dumps(record.json_entry) + "\n"
+
+    return Response(generate(), mimetype="text/csv")
+
+
+@app.route("/api/sendmetadata/", methods=["get"])
+def generate_metadata_download():
+    """Api to download metadata for each accession
+
+    This route is intended to provide API to download metadata for each plasmid
+    available in pATLAS. In fact it can be used by anyone anyone using the
+    following API:
+    http://www.patlas.site/api/sendmetadata/?accession=<list_of_accessions>
+
+    Returns
+    -------
+    A response with the stream of the file to be generated in the client side.
+    This file
+    """
+
+    var_response = request.args["accession"].replace("[", "") \
+        .replace("]", "").replace('"', "").split(",")
+
+    query = db.session.query(Plasmid).filter(
+        Plasmid.plasmid_id.in_(var_response)).all()
+
+    def generate():
+        """
+        This function will generate a file from the front-end with the metadata
+        for each accession in an array
+
+
+        """
+        yield "["
+        for x, record in enumerate(query):
+            print(x, len(query))
+            if len(query) - 1 > x:
+                yield json.dumps({record.plasmid_id: record.json_entry}) + ","
+            else:
+                yield json.dumps({record.plasmid_id: record.json_entry})
+        yield "]"
+
+    return Response(generate(), mimetype="text/csv")
+
+## TODO a similar api can be added for the other tables in fact to fetch metadata
