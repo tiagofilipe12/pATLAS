@@ -120,11 +120,11 @@ def generate_download():
     return Response(generate(),
                     mimetype="text/csv",
                     headers={"content-disposition":
-                                 "attachment; filename=pATLAS"
-                                 "_download_{}.fas".format(
-                                     str(abs(hash("".join(var_response))))
-                                 )
-                             }
+                        "attachment; filename=pATLAS"
+                        "_download_{}.fas".format(
+                            str(abs(hash("".join(var_response))))
+                        )
+                    }
                     )
 
 
