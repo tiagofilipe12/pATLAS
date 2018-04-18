@@ -10,6 +10,7 @@ except ImportError:
 
 from sqlalchemy.dialects.postgresql import JSON
 
+
 class Plasmid(db.Model):
     __tablename__ = "plasmids"
     plasmid_id = db.Column(db.String, primary_key=True)
@@ -24,6 +25,7 @@ class Plasmid(db.Model):
 # db.session.add(row)
 # db.session.commit()
 
+
 class Card(db.Model):
     __tablename__ = "card"
     plasmid_id = db.Column(db.String, primary_key=True)
@@ -31,6 +33,7 @@ class Card(db.Model):
 
     def __repr__(self):
          return "<Card %r>" % (self.json_entry)
+
 
 class Positive(db.Model):
     __tablename__ = "positive"
@@ -40,6 +43,7 @@ class Positive(db.Model):
     def __repr__(self):
          return "<Positive %r>" % (self.json_entry)
 
+
 class Database(db.Model):
     __tablename__ = "database"
     plasmid_id = db.Column(db.String, primary_key=True)
@@ -47,3 +51,12 @@ class Database(db.Model):
 
     def __repr__(self):
         return "<Database %r>" % (self.json_entry)
+
+
+class SequenceDB(db.Model):
+    __tablename__ = "sequence_db"
+    plasmid_id = db.Column(db.String, primary_key=True)
+    sequence_entry = db.Column(db.String)
+
+    def __repr__(self):
+        return "<SequenceDB %r>" % (self.sequence_entry)

@@ -32,15 +32,8 @@ links). This is particularly handy, when the user wants to visualize
 data that it doesn't know where it is in the whole network.
 
 * A `download` button, that enable the user to download the selected
-plasmids. This makes requests to NCBI eutils and thus requests with more
-than 100 sequences will be divided in batches of 100. File names also
-depend on NCBI eutils defaults, which mean that you will see files name
-`sequence.fasta`, which browsers will handle the duplicated entries by
-adding a number after the name. Example:
-    * `sequence.fasta`
-    * `sequence(1).fasta`
-    * `sequence(2).fasta`
-    * and so on...
+plasmids. This will download the queried accession number to a file named
+`pATLAS_download_<random_hash>.fas`
 
 * A `table` button, that by default will open a table with information available
 for the current selection (see [Table](table.md)) and that has a tab that

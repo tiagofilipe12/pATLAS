@@ -1,13 +1,13 @@
 try:
     from db_manager.db_app import app, db
-    from db_manager.db_app.models import Plasmid
+    from db_manager.db_app.models import Plasmid, SequenceDB
 except ImportError:
     try:
         from db_app import app, db
-        from db_app.models import Plasmid
+        from db_app.models import Plasmid, SequenceDB
     except ImportError:
         from patlas.db_manager.db_app import app, db
-        from patlas.db_manager.db_app.models import Plasmid
+        from patlas.db_manager.db_app.models import Plasmid, SequenceDB
 
 
 from flask import json, render_template, Response
@@ -110,15 +110,22 @@ def generate_download():
     var_response = request.args["accession"].replace("[", "") \
         .replace("]", "").replace('"', "").split(",")
 
-    query = db.session.query(Plasmid).filter(
-        Plasmid.plasmid_id.in_(var_response)).all()
+    query = db.session.query(SequenceDB).filter(
+        SequenceDB.plasmid_id.in_(var_response)).all()
 
     def generate():
         for record in query:
-            # TODO change this response in the future when the db contains entries of fastas
-            yield ">" + record.plasmid_id + "\n" + json.dumps(record.json_entry) + "\n"
+            yield ">" + record.plasmid_id + "\n" + record.sequence_entry + "\n"
 
-    return Response(generate(), mimetype="text/csv")
+    return Response(generate(),
+                    mimetype="text/csv",
+                    headers={"content-disposition":
+                        "attachment; filename=pATLAS"
+                        "_download_{}.fas".format(
+                            str(abs(hash("".join(var_response))))
+                        )
+                    }
+                    )
 
 
 @app.route("/api/sendmetadata/", methods=["get"])
@@ -146,7 +153,6 @@ def generate_metadata_download():
         """
         This function will generate a file from the front-end with the metadata
         for each accession in an array
-
 
         """
         yield "["
