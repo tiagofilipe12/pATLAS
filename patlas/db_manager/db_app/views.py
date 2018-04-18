@@ -150,7 +150,6 @@ def generate_metadata_download():
         """
         yield "["
         for x, record in enumerate(query):
-            print(x, len(query))
             if len(query) - 1 > x:
                 yield json.dumps({record.plasmid_id: record.json_entry}) + ","
             else:

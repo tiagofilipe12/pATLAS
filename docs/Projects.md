@@ -38,3 +38,35 @@ the visualization to be overpopulated with information, we added
 sense, you can select Taxa view as the first view after importing a file
 and the nodes (plasmids) will be colored by Taxa. Then, you may select
 other view through the dropdown menus.
+
+## Advanced usage
+
+### Use custom selections through project files
+
+Selections can be made in specific menus by importing a project file
+instead of selecting many options in the dropdown menus.
+
+#### Example usage example
+
+Imagine you want to select 50 taxa from the dropdown menus. Doing it by
+clicking 50 times in the dropdown menu may take a while and be
+extremely boring. However, using the project import option one can
+create a file with a structure like the following:
+
+```
+{
+  "taxa": ["Escherichia coli", "Staphyloccocus aureus", ...],
+  "resistance": false,
+  "plasmidfinder": false,
+  "virulence": false,
+  "intersection": false,
+  "union": false,
+  "mapping": false,
+  "mashscreen": false,
+  "assembly": false,
+  "consensus": false
+}
+```
+
+So you can add a list of selections you require to the respective fields
+on the object described above.
