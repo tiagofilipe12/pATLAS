@@ -1,33 +1,4 @@
-/**
- * Function to handle multiple downloads and split download files into
- * several files. This function is only triggered if download sequences are
- * more than 1000. This was a wrapper to avoid rejection from NCBI when
- * queries are too big (>1000).
- * @param {Array} acc - an array that has all the accessions to download
- */
-// const multiDownload = (acc, dbType, exportType) => {
-//
-//   const link = document.createElement("a")
-//   link.style.display = "none"
-//   const chunk = acc.splice(0, 100)
-//   const url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db" +
-//     "=" + dbType + "&id=" + chunk.toString() + "&rettype=" + exportType + "&retmode=text"
-//
-//   // link.setAttribute("download", "patlas_download.txt")
-//   link.href = url
-//   document.body.appendChild(link)
-//   link.click()
-//   document.body.removeChild(link)
-//
-//   // since NCBI efetch is rejecting multiple queries at the same time
-//   setTimeout( () => {
-//     if (acc.length > 0) {
-//       multiDownload(acc, dbType, exportType)
-//     }
-//   }, 4000)
-// }
 
-/// NEW ///
 /**
  * function that handles the requests to the database to generate a file
  * @param {Array} accList - an array of all the accessions to be downloaded
@@ -38,31 +9,6 @@ const downloadTypeHandler = (accList) => {
 
 }
 
-
-/// OLD ///
-/**
- * function that handles if multiple outputs or a single output is generated
- * @param {Array} accList - an array of all the accessions to be downloaded
- */
-// const downloadTypeHandler = (accList) => {
-//
-//   const dbType = "nuccore"
-//   const exportType = "fasta"
-//   if (accList.length <= 100) {
-//     // in fact there is a two variables that are not required yet for this
-//     // dbType and exportType but they are part of a much general function and
-//     // perhaps they will be useful in the future.
-//     const url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db" +
-//       "=" + dbType + "&id=" + accList.toString() + "&rettype=" + exportType + "&retmode=text"
-//     // opens a new window for the download
-//     window.open(url)
-//   } else { // when the number of sequences to download is more than 100
-//     $("#alertNCBI").show()  // hide this div
-//     // function for multiple download
-//     multiDownload(accList, dbType, exportType)
-//     //window.setTimeout( () => { $("#alertId").hide() }, 10000)
-//   }
-// }
 
 /**
  * this just downloads the selected sequences
