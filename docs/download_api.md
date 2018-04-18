@@ -25,7 +25,7 @@ If you have a list of accession numbers, you can download their
 respective sequences by using the following API:
 
 ```
-http://127.0.0.1:5000/api/senddownload/?accession=<accession_list>
+http://www.patlas.site/api/senddownload/?accession=<accession_list>
 ```
 
 This will generate a fasta file with the accession numbers requested,
