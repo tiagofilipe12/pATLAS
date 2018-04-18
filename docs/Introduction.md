@@ -8,15 +8,15 @@
 
 # Introduction
 
-Welcome to [Plasmid Atlas](http://www.patlas.site) (also known as pATLAS).
+Welcome to [Plasmid Atlas](http://www.patlas.site) (pATLAS).
 
 ## Briefly
 
-Plasmid Atlas is a web-base tool that empowers researchers to easily and rapidly access
+pATLAS is a web-base tool that empowers researchers to easily and rapidly access
 information related with plasmids present in `NCBI's refseq` database.
 In pATLAS each node (or circle) represents
 a plasmid and each link between two plasmids means that those two plasmids
-share around 90% average nucleotide identity.
+share over 90% average nucleotide identity.
 
 With this tool we have two main goals:
 
@@ -27,7 +27,6 @@ well as facilitate the access to that metadata.
 
 ![](gitbook/images/patlas.gif)
 
-(Too much movement? Don't worry this will be frozen when you load the page.)
 
 ## Main features
 
