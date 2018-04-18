@@ -8,7 +8,7 @@
        filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
         defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor,
          readColoring, handleFileSelect, downloadSeqByColor,
-          downloadSeq, setupPopupDisplay, multiDownload, heatmapMaker,
+          downloadSeq, setupPopupDisplay, downloadTypeHandler, heatmapMaker,
            colorNodes, abortRead, makeTable, arrayToCsv, resGetter,
             plasmidFamilyGetter, virulenceGetter, linkColoring,
              slideToRight, slideToLeft, Mousetrap, initCallback,

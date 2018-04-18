@@ -34,7 +34,7 @@
  */
 const downloadTypeHandler = (accList) => {
 
-  window.open(`http://127.0.0.1:5000/api/senddownload/?accession=${accList.join()}`)
+  window.open(`http://www.patlas.site/api/senddownload/?accession=${accList.join()}`)
 
 }
 
