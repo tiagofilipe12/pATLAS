@@ -19,3 +19,18 @@ all metadata available for that accession number in the pATLAS database.
 accession numbers of plasmids contained in pATLAS, thus, that are
 available in NCBI reqseq plasmid ftp.
 
+## Download sequences
+
+If you have a list of accession numbers, you can download their
+respective sequences by using the following API:
+
+```
+http://127.0.0.1:5000/api/senddownload/?accession=<accession_list>
+```
+
+This will generate a fasta file with the accession numbers requested,
+containing the sequences associated with each accession number.
+
+**Note** - This is currently being used by pATLAS in the `download`
+button. It downloads the accession numbers associated with the current
+selection.
