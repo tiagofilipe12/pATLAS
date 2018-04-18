@@ -1,14 +1,9 @@
 /**
  * Function to handle multiple downloads and split download files into
  * several files. This function is only triggered if download sequences are
- * more than 100. This was a wrapper to avoid rejection from NCBI when
- * queries are too big (>100).
+ * more than 1000. This was a wrapper to avoid rejection from NCBI when
+ * queries are too big (>1000).
  * @param {Array} acc - an array that has all the accessions to download
- * from NCBI
- * @param {string} dbType - string with the database type to query in NCBI
- * eutils. E.g. "nuccore"
- * @param {string} exportType - string with the type of export to made. E.g.
- * "fasta"
  */
 // const multiDownload = (acc, dbType, exportType) => {
 //
@@ -39,7 +34,7 @@
  */
 const downloadTypeHandler = (accList) => {
 
-  window.open(`http://www.patlas.site/api/senddownload/?accession=${accList.join()}`)
+  window.open(`http://127.0.0.1:5000/api/senddownload/?accession=${accList.join()}`)
 
 }
 
