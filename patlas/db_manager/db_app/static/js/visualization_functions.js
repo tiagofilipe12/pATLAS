@@ -8,7 +8,7 @@
        filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
         defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor,
          readColoring, handleFileSelect, downloadSeqByColor,
-          downloadSeq, setupPopupDisplay, multiDownload, heatmapMaker,
+          downloadSeq, setupPopupDisplay, downloadTypeHandler, heatmapMaker,
            colorNodes, abortRead, makeTable, arrayToCsv, resGetter,
             plasmidFamilyGetter, virulenceGetter, linkColoring,
              slideToRight, slideToLeft, Mousetrap, initCallback,
@@ -1840,7 +1840,8 @@ const onLoad = () => {
   })
 
   // download button //
-  $("#download_ds").unbind("click").bind("click", () => {
+  $("#download_ds").unbind("click").bind("click", (e) => {
+    e.preventDefault()
     // for now this is just taking what have been changed by taxa coloring
     if (areaSelection === true) {
       // downloads if area selection is triggered
@@ -1892,12 +1893,10 @@ const onLoad = () => {
     })
 
   // function to download dataset selected in table
-  $("#downloadTable").unbind("click").bind("click", () => {
-    // transform internal accession numbers to ncbi acceptable accesions
-    const acc = bootstrapTableList.map((uniqueAcc) => {
-      return uniqueAcc.split("_").splice(0,2).join("_")
-    })
-    multiDownload(acc, "nuccore", "fasta")
+  $("#downloadTable").unbind("click").bind("click", (e) => {
+    e.preventDefault()
+
+    downloadTypeHandler(bootstrapTableList)
   })
 
   // function to display heatmap dataset selected in table

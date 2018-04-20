@@ -29,7 +29,7 @@ except ImportError:
 
 class Record:
 
-    def __init__(self, accession, size, distance):
+    def __init__(self, accession, size, distance, percentage_hashes):
         """ Object holding metadata for each accession record
 
         :param accession: str, Accession number
@@ -40,6 +40,7 @@ class Record:
         self.accession = accession
         self.size = size
         self.distance = distance
+        self.percentage_hashhes = percentage_hashes
         self.a = "{}_{}".format(accession, size)
 
     def to_json(self):
@@ -54,7 +55,8 @@ class Record:
 
         return {"accession": self.accession,
                 "size": self.size,
-                "distance": self.distance}
+                "distance": self.distance,
+                "percentage_hashes": self.percentage_hashhes}
 
 
 ## function to create output directories tree
@@ -145,7 +147,6 @@ def master_fasta(fastas, output_tag, mother_directory):
                 ## if statements to handle some exceptions already found
                 if "plasmid" in species.lower():
                     species = "unknown"
-                # TODO check if this is executed
                 elif "origin" in species.lower():
                     species = "unknown"
                 elif "candidatus" in species.split("_")[0].lower():
@@ -209,23 +210,56 @@ def genomes_parser(main_fasta, mother_directory):
     if_handle = open(main_fasta, "r")
     list_genomes_files = []
     out_handle = None
+
+    accession = False
+    previous_sequence = []
+
     for line in if_handle:  ## x coupled with enumerate creates
         # a counter for every loop
         linesplit = line.strip().split("_")
         if line.startswith(">"):
+            if accession:
+                # commit to database previous entry
+                row = models.SequenceDB(
+                        plasmid_id=accession,
+                        sequence_entry="".join(previous_sequence)
+                    )
+
+                db.session.add(row)
+                db.session.commit()
+                # resets previous_sequence
+                previous_sequence = []
+
             accession = "_".join(linesplit[0:3]).replace(">","")
+
             if out_handle:
                 out_handle.close()
+
             out_handle = open(os.path.join("{}_{}.fas".format(out_file,
                                                               accession)), "w")
             list_genomes_files.append(os.path.join("{}_{}.fas".format(
                 out_file, accession)))
             out_handle.write(line)
+
         else:
+
             out_handle.write(line)
+            previous_sequence.append(line)
+
+    # commit to database the last entry
+    row = models.SequenceDB(
+        plasmid_id=accession,
+        sequence_entry="".join(previous_sequence)
+    )
+
+    db.session.add(row)
+    db.session.commit()
+    # close database connection
+    db.session.close()
 
     out_handle.close()
     if_handle.close()
+
     return list_genomes_files
 
 
@@ -302,10 +336,18 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
         seq_accession = "_".join(tab_split[1].strip().split("_")[0:3])
         mash_dist = tab_split[2].strip()
         p_value = tab_split[3].strip()
+
+        # fetches shared hashes
+        shared_hashes = tab_split[4].strip()
+        # calculates percentage of shared hashes
+        percentage_hashes = float(shared_hashes.split("/")[0])/float(
+            shared_hashes.split("/")[1])
+
+
         size = sequence_info[ref_accession][1]
         ## Added new reference string in order to parse easier within
         #  visualization_functions.js
-        rec = Record(ref_accession, size, mash_dist)
+        rec = Record(ref_accession, size, mash_dist, percentage_hashes)
         #  to json
         ## there is no need to store all values since we are only interested in
         # representing the significant ones
@@ -337,7 +379,7 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
                "length": length,
                "plasmid_name": plasmid_name,
                "significantLinks": [rec.get_dict() for rec in
-                                    temporary_list]
+                                    temporary_list],
                }
         #
         # row = models.Plasmid(
@@ -468,13 +510,16 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
             num_links += len(new_dic[ref_string])
             for v in temp_list:
                 list_of_traces.append(v.distance)
+
+            accession_match_dict.update(new_dic2)
+
         else:
             # instance for singletons
             new_dic = {ref_string: None}
 
         # Update link counter for filtered dic
         master_dict.update(new_dic)
-        accession_match_dict.update(new_dic2)
+
 
     # block to add
     accession_final_dict = {}
