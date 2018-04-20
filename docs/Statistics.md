@@ -1,88 +1,82 @@
 # Statistics
 
-Plasmid Atlas provides the user with many capabilities in what concerns the 
-visualization of the distribution of the results. For instance users may 
-visualize the number of selected plasmids that belong to a given
-**species**, **genus**, **family** and **order**. Users have many more
-options available but the idea is for the user to perform a given selection 
-either with the area selection tool (shift + mouse click and dragging)
-(for more details on these features check [Graph interaction](graph.md#area-selection)) or
-with the filters / imports (in fact any node that has color will be taken 
-into account for statistics module). 
+pAtlas provides the user with many capabilities concerning the 
+visualization of the results' distribution. It allows to have an overview
+of the number of selected plasmids that belong to a given
+**species**, **genus**, **family** or **order**. This visualization can be
+performed a given selection, either with the area selection tool (shift + mouse click and dragging)
+(for more details on [Graph interaction](graph.md#area-selection)), or
+with the filters or imports. 
 
-> Because pATLAS can't know for the user which plasmids you are interested 
-in, the user must be aware of the selection that has been performed. So, if 
-you are unsure of the selection that you have made user the **reset nodes** 
-button and make your selection from start.
+> The Statistics shown are dependent on the selection performed. For a reset
+ click on the **reset nodes** button located at the top of the pATLAS interface.
 
-## Available options
 
-### Species, Genera, Families and Orders
+##Taxa
 
-This will basically generate a bar plot with the number of occurences of each taxa
+Bar plot with the number of occurences of each taxa (Species, Genera, Families and Orders)
 in the current selection.
 
 ![](gitbook/images/speciesplot.png)
 
-### Length
 
-This will show the lengths of all selected plasmids. However, this plot
-presents two types of series:
+##Annotation
 
-* Scatter, which shows the length of each plasmid individually.
-* Histogram, which shows the distribution of length in the selected plasmids
+Similar to [Taxa plots](statistics.md#Taxa), but with information on 
+resistance and virulence genes, and plasmid families.
 
-This plot allows to click either on a given point (plasmid) or on a given bar,
-enabling to highlight its respective bar or points, respectively.
+##Other
+
+#### Length
+
+Length of all selected plasmids. This plot presents two series:
+
+* **Scatter**, which shows the length of each plasmid individually.
+ 
+* **Histogram**, which shows the size distribution in the selected plasmids. 
+
+This plot is interactive, allowing clicks on the scatter points (plasmids) to highligh it's 
+respective bin, or vice versa. 
 
 ![](gitbook/images/plotlength.gif)
 
-### Resistances, virulence and plasmid families
+#### Clusters
 
-Pretty much the same as [Taxa plots](#available-options), but for
-the information on resistances and plasmid families.
+![](gitbook/images/clusterplot.png)
 
-## Plot additional buttons
+## Additional plot options
 
-* top left corner of popup:
+In each statistics plot there are additional plot options that can be explored:
+* At the **top left corner** of the plot window:
+    * A button to **sort in descending order** of values in `y axis`.
+    * A button to **sort in alphabetic order** of the legend in the `x axis`.
 
-    * A button to sort in descending order of values in `y axis`.
+* At the **bottom left corner** the plot window:
+    * a **question mark** button that shows **additional controls** to use in the plot area.
+     `Ctrl + left mouse` click will enable panning of the plot and `left mouse click + dragging`
+      will enable zooming in a given area of the plot.
 
-    * A button to sort in alphabetic order of the legend in the `x axis`.
-
-* bottom left corner of popup:
-
-    * a question mark button that will show you additional controls to
-    use in plot area. `Ctrl + left mouse` click will enable panning of the plot and
-    `left mouse click + dragging` will enable zooming in a given area of the plot.
-
-* top right corner of the popup:
-
-    * export options for the plot, ranging from:
+* At the **top right corner** of the plot window:
+    * **export options** for the plot:
         * Print the plot
         * Save to file:
             * PNG
             * JPEG
             * PDF
             * SVG
-    * Clear highlights - This button will clear all highlights made in plots.
-    * Highlight on plasmid network - This button will be available for
-    bar plots when the user clicks on one or several bars. This will allow
-    users to filter the previous graph interaction for the selected bars,
-    i.e., this button will update the selection made in the plasmid network
-    so that it will only highlight in **green** the selected plasmids.
+    * A **Clear highlights** button to clear all highlights made in the plot.
+    * A **Highlight on plasmid network** button update the selection made in 
+    the plasmid network for the plasmids contained in the selected bars. 
+    Only available for bar plots.
+
 
 ## Make selections using the barplots
 
-It is also possible to make selections using the bar plots available in pATLAS,
- i.e. in Taxa related, resistancec, virulence and plasmid families plots.
+It is possible to make selections using the bar plots available in pATLAS, 
+either in the [Taxa](statistics.md#Taxa) or [Annotation](statistics.md#Annotation) plots.
 
- Example usage:
 
  ![](gitbook/images/barplot_selections.gif)
  (Note: the final image doesn't seem to have selections but there are some nodes with an halo
  around them. In pATLAS they will appear in green. Also, bars will not be grey but instead they
- will be red when clicked.)
-
-Users can use `Clear highlights` button or click on a selected bar to deselect
-all or the clicked bar.
+ will turn red when clicked.)

@@ -10,12 +10,12 @@ and displayed refer to [Relationships and distances estimations](distances.md)
 
 **Table Of Contents**
 
-* [Browse](#browse)
+* [Browse](browse.md:27#browse)
     * [Distances](#distances)
-    * [Length](#length)
+    * [Length](Browse.md#length)
     * [Size ratio](#size-ratio)
-    * [Taxa](#taxa)
-* [Annotation](#annotation)
+    * [Taxa](Browse.md#taxa)
+* [Annotation](Browse.md#annotation)
     * [Plasmid families](#plasmid-families)
     * [Resistances](#resistances)
     * [Virulence](#virulence)
