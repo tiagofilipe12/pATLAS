@@ -703,78 +703,7 @@
 </div>
 
 
-<!-- Modal for length-->
-<div id="ratioModal" class="modal fade" role="dialog" tabindex="-1">
-  <div class="modal-dialog">
-    <!-- Modal content for ratio-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Filter links by size ratio between
-          pairs of plasmids
-        </h4>
-      </div>
-      <div class="modal-body" id="modal-body-ratio">
-        <div class="col-sm-4">
-          <div class="header_taxa">Max difference (%)</div>
-          <div class="form-group" data-toggle="tooltip"
-               title="Provide a value between 100 and 0">
-            <input id="formRatio" type="text" class="form-control"
-                   placeholder="Default value = 30" value="30"/>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="header_taxa">Pick a color</div>
-          <div id="cp4"
-               class="input-group colorpicker-component"
-               title="Using color option">
-            <input type="text" class="form-control"
-                   id="cp4Form"/>
-            <span class="input-group-addon"><i></i></span>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="header_taxa">Remove links?</div>
-          <div>
-            <input data-toggle="toggle" type="checkbox"
-                   data-onstyle="success" data-offstyle="default"
-                   data-on="Remove links on"
-                   data-off="Remove links off"
-                   data-width="100%"
-                   id="toggleRatio">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-circle"
-                data-toggle="popover"
-                data-trigger="focus"
-                data-original-title="Size ratio help"
-                data-content="Here you can color or remove links based
-                        on the ratio between the size of two plasmids.
-                        <li>Max difference (%) - This cutoff sets the maximum
-                        percentage difference between two plasmids. By default the
-                        smaller plasmid need to have at least 70% of the size of the
-                        larger plasmid. All other links that does not respect this
-                        criteria will be highlighted or removed.</li>
-                        <li>Pick a color - allows the user to pick a color to
-                        highlight desired links. This is the default behavior
-                        of submit button, however if remove links is 'on', this
-                        will be ignored since links will be removed.</li>
-                        <li>Remove links? - This button allows to remove links
-                        or not. By default it is set to 'off'.</li>"
-                data-html="true"
-                aria-describedby="tooltip" style="position: absolute;
-                        left:2%;"
-                id="questionRatio">
-          <span class="glyphicon glyphicon-question-sign"></span>
-        </button>
-        <button type="submit" class="btn btn-default"
-                data-dismiss="modal" id="ratioSubmit">Submit</button>
-      </div>
-    </div>
-  </div>
-</div>
+{% include 'linkHandlersModal.html' %}
 
 <!-- Modal for taxa-->
 <div id="taxaModal" class="modal fade" role="dialog" tabindex="-1">
@@ -946,6 +875,11 @@
                     data-toggle="modal" data-backdrop="static"
                     data-target="#ratioModal"
                     id="ratio_filter">Size ratio
+            </button>
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#hashModal"
+                    id="ratio_filter">Shared Hashes
             </button>
             <button class="list-group-item" href="#"
                     data-toggle="modal" data-backdrop="static"

@@ -780,12 +780,12 @@ Careful when using this in other popovers in the future*/
 }
 
 /*Ratio modal related style*/
-#modal-body-ratio{
+#modal-body-ratio, #modal-body-hash{
     overflow: auto;
     max-height: 500px;
 }
 
-#toggleRatio{
+#toggleRatio, toggleHash{
     width: 100%;
 }
 

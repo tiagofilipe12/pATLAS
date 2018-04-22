@@ -1,5 +1,5 @@
 $(function () {
-  $("#cp4").colorpicker({
+  $("#cp4, #cp5").colorpicker({
     color: "#a85713",
     format: "hex"
   })

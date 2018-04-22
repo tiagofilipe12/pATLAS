@@ -2153,7 +2153,7 @@ const onLoad = () => {
   // changes the behavior of tooltip to show only on click
   $("#questionPlots, #questionTable, #questionHeatmap, #questionMap, " +
     "#questionRatio, #exportProjectQuestion, #importProjectQuestion, " +
-    "#questionCombined").popover()
+    "#questionCombined, #questionHash").popover()
 
   $("#infoMap, #infoMash, #infoAssembly").popover( { container: "body" } )
 
@@ -2171,7 +2171,8 @@ const onLoad = () => {
       // closed
       $("#questionTable, #questionHeatmap, #questionPlots, #questionMap, " +
         "#questionRatio, #infoMap, #infoMash, #infoAssembly, " +
-        "#exportProjectQuestion, #importProjectQuestion, #questionCombined")
+        "#exportProjectQuestion, #importProjectQuestion, #questionCombined, " +
+        "#questionHash")
         .popover("hide")
     })
 
