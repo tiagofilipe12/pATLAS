@@ -405,15 +405,25 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
 
   } else {
 
-    //converts every element in finalArray to float and then sorts it
+    /**
+     * Variable that converts all the values an object to floats and then sorts
+     * them in ascending order.
+     * @type {Array}
+     */
     const histoArray = Object.values(lengthResultsObj).map( (e) => { return parseFloat(e) })
-      // .sort( (a, b) => {
-      //   return a - b
-      // })
+      .sort( (a, b) => {
+        return a - b
+      })
 
-    console.log(histoArray)
-    console.log(Object.keys(lengthResultsObj))
-    console.log(Object.values(lengthResultsObj))
+    /**
+     * Variable that sorts the accession numbers by the order of the values.
+     * It sorts the keys according with an increase order of values (which are
+     * floats)
+     * @type {Array}
+     */
+    const accessionArray = Object.keys(lengthResultsObj).sort( (a,b) => {
+      return lengthResultsObj[a]-lengthResultsObj[b]
+    })
 
     // returns true if all elements have the same size and thus make only a
     // scatter
@@ -424,7 +434,7 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
 
     const defaultXAxis = {
       labels: {enabled: false},
-      categories: Object.keys(lengthResultsObj),
+      categories: accessionArray,
       title: {text: null},
       opposite: true
     }
