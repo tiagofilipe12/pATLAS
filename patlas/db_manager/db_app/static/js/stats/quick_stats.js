@@ -327,7 +327,8 @@ const highlightVivagraph = (g, graphics, renderer, objectHighlight) => {
  * between x labels and their matching accession numbers
  */
 const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
-                     layout, taxaType, sortAlp, sortVal, associativeObj) => {
+                     layout, taxaType, sortAlp, sortVal, associativeObj,
+                     lengthResultsObj) => {
 
   $("#loadingImgPlots").hide()
   $("#alertPlot").hide()
@@ -405,10 +406,14 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
   } else {
 
     //converts every element in finalArray to float and then sorts it
-    const histoArray = finalArray.map( (e) => { return parseFloat(e) })
-      .sort( (a, b) => {
-        return a - b
-      })
+    const histoArray = Object.values(lengthResultsObj).map( (e) => { return parseFloat(e) })
+      // .sort( (a, b) => {
+      //   return a - b
+      // })
+
+    console.log(histoArray)
+    console.log(Object.keys(lengthResultsObj))
+    console.log(Object.values(lengthResultsObj))
 
     // returns true if all elements have the same size and thus make only a
     // scatter
@@ -419,7 +424,7 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
 
     const defaultXAxis = {
       labels: {enabled: false},
-      categories: accessionResultsList,
+      categories: Object.keys(lengthResultsObj),
       title: {text: null},
       opposite: true
     }
@@ -850,6 +855,7 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
   $.post("api/getspecies/", { "accession": JSON.stringify(tempList) })
     .then( (results) => {
       const accessionResultsList = []
+      let lengthResultsObj = {}
       results.map( (result) => {
         // checks if plasmid is present in db
         if (result.plasmid_id !== null) {
@@ -857,6 +863,7 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
           const speciesName = plotSwitcher(taxaType, result)
           speciesList.push(speciesName)
           accessionResultsList.push(result.plasmid_id)
+          lengthResultsObj[result.plasmid_id] = result.json_entry.length
           associativeObjAssigner(associativeObj, result.plasmid_id, speciesName)
 
         }
@@ -873,7 +880,7 @@ const getMetadata = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal
       const layout = layoutGet(taxaType)
 
       statsParser(g, graphics, renderer, accessionResultsList, speciesList,
-        layout, taxaType, sortAlp, sortVal, associativeObj)
+        layout, taxaType, sortAlp, sortVal, associativeObj, lengthResultsObj)
     })
     // .catch( (error) => {
     //   console.log("Error: ", error)
