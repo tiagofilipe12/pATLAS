@@ -97,6 +97,10 @@ let graphSize
 
 // let totalNumberOfLinks
 
+/**
+ * variable that stores the multi selection overlay object
+ * type {undefined|Object}
+ */
 let multiSelectOverlayObj
 
 let legendInst
@@ -224,8 +228,14 @@ const onLoadWelcome = (callback) => {
  * This function is executed after onLoadWelcome function
  */
 const onLoad = () => {
-  // variable to freeze shift
+
+  /**
+   * Variable that controls the behavior of shift key through refreshButton
+   * click.
+   * type {Boolean}
+   */
   let freezeShift = true
+
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
   // define layout
@@ -287,13 +297,24 @@ const onLoad = () => {
     /*******************/
 
     $("#refreshButton").unbind("click").bind("click", () => {
+
+      // if shift key is allowed then change it
       if (freezeShift === false) {
+
         freezeShift = true
-        multiSelectOverlayObj.destroy()
         $("#refreshButton").removeClass("btn-success").addClass("btn-default")
+
+        // if this variable is indefined then doesn't attempt to destroy it
+        if (typeof multiSelectOverlayObj !== "undefined") {
+          multiSelectOverlayObj.destroy()
+        }
+
+        // if shift key is frozen (let it go let it goooo)
       } else {
+
         freezeShift = false
         $("#refreshButton").removeClass("btn-default").addClass("btn-success")
+
       }
     })
 
