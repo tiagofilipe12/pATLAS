@@ -8,7 +8,7 @@
 
 # Introduction
 
-Welcome to [Plasmid Atlas](http://www.patlas.site) (pATLAS).
+Welcome to [pATLAS](http://www.patlas.site), the plasmid atlas.
 
 ## Briefly
 
