@@ -42,6 +42,9 @@ respective bin, or vice versa.
 
 #### Clusters
 
+Plasmid distribution per cluster. The cluster are defined by plasmids that share links 
+with each other.
+
 ![](gitbook/images/clusterplot.png)
 
 ## Additional plot options

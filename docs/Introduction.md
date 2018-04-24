@@ -34,7 +34,7 @@ well as facilitate the access to that metadata.
 * Browse by resistance genes
 * Browse by plasmid families
 * Import JSON files from mapping results, mash screen results and even
-import a new sequence as a new node (e.g. an assembled plasmid or any
+import a new plasmid sequence as a new node (e.g. an assembled plasmid or any
 other Fasta representing a putative plasmid).
 * Plot data related with custom selections.
 * Download sequences for selected plasmids
