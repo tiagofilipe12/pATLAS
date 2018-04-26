@@ -680,7 +680,8 @@
     height: 34px;
 }
 
-#go_back, #Re_run, #download_ds, #tableShow, #heatmapButtonTab, #plotButton{
+#go_back, #Re_run, #download_ds, #tableShow, #heatmapButtonTab, #plotButton,
+#clearButton, #submitButton{
     height: 34px;
 }
 
