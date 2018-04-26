@@ -188,3 +188,5 @@ let getLinkedNodes = false // a boolean variable to control the Re_run behavior
  * type {Boolean}
  */
 let freezeShift = true
+
+let slider

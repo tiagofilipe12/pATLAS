@@ -183,7 +183,7 @@ const onLoad = () => {
       sliderMinMax = [Math.log(Math.min.apply(null, listLengths)),
         Math.log(Math.max.apply(null, listLengths))]
       // generates and customizes slider itself
-      const slider = document.getElementById("slider")
+      slider = document.getElementById("slider")
 
       noUiSlider.create(slider, {
         start: sliderMinMax,  //this is an array
@@ -197,36 +197,8 @@ const onLoad = () => {
     }
 
     //* ********************//
-    //* ***Length filter****//
+    //* ***Length filter ****//
     //* ********************//
-
-    /**
-     * event listener for the slider of lengths within
-     * this modal. This will shade all the nodes that are outside the desired
-     * range. Nodes inside the desired range will remain the same color.
-     */
-    slider.noUiSlider.on("set", () => {
-      let sliderMax = Math.exp(slider.noUiSlider.get()[1]),
-        sliderMin = Math.exp(slider.noUiSlider.get()[0])
-      g.forEachNode( (node) => {
-        // check if node is not a singleton
-        // singletons for now do not have size set so they cannot be
-        // filtered with this method
-        // only changes nodes for nodes with seqLength data
-        if (node.data.seqLength) {
-          const nodeLength = node.data.seqLength.split(">").slice(-1).toString()
-          let nodeUI = graphics.getNodeUI(node.id)
-          if (parseInt(nodeLength) < parseInt(sliderMin) ||
-            parseInt(nodeLength) > parseInt(sliderMax)) {
-            nodeUI.color = 0xcdc8b1 // shades nodes
-          } else if (parseInt(nodeLength) >= parseInt(sliderMin) ||
-            parseInt(nodeLength) <= parseInt(sliderMax)) {
-            nodeUI.color = nodeUI.backupColor // return nodes to original color
-          }
-        }
-      })
-      renderer.rerender()
-    })
 
   } // closes renderGraph
 
@@ -1399,6 +1371,34 @@ const onLoad = () => {
     if (event.keyCode === 13) {
       slider.noUiSlider.set([Math.log(inputs[0].valueAsNumber), Math.log(inputs[1].valueAsNumber)])
     }
+  })
+
+  /**
+   * event listener for the slider of lengths within
+   * this modal. This will shade all the nodes that are outside the desired
+   * range. Nodes inside the desired range will remain the same color.
+   */
+  slider.noUiSlider.on("set", () => {
+    let sliderMax = Math.exp(slider.noUiSlider.get()[1]),
+      sliderMin = Math.exp(slider.noUiSlider.get()[0])
+    g.forEachNode( (node) => {
+      // check if node is not a singleton
+      // singletons for now do not have size set so they cannot be
+      // filtered with this method
+      // only changes nodes for nodes with seqLength data
+      if (node.data.seqLength) {
+        const nodeLength = node.data.seqLength.split(">").slice(-1).toString()
+        let nodeUI = graphics.getNodeUI(node.id)
+        if (parseInt(nodeLength) < parseInt(sliderMin) ||
+          parseInt(nodeLength) > parseInt(sliderMax)) {
+          nodeUI.color = 0xcdc8b1 // shades nodes
+        } else if (parseInt(nodeLength) >= parseInt(sliderMin) ||
+          parseInt(nodeLength) <= parseInt(sliderMax)) {
+          nodeUI.color = nodeUI.backupColor // return nodes to original color
+        }
+      }
+    })
+    renderer.rerender()
   })
 
 
