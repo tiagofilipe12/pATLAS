@@ -164,60 +164,6 @@ const onLoad = () => {
     //* **************//
 
 
-    //**** BUTTONS THAT CONTROL PLOTS ****//
-
-
-    $("#genusStats, #speciesStats, #familyStats, #orderStats," +
-      " #resistanceStats, #pfamilyStats, #virStats, #clusterStats, " +
-      "#lengthStats").unbind("click").bind("click", (event) => {
-      // this gets the clicked selector, gets its html, converts it to lower
-      // case and trims for white spaces and new line chars
-      clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
-      if (event.target.id === "lengthStats") {
-        $("#sortGraph, #sortGraphAlp").attr("disabled", true)
-      } else {
-        $("#sortGraph, #sortGraphAlp").attr("disabled", false)
-      }
-      setTimeout( () => {
-        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
-      }, 500)
-    })
-
-    // sort by values
-    $("#sortGraph").unbind("click").bind("click", () => {
-      const sortVal = true
-      selector[clickerButton.replace(" ", "")].state = false
-      listPlots = selector[clickerButton.replace(" ", "")].listPlots
-      const layoutPlot = layoutGet(clickerButton)
-      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, false, sortVal, associativeObj) }
-    })
-
-    // sort alphabetically
-    $("#sortGraphAlp").unbind("click").bind("click", () => {
-      const sortAlp = true
-      selector[clickerButton.replace(" ", "")].state = false
-      listPlots = selector[clickerButton.replace(" ", "")].listPlots
-      const layoutPlot = layoutGet(clickerButton)
-      if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, sortAlp, false, associativeObj) }
-    })
-
-    // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
-
-    // if buttons inside modalPlot are pressed
-
-    $("#lengthPlot, #speciesPlot, #genusPlot, #familyPlot, #orderPlot, " +
-      "#clusterPlot, #resPlot, #pfPlot, #virPlot").unbind("click").bind("click", (event) => {
-      // this gets the clicked selector, gets its html, converts it to lower
-      // case and trims for white spaces and new line chars
-      clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
-      if (event.target.id === "lengthPlot") {
-        $("#sortGraph, #sortGraphAlp").attr("disabled", true)
-      } else {
-        $("#sortGraph, #sortGraphAlp").attr("disabled", false)
-      }
-      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
-    })
-
     //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
 
     // Buttons to control force play/pause using bootstrap navigation bar
@@ -1774,7 +1720,9 @@ const onLoad = () => {
   //* TOP NAV BAR BUTTONS *//
   //***********************//
 
-  // resets the slider
+  /**
+   * Button event that resets the colors on each node
+   */
   $("#reset-sliders").unbind("click").bind("click", () => {
 
     listGiFilter = [] //resets listGiFilter
@@ -1797,7 +1745,14 @@ const onLoad = () => {
     hideAllOtherPlots()
   })
 
-  // runs the re run operation for the selected species
+
+  /**
+   * Buttons that run the re run operation for the selected nodes. if reRunYes
+   * button is clicked then each selected node as well as their closest links
+   * will be saved to a new display (filtered network). However, if reRunNo
+   * is clicked only the selected nodes will be displayed in the filtered
+   * network.
+   */
   $("#reRunYes, #reRunNo").unbind("click").bind("click", (e) => {
 
     getLinkedNodes = (e.target.id !== "reRunNo")
@@ -1821,7 +1776,10 @@ const onLoad = () => {
     })
   })
 
-  // returns to the initial tree by reloading the page
+
+  /**
+   * Button that allows to return to the initial tree by reloading the page
+   */
   $("#go_back").unbind("click").bind("click", () => {
 
     areaSelection = false
@@ -1845,10 +1803,10 @@ const onLoad = () => {
     })
   })
 
-  // Button to open modal for plots
-  // all these buttons require that the modalPlot modal opens before
-  // executing the function and that is the reason why they wait half a
-  // second before executing repetitivePlotFunction's
+
+  /**
+   * Button that opens the stasModal in the default species plot.
+   */
   $("#plotButton").unbind("click").bind("click", () => {
     $("#modalPlot").modal()
     clickerButton = "species"
@@ -1863,7 +1821,10 @@ const onLoad = () => {
     }, 500)
   })
 
-  // function to display heatmap dataset selected in table
+
+  /**
+   * Button that opens heatmap modal, for currently imported files.
+   */
   $("#heatmapButtonTab").unbind("click").bind("click", () => {
     $("#heatmapModal").modal()
     // transform internal accession numbers to ncbi acceptable accesions
@@ -1878,7 +1839,10 @@ const onLoad = () => {
     }
   })
 
-  // function to create table
+
+  /**
+   * Button that opens the table modal
+   */
   $("#tableShow").unbind("click").bind("click", () => {
     $("#tableModal").modal()
     showDiv()
@@ -1890,7 +1854,10 @@ const onLoad = () => {
       })
   })
 
-  // download button //
+
+  /**
+   * Button that fires the download of the current selection of nodes
+   */
   $("#download_ds").unbind("click").bind("click", (e) => {
     e.preventDefault()
     // for now this is just taking what have been changed by taxa coloring
@@ -1904,6 +1871,10 @@ const onLoad = () => {
     }
   })
 
+
+  /**
+   * Button that resets the color of all links to the default color.
+   */
   $("#reset-links").unbind("click").bind("click", (event) => {
     event.preventDefault()
     const arrayOfDivs = [
@@ -1931,7 +1902,11 @@ const onLoad = () => {
     }, 100)
   })
 
-  // Form and button for search box
+
+  /**
+   * Button that searches for a given plasmid or accession number in the graph
+   * network. It uses for that search the input box near to the button.
+   */
   $("#submitButton").unbind("click").bind("click", (event) => {
     $("#resTab").removeClass("active")
     $("#resButton").removeClass("active")
@@ -1942,7 +1917,6 @@ const onLoad = () => {
 
     event.preventDefault()    // prevents page from reloading
     if (toggleStatus === false) {
-      // const query !==)
       const formvalueId = $("#formValueId").val()
       const query = (formvalueId === "") ? clickedHighchart :
         formvalueId.replace(".", "_")
@@ -1970,15 +1944,23 @@ const onLoad = () => {
     clickedPopupButtonVir = true
   })
 
-  // Button to clear the selected nodes by form
+
+  /**
+   * Button that clears the form to search for plasmid name or accession number.
+   */
   $("#clearButton").unbind("click").bind("click", () => {
     document.getElementById("formValueId").value = ""
   })
+
 
   //*****************//
   //* POPUP BUTTONS *//
   //*****************//
 
+  /**
+   * Button that closes the popup that is opened each time a plasmid/node is
+   * clicked.
+   */
   $("#closePop").unbind("click").bind("click", () => {
     $("#resTab").removeClass("active")
     $("#resButton").removeClass("active")
@@ -1993,8 +1975,11 @@ const onLoad = () => {
     renderer.rerender()
   })
 
-  // popup button for download csv
-  // this only does single entry exports, for more exports table should be used
+
+  /**
+   * Button that downloads a csv file with all the metadata available through
+   * the popup
+   */
   $("#downloadCsv").unbind("click").bind("click", () => {
     // $(document).on("click", "#downloadCsv", () => {
 
@@ -2034,19 +2019,101 @@ const onLoad = () => {
     arrayToCsv(targetArray)
   })
 
-  // resistance button control //
+
+  /**
+   * Button that controls the display of the resistance information in the popup
+   */
   $("#resButton").unbind("click").bind("click", () => {
     clickedPopupButtonCard = resGetter(currentQueryNode)
   })
 
-  // plasmid finder button control
+
+  /**
+   * Button that controls the display of the plasmid finder information
+   * in the popup
+   */
   $("#plasmidButton").unbind("click").bind("click", () => {
     clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
   })
 
-  // plasmid finder button control
+
+  /**
+   * Button that controls the display of the virulence information in the popup
+   */
   $("#virButton").unbind("click").bind("click", () => {
     clickedPopupButtonVir = virulenceGetter(currentQueryNode)
+  })
+
+
+  //************************************//
+  //**** BUTTONS THAT CONTROL PLOTS ****//
+  //************************************//
+
+  /**
+   * Button that opens statsModal in the required plot instead of the default
+   * species plot.
+   */
+  $("#genusStats, #speciesStats, #familyStats, #orderStats," +
+    " #resistanceStats, #pfamilyStats, #virStats, #clusterStats, " +
+    "#lengthStats").unbind("click").bind("click", (event) => {
+    // this gets the clicked selector, gets its html, converts it to lower
+    // case and trims for white spaces and new line chars
+    clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
+    if (event.target.id === "lengthStats") {
+      $("#sortGraph, #sortGraphAlp").attr("disabled", true)
+    } else {
+      $("#sortGraph, #sortGraphAlp").attr("disabled", false)
+    }
+    setTimeout( () => {
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
+    }, 500)
+  })
+
+
+  /**
+   * Button that trigger the event to sort the graph by values (descending
+   * order)
+   */
+  $("#sortGraph").unbind("click").bind("click", () => {
+    const sortVal = true
+    selector[clickerButton.replace(" ", "")].state = false
+    listPlots = selector[clickerButton.replace(" ", "")].listPlots
+    const layoutPlot = layoutGet(clickerButton)
+    if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, false, sortVal, associativeObj) }
+  })
+
+
+  /**
+   * Button that trigger the event to sort the graph alphabetically
+   */
+  $("#sortGraphAlp").unbind("click").bind("click", () => {
+    const sortAlp = true
+    selector[clickerButton.replace(" ", "")].state = false
+    listPlots = selector[clickerButton.replace(" ", "")].listPlots
+    const layoutPlot = layoutGet(clickerButton)
+    if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, sortAlp, false, associativeObj) }
+  })
+
+
+  //**********************************************************//
+  // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
+  //**********************************************************//
+
+  /**
+   * Button events that are fired for buttons inside statsModal, that enable to
+   * switch b/w plots.
+   */
+  $("#lengthPlot, #speciesPlot, #genusPlot, #familyPlot, #orderPlot, " +
+    "#clusterPlot, #resPlot, #pfPlot, #virPlot").unbind("click").bind("click", (event) => {
+    // this gets the clicked selector, gets its html, converts it to lower
+    // case and trims for white spaces and new line chars
+    clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
+    if (event.target.id === "lengthPlot") {
+      $("#sortGraph, #sortGraphAlp").attr("disabled", true)
+    } else {
+      $("#sortGraph, #sortGraphAlp").attr("disabled", false)
+    }
+    listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
   })
 
 } // closes onload
