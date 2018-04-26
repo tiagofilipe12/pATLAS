@@ -39,6 +39,7 @@
                           masterReadArray, getLinkedNodes, pageReload, clickerButton,
                            clickedHighchart, clickedPopupButtonVir, listPlots*/
 
+
 /**
  * forces welcomeModal to be the first thing the user sees when the page
  * is loaded.
@@ -82,6 +83,14 @@ const emptyFiles = () => {
  * This function is executed after onLoadWelcome function
  */
 const onLoad = () => {
+
+  /**
+   * group of variables that allow to fetch input forms min and max values to
+   * live update the slider bar
+   */
+  const inputMin = document.getElementById("slider_input_min"),
+    inputMax = document.getElementById("slider_input_max"),
+    inputs = [inputMin, inputMax]
 
   /**
    *  sets a counter for welcome div that will dismiss the modal after 30
@@ -164,17 +173,23 @@ const onLoad = () => {
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
+
+
     //* * Loading Screen goes off **//
     $("#loading").hide()
     $("#couve-flor").css("visibility", "visible")
 
+
+    // forces default zooming
     defaultZooming(layout, renderer)
+
 
     // used to center on the node with more links
     // this is used to skip if it is a re-run button execution
     if (storeMasterNode.length > 0) {
       recenterDOM(renderer, layout, storeMasterNode)
     }
+
 
     // sets the limits of buttons and slider
     // this is only triggered on first instance because we only want to get
@@ -196,9 +211,42 @@ const onLoad = () => {
       })
     }
 
-    //* ********************//
-    //* ***Length filter ****//
-    //* ********************//
+
+    /**
+     * Event that will update the slider input boxes if one of the handlers is
+     * dragged
+     */
+    slider.noUiSlider.on("update", (values, handle) => {
+      inputs[handle].value = Math.trunc(Math.exp(values[handle]))
+    })
+
+    /**
+     * event listener for the slider of lengths within
+     * this modal. This will shade all the nodes that are outside the desired
+     * range. Nodes inside the desired range will remain the same color.
+     */
+    slider.noUiSlider.on("set", () => {
+      let sliderMax = Math.exp(slider.noUiSlider.get()[1]),
+        sliderMin = Math.exp(slider.noUiSlider.get()[0])
+      g.forEachNode( (node) => {
+        // check if node is not a singleton
+        // singletons for now do not have size set so they cannot be
+        // filtered with this method
+        // only changes nodes for nodes with seqLength data
+        if (node.data.seqLength) {
+          const nodeLength = node.data.seqLength.split(">").slice(-1).toString()
+          let nodeUI = graphics.getNodeUI(node.id)
+          if (parseInt(nodeLength) < parseInt(sliderMin) ||
+            parseInt(nodeLength) > parseInt(sliderMax)) {
+            nodeUI.color = 0xcdc8b1 // shades nodes
+          } else if (parseInt(nodeLength) >= parseInt(sliderMin) ||
+            parseInt(nodeLength) <= parseInt(sliderMax)) {
+            nodeUI.color = nodeUI.backupColor // return nodes to original color
+          }
+        }
+      })
+      renderer.rerender()
+    })
 
   } // closes renderGraph
 
@@ -297,49 +345,57 @@ const onLoad = () => {
   }
 
   //* ***********************************************//
-  // control the infile input and related functions //
+  // control the INFILE INPUT and related functions //
   //* ***********************************************//
 
+  /**
+   * Event listener for read files
+   */
   handleFileSelect("infile", "#file_text", (newReadJson) => {
     readFilejson = newReadJson
   })
 
+
+  /**
+   * Event lisntener for mash screen files
+   */
   handleFileSelect("mashInfile", "#file_text_mash", (newMashJson) => {
     mashJson = newMashJson
   })
 
+
+  /**
+   * Event linestener for assembly files
+   */
   handleFileSelect("assemblyfile", "#assembly_text", (newAssemblyJson) => {
     assemblyJson = newAssemblyJson
   })
 
+
+  /**
+   * Event listener for consensus files
+   */
   handleFileSelect("consensusfile", "#consensus_text", (newConsensusJson) => {
     consensusJson = newConsensusJson
   })
 
+
+  /**
+   * Event listener for project files imports
+   */
   handleFileSelect("projectFile", "#project_text", (newProjectJson) => {
     projectJson = newProjectJson
-  })
-
-  //* ****************************** *//
-  //      Menu Button controls       //
-  //* ****************************** *//
-
-  $("#menu-toggle").on("click", function() {
-    if (firstClickMenu === true) {
-      $("#menu-toggle").css( {"color": "#fff"} )
-      firstClickMenu = false
-    } else {
-      $("#menu-toggle").css( {"color": "#999999"} )
-      firstClickMenu = true
-    }
   })
 
 
   //*********//
   //* TABLE *//
   //*********//
-  // function to add accession to bootstrapTableList in order to use in
-  // downloadTable function or in submitTable button
+
+  /**
+   * Function to add accession to bootstrapTableList in order to use in
+   * downloadTable function or in submitTable button
+   */
   $("#metadataTable").on("check.bs.table", (e, row) => {
     if (bootstrapTableList.indexOf(row.id) < 0) {
       bootstrapTableList.push(row.id)
@@ -374,7 +430,11 @@ const onLoad = () => {
       currentQueryNode = element.id
     })
 
-  // function to download dataset selected in table
+
+  /**
+   * Button that downloads the sequences associated with the checked boxes in
+   * the table.
+   */
   $("#downloadTable").unbind("click").bind("click", (e) => {
     e.preventDefault()
 
@@ -382,7 +442,10 @@ const onLoad = () => {
   })
 
 
-  // button to color selected nodes by check boxes
+  /**
+   * Table button that colors the nodes that correspond to the checked boxes
+   * in the table.
+   */
   $("#tableSubmit").unbind("click").bind("click", () => {
     $("#reset-sliders").click()
     $("#colorLegend").hide()
@@ -409,16 +472,27 @@ const onLoad = () => {
   })
 
 
-  // function to close table
+  /**
+   * Function that closes the table modal
+   */
   $("#cancelTable").unbind("click").bind("click", () => {
     $("#tableModal").modal("toggle")
   })
 
 
+  /**
+   * Button events that clear all uploaded files, avoiding that different type
+   * of files are loaded at the same time.
+   */
   $("#uploadFile, #uploadFileMash, #uploadFileAssembly, #uploadFileConsensus, #uploadFileProject")
     .unbind("click").bind("click", () => {
     emptyFiles()
   })
+
+
+  //**********//
+  //* ALERTS *//
+  //**********//
 
   // control the alertClose button
   $("#alertClose").unbind("click").bind("click", () => {
@@ -465,27 +539,15 @@ const onLoad = () => {
     $("#alertIdNoProject").hide()  // hide this div
   })
 
-  // function that submits the selection made in the modal
-  $("#ratioSubmit").unbind("click").bind("click", () => {
 
-    event.preventDefault()
+  //**********//
+  //* LEGEND *//
+  //**********//
 
-    const toggleRatioStatus = $("#toggleRatio").prop("checked")
-
-    // clears all links before doing this
-    $("#reset-links").click()
-    $("#scaleLegend").empty()
-
-    showDiv().then(
-      setTimeout( () => {
-        linkColoring(g, graphics, renderer, "size", toggleRatioStatus)//, totalNumberOfLinks)
-        // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
-      }, 100)
-    )
-
-  })
-
+  /**
+   * Allows legend to move between selections. In this case to the right
+   * selection menu saved in legendSliderControler
+   */
   $("#slideLegendRight").unbind("click").bind("click", () => {
 
     // iterates through the array of filters
@@ -497,6 +559,11 @@ const onLoad = () => {
 
   })
 
+
+  /**
+   * Allows legend to move between selections. In this case to the left
+   * selection menu saved in legendSliderControler
+   */
   $("#slideLegendLeft").unbind("click").bind("click", () => {
 
     // iterates through the array of filters
@@ -508,43 +575,6 @@ const onLoad = () => {
 
   })
 
-  // changes the behavior of tooltip to show only on click
-  $("#questionPlots, #questionTable, #questionHeatmap, #questionMap, " +
-    "#questionRatio, #exportProjectQuestion, #importProjectQuestion, " +
-    "#questionCombined").popover()
-
-  $("#infoMap, #infoMash, #infoAssembly").popover( { container: "body" } )
-
-  // function to avoid shift key to be triggered when any modal is open
-  $(".modal").on("shown.bs.modal", () => {
-    multiSelectOverlay = "disable"
-  })
-
-  /**
-  * function to allow shift key to select nodes again, on modal close
-  */
-    .on("hidden.bs.modal", () => {
-      multiSelectOverlay = false
-      // this force question buttons to close if tableModal and modalPlot are
-      // closed
-      $("#questionTable, #questionHeatmap, #questionPlots, #questionMap, " +
-        "#questionRatio, #infoMap, #infoMash, #infoAssembly, " +
-        "#exportProjectQuestion, #importProjectQuestion, #questionCombined")
-        .popover("hide")
-    })
-
-  // this forces the entire script to run
-  init() //forces main json or the filtered objects to run before
-  // rendering the graph
-
-  /**
-   * function for keyboard shortcut to save file with node positions
-   * This is only useful if devel is true and should be disabled by default
-   * for users
-   */
-  Mousetrap.bind("shift+ctrl+space", () => {
-    initCallback(g, layout, devel)
-  })
 
   /**
    * Event to handle the resizing of color legend
@@ -553,43 +583,22 @@ const onLoad = () => {
     initResize()
   })
 
-  /**
-   * Variable that controls the last taxa selector that was used under
-   * intersections menu
-   * @type {boolean|String}
-   */
-  let lastTaxaSelector = false
+  //*****************//
+  //**** POPOVERS ***//
+  //*****************//
 
-  /**
-   * Variable that controls the last resistance selector taht was used under
-   * intersections menu
-   * @type {boolean|String}
-   */
-  let lastResSelector = false
+  // changes the behavior of tooltip to show only on click
+  $("#questionPlots, #questionTable, #questionHeatmap, #questionMap, " +
+    "#questionRatio, #exportProjectQuestion, #importProjectQuestion, " +
+    "#questionCombined").popover()
 
-  /**
-   * Event that assures that only one of the selectors are used at once
-   */
-  $("#orderList2, #familyList2, #genusList2, #speciesList2")
-    .on("changed.bs.select", (e) => {
 
-      const arrayOfSelectors = ["orderList2", "familyList2",
-        "genusList2", "speciesList2"]
+  $("#infoMap, #infoMash, #infoAssembly").popover( { container: "body" } )
 
-      lastTaxaSelector = controlFiltersSameLevel(lastTaxaSelector, e, arrayOfSelectors)
 
-  })
-
-  /**
-   * Event that assures that only one of the selectors are used at once
-   */
-  $("#resResfinderList2, #resCardList2")
-    .on("changed.bs.select", (e) => {
-
-      const arrayOfSelectors = ["resResfinderList2", "resCardList2"]
-
-      lastResSelector = controlFiltersSameLevel(lastResSelector, e, arrayOfSelectors)
-    })
+  //************//
+  //* PROJECTS *//
+  //************//
 
   $("#projectSubmit").unbind("click").bind("click", () => {
     // the variable that contains the project to export
@@ -603,14 +612,6 @@ const onLoad = () => {
     // downloads the file
     fileDownloader(`${projectName}.json`, "data:application/json;charset=utf-8",
       [textToExport])
-  })
-
-  /**
-   * Function that controls the behavior of the side bar menu, collapsing the
-   * buttons that are not in use when other collapsible is clicked
-   */
-  $("#collapseGroup").on("show.bs.collapse",".collapse", () => {
-    $("#collapseGroup").find(".collapse.in").collapse("hide")
   })
 
   /**
@@ -731,6 +732,26 @@ const onLoad = () => {
       multiSelectOverlay = false
     }
   })
+
+  /**
+   * function to avoid shift key to be triggered when any modal is open
+   */
+  $(".modal").on("shown.bs.modal", () => {
+    multiSelectOverlay = "disable"
+  })
+
+  /**
+   * function to allow shift key to select nodes again, on modal close
+   */
+    .on("hidden.bs.modal", () => {
+      multiSelectOverlay = false
+      // this force question buttons to close if tableModal and modalPlot are
+      // closed
+      $("#questionTable, #questionHeatmap, #questionPlots, #questionMap, " +
+        "#questionRatio, #infoMap, #infoMash, #infoAssembly, " +
+        "#exportProjectQuestion, #importProjectQuestion, #questionCombined")
+        .popover("hide")
+    })
 
 
   //* *************//
@@ -1154,6 +1175,48 @@ const onLoad = () => {
     }
   )
 
+  /**
+   * Variable that controls the last taxa selector that was used under
+   * intersections menu
+   * @type {boolean|String}
+   */
+  let lastTaxaSelector = false
+
+  /**
+   * Variable that controls the last resistance selector taht was used under
+   * intersections menu
+   * @type {boolean|String}
+   */
+  let lastResSelector = false
+
+  /**
+   * Event that assures that only one of the selectors are used at once
+   */
+  $("#orderList2, #familyList2, #genusList2, #speciesList2")
+    .on("changed.bs.select", (e) => {
+
+        const arrayOfSelectors = ["orderList2", "familyList2",
+          "genusList2", "speciesList2"]
+
+        lastTaxaSelector = controlFiltersSameLevel(lastTaxaSelector, e,
+          arrayOfSelectors)
+
+      }
+    )
+
+  /**
+   * Event that assures that only one of the selectors are used at once
+   */
+  $("#resResfinderList2, #resCardList2")
+    .on("changed.bs.select", (e) => {
+
+        const arrayOfSelectors = ["resResfinderList2", "resCardList2"]
+
+        lastResSelector = controlFiltersSameLevel(lastResSelector, e,
+          arrayOfSelectors)
+      }
+    )
+
 
   //* ******************//
   //* ***Taxa Filter****//
@@ -1330,23 +1393,6 @@ const onLoad = () => {
   //* LENGTH EVENT LISTENERS *//
   //**************************//
 
-  /**
-   * group of variables that allow to fetch input forms min and max values to
-   * live update the slider bar
-   */
-  const inputMin = document.getElementById("slider_input_min"),
-    inputMax = document.getElementById("slider_input_max"),
-    inputs = [inputMin, inputMax]
-
-
-  /**
-   * Event that will update the slider input boxes if one of the handlers is
-   * dragged
-   */
-  slider.noUiSlider.on("update", (values, handle) => {
-    inputs[handle].value = Math.trunc(Math.exp(values[handle]))
-  })
-
 
   /**
    * Button event to submit current selection to the network if enter key is
@@ -1373,32 +1419,34 @@ const onLoad = () => {
     }
   })
 
+
+  //**************//
+  //* RATIO SIZE *//
+  //**************//
+
   /**
-   * event listener for the slider of lengths within
-   * this modal. This will shade all the nodes that are outside the desired
-   * range. Nodes inside the desired range will remain the same color.
+   * Function that submits the selection made in the size ratio modal, in order
+   * to highlight the selected links in the desired color or remove the links
+   * that are not in the selected range.
    */
-  slider.noUiSlider.on("set", () => {
-    let sliderMax = Math.exp(slider.noUiSlider.get()[1]),
-      sliderMin = Math.exp(slider.noUiSlider.get()[0])
-    g.forEachNode( (node) => {
-      // check if node is not a singleton
-      // singletons for now do not have size set so they cannot be
-      // filtered with this method
-      // only changes nodes for nodes with seqLength data
-      if (node.data.seqLength) {
-        const nodeLength = node.data.seqLength.split(">").slice(-1).toString()
-        let nodeUI = graphics.getNodeUI(node.id)
-        if (parseInt(nodeLength) < parseInt(sliderMin) ||
-          parseInt(nodeLength) > parseInt(sliderMax)) {
-          nodeUI.color = 0xcdc8b1 // shades nodes
-        } else if (parseInt(nodeLength) >= parseInt(sliderMin) ||
-          parseInt(nodeLength) <= parseInt(sliderMax)) {
-          nodeUI.color = nodeUI.backupColor // return nodes to original color
-        }
-      }
-    })
-    renderer.rerender()
+  $("#ratioSubmit").unbind("click").bind("click", () => {
+
+    event.preventDefault()
+
+    const toggleRatioStatus = $("#toggleRatio").prop("checked")
+
+    // clears all links before doing this
+    $("#reset-links").click()
+    $("#scaleLegend").empty()
+
+    showDiv().then(
+      setTimeout( () => {
+        linkColoring(g, graphics, renderer, "size", toggleRatioStatus)//, totalNumberOfLinks)
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+      }, 100)
+    )
+
   })
 
 
@@ -1707,8 +1755,35 @@ const onLoad = () => {
 
 
   //***********************//
+  //* SIDE BAR CONTROLS *//
+  //*********************//
+
+  /**
+   * Function that controls the behavior of the side bar menu, collapsing the
+   * buttons that are not in use when other collapsible is clicked
+   */
+  $("#collapseGroup").on("show.bs.collapse",".collapse", () => {
+    $("#collapseGroup").find(".collapse.in").collapse("hide")
+  })
+
+
+  //***********************//
   //* TOP NAV BAR BUTTONS *//
   //***********************//
+
+
+  /**
+   * Button that toggles the side menu
+   */
+  $("#menu-toggle").on("click", function() {
+    if (firstClickMenu === true) {
+      $("#menu-toggle").css( {"color": "#fff"} )
+      firstClickMenu = false
+    } else {
+      $("#menu-toggle").css( {"color": "#999999"} )
+      firstClickMenu = true
+    }
+  })
 
   /**
    * Button event that resets the colors on each node
@@ -2238,5 +2313,18 @@ const onLoad = () => {
   })
 
 
+  // this forces the entire script to run
+  init() //forces main json or the filtered objects to run before
+  // rendering the graph
+
+
+  /**
+   * function for keyboard shortcut to save file with node positions
+   * This is only useful if devel is true and should be disabled by default
+   * for users. This is something used by developers only
+   */
+  Mousetrap.bind("shift+ctrl+space", () => {
+    initCallback(g, layout, devel)
+  })
 
 } // closes onload
