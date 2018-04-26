@@ -162,20 +162,7 @@ const onLoad = () => {
     //* **************//
     //* ** BUTTONS ***//
     //* **************//
-    // $("#closePop").on('click', () => {
-    $("#closePop").unbind("click").bind("click", () => { //TODO ISSUE
-      $("#resTab").removeClass("active")
-      $("#resButton").removeClass("active")
-      $("#pfTab").removeClass("active")
-      $("#plasmidButton").removeClass("active")
-      $("#popup_description").hide()
 
-      if (currentQueryNode !== false) {
-        graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
-      }
-      currentQueryNode = false
-      renderer.rerender()
-    })
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
 
@@ -1007,66 +994,10 @@ const onLoad = () => {
     $("#tableModal").modal("toggle")
   })
 
-  // popup button for download csv
-  // this only does single entry exports, for more exports table should be used
-  $("#downloadCsv").unbind("click").bind("click", () => {
-  // $(document).on("click", "#downloadCsv", () => {
-
-    // execute the same replacement function for all this divs
-    const targetArray = quickFixString([
-      "#accessionPop",
-      "#speciesNamePop",
-      "#lengthPop",
-      "#plasmidNamePop",
-      "#percentagePop",
-      "#percentagePopMash",
-      "#copyNumberPop",
-      "#percentagePopMashDist",
-      "#hashPop",
-      "#cardPop",
-      "#cardGenePop",
-      "#cardGenbankPop",
-      "#cardAroPop",
-      "#cardCoveragePop",
-      "#cardIdPop",
-      "#cardRangePop",
-      "#resfinderPop",
-      "#resfinderGenePop",
-      "#resfinderGenbankPop",
-      "#resfinderCoveragePop",
-      "#resfinderIdPop",
-      "#resfinderRangePop",
-      "#pfPop",
-      "#pfGenePop",
-      "#pfGenbankPop",
-      "#pfCoveragePop",
-      "#pfIdentityPop",
-      "#pfRangePop",
-      "#clusterIdPop"
-    ])
-    // then convert the resulting array to a csv file
-    arrayToCsv(targetArray)
-  })
-
 
   $("#uploadFile, #uploadFileMash, #uploadFileAssembly, #uploadFileConsensus, #uploadFileProject")
     .unbind("click").bind("click", () => {
     emptyFiles()
-  })
-
-  // resistance button control //
-  $("#resButton").unbind("click").bind("click", () => {
-    clickedPopupButtonCard = resGetter(currentQueryNode)
-  })
-
-  // plasmid finder button control
-  $("#plasmidButton").unbind("click").bind("click", () => {
-    clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
-  })
-
-  // plasmid finder button control
-  $("#virButton").unbind("click").bind("click", () => {
-    clickedPopupButtonVir = virulenceGetter(currentQueryNode)
   })
 
   // control the alertClose button
@@ -2038,9 +1969,84 @@ const onLoad = () => {
     clickedPopupButtonFamily = true
     clickedPopupButtonVir = true
   })
+
   // Button to clear the selected nodes by form
   $("#clearButton").unbind("click").bind("click", () => {
     document.getElementById("formValueId").value = ""
+  })
+
+  //*****************//
+  //* POPUP BUTTONS *//
+  //*****************//
+
+  $("#closePop").unbind("click").bind("click", () => {
+    $("#resTab").removeClass("active")
+    $("#resButton").removeClass("active")
+    $("#pfTab").removeClass("active")
+    $("#plasmidButton").removeClass("active")
+    $("#popup_description").hide()
+
+    if (currentQueryNode !== false) {
+      graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
+    }
+    currentQueryNode = false
+    renderer.rerender()
+  })
+
+  // popup button for download csv
+  // this only does single entry exports, for more exports table should be used
+  $("#downloadCsv").unbind("click").bind("click", () => {
+    // $(document).on("click", "#downloadCsv", () => {
+
+    // execute the same replacement function for all this divs
+    const targetArray = quickFixString([
+      "#accessionPop",
+      "#speciesNamePop",
+      "#lengthPop",
+      "#plasmidNamePop",
+      "#percentagePop",
+      "#percentagePopMash",
+      "#copyNumberPop",
+      "#percentagePopMashDist",
+      "#hashPop",
+      "#cardPop",
+      "#cardGenePop",
+      "#cardGenbankPop",
+      "#cardAroPop",
+      "#cardCoveragePop",
+      "#cardIdPop",
+      "#cardRangePop",
+      "#resfinderPop",
+      "#resfinderGenePop",
+      "#resfinderGenbankPop",
+      "#resfinderCoveragePop",
+      "#resfinderIdPop",
+      "#resfinderRangePop",
+      "#pfPop",
+      "#pfGenePop",
+      "#pfGenbankPop",
+      "#pfCoveragePop",
+      "#pfIdentityPop",
+      "#pfRangePop",
+      "#clusterIdPop"
+    ])
+    // then convert the resulting array to a csv file
+    arrayToCsv(targetArray)
+  })
+
+  // resistance button control //
+  $("#resButton").unbind("click").bind("click", () => {
+    clickedPopupButtonCard = resGetter(currentQueryNode)
+  })
+
+  // plasmid finder button control
+  $("#plasmidButton").unbind("click").bind("click", () => {
+    clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
+  })
+
+  // plasmid finder button control
+  $("#virButton").unbind("click").bind("click", () => {
+    clickedPopupButtonVir = virulenceGetter(currentQueryNode)
   })
 
 } // closes onload
