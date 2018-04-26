@@ -17,8 +17,9 @@
                 getArrayAssembly, startMultiSelect, requesterDB,
                  addAllNodes, addAllLinks, quickFixString, fileChecks,
                   iterateArrays, initResize, parseQueriesIntersection,
-                    controlFiltersSameLevel, fileDownloader, importProject,
-                      setProjectView*/
+                   controlFiltersSameLevel, fileDownloader, importProject,
+                    setProjectView, readFilejson, mashJson, assemblyJson,
+                     consensusJson, projectJson*/
 
 /**
  * forces welcomeModal to be the first thing the user sees when the page

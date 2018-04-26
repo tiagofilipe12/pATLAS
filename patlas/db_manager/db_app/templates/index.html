@@ -1147,17 +1147,18 @@
                   title="Table with metadata" style="display:
                             none">
             <span class="glyphicon glyphicon-list-alt"></span></button>
-          <button class="btn btn-default" id="heatmapButtonTab"
-                  type="button" data-toogle="tooptip"
-                  title="Heatmap for multiple import comparison" style="display:
-                            none">
-            <span class="glyphicon glyphicon-th"></span>
-          </button>
           <button class="btn btn-default"
                   data-toggle="tooltip" type="button"
                   title="Quick stats"
                   id="plotButton" style="display: none">
             <span class="glyphicon glyphicon-stats"></span>
+          </button>
+
+          <button class="btn btn-default" id="heatmapButtonTab"
+                  type="button" data-toogle="tooptip"
+                  title="Heatmap for multiple import comparison" style="display:
+                            none">
+            <span class="glyphicon glyphicon-th"></span>
           </button>
 
           <!--<button class="btn btn-default" id="download_img"
@@ -1170,8 +1171,8 @@
       <form class="navbar-form navbar-right">
         <input data-toggle="toggle" type="checkbox"
                data-onstyle="success" data-offstyle="default"
-               data-on="Plasmid name"
-               data-off="Accession no"
+               data-on="Plasmid"
+               data-off="Id"
                title="Switch between plasmid and accession search"
                id="toggle-event">
         <div class="form-group" data-toggle="tooltip"
@@ -1180,12 +1181,16 @@
                  placeholder="Search an accession number"/>
         </div>
         <div class="btn-group">
-          <button id="submitButton" type="submit" data-toggle="tooltip"
-                  title="Centers at the provided accession corresponding node"
-                  class="btn btn-default">Go</button>
+          <!--<button id="submitButton" type="submit" data-toggle="tooltip"-->
+                  <!--title="Centers at the provided accession corresponding node"-->
+                  <!--class="btn btn-default">-->
+            <!--Submit-->
+          <!--</button>-->
           <button id="clearButton" data-toggle="tooltip"
                   title="Remove color for all selected species" type="button"
-                  class="btn btn-info">Clear</button>
+                  class="btn btn-info">
+            <span class="glyphicon glyphicon-erase"></span>
+          </button>
         </div>
       </form>
     </div><!-- /.navbar-collapse -->
