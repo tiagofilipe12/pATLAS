@@ -1,7 +1,7 @@
 /*globals setupPopupDisplay */
 
 /**
- * This function controls the elements in the toggle button on the top left
+ * This function controls the elements in the toggle button on the top right
  * corner of patlas that enables the user to switch the search between
  * plasmid names and accession number.
  * @param {boolean} toggleStatus - a boolean to control the status of the

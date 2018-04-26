@@ -159,20 +159,6 @@ const onLoad = () => {
       recenterDOM(renderer, layout, storeMasterNode)
     }
 
-
-    //* *************//
-    //* ** TOGGLE ***//
-    //* *************//
-    //* * This section controls the connection between the toggle button on the leftside ***//
-    //* * and the dropdown on the right side **//
-
-    let toggleStatus = false // default state
-    // $("#toggle-event").bootstrapToggle("off") // set to default off
-    $("#toggle-event").change(function () {
-      toggleStatus = $(this).prop("checked")
-      toggleManager(toggleStatus)
-    })
-
     //* *************//
     //* ** EVENTS ***//
     //* *************//
@@ -2013,6 +1999,29 @@ const onLoad = () => {
     renderer.zoomOut()
     renderer.rerender()   // rerender after zoom avoids glitch with
     // duplicated nodes
+  })
+
+  //* *************//
+  //* ** TOGGLE ***//
+  //* *************//
+
+  /** This section controls the connection between the toggle button on the leftside
+   * and the dropdown on the right side
+   */
+
+  /**
+   * Variable that controls the behavior of toggle button to switch between
+   * plasmid search and accession number search
+   * @type {boolean}
+   */
+  let toggleStatus = false
+
+  /**
+   * The function that controls the changes on toggle-event button.
+   */
+  $("#toggle-event").change(function () {
+    toggleStatus = $(this).prop("checked")
+    toggleManager(toggleStatus)
   })
 
 
