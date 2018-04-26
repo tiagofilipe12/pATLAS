@@ -88,7 +88,9 @@ let legendInst
 let associativeObj = {}
 
 // globals to control plot instances
-let clickerButton, listPlots
+let clickerButton
+
+let listPlots
 
 let requestDBList
 

@@ -1,26 +1,43 @@
-/*globals Viva, resetAllNodes, storeRecenterDom,
- buildCircleNodeShader, requestPlasmidTable, WebglCircle, selector,
-  hideAllOtherPlots, toggleManager, repetitivePlotFunction,
+/*globals resetAllNodes, storeRecenterDom,
+ buildCircleNodeShader, requestPlasmidTable, selector,
+  hideAllOtherPlots, toggleManager,
    resRepetitivePlotFunction, pfRepetitivePlotFunction,
     virRepetitivePlotFunction, statsParser, nodeColorReset,
-     resetDisplayTaxaBox, showDiv, pfSubmitFunction, layoutGet,
-      centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
-       filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
+     resetDisplayTaxaBox, showDiv, layoutGet,
+      singleDropdownPopulate,
+       filterDisplayer, slider,
         removeFirstCharFromArray, colorList, resetLinkColor,
-         readColoring, handleFileSelect, downloadSeqByColor,
-          downloadSeq, setupPopupDisplay, downloadTypeHandler, heatmapMaker,
-           colorNodes, abortRead, makeTable, arrayToCsv, resGetter,
-            plasmidFamilyGetter, virulenceGetter, linkColoring,
-             slideToRight, slideToLeft, Mousetrap, initCallback,
-              taxaRequest, pushToMasterReadArray, getArrayMapping,
+         handleFileSelect, downloadSeqByColor,
+          downloadSeq,
+           abortRead, arrayToCsv,
+            linkColoring,
+             Mousetrap, associativeObj,
+              taxaRequest, getArrayMapping,
                getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
                 getArrayAssembly, startMultiSelect, requesterDB,
                  addAllNodes, addAllLinks, quickFixString, fileChecks,
-                  iterateArrays, initResize, parseQueriesIntersection,
+                  initResize,
                    controlFiltersSameLevel, fileDownloader, importProject,
                     setProjectView, readFilejson, mashJson, assemblyJson,
                      consensusJson, projectJson, listGiFilter, storeMasterNode,
-                     recenterDOM, defaultZooming, freezeShift*/
+                     recenterDOM, defaultZooming, freezeShift, renderer,
+                     downloadTypeHandler,
+                     colorNodes, initCallback, multiSelectOverlay, multiSelectOverlayObj,
+                      areaSelection, pageReRun, currentQueryNode, pfSubmitFunction,
+                      legendInst, resSubmitFunction, virSubmitFunction, parseQueriesIntersection,
+                      iterateArrays, readColoring, pushToMasterReadArray, repetitivePlotFunction,
+                       heatmapMaker, makeTable, centerToggleQuery, toggleOnSearch,
+                       resGetter, plasmidFamilyGetter, virulenceGetter,
+                        slideToRight, slideToLeft, minNodeSize, WebglCircle, devel,
+                         Viva, sliderMinMax, listLengths, firstInstace, getArray,
+                         counter, listGi, list, graphSize, readIndex, requestDBList,
+                          reloadAccessionList, firstClickMenu, bootstrapTableList,
+                          setupPopupDisplay, legendIndex, legendSliderControler,
+                          typeOfProject, previousTableList, nodeColor,
+                          clickedPopupButtonCard, clickedPopupButtonRes,
+                          clickedPopupButtonFamily, selectedFilter, idsArrays,
+                          masterReadArray, getLinkedNodes, pageReload, clickerButton,
+                           clickedHighchart, clickedPopupButtonVir, listPlots*/
 
 /**
  * forces welcomeModal to be the first thing the user sees when the page
@@ -2048,11 +2065,16 @@ const onLoad = () => {
    * order)
    */
   $("#sortGraph").unbind("click").bind("click", () => {
+
     const sortVal = true
     selector[clickerButton.replace(" ", "")].state = false
-    listPlots = selector[clickerButton.replace(" ", "")].listPlots
+    const listPlotsType = selector[clickerButton.replace(" ", "")].listPlots
     const layoutPlot = layoutGet(clickerButton)
-    if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, false, sortVal, associativeObj) }
+
+    if (listPlotsType) { statsParser(g, graphics, renderer, false,
+      listPlotsType, layoutPlot, clickerButton, false, sortVal, associativeObj)
+    }
+
   })
 
 
@@ -2062,9 +2084,12 @@ const onLoad = () => {
   $("#sortGraphAlp").unbind("click").bind("click", () => {
     const sortAlp = true
     selector[clickerButton.replace(" ", "")].state = false
-    listPlots = selector[clickerButton.replace(" ", "")].listPlots
+    const listPlotsType = selector[clickerButton.replace(" ", "")].listPlots
     const layoutPlot = layoutGet(clickerButton)
-    if (listPlots) { statsParser(g, graphics, renderer, false, listPlots, layoutPlot, clickerButton, sortAlp, false, associativeObj) }
+
+    if (listPlotsType) { statsParser(g, graphics, renderer, false,
+      listPlotsType, layoutPlot, clickerButton, sortAlp, false, associativeObj)
+    }
   })
 
 
