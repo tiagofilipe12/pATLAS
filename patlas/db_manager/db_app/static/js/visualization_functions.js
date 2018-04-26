@@ -159,519 +159,6 @@ const onLoad = () => {
       recenterDOM(renderer, layout, storeMasterNode)
     }
 
-    //* **************//
-    //* ** BUTTONS ***//
-    //* **************//
-
-
-    //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
-
-    // Buttons to control force play/pause using bootstrap navigation bar
-    let paused = true
-    $("#playpauseButton").unbind("click").bind("click", () => {
-      $("#playpauseButton").empty()
-      if (paused === true) {
-        renderer.resume()
-        $("#playpauseButton").append("<span class='glyphicon glyphicon-pause'></span>")
-          .removeClass("btn-default").addClass("btn-success")
-        paused = false
-      } else {
-        renderer.pause()
-        $("#playpauseButton").append("<span class='glyphicon glyphicon-play'></span>")
-          .removeClass("btn-success").addClass("btn-default")
-        paused = true
-      }
-    })
-
-
-    //* ******************//
-    //* ***plasmidfinder Filters****//
-    //* ******************//
-
-    // setup clear button for plasmidfinder functions
-    $("#pfClear").unbind("click").bind("click", (event) => {
-      // document.getElementById("reset-sliders").click()
-      // clear = true;
-      event.preventDefault()
-      // this needs an array for reusability purposes
-      resetDisplayTaxaBox(["p_Plasmidfinder"])
-
-      // resets dropdown selections
-      $("#plasmidFamiliesList").selectpicker("deselectAll")
-
-      // slider.noUiSlider.set([min, max])
-      // nodeColorReset(graphics, g, nodeColor, renderer)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
-      if ($("#scaleLegend").html() !== "") {
-        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-          " #plotButton, #colorLegend").hide()
-      } else {
-        $("#colorLegendBox").empty()
-        $("#taxa_label").hide()
-        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-          " #plotButton").hide()
-      }
-    })
-
-    $("#pfSubmit").unbind("click").bind("click", (event) => {
-      event.preventDefault()
-
-      legendIndex = 2
-
-      selectedFilter = "pf"
-
-      // clears previous selected nodes
-      nodeColorReset(graphics, g, nodeColor, renderer)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
-
-      $("#pf_label").show()
-
-      $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
-
-      // empties taxa and plasmidfinder legend
-      $("#taxa_label").hide()
-      $("#colorLegendBox").empty()
-      $("#res_label").hide()
-      $("#colorLegendBoxRes").empty()
-      $("#vir_label").hide()
-      $("#colorLegendBoxVir").empty()
-
-      $("#readString").empty()
-      $("#readLegend").empty()
-      $("#read_label").hide()
-      $("#fileNameDiv").hide()
-
-      // reset nodes before submitting new colors
-      const tempPageReRun = pageReRun
-      showDiv().then( () => {
-        pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
-          legendInst = results
-          pageReRun = false
-          // just show legend if any selection is made at all
-          if (legendInst === true) {
-            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-              " #plotButton, #colorLegend").show()
-          }
-          // enables button group again
-          $("#toolButtonGroup button").removeAttr("disabled")
-          $("#loading").hide()
-        })
-      })
-    })
-
-    //* ******************//
-    //* ***Resistance Filters****//
-    //* ******************//
-
-
-    $("#resClear").unbind("click").bind("click", (event) => {
-      event.preventDefault()
-      // document.getElementById("reset-sliders").click()
-      resetDisplayTaxaBox(["p_Resfinder", "p_Card"])
-
-      // resets dropdown selections
-      $("#cardList").selectpicker("deselectAll")
-      $("#resList").selectpicker("deselectAll")
-
-      // slider.noUiSlider.set([min, max])
-      // nodeColorReset(graphics, g, nodeColor, renderer)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
-      if ($("#scaleLegend").html() !== "") {
-        // showLegend.style.display = "none"
-        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-          " #plotButton, #colorLegend").hide()
-      } else {
-        $("#colorLegendBox").empty()
-        document.getElementById("taxa_label").style.display = "none" // hide label
-        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-          " #plotButton").hide()
-      }
-    })
-
-    $("#resSubmit").unbind("click").bind("click", (event) => {
-      event.preventDefault()
-
-      legendIndex = 1
-
-      selectedFilter = "res"
-
-      // clears previously selected nodes
-      nodeColorReset(graphics, g, nodeColor, renderer)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-
-      hideAllOtherPlots()
-
-      $("#res_label").show()
-
-      $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
-
-      // empties all other legend
-      $("#taxa_label").hide()
-      $("#colorLegendBox").empty()
-      $("#vir_label").hide()
-      $("#colorLegendBoxVir").empty()
-      $("#pf_label").hide()
-      $("#colorLegendBoxPf").empty()
-
-      $("#readString").empty()
-      $("#readLegend").empty()
-      $("#read_label").hide()
-      $("#fileNameDiv").hide()
-
-      areaSelection = false
-
-      const tempPageReRun = pageReRun
-
-      showDiv().then( () => {
-        resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
-          legendInst = results
-          pageReRun = false
-          // just show legend if any selection is made at all
-          if (legendInst === true) {
-            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-              " #plotButton, #colorLegend").show()
-          }
-          // enables button group again
-          $("#toolButtonGroup button").removeAttr("disabled")
-          $("#loading").hide()
-        })
-      })
-    })
-
-    //* ******************//
-    //* ***Virulence Filters****//
-    //* ******************//
-
-    // setup clear button for plasmidfinder functions
-    $("#virClear").unbind("click").bind("click", (event) => {
-      // document.getElementById("reset-sliders").click()
-      // clear = true;
-      event.preventDefault()
-      // this needs an array for reusability purposes
-      resetDisplayTaxaBox(["p_Virulence"])
-
-      // resets dropdown selections
-      $("#virList").selectpicker("deselectAll")
-
-      // slider.noUiSlider.set([min, max])
-      // nodeColorReset(graphics, g, nodeColor, renderer)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
-      if ($("#scaleLegend").html() !== "") {
-        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-          " #plotButton, #colorLegend").hide()
-      } else {
-        $("#colorLegendBox").empty()
-        document.getElementById("taxa_label").style.display = "none" // hide label
-        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-          " #plotButton").hide()
-      }
-    })
-
-    $("#virSubmit").unbind("click").bind("click", (event) => {
-      event.preventDefault()
-
-      legendIndex = 3
-
-      selectedFilter = "vir"
-
-      // resetDisplayTaxaBox(
-      //   ["p_Resfinder", "p_Card", "p_Plasmidfinder", "p_Order", "p_Family", "p_Genus", "p_Species"]
-      // )
-      // $("#orderList").selectpicker("deselectAll")
-      // $("#familyList").selectpicker("deselectAll")
-      // $("#genusList").selectpicker("deselectAll")
-      // $("#speciesList").selectpicker("deselectAll")
-      // $("#resList").selectpicker("deselectAll")
-      // $("#cardList").selectpicker("deselectAll")
-      // $("#plasmidFamiliesList").selectpicker("deselectAll")
-      // clears previous selected nodes
-      nodeColorReset(graphics, g, nodeColor, renderer)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
-
-      $("#vir_label").show()
-
-      $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
-
-      // empties taxa and plasmidfinder legend
-      $("#taxa_label").hide()
-      $("#colorLegendBox").empty()
-      $("#res_label").hide()
-      $("#colorLegendBoxRes").empty()
-      $("#pf_label").hide()
-      $("#colorLegendBoxPf").empty()
-
-      $("#readString").empty()
-      $("#readLegend").empty()
-      $("#read_label").hide()
-      $("#fileNameDiv").hide()
-
-      // reset nodes before submitting new colors
-      const tempPageReRun = pageReRun
-      showDiv().then( () => {
-        virSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
-          legendInst = results
-          pageReRun = false
-          // just show legend if any selection is made at all
-          if (legendInst === true) {
-            // showLegend.style.display = "block"
-            $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-              " #plotButton, #colorLegend").show()
-          }
-          // enables button group again
-          $("#toolButtonGroup button").removeAttr("disabled")
-          $("#loading").hide()
-        })
-      })
-    })
-
-
-    //* ******************//
-    //* ***Taxa Filter****//
-    //* ******************//
-
-    //* **** Clear selection button *****//
-    $("#taxaModalClear").unbind("click").bind("click", (event) => {
-
-      event.preventDefault()
-
-      // document.getElementById("reset-sliders").click()
-
-      resetDisplayTaxaBox(idsArrays)
-
-      // resets dropdown selections
-      $("#orderList").selectpicker("deselectAll")
-      $("#familyList").selectpicker("deselectAll")
-      $("#genusList").selectpicker("deselectAll")
-      $("#speciesList").selectpicker("deselectAll")
-
-      // slider.noUiSlider.set([min, max])
-
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
-      if ($("#scaleLegend").html() !== "") {
-        // showLegend.style.display = "none"
-        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-          " #plotButton, #colorLegend").hide()
-      } else {
-        $("#colorLegendBox").empty()
-        document.getElementById("taxa_label").style.display = "none" // hide label
-        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-          " #plotButton").hide()
-      }
-    })
-
-    /**
-     * Button click event to clear all the selections made through the
-     * intersections menu
-     */
-    $("#intersectionsModalClear").unbind("click").bind("click", (event) => {
-      // unselect all the selected options from dropdowns
-      $("#virList2, #resCardList2, #resResfinderList2, #pfList2," +
-        " #speciesList2, #genusList2, #familyList2, #orderList2")
-        .selectpicker("deselectAll")
-
-      // hide divs for buttons when selections are not made
-      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-        " #plotButton, #colorLegend").hide()
-    })
-
-    /**
-     * Button click event for intersection displays
-     */
-    $("#intersectionsModalSubmit, #unionModalSubmit").unbind("click").bind(
-      "click", (event) => {
-
-        $("#reset-sliders").click()
-
-        const typeOfSubmission = event.target.id
-
-        let objectOfSelections = {
-
-          virulence: $("#virList2").selectpicker("val"),
-          card: $("#resCardList2").selectpicker("val"),
-          resfinder: $("#resResfinderList2").selectpicker("val"),
-          pfinder: $("#pfList2").selectpicker("val"),
-          order: $("#orderList2").selectpicker("val"),
-          family: $("#familyList2").selectpicker("val"),
-          genus: $("#genusList2").selectpicker("val"),
-          species: $("#speciesList2").selectpicker("val")
-
-        }
-
-        const typeToProject = (typeOfSubmission === "intersectionsModalSubmit") ?
-          "intersection" : "union"
-
-        typeOfProject[typeToProject] = objectOfSelections
-
-        showDiv().then( () => {
-          listGiFilter = parseQueriesIntersection(g, graphics, renderer,
-            objectOfSelections, typeToProject)
-        })
-
-    })
-
-
-    //* **** Submit button for taxa filter *****//
-
-    // perform actions when submit button is clicked.
-
-    $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
-
-      event.preventDefault()
-
-      legendIndex = 0
-
-      selectedFilter = "taxa"
-
-      let i = 0
-
-      pageReRun = false
-
-      // clear legend from reads
-      $("#readString").empty()
-      $("#readLegend").empty()
-      $("#read_label").hide()
-      $("#fileNameDiv").hide()
-
-      // changed nodes is reset every instance of taxaModalSubmit button
-      listGiFilter = []   // makes listGiFilter an empty array
-
-      //clears nodes
-      nodeColorReset(graphics, g, nodeColor, renderer)
-
-      // now processes the current selection
-      const speciesQuery = document.getElementById("p_Species").innerHTML,
-        genusQuery = document.getElementById("p_Genus").innerHTML,
-        familyQuery = document.getElementById("p_Family").innerHTML,
-        orderQuery = document.getElementById("p_Order").innerHTML
-
-      let selectedSpecies = speciesQuery.replace("Species:", "").split(",").filter(Boolean),
-        selectedGenus = genusQuery.replace("Genus:", "").split(",").filter(Boolean),
-        selectedFamily = familyQuery.replace("Family:", "").split(",").filter(Boolean),
-        selectedOrder = orderQuery.replace("Order:", "").split(",").filter(Boolean)
-
-      // remove first char from selected* arrays
-      selectedSpecies = removeFirstCharFromArray(selectedSpecies)
-      selectedGenus = removeFirstCharFromArray(selectedGenus)
-      selectedFamily = removeFirstCharFromArray(selectedFamily)
-      selectedOrder = removeFirstCharFromArray(selectedOrder)
-
-      //* *** Alert for taxa filter ****//
-
-      const alertArrays = {
-        "order": selectedOrder,
-        "family": selectedFamily,
-        "genus": selectedGenus,
-        "species": selectedSpecies
-      }
-
-      const divAlert = document.getElementById("alertId")
-
-      // checks if any selection was made
-      for (const i in alertArrays) {
-
-        if (alertArrays.hasOwnProperty(i)) {
-
-          if (alertArrays.order.length === 0 &&
-            alertArrays.family.length === 0 &&
-            alertArrays.genus.length === 0 &&
-            alertArrays.species.length === 0) {
-
-            divAlert.style.display = "block"
-
-          }
-        }
-      }
-
-      // auto hide after 5 seconds without closing the div
-      window.setTimeout( () => { $("#alertId").hide() }, 5000)
-
-      //* *** End Alert for taxa filter ****//
-
-      // renders the graph for the desired taxon if more than one taxon type is selected
-      let storeLis = "" // a variable to store all <li> generated for legend
-
-
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      areaSelection = false
-
-      $("#taxa_label").show()
-
-      $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
-
-      // empties taxa and plasmidfinder legend
-      $("#res_label").hide()
-      $("#colorLegendBoxRes").empty()
-      $("#pf_label").hide()
-      $("#colorLegendBoxPf").empty()
-      $("#vir_label").hide()
-      $("#colorLegendBoxVir").empty()
-
-      $("#loading").show()
-
-      iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
-
-    })
-
-
-    //* *********************//
-    //* * Distances filter **//
-    //* *********************//
-    $("#distancesSubmit").unbind("click").bind("click", (event) => {
-      event.preventDefault()
-
-      $("#scaleLegend").empty()
-      showDiv().then( () => {
-        linkColoring(g, graphics, renderer, "distance", false)
-        // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
-      })
-      const readMode = false
-      colorLegendFunction(readMode)
-    })
-
-    //* ********************//
-    //* ***Length filter****//
-    //* ********************//
-
-    //* * slider button and other options **//
-
     // sets the limits of buttons and slider
     // this is only triggered on first instance because we only want to get
     // the limits of all plasmids once
@@ -692,39 +179,37 @@ const onLoad = () => {
       })
     }
 
-    // event handler for slider
-    // trigger only if clicked to avoid looping through the nodes again
-    $("#length_filter").unbind("click").bind("click", () => {
-      slider.noUiSlider.on("set", function() {
-        let sliderMax = Math.exp(slider.noUiSlider.get()[1]),
-          sliderMin = Math.exp(slider.noUiSlider.get()[0])
-        g.forEachNode( (node) => {
-          // check if node is not a singleton
-          // singletons for now do not have size set so they cannot be
-          // filtered with this method
-          // only changes nodes for nodes with seqLength data
-          if (node.data.seqLength) {
-            const nodeLength = node.data.seqLength.split(">").slice(-1).toString()
-            let nodeUI = graphics.getNodeUI(node.id)
-            if (parseInt(nodeLength) < parseInt(sliderMin) || parseInt(nodeLength) > parseInt(sliderMax)) {
-              nodeUI.color = 0xcdc8b1 // shades nodes
-            } else if (parseInt(nodeLength) >= parseInt(sliderMin) || parseInt(nodeLength) <= parseInt(sliderMax)) {
-              nodeUI.color = nodeUI.backupColor // return nodes to original color
-            }
+    //* ********************//
+    //* ***Length filter****//
+    //* ********************//
+
+    /**
+     * event listener for the slider of lengths within
+     * this modal. This will shade all the nodes that are outside the desired
+     * range. Nodes inside the desired range will remain the same color.
+     */
+    slider.noUiSlider.on("set", () => {
+      let sliderMax = Math.exp(slider.noUiSlider.get()[1]),
+        sliderMin = Math.exp(slider.noUiSlider.get()[0])
+      g.forEachNode( (node) => {
+        // check if node is not a singleton
+        // singletons for now do not have size set so they cannot be
+        // filtered with this method
+        // only changes nodes for nodes with seqLength data
+        if (node.data.seqLength) {
+          const nodeLength = node.data.seqLength.split(">").slice(-1).toString()
+          let nodeUI = graphics.getNodeUI(node.id)
+          if (parseInt(nodeLength) < parseInt(sliderMin) ||
+            parseInt(nodeLength) > parseInt(sliderMax)) {
+            nodeUI.color = 0xcdc8b1 // shades nodes
+          } else if (parseInt(nodeLength) >= parseInt(sliderMin) ||
+            parseInt(nodeLength) <= parseInt(sliderMax)) {
+            nodeUI.color = nodeUI.backupColor // return nodes to original color
           }
-        })
-        renderer.rerender()
+        }
       })
+      renderer.rerender()
     })
-
-    // inputs mins and maxs for slider
-    const inputMin = document.getElementById("slider_input_min"),
-      inputMax = document.getElementById("slider_input_max"),
-      inputs = [inputMin, inputMax]
-    slider.noUiSlider.on("update", function (values, handle) {
-      inputs[handle].value = Math.trunc(Math.exp(values[handle]))
-    })
-
 
   } // closes renderGraph
 
@@ -1012,38 +497,6 @@ const onLoad = () => {
 
   })
 
-  /** control the visualization of multiple files for read mode
-  * The default idea is that the first file in this readFilejson object is the
-  * one to be loaded when uploading then everything else should use cycler
-  */
-  $("#slideRight").unbind("click").bind("click", () => {
-    resetAllNodes(graphics, g, nodeColor, renderer)
-    previousTableList = []
-    // transform selector object that handles plots and hide their
-    // respective divs
-    Object.keys(selector).map( (el) => { selector[el].state = false })
-    hideAllOtherPlots()
-    areaSelection = false
-    const outArray = slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer)
-    readIndex = outArray[0]
-    listGiFilter = outArray[1][1]
-    listGi = outArray[1][0]
-  })
-
-  $("#slideLeft").unbind("click").bind("click", () => {
-    resetAllNodes(graphics, g, nodeColor, renderer)
-    previousTableList = []
-    // transform selector object that handles plots and hide their
-    // respective divs
-    Object.keys(selector).map( (el) => { selector[el].state = false })
-    hideAllOtherPlots()
-    areaSelection = false
-    const outArray = slideToLeft(readFilejson, readIndex, g, listGi, graphics, renderer)
-    readIndex = outArray[0]
-    listGiFilter = outArray[1][1]
-    listGi = outArray[1][0]
-  })
-
   $("#slideLegendRight").unbind("click").bind("click", () => {
 
     // iterates through the array of filters
@@ -1252,32 +705,6 @@ const onLoad = () => {
   })
 
 
-  /*******************/
-  /* MULTI-SELECTION */
-  /*******************/
-
-  $("#refreshButton").unbind("click").bind("click", () => {
-
-    // if shift key is allowed then change it
-    if (freezeShift === false) {
-
-      freezeShift = true
-      $("#refreshButton").removeClass("btn-success").addClass("btn-default")
-
-      // if this variable is indefined then doesn't attempt to destroy it
-      if (typeof multiSelectOverlayObj !== "undefined") {
-        multiSelectOverlayObj.destroy()
-      }
-
-      // if shift key is frozen (let it go let it goooo)
-    } else {
-
-      freezeShift = false
-      $("#refreshButton").removeClass("btn-default").addClass("btn-success")
-
-    }
-  })
-
   // event for shift key down
   // shows overlay div and exectures startMultiSelect
   document.addEventListener("keydown", (e) => {
@@ -1316,22 +743,6 @@ const onLoad = () => {
     }
   })
 
-  //* ************//
-  //* **ZOOMING***//
-  //* ************//
-
-  $("#zoom_in").unbind("click").bind("click", (event) => {
-    event.preventDefault()
-    renderer.zoomIn()
-    renderer.rerender()   // rerender after zoom avoids glitch with
-    // duplicated nodes
-  })
-  $("#zoom_out").unbind("click").bind("click", (event) => {
-    event.preventDefault()
-    renderer.zoomOut()
-    renderer.rerender()   // rerender after zoom avoids glitch with
-    // duplicated nodes
-  })
 
   //* *************//
   //* ** TOGGLE ***//
@@ -1409,6 +820,568 @@ const onLoad = () => {
 
     // requests table for sequences metadata
     requestPlasmidTable(node, setupPopupDisplay)
+  })
+
+
+  //* ******************//
+  //* ***PLASMIDFINDER Filters****//
+  //* ******************//
+
+  /**
+   * This event clears all the selected plasmid finder genes.
+   */
+  $("#pfClear").unbind("click").bind("click", (event) => {
+    // document.getElementById("reset-sliders").click()
+    // clear = true;
+    event.preventDefault()
+    // this needs an array for reusability purposes
+    resetDisplayTaxaBox(["p_Plasmidfinder"])
+
+    // resets dropdown selections
+    $("#plasmidFamiliesList").selectpicker("deselectAll")
+
+    // slider.noUiSlider.set([min, max])
+    // nodeColorReset(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+    if ($("#scaleLegend").html() !== "") {
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton, #colorLegend").hide()
+    } else {
+      $("#colorLegendBox").empty()
+      $("#taxa_label").hide()
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton").hide()
+    }
+  })
+
+
+  /**
+   * This button event submits a query to the psql database that searches for
+   * all the accession numbers that have the selected plasmid finder associated
+   * genes.
+   */
+  $("#pfSubmit").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+
+    legendIndex = 2
+
+    selectedFilter = "pf"
+
+    // clears previous selected nodes
+    nodeColorReset(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+
+    $("#pf_label").show()
+
+    $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
+
+    // empties taxa and plasmidfinder legend
+    $("#taxa_label").hide()
+    $("#colorLegendBox").empty()
+    $("#res_label").hide()
+    $("#colorLegendBoxRes").empty()
+    $("#vir_label").hide()
+    $("#colorLegendBoxVir").empty()
+
+    $("#readString").empty()
+    $("#readLegend").empty()
+    $("#read_label").hide()
+    $("#fileNameDiv").hide()
+
+    // reset nodes before submitting new colors
+    const tempPageReRun = pageReRun
+    showDiv().then( () => {
+      pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+        legendInst = results
+        pageReRun = false
+        // just show legend if any selection is made at all
+        if (legendInst === true) {
+          $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+            " #plotButton, #colorLegend").show()
+        }
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+        $("#loading").hide()
+      })
+    })
+  })
+
+
+  //* ******************//
+  //* ***RESISTANCES Filters****//
+  //* ******************//
+
+  /**
+   * This button clears all the selections made for resistance modals, i.e.,
+   * all the selected resistance genes will be cleared.
+   */
+  $("#resClear").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+    // document.getElementById("reset-sliders").click()
+    resetDisplayTaxaBox(["p_Resfinder", "p_Card"])
+
+    // resets dropdown selections
+    $("#cardList").selectpicker("deselectAll")
+    $("#resList").selectpicker("deselectAll")
+
+    // slider.noUiSlider.set([min, max])
+    // nodeColorReset(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+    if ($("#scaleLegend").html() !== "") {
+      // showLegend.style.display = "none"
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton, #colorLegend").hide()
+    } else {
+      $("#colorLegendBox").empty()
+      document.getElementById("taxa_label").style.display = "none" // hide label
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton").hide()
+    }
+  })
+
+
+  /**
+   * Button event that enables to search for specific resistance genes in
+   * the plasmid network. This function makes queries to the psql database to
+   * search for the desired resistance genes.
+   */
+  $("#resSubmit").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+
+    legendIndex = 1
+
+    selectedFilter = "res"
+
+    // clears previously selected nodes
+    nodeColorReset(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+
+    hideAllOtherPlots()
+
+    $("#res_label").show()
+
+    $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
+
+    // empties all other legend
+    $("#taxa_label").hide()
+    $("#colorLegendBox").empty()
+    $("#vir_label").hide()
+    $("#colorLegendBoxVir").empty()
+    $("#pf_label").hide()
+    $("#colorLegendBoxPf").empty()
+
+    $("#readString").empty()
+    $("#readLegend").empty()
+    $("#read_label").hide()
+    $("#fileNameDiv").hide()
+
+    areaSelection = false
+
+    const tempPageReRun = pageReRun
+
+    showDiv().then( () => {
+      resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
+        legendInst = results
+        pageReRun = false
+        // just show legend if any selection is made at all
+        if (legendInst === true) {
+          $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+            " #plotButton, #colorLegend").show()
+        }
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+        $("#loading").hide()
+      })
+    })
+  })
+
+
+  //* ******************//
+  //* ***VIRULENCE Filters****//
+  //* ******************//
+
+  /**
+   * Button event that clears all the selected virulence genes and their
+   * associated nodes
+   */
+  $("#virClear").unbind("click").bind("click", (event) => {
+    // document.getElementById("reset-sliders").click()
+    // clear = true;
+    event.preventDefault()
+    // this needs an array for reusability purposes
+    resetDisplayTaxaBox(["p_Virulence"])
+
+    // resets dropdown selections
+    $("#virList").selectpicker("deselectAll")
+
+    // slider.noUiSlider.set([min, max])
+    // nodeColorReset(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+    if ($("#scaleLegend").html() !== "") {
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton, #colorLegend").hide()
+    } else {
+      $("#colorLegendBox").empty()
+      document.getElementById("taxa_label").style.display = "none" // hide label
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton").hide()
+    }
+  })
+
+
+  /**
+   * Button event that submits the current selection of virulence genes to
+   * display into pATLAS network. It makes a query of the selected virulence
+   * genes to the psql database served side.
+   */
+  $("#virSubmit").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+
+    legendIndex = 3
+
+    selectedFilter = "vir"
+
+    // clears previous selected nodes
+    nodeColorReset(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+
+    $("#vir_label").show()
+
+    $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
+
+    // empties taxa and plasmidfinder legend
+    $("#taxa_label").hide()
+    $("#colorLegendBox").empty()
+    $("#res_label").hide()
+    $("#colorLegendBoxRes").empty()
+    $("#pf_label").hide()
+    $("#colorLegendBoxPf").empty()
+
+    $("#readString").empty()
+    $("#readLegend").empty()
+    $("#read_label").hide()
+    $("#fileNameDiv").hide()
+
+    // reset nodes before submitting new colors
+    const tempPageReRun = pageReRun
+    showDiv().then( () => {
+      virSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+        legendInst = results
+        pageReRun = false
+        // just show legend if any selection is made at all
+        if (legendInst === true) {
+          // showLegend.style.display = "block"
+          $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+            " #plotButton, #colorLegend").show()
+        }
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+        $("#loading").hide()
+      })
+    })
+  })
+
+
+  //* ******************//
+  //* ***INTERSECTIONS and UNIONS****//
+  //* ******************//
+
+  /**
+   * Button click event to clear all the selections made through the
+   * intersections menu
+   */
+  $("#intersectionsModalClear").unbind("click").bind("click", (event) => {
+    // unselect all the selected options from dropdowns
+    $("#virList2, #resCardList2, #resResfinderList2, #pfList2," +
+      " #speciesList2, #genusList2, #familyList2, #orderList2")
+      .selectpicker("deselectAll")
+
+    // hide divs for buttons when selections are not made
+    $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+      " #plotButton, #colorLegend").hide()
+  })
+
+  /**
+   * Button click event for intersection displays
+   */
+  $("#intersectionsModalSubmit, #unionModalSubmit").unbind("click").bind(
+    "click", (event) => {
+
+      $("#reset-sliders").click()
+
+      const typeOfSubmission = event.target.id
+
+      let objectOfSelections = {
+
+        virulence: $("#virList2").selectpicker("val"),
+        card: $("#resCardList2").selectpicker("val"),
+        resfinder: $("#resResfinderList2").selectpicker("val"),
+        pfinder: $("#pfList2").selectpicker("val"),
+        order: $("#orderList2").selectpicker("val"),
+        family: $("#familyList2").selectpicker("val"),
+        genus: $("#genusList2").selectpicker("val"),
+        species: $("#speciesList2").selectpicker("val")
+
+      }
+
+      const typeToProject = (typeOfSubmission === "intersectionsModalSubmit") ?
+        "intersection" : "union"
+
+      typeOfProject[typeToProject] = objectOfSelections
+
+      showDiv().then( () => {
+        listGiFilter = parseQueriesIntersection(g, graphics, renderer,
+          objectOfSelections, typeToProject)
+      })
+
+    }
+  )
+
+
+  //* ******************//
+  //* ***Taxa Filter****//
+  //* ******************//
+
+  /**
+   * Button event that clears the current taxa selected in taxaModal.
+   */
+  $("#taxaModalClear").unbind("click").bind("click", (event) => {
+
+    event.preventDefault()
+
+    // document.getElementById("reset-sliders").click()
+
+    resetDisplayTaxaBox(idsArrays)
+
+    // resets dropdown selections
+    $("#orderList").selectpicker("deselectAll")
+    $("#familyList").selectpicker("deselectAll")
+    $("#genusList").selectpicker("deselectAll")
+    $("#speciesList").selectpicker("deselectAll")
+
+    // slider.noUiSlider.set([min, max])
+
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+    if ($("#scaleLegend").html() !== "") {
+      // showLegend.style.display = "none"
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton, #colorLegend").hide()
+    } else {
+      $("#colorLegendBox").empty()
+      document.getElementById("taxa_label").style.display = "none" // hide label
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton").hide()
+    }
+  })
+
+
+  /**
+   * Button event that displays into the network the selected taxa. It fires an
+   * a query to the psql database to request the selected taxa
+   */
+  $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
+
+    event.preventDefault()
+
+    legendIndex = 0
+
+    selectedFilter = "taxa"
+
+    let i = 0
+
+    pageReRun = false
+
+    // clear legend from reads
+    $("#readString").empty()
+    $("#readLegend").empty()
+    $("#read_label").hide()
+    $("#fileNameDiv").hide()
+
+    // changed nodes is reset every instance of taxaModalSubmit button
+    listGiFilter = []   // makes listGiFilter an empty array
+
+    //clears nodes
+    nodeColorReset(graphics, g, nodeColor, renderer)
+
+    // now processes the current selection
+    const speciesQuery = document.getElementById("p_Species").innerHTML,
+      genusQuery = document.getElementById("p_Genus").innerHTML,
+      familyQuery = document.getElementById("p_Family").innerHTML,
+      orderQuery = document.getElementById("p_Order").innerHTML
+
+    let selectedSpecies = speciesQuery.replace("Species:", "").split(",").filter(Boolean),
+      selectedGenus = genusQuery.replace("Genus:", "").split(",").filter(Boolean),
+      selectedFamily = familyQuery.replace("Family:", "").split(",").filter(Boolean),
+      selectedOrder = orderQuery.replace("Order:", "").split(",").filter(Boolean)
+
+    // remove first char from selected* arrays
+    selectedSpecies = removeFirstCharFromArray(selectedSpecies)
+    selectedGenus = removeFirstCharFromArray(selectedGenus)
+    selectedFamily = removeFirstCharFromArray(selectedFamily)
+    selectedOrder = removeFirstCharFromArray(selectedOrder)
+
+    //* *** Alert for taxa filter ****//
+
+    const alertArrays = {
+      "order": selectedOrder,
+      "family": selectedFamily,
+      "genus": selectedGenus,
+      "species": selectedSpecies
+    }
+
+    const divAlert = document.getElementById("alertId")
+
+    // checks if any selection was made
+    for (const i in alertArrays) {
+
+      if (alertArrays.hasOwnProperty(i)) {
+
+        if (alertArrays.order.length === 0 &&
+          alertArrays.family.length === 0 &&
+          alertArrays.genus.length === 0 &&
+          alertArrays.species.length === 0) {
+
+          divAlert.style.display = "block"
+
+        }
+      }
+    }
+
+    // auto hide after 5 seconds without closing the div
+    window.setTimeout( () => { $("#alertId").hide() }, 5000)
+
+    //* *** End Alert for taxa filter ****//
+
+    // renders the graph for the desired taxon if more than one taxon type is selected
+    let storeLis = "" // a variable to store all <li> generated for legend
+
+
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+
+    $("#taxa_label").show()
+
+    $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
+
+    // empties taxa and plasmidfinder legend
+    $("#res_label").hide()
+    $("#colorLegendBoxRes").empty()
+    $("#pf_label").hide()
+    $("#colorLegendBoxPf").empty()
+    $("#vir_label").hide()
+    $("#colorLegendBoxVir").empty()
+
+    $("#loading").show()
+
+    iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
+
+  })
+
+
+  //* *********************//
+  //* * Distances filter **//
+  //* *********************//
+
+  /**
+   * Button event that allows to highlight links with different colors,
+   * according with the mash distances calculated for the differences between
+   * each node.
+   */
+  $("#distancesSubmit").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+
+    $("#scaleLegend").empty()
+    showDiv().then( () => {
+      linkColoring(g, graphics, renderer, "distance", false)
+      // enables button group again
+      $("#toolButtonGroup button").removeAttr("disabled")
+    })
+    const readMode = false
+    colorLegendFunction(readMode)
+  })
+
+  //**************************//
+  //* LENGTH EVENT LISTENERS *//
+  //**************************//
+
+  /**
+   * group of variables that allow to fetch input forms min and max values to
+   * live update the slider bar
+   */
+  const inputMin = document.getElementById("slider_input_min"),
+    inputMax = document.getElementById("slider_input_max"),
+    inputs = [inputMin, inputMax]
+
+
+  /**
+   * Event that will update the slider input boxes if one of the handlers is
+   * dragged
+   */
+  slider.noUiSlider.on("update", (values, handle) => {
+    inputs[handle].value = Math.trunc(Math.exp(values[handle]))
+  })
+
+
+  /**
+   * Button event to submit current selection to the network if enter key is
+   * not clicked for any reason by the user. This will basically force the
+   * network to be updated after click. This event will force the slider to be
+   * updated and therefore the visualization of the selected nodes.
+   */
+  $("#lengthSubmit").unbind("click").bind("click", () => {
+    slider.noUiSlider.set([Math.log(inputs[0].valueAsNumber), Math.log(inputs[1].valueAsNumber)])
+  })
+
+
+  /**
+   * Event listener for "enter" key to update the slider and the graph. This
+   * event will force the slider to be updated and therefore the visualization
+   * of the selected nodes
+   */
+  inputMin.addEventListener("keyup", (event) => {
+    // Cancel the default action, if needed
+    event.preventDefault()
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      slider.noUiSlider.set([Math.log(inputs[0].valueAsNumber), Math.log(inputs[1].valueAsNumber)])
+    }
   })
 
 
@@ -2115,5 +2088,130 @@ const onLoad = () => {
     }
     listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
   })
+
+
+  //************************************************//
+  //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
+  //************************************************//
+
+  // Buttons to control force play/pause using bootstrap navigation bar
+
+  /**
+   * variable that controls if the current visualization of the vivagraph
+   * force layout is paused or not
+   * @type {boolean}
+   */
+  let paused = true
+
+
+  /**
+   * Button event that pauses or plays the force layout into vivagraph network.
+   */
+  $("#playpauseButton").unbind("click").bind("click", () => {
+    $("#playpauseButton").empty()
+    if (paused === true) {
+      renderer.resume()
+      $("#playpauseButton").append("<span class='glyphicon glyphicon-pause'></span>")
+        .removeClass("btn-default").addClass("btn-success")
+      paused = false
+    } else {
+      renderer.pause()
+      $("#playpauseButton").append("<span class='glyphicon glyphicon-play'></span>")
+        .removeClass("btn-success").addClass("btn-default")
+      paused = true
+    }
+  })
+
+  //***ZOOMING***//
+
+  /**
+   * Button that enables zooming in into vivagraph canvas
+   */
+  $("#zoom_in").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+    renderer.zoomIn()
+    renderer.rerender()   // rerender after zoom avoids glitch with
+    // duplicated nodes
+  })
+
+
+  /**
+   * Button that enables zooming out into vivagraph canvas
+   */
+  $("#zoom_out").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+    renderer.zoomOut()
+    renderer.rerender()   // rerender after zoom avoids glitch with
+    // duplicated nodes
+  })
+
+  /*** MULTI-SELECTION ***/
+
+  /**
+   * Button that enable the multiselection overlay through the shift key and
+   * mouse dragging.
+   */
+  $("#refreshButton").unbind("click").bind("click", () => {
+
+    // if shift key is allowed then change it
+    if (freezeShift === false) {
+
+      freezeShift = true
+      $("#refreshButton").removeClass("btn-success").addClass("btn-default")
+
+      // if this variable is indefined then doesn't attempt to destroy it
+      if (typeof multiSelectOverlayObj !== "undefined") {
+        multiSelectOverlayObj.destroy()
+      }
+
+      // if shift key is frozen (let it go let it goooo)
+    } else {
+
+      freezeShift = false
+      $("#refreshButton").removeClass("btn-default").addClass("btn-success")
+
+    }
+  })
+
+  /** control the visualization of multiple files for read mode
+   * The default idea is that the first file in this readFilejson object is the
+   * one to be loaded when uploading then everything else should use cycler.
+   * This button allows to slide to the rightmost file.
+   */
+  $("#slideRight").unbind("click").bind("click", () => {
+    resetAllNodes(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+    const outArray = slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer)
+    readIndex = outArray[0]
+    listGiFilter = outArray[1][1]
+    listGi = outArray[1][0]
+  })
+
+
+  /** control the visualization of multiple files for read mode
+   * The default idea is that the first file in this readFilejson object is the
+   * one to be loaded when uploading then everything else should use cycler.
+   * This button allows to slide to the leftmost file.
+   */
+  $("#slideLeft").unbind("click").bind("click", () => {
+    resetAllNodes(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+    const outArray = slideToLeft(readFilejson, readIndex, g, listGi, graphics, renderer)
+    readIndex = outArray[0]
+    listGiFilter = outArray[1][1]
+    listGi = outArray[1][0]
+  })
+
+
 
 } // closes onload
