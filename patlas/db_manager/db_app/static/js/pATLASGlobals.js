@@ -179,3 +179,10 @@ let list = []   // list to store references already ploted as nodes
 let listLengths = [] // list to store the lengths of all nodes
 
 let getLinkedNodes = false // a boolean variable to control the Re_run behavior
+
+/**
+ * Variable that controls the behavior of shift key through refreshButton
+ * click.
+ * type {Boolean}
+ */
+let freezeShift = true

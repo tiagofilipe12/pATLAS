@@ -1,4 +1,4 @@
-/*globals Viva, recenterDOM, resetAllNodes, storeRecenterDom,
+/*globals Viva, resetAllNodes, storeRecenterDom,
  buildCircleNodeShader, requestPlasmidTable, WebglCircle, selector,
   hideAllOtherPlots, toggleManager, repetitivePlotFunction,
    resRepetitivePlotFunction, pfRepetitivePlotFunction,
@@ -6,7 +6,7 @@
      resetDisplayTaxaBox, showDiv, pfSubmitFunction, layoutGet,
       centerToggleQuery, toggleOnSearch, singleDropdownPopulate,
        filterDisplayer, slider, resSubmitFunction, virSubmitFunction,
-        defaultZooming, removeFirstCharFromArray, colorList, resetLinkColor,
+        removeFirstCharFromArray, colorList, resetLinkColor,
          readColoring, handleFileSelect, downloadSeqByColor,
           downloadSeq, setupPopupDisplay, downloadTypeHandler, heatmapMaker,
            colorNodes, abortRead, makeTable, arrayToCsv, resGetter,
@@ -19,7 +19,8 @@
                   iterateArrays, initResize, parseQueriesIntersection,
                    controlFiltersSameLevel, fileDownloader, importProject,
                     setProjectView, readFilejson, mashJson, assemblyJson,
-                     consensusJson, projectJson*/
+                     consensusJson, projectJson, listGiFilter, storeMasterNode,
+                     recenterDOM, defaultZooming, freezeShift*/
 
 /**
  * forces welcomeModal to be the first thing the user sees when the page
@@ -66,15 +67,37 @@ const emptyFiles = () => {
 const onLoad = () => {
 
   /**
-   * Variable that controls the behavior of shift key through refreshButton
-   * click.
-   * type {Boolean}
+   *  sets a counter for welcome div that will dismiss the modal after 30
+   *  seconds. However if counterClose button is triggered this counter will
+   *  stop.
    */
-  let freezeShift = true
+  if (($("#welcomeModal").data("bs.modal") || {}).isShown) {
+    let logger = 30
+    let countDown = setInterval( () => {
+      if ($("#counter").html() !== "") {
+        logger -= 1
+        $("#counter").html(`Closing in: ${logger.toString()}s`)
+        if (logger === 0) {
+          clearInterval(countDown)
+          $("#welcomeModal").modal("hide")
+          $("#counter").html("")
+        }
+      }
+    }, 1000)
+  }
+
+  /**
+   * Button event to close the countdown for welcome div
+   */
+  $("#counterClose").unbind("click").bind("click", () => {
+    $("#counter").html("")
+    $("#counterClose").hide()
+  })
 
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
   // define layout
+
   const layout = Viva.Graph.Layout.forceDirected(g, {
     springLength: 100,
     springCoeff: 0.0001,
@@ -136,87 +159,6 @@ const onLoad = () => {
       recenterDOM(renderer, layout, storeMasterNode)
     }
 
-    /*******************/
-    /* MULTI-SELECTION */
-    /*******************/
-
-    $("#refreshButton").unbind("click").bind("click", () => {
-
-      // if shift key is allowed then change it
-      if (freezeShift === false) {
-
-        freezeShift = true
-        $("#refreshButton").removeClass("btn-success").addClass("btn-default")
-
-        // if this variable is indefined then doesn't attempt to destroy it
-        if (typeof multiSelectOverlayObj !== "undefined") {
-          multiSelectOverlayObj.destroy()
-        }
-
-        // if shift key is frozen (let it go let it goooo)
-      } else {
-
-        freezeShift = false
-        $("#refreshButton").removeClass("btn-default").addClass("btn-success")
-
-      }
-    })
-
-    // event for shift key down
-    // shows overlay div and exectures startMultiSelect
-    document.addEventListener("keydown", (e) => {
-      if (e.which === 16 && multiSelectOverlay === false && freezeShift === false) { // shift key
-        // should close popup open so it doesn't get into listGiFilter
-        $("#closePop").click()
-        $(".graph-overlay").show()
-        multiSelectOverlay = true
-        multiSelectOverlayObj = startMultiSelect(g, renderer, layout)
-        $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-          " #plotButton").show()
-        areaSelection = true
-        listGiFilter = [] //if selection is made listGiFilter should be empty
-        previousTableList = []
-        // transform selector object that handles plots and hide their
-        // respective divs
-        Object.keys(selector).map( (el) => { selector[el].state = false })
-        hideAllOtherPlots()
-        resetAllNodes(graphics, g, nodeColor, renderer)
-        // also reset file handlers that interfere with Re_run
-        readFilejson = false
-        assemblyJson = false
-      }
-    })
-    // event for shift key up
-    // destroys overlay div and transformes multiSelectOverlay to false
-    document.addEventListener("keyup", (e) => {
-      if (e.which === 16 && multiSelectOverlay !== "disable") {
-        $(".graph-overlay").hide()
-        $("#colorLegend").hide()
-        if (multiSelectOverlay !== false) {
-          multiSelectOverlayObj.destroy()
-        }
-        multiSelectOverlay = false
-      }
-    })
-
-    //* ************//
-    //* **ZOOMING***//
-    //* ************//
-
-    // opens events in webgl such as mouse hoverings or clicks
-
-    $("#zoom_in").unbind("click").bind("click", (event) => {
-      event.preventDefault()
-      renderer.zoomIn()
-      renderer.rerender()   // rerender after zoom avoids glitch with
-      // duplicated nodes
-    })
-    $("#zoom_out").unbind("click").bind("click", (event) => {
-      event.preventDefault()
-      renderer.zoomOut()
-      renderer.rerender()   // rerender after zoom avoids glitch with
-      // duplicated nodes
-    })
 
     //* *************//
     //* ** TOGGLE ***//
@@ -1371,26 +1313,7 @@ const onLoad = () => {
         }, 100)
       })
     })
-    // sets a counter for welcome div
-    if (($("#welcomeModal").data("bs.modal") || {}).isShown) {
-      let logger = 30
-      let countDown = setInterval( () => {
-        if ($("#counter").html() !== "") {
-          logger -= 1
-          $("#counter").html(`Closing in: ${logger.toString()}s`)
-          if (logger === 0) {
-            clearInterval(countDown)
-            $("#welcomeModal").modal("hide")
-            $("#counter").html("")
-          }
-        }
-      }, 1000)
-    }
-    // button to cancel countdown control
-    $("#counterClose").unbind("click").bind("click", () => {
-      $("#counter").html("")
-      $("#counterClose").hide()
-    })
+
 
   } // closes renderGraph
 
@@ -2010,5 +1933,87 @@ const onLoad = () => {
 
   })
 
-} // closes onload
 
+  /*******************/
+  /* MULTI-SELECTION */
+  /*******************/
+
+  $("#refreshButton").unbind("click").bind("click", () => {
+
+    // if shift key is allowed then change it
+    if (freezeShift === false) {
+
+      freezeShift = true
+      $("#refreshButton").removeClass("btn-success").addClass("btn-default")
+
+      // if this variable is indefined then doesn't attempt to destroy it
+      if (typeof multiSelectOverlayObj !== "undefined") {
+        multiSelectOverlayObj.destroy()
+      }
+
+      // if shift key is frozen (let it go let it goooo)
+    } else {
+
+      freezeShift = false
+      $("#refreshButton").removeClass("btn-default").addClass("btn-success")
+
+    }
+  })
+
+  // event for shift key down
+  // shows overlay div and exectures startMultiSelect
+  document.addEventListener("keydown", (e) => {
+    if (e.which === 16 && multiSelectOverlay === false && freezeShift === false) { // shift key
+      // should close popup open so it doesn't get into listGiFilter
+      $("#closePop").click()
+      $(".graph-overlay").show()
+      multiSelectOverlay = true
+      multiSelectOverlayObj = startMultiSelect(g, renderer, layout)
+      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+        " #plotButton").show()
+      areaSelection = true
+      listGiFilter = [] //if selection is made listGiFilter should be empty
+      previousTableList = []
+      // transform selector object that handles plots and hide their
+      // respective divs
+      Object.keys(selector).map( (el) => { selector[el].state = false })
+      hideAllOtherPlots()
+      resetAllNodes(graphics, g, nodeColor, renderer)
+      // also reset file handlers that interfere with Re_run
+      readFilejson = false
+      assemblyJson = false
+    }
+  })
+
+  // event for shift key up
+  // destroys overlay div and transformes multiSelectOverlay to false
+  document.addEventListener("keyup", (e) => {
+    if (e.which === 16 && multiSelectOverlay !== "disable") {
+      $(".graph-overlay").hide()
+      $("#colorLegend").hide()
+      if (multiSelectOverlay !== false) {
+        multiSelectOverlayObj.destroy()
+      }
+      multiSelectOverlay = false
+    }
+  })
+
+  //* ************//
+  //* **ZOOMING***//
+  //* ************//
+
+  $("#zoom_in").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+    renderer.zoomIn()
+    renderer.rerender()   // rerender after zoom avoids glitch with
+    // duplicated nodes
+  })
+  $("#zoom_out").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+    renderer.zoomOut()
+    renderer.rerender()   // rerender after zoom avoids glitch with
+    // duplicated nodes
+  })
+
+
+} // closes onload
