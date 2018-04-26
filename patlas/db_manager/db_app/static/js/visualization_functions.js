@@ -179,23 +179,6 @@ const onLoad = () => {
 
     //**** BUTTONS THAT CONTROL PLOTS ****//
 
-    // Button to open modal for plots
-    // all these buttons require that the modalPlot modal opens before
-    // executing the function and that is the reason why they wait half a
-    // second before executing repetitivePlotFunction's
-    $("#plotButton").unbind("click").bind("click", () => {
-      $("#modalPlot").modal()
-      clickerButton = "species"
-      $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
-      listGiFilter = (reloadAccessionList.length !== 0) ?
-        // reduces listGiFilter to reloadAccessionList
-        listGiFilter.filter( (n) => reloadAccessionList.includes(n)) :
-        // otherwise maintain listGiFilter untouched
-        listGiFilter
-      setTimeout( () => {
-        listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
-      }, 500)
-    })
 
     $("#genusStats, #speciesStats, #familyStats, #orderStats," +
       " #resistanceStats, #pfamilyStats, #virStats, #clusterStats, " +
@@ -267,48 +250,6 @@ const onLoad = () => {
       }
     })
 
-    // Form and button for search box
-    $("#submitButton").unbind("click").bind("click", (event) => {
-      $("#resTab").removeClass("active")
-      $("#resButton").removeClass("active")
-      $("#pfTab").removeClass("active")
-      $("#plasmidButton").removeClass("active")
-      $("#virTab").removeClass("active")
-      $("#virButton").removeClass("active")
-
-      event.preventDefault()    // prevents page from reloading
-      if (toggleStatus === false) {
-        // const query !==)
-        const formvalueId = $("#formValueId").val()
-        const query = (formvalueId === "") ? clickedHighchart :
-          formvalueId.replace(".", "_")
-
-        currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
-          currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-          clickedPopupButtonFamily)
-      } else {
-        // executed for plasmid search
-        toggleOnSearch(g, graphics, renderer,
-          currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-          clickedPopupButtonFamily)
-          // then is here used to parse the results from async/await function
-          .then( (result) => {
-            currentQueryNode = result
-          })
-      }
-      // this sets the popup internal buttons to allow them to run,
-      // otherwise they won't run because its own function returns this
-      // variable to false, preventing the popup to expand with its
-      // respective functions
-      clickedPopupButtonCard = true
-      clickedPopupButtonRes = true
-      clickedPopupButtonFamily = true
-      clickedPopupButtonVir = true
-    })
-    // Button to clear the selected nodes by form
-    $("#clearButton").unbind("click").bind("click", () => {
-      document.getElementById("formValueId").value = ""
-    })
 
     //* ******************//
     //* ***plasmidfinder Filters****//
@@ -792,33 +733,6 @@ const onLoad = () => {
       colorLegendFunction(readMode)
     })
 
-    $("#reset-links").unbind("click").bind("click", (event) => {
-      event.preventDefault()
-      const arrayOfDivs = [
-        $("#colorLegendBox").html(),
-        $("#colorLegendBoxRes").html(),
-        $("#colorLegendBoxPf").html(),
-        $("#readLegend").html(),
-        $("#assemblyLegend").html(),
-
-      ]
-      let divCounter = 0
-      for (const div of arrayOfDivs) {
-        if (div === "") {
-          divCounter += 1
-          if (divCounter === 5) {
-            $("#colorLegend").hide()
-          }
-        }
-      }
-      $("#scaleLegend").empty()
-      $("#scaleString").empty()
-      $("#distance_label").hide()
-      setTimeout(function () {
-        resetLinkColor(g, graphics, renderer)
-      }, 100)
-    })
-
     //* ********************//
     //* ***Length filter****//
     //* ********************//
@@ -876,77 +790,6 @@ const onLoad = () => {
       inputs = [inputMin, inputMax]
     slider.noUiSlider.on("update", function (values, handle) {
       inputs[handle].value = Math.trunc(Math.exp(values[handle]))
-    })
-
-    // resets the slider
-    $("#reset-sliders").unbind("click").bind("click", () => {
-
-      listGiFilter = [] //resets listGiFilter
-      previousTableList = []
-
-      areaSelection = false
-      readFilejson = false // makes file selection empty again
-      assemblyJson = false
-      mashJson = false
-      currentQueryNode = false
-      slider.noUiSlider.set(sliderMinMax)
-      resetAllNodes(graphics, g, nodeColor, renderer)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map( (el) => { selector[el].state = false })
-
-      $("#slideLegendLeft, #slideLegendRight").prop("disabled", true)
-
-      hideAllOtherPlots()
-    })
-
-    // runs the re run operation for the selected species
-    $("#reRunYes, #reRunNo").unbind("click").bind("click", (e) => {
-
-      getLinkedNodes = (e.target.id !== "reRunNo")
-
-      // resets areaSelection
-      areaSelection = false
-      firstInstace = false
-
-      reloadAccessionList = []  // needs to be killed every instance in
-      // order for reload to allow reloading again
-
-      //* * Loading Screen goes on **//
-      showDiv().then( () => {
-        // removes nodes
-        setTimeout( () => {
-          actualRemoval(g, graphics, onLoad, false)
-          freezeShift = true
-          // enables button group again
-          $("#toolButtonGroup button").removeAttr("disabled")
-        }, 100)
-      })
-    })
-
-    // returns to the initial tree by reloading the page
-    $("#go_back").unbind("click").bind("click", () => {
-
-      areaSelection = false
-      firstInstace = true
-      pageReload = true
-      list = []
-      listGi = []
-      listLengths = []
-      listGiFilter = []
-
-      resetAllNodes(graphics, g, nodeColor, renderer)
-
-      showDiv().then( () => {
-        // removes nodes and forces adding same nodes
-        setTimeout( () => {
-          actualRemoval(g, graphics, onLoad, true)
-          freezeShift = true
-          // enables button group again
-          $("#toolButtonGroup button").removeAttr("disabled")
-        }, 100)
-      })
     })
 
 
@@ -1084,19 +927,6 @@ const onLoad = () => {
     }
   })
 
-  // download button //
-  $("#download_ds").unbind("click").bind("click", (e) => {
-    e.preventDefault()
-    // for now this is just taking what have been changed by taxa coloring
-    if (areaSelection === true) {
-      // downloads if area selection is triggered
-      downloadSeqByColor(g, graphics)
-    } else {
-      // downloads when listGiFilter is defined, namely in taxa filters,
-      // mapping results
-      downloadSeq(listGiFilter, g)
-    }
-  })
 
   //*********//
   //* TABLE *//
@@ -1144,20 +974,7 @@ const onLoad = () => {
     downloadTypeHandler(bootstrapTableList)
   })
 
-  // function to display heatmap dataset selected in table
-  $("#heatmapButtonTab").unbind("click").bind("click", () => {
-    $("#heatmapModal").modal()
-    // transform internal accession numbers to ncbi acceptable accesions
-    if (readFilejson !== false) {
-      heatmapMaker(masterReadArray, readFilejson)
-      mashJson = false
-      assemblyJson = false
-    } else if (assemblyJson !== false) {
-      heatmapMaker(masterReadArray, assemblyJson)
-      readFilejson = false
-      mashJson = false
-    }
-  })
+
   // button to color selected nodes by check boxes
   $("#tableSubmit").unbind("click").bind("click", () => {
     $("#reset-sliders").click()
@@ -1184,17 +1001,6 @@ const onLoad = () => {
     })
   })
 
-  // function to create table
-  $("#tableShow").unbind("click").bind("click", () => {
-    $("#tableModal").modal()
-    showDiv()
-      .then( () => {
-        previousTableList = makeTable(areaSelection, listGiFilter,
-          previousTableList, g, graphics, graphSize)
-        // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
-      })
-  })
 
   // function to close table
   $("#cancelTable").unbind("click").bind("click", () => {
@@ -2030,6 +1836,211 @@ const onLoad = () => {
 
   $("#cancel_consensus").unbind("click").bind("click", () => {
     consensusJson = abortRead()
+  })
+
+
+  //***********************//
+  //* TOP NAV BAR BUTTONS *//
+  //***********************//
+
+  // resets the slider
+  $("#reset-sliders").unbind("click").bind("click", () => {
+
+    listGiFilter = [] //resets listGiFilter
+    previousTableList = []
+
+    areaSelection = false
+    readFilejson = false // makes file selection empty again
+    assemblyJson = false
+    mashJson = false
+    currentQueryNode = false
+    slider.noUiSlider.set(sliderMinMax)
+    resetAllNodes(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+
+    $("#slideLegendLeft, #slideLegendRight").prop("disabled", true)
+
+    hideAllOtherPlots()
+  })
+
+  // runs the re run operation for the selected species
+  $("#reRunYes, #reRunNo").unbind("click").bind("click", (e) => {
+
+    getLinkedNodes = (e.target.id !== "reRunNo")
+
+    // resets areaSelection
+    areaSelection = false
+    firstInstace = false
+
+    reloadAccessionList = []  // needs to be killed every instance in
+    // order for reload to allow reloading again
+
+    //* * Loading Screen goes on **//
+    showDiv().then( () => {
+      // removes nodes
+      setTimeout( () => {
+        actualRemoval(g, graphics, onLoad, false)
+        freezeShift = true
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+      }, 100)
+    })
+  })
+
+  // returns to the initial tree by reloading the page
+  $("#go_back").unbind("click").bind("click", () => {
+
+    areaSelection = false
+    firstInstace = true
+    pageReload = true
+    list = []
+    listGi = []
+    listLengths = []
+    listGiFilter = []
+
+    resetAllNodes(graphics, g, nodeColor, renderer)
+
+    showDiv().then( () => {
+      // removes nodes and forces adding same nodes
+      setTimeout( () => {
+        actualRemoval(g, graphics, onLoad, true)
+        freezeShift = true
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+      }, 100)
+    })
+  })
+
+  // Button to open modal for plots
+  // all these buttons require that the modalPlot modal opens before
+  // executing the function and that is the reason why they wait half a
+  // second before executing repetitivePlotFunction's
+  $("#plotButton").unbind("click").bind("click", () => {
+    $("#modalPlot").modal()
+    clickerButton = "species"
+    $("#sortGraph, #sortGraphAlp").removeAttr("disabled")
+    listGiFilter = (reloadAccessionList.length !== 0) ?
+      // reduces listGiFilter to reloadAccessionList
+      listGiFilter.filter( (n) => reloadAccessionList.includes(n)) :
+      // otherwise maintain listGiFilter untouched
+      listGiFilter
+    setTimeout( () => {
+      listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
+    }, 500)
+  })
+
+  // function to display heatmap dataset selected in table
+  $("#heatmapButtonTab").unbind("click").bind("click", () => {
+    $("#heatmapModal").modal()
+    // transform internal accession numbers to ncbi acceptable accesions
+    if (readFilejson !== false) {
+      heatmapMaker(masterReadArray, readFilejson)
+      mashJson = false
+      assemblyJson = false
+    } else if (assemblyJson !== false) {
+      heatmapMaker(masterReadArray, assemblyJson)
+      readFilejson = false
+      mashJson = false
+    }
+  })
+
+  // function to create table
+  $("#tableShow").unbind("click").bind("click", () => {
+    $("#tableModal").modal()
+    showDiv()
+      .then( () => {
+        previousTableList = makeTable(areaSelection, listGiFilter,
+          previousTableList, g, graphics, graphSize)
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+      })
+  })
+
+  // download button //
+  $("#download_ds").unbind("click").bind("click", (e) => {
+    e.preventDefault()
+    // for now this is just taking what have been changed by taxa coloring
+    if (areaSelection === true) {
+      // downloads if area selection is triggered
+      downloadSeqByColor(g, graphics)
+    } else {
+      // downloads when listGiFilter is defined, namely in taxa filters,
+      // mapping results
+      downloadSeq(listGiFilter, g)
+    }
+  })
+
+  $("#reset-links").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+    const arrayOfDivs = [
+      $("#colorLegendBox").html(),
+      $("#colorLegendBoxRes").html(),
+      $("#colorLegendBoxPf").html(),
+      $("#readLegend").html(),
+      $("#assemblyLegend").html(),
+
+    ]
+    let divCounter = 0
+    for (const div of arrayOfDivs) {
+      if (div === "") {
+        divCounter += 1
+        if (divCounter === 5) {
+          $("#colorLegend").hide()
+        }
+      }
+    }
+    $("#scaleLegend").empty()
+    $("#scaleString").empty()
+    $("#distance_label").hide()
+    setTimeout(function () {
+      resetLinkColor(g, graphics, renderer)
+    }, 100)
+  })
+
+  // Form and button for search box
+  $("#submitButton").unbind("click").bind("click", (event) => {
+    $("#resTab").removeClass("active")
+    $("#resButton").removeClass("active")
+    $("#pfTab").removeClass("active")
+    $("#plasmidButton").removeClass("active")
+    $("#virTab").removeClass("active")
+    $("#virButton").removeClass("active")
+
+    event.preventDefault()    // prevents page from reloading
+    if (toggleStatus === false) {
+      // const query !==)
+      const formvalueId = $("#formValueId").val()
+      const query = (formvalueId === "") ? clickedHighchart :
+        formvalueId.replace(".", "_")
+
+      currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
+        currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
+        clickedPopupButtonFamily)
+    } else {
+      // executed for plasmid search
+      toggleOnSearch(g, graphics, renderer,
+        currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
+        clickedPopupButtonFamily)
+      // then is here used to parse the results from async/await function
+        .then( (result) => {
+          currentQueryNode = result
+        })
+    }
+    // this sets the popup internal buttons to allow them to run,
+    // otherwise they won't run because its own function returns this
+    // variable to false, preventing the popup to expand with its
+    // respective functions
+    clickedPopupButtonCard = true
+    clickedPopupButtonRes = true
+    clickedPopupButtonFamily = true
+    clickedPopupButtonVir = true
+  })
+  // Button to clear the selected nodes by form
+  $("#clearButton").unbind("click").bind("click", () => {
+    document.getElementById("formValueId").value = ""
   })
 
 } // closes onload
