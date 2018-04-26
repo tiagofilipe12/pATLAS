@@ -159,56 +159,6 @@ const onLoad = () => {
       recenterDOM(renderer, layout, storeMasterNode)
     }
 
-    //* *************//
-    //* ** EVENTS ***//
-    //* *************//
-
-    const events = Viva.Graph.webglInputEvents(graphics, g)
-
-    //* * mouse click on nodes **//
-    events.click( (node, e) => {
-      pageReRun = false
-      $("#resTab").removeClass("active")
-      $("#resButton").removeClass("active")
-      $("#pfTab").removeClass("active")
-      $("#plasmidButton").removeClass("active")
-      $("#virButton").removeClass("active")
-      $("#virTab").removeClass("active")
-      // this resets previous selected node to previous color
-      if (currentQueryNode) {
-        graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
-      }
-      // then starts making new changes to the newly geerated node
-      currentQueryNode = node.id
-      let nodeUI1 = graphics.getNodeUI(node.id)
-      const domPos = {
-        x: nodeUI1.position.x,
-        y: nodeUI1.position.y
-      }
-      // if statement used to check if backup color is set
-      if (nodeUI1.backupColor) { nodeUI1.backupColor = nodeUI1.color }
-
-      nodeUI1.color = 0xFFC300
-      renderer.rerender()
-
-      // allows the control of the click appearing and locking
-
-      // And ask graphics to transform it to DOM coordinates:
-      graphics.transformGraphToClientCoordinates(domPos)
-      domPos.x = (domPos.x + nodeUI1.size) + "px"
-      domPos.y = (domPos.y) + "px"
-
-      // this sets the popup internal buttons to allow them to run,
-      // otherwise they won't run because its own function returns this
-      // variable to false, preventing the popup to expand with its
-      // respective functions
-      clickedPopupButtonCard = true
-      clickedPopupButtonRes = true
-      clickedPopupButtonFamily = true
-      // requests table for sequences metadata
-      requestPlasmidTable(node, setupPopupDisplay)
-    })
-
     //* **************//
     //* ** BUTTONS ***//
     //* **************//
@@ -2024,5 +1974,59 @@ const onLoad = () => {
     toggleManager(toggleStatus)
   })
 
+
+  //* *************//
+  //* ** CLICK NODES EVENTS ***//
+  //* *************//
+
+  /**
+   * Variable that contains vivagraph webgl events
+   */
+  const events = Viva.Graph.webglInputEvents(graphics, g)
+
+  //* * mouse click on nodes **//
+  events.click( (node, e) => {
+    pageReRun = false
+    $("#resTab").removeClass("active")
+    $("#resButton").removeClass("active")
+    $("#pfTab").removeClass("active")
+    $("#plasmidButton").removeClass("active")
+    $("#virButton").removeClass("active")
+    $("#virTab").removeClass("active")
+    // this resets previous selected node to previous color
+    if (currentQueryNode) {
+      graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
+    }
+    // then starts making new changes to the newly geerated node
+    currentQueryNode = node.id
+    let nodeUI1 = graphics.getNodeUI(node.id)
+    const domPos = {
+      x: nodeUI1.position.x,
+      y: nodeUI1.position.y
+    }
+    // if statement used to check if backup color is set
+    if (nodeUI1.backupColor) { nodeUI1.backupColor = nodeUI1.color }
+
+    nodeUI1.color = 0xFFC300
+    renderer.rerender()
+
+    // allows the control of the click appearing and locking
+
+    // And ask graphics to transform it to DOM coordinates:
+    graphics.transformGraphToClientCoordinates(domPos)
+    domPos.x = (domPos.x + nodeUI1.size) + "px"
+    domPos.y = (domPos.y) + "px"
+
+    // this sets the popup internal buttons to allow them to run,
+    // otherwise they won't run because its own function returns this
+    // variable to false, preventing the popup to expand with its
+    // respective functions
+    clickedPopupButtonCard = true
+    clickedPopupButtonRes = true
+    clickedPopupButtonFamily = true
+    
+    // requests table for sequences metadata
+    requestPlasmidTable(node, setupPopupDisplay)
+  })
 
 } // closes onload
