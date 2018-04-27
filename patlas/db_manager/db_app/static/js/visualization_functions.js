@@ -23,7 +23,7 @@ bootstrapTableList, setupPopupDisplay, legendIndex, legendSliderControler,
 typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
 clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
-clickedPopupButtonVir, listPlots, removeBasedOnHashes*/
+clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs*/
 
 
 /**
