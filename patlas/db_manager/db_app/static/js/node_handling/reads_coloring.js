@@ -483,50 +483,49 @@ const removeBasedOnHashes = (g, graphics, renderer, toggle) => {
 
   $.get("api/getaccessionhash/", {"perc_hashes": $("#formHash").val()})
     .then( (results) => {
-        // results here is an array of arrays with the following structure
-        // [fromId, toId].
+      // results here is an array of arrays with the following structure
+      // [fromId, toId].
 
-        const storeLinks = []
-        const promises = []
+      const storeLinks = []
+      const promises = []
 
 
-        for (const accession of Object.keys(results)) {
-            const links = g.getLinks(accession)
-            for (const link of links) {
+      for (const accession of Object.keys(results)) {
+        const links = g.getLinks(accession)
+        for (const link of links) {
 
-                /**
-                 * Variable for linkUI vivagraph object. Checks if it is undefined or not
-                 * @type {null|Object}
-                 */
-                const linkUI = (typeof link !== "undefined") ? graphics.getLinkUI(link.id) : null
+          /**
+           * Variable for linkUI vivagraph object. Checks if it is undefined or not
+           * @type {null|Object}
+           */
+          const linkUI = (typeof link !== "undefined") ? graphics.getLinkUI(link.id) : null
 
-                if (toggle === true) {
-                    // stores nodes in array to remove after this loop
-                    storeLinks.push(link)
-                    promises.push(link)
-                } else {
-                    // just colors the links within the selection
-                    linkColor = $("#cp5Form").val().replace("#", "0x") + "FF"
-                    linkUI.color = linkColor
-                    promises.push(link)
-                }
-            }
-
+          if (toggle === true) {
+            // stores nodes in array to remove after this loop
+            storeLinks.push(link)
+            promises.push(link)
+          } else {
+            // just colors the links within the selection
+            const linkColor = $("#cp5Form").val().replace("#", "0x") + "FF"
+            linkUI.color = linkColor
+            promises.push(link)
+          }
         }
 
-        Promise.all(promises).then( () => {
+      }
 
-            for (const l of storeLinks) {
-                g.removeLink(l)
-            }
+      Promise.all(promises).then( () => {
 
-            $("#loading").hide()
-            renderer.rerender()
+        for (const l of storeLinks) {
+          g.removeLink(l)
+        }
 
-  })
+        $("#loading").hide()
+        renderer.rerender()
+
+      })
     })
 }
-
 
 
 /**

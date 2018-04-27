@@ -1,43 +1,29 @@
-/*globals resetAllNodes, storeRecenterDom,
- buildCircleNodeShader, requestPlasmidTable, selector,
-  hideAllOtherPlots, toggleManager,
-   resRepetitivePlotFunction, pfRepetitivePlotFunction,
-    virRepetitivePlotFunction, statsParser, nodeColorReset,
-     resetDisplayTaxaBox, showDiv, layoutGet,
-      singleDropdownPopulate,
-       filterDisplayer, slider,
-        removeFirstCharFromArray, colorList, resetLinkColor,
-         handleFileSelect, downloadSeqByColor,
-          downloadSeq,
-           abortRead, arrayToCsv,
-            linkColoring,
-             Mousetrap, associativeObj,
-              taxaRequest, getArrayMapping,
-               getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
-                getArrayAssembly, startMultiSelect, requesterDB,
-                 addAllNodes, addAllLinks, quickFixString, fileChecks,
-                  initResize,
-                   controlFiltersSameLevel, fileDownloader, importProject,
-                    setProjectView, readFilejson, mashJson, assemblyJson,
-                     consensusJson, projectJson, listGiFilter, storeMasterNode,
-                     recenterDOM, defaultZooming, freezeShift, renderer,
-                     downloadTypeHandler,
-                     colorNodes, initCallback, multiSelectOverlay, multiSelectOverlayObj,
-                      areaSelection, pageReRun, currentQueryNode, pfSubmitFunction,
-                      legendInst, resSubmitFunction, virSubmitFunction, parseQueriesIntersection,
-                      iterateArrays, readColoring, pushToMasterReadArray, repetitivePlotFunction,
-                       heatmapMaker, makeTable, centerToggleQuery, toggleOnSearch,
-                       resGetter, plasmidFamilyGetter, virulenceGetter,
-                        slideToRight, slideToLeft, minNodeSize, WebglCircle, devel,
-                         Viva, sliderMinMax, listLengths, firstInstace, getArray,
-                         counter, listGi, list, graphSize, readIndex, requestDBList,
-                          reloadAccessionList, firstClickMenu, bootstrapTableList,
-                          setupPopupDisplay, legendIndex, legendSliderControler,
-                          typeOfProject, previousTableList, nodeColor,
-                          clickedPopupButtonCard, clickedPopupButtonRes,
-                          clickedPopupButtonFamily, selectedFilter, idsArrays,
-                          masterReadArray, getLinkedNodes, pageReload, clickerButton,
-                           clickedHighchart, clickedPopupButtonVir, listPlots*/
+/*globals resetAllNodes, storeRecenterDom, buildCircleNodeShader,
+requestPlasmidTable, selector, hideAllOtherPlots, toggleManager,
+resRepetitivePlotFunction, pfRepetitivePlotFunction, virRepetitivePlotFunction,
+statsParser, nodeColorReset, resetDisplayTaxaBox, showDiv, layoutGet,
+singleDropdownPopulate, filterDisplayer, slider, removeFirstCharFromArray,
+colorList, resetLinkColor, handleFileSelect, downloadSeqByColor, downloadSeq,
+abortRead, arrayToCsv, linkColoring, Mousetrap, associativeObj, taxaRequest,
+getArrayMapping, getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
+getArrayAssembly, startMultiSelect, requesterDB, addAllNodes, addAllLinks,
+quickFixString, fileChecks, initResize, controlFiltersSameLevel, fileDownloader,
+importProject, setProjectView, readFilejson, mashJson, assemblyJson,
+consensusJson, projectJson, listGiFilter, storeMasterNode, recenterDOM,
+defaultZooming, freezeShift, renderer, downloadTypeHandler, colorNodes,
+initCallback, multiSelectOverlay, multiSelectOverlayObj, areaSelection,
+pageReRun, currentQueryNode, pfSubmitFunction, legendInst, resSubmitFunction,
+virSubmitFunction, parseQueriesIntersection, iterateArrays, readColoring,
+pushToMasterReadArray, repetitivePlotFunction, heatmapMaker, makeTable,
+centerToggleQuery, toggleOnSearch, resGetter, plasmidFamilyGetter,
+virulenceGetter, slideToRight, slideToLeft, minNodeSize, WebglCircle, devel,
+Viva, sliderMinMax, listLengths, firstInstace, getArray, counter, listGi, list,
+graphSize, readIndex, requestDBList, reloadAccessionList, firstClickMenu,
+bootstrapTableList, setupPopupDisplay, legendIndex, legendSliderControler,
+typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
+clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
+masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
+clickedPopupButtonVir, listPlots, removeBasedOnHashes*/
 
 
 /**
@@ -143,7 +129,7 @@ const onLoad = () => {
 
   //* Starts graphics renderer *//
   const renderGraph = (graphics) => {
-    //const graphics = Viva.Graph.View.webglGraphics()
+
     //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
     // to render nodes:
@@ -219,6 +205,7 @@ const onLoad = () => {
     slider.noUiSlider.on("update", (values, handle) => {
       inputs[handle].value = Math.trunc(Math.exp(values[handle]))
     })
+
 
     /**
      * event listener for the slider of lengths within
