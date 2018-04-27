@@ -210,6 +210,7 @@ class GetAccessionHashes(Resource):
         # back to string
         query_hash_cutoff = float(args.perc_hashes) * 0.01
 
+
         # Fetch all entries
         records = db.session.query(Plasmid).all()
 

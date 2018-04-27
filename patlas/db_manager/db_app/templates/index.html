@@ -862,12 +862,14 @@
 <div id="wrapper" class="toggled">
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
-    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="pATLAS" style="width:100%;height:auto;"/>
-    <ul class="sidebar-nav" id="sidebar-menus">
-      <li class="sidebar-brand">
-        <!--unused space filled with img-->
-      </li>
-      <div id="collapseGroup">
+    <div style="position: relative">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="pATLAS" style="width:100%;height:auto;"/>
+    </div>
+    <ul class="sidebar-nav" id="sidebar-menus" style="position: relative;">
+      <!--<li class="sidebar-brand">-->
+        <!--&lt;!&ndash;unused space filled with img&ndash;&gt;-->
+      <!--</li>-->
+      <div id="collapseGroup" style="width: 100%;">
       <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
         <a href="#">Browse</a>
         <div id="collapse1" class="panel-collapse collapse">
@@ -888,7 +890,7 @@
             <button class="list-group-item" href="#"
                     data-toggle="modal" data-backdrop="static"
                     data-target="#hashModal"
-                    id="hashFilter">Shared Hashes
+                    id="hashFilter">Shared sequence
             </button>
             <button class="list-group-item" href="#"
                     data-toggle="modal" data-backdrop="static"

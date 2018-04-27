@@ -420,7 +420,7 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
 
     /**
      * Variable for linkUI vivagraph object. Checks if it is undefined or not
-     * @type {null}
+     * @type {null|Object}
      */
     const linkUI = (typeof link !== "undefined") ? graphics.getLinkUI(link.id) : null
 
@@ -481,48 +481,38 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
 
 const removeBasedOnHashes = (g, graphics, renderer, toggle) => {
 
-  console.log($("#formHash").val())
-
   $.get("api/getaccessionhash/", {"perc_hashes": $("#formHash").val()})
     .then( (results) => {
         // results here is an array of arrays with the following structure
         // [fromId, toId].
 
-        console.log(results)
-        console.log(Object.keys(results).length)
-
         const storeLinks = []
         const promises = []
 
-        /**
-         * Function that iterates through all arrays
-         */
-        g.forEachLink( (link) => {
 
-            /**
-             * Variable for linkUI vivagraph object. Checks if it is undefined or not
-             * @type {null}
-             */
-            const linkUI = (typeof link !== "undefined") ? graphics.getLinkUI(link.id) : null
+        for (const accession of Object.keys(results)) {
+            const links = g.getLinks(accession)
+            for (const link of links) {
 
-            /**
-             * Variable to define the color of the link. Here the variable is initiated.
-             */
-            let linkColor
+                /**
+                 * Variable for linkUI vivagraph object. Checks if it is undefined or not
+                 * @type {null|Object}
+                 */
+                const linkUI = (typeof link !== "undefined") ? graphics.getLinkUI(link.id) : null
 
-
-            if (toggle === true) {
-                // stores nodes in array to remove after this loop
-                storeLinks.push(link)
-                promises.push(link)
-            } else {
-                // just colors the links within the selection
-                linkColor = $("#cp4Form").val().replace("#", "0x") + "FF"
-                linkUI.color = linkColor
-                promises.push(link)
+                if (toggle === true) {
+                    // stores nodes in array to remove after this loop
+                    storeLinks.push(link)
+                    promises.push(link)
+                } else {
+                    // just colors the links within the selection
+                    linkColor = $("#cp5Form").val().replace("#", "0x") + "FF"
+                    linkUI.color = linkColor
+                    promises.push(link)
+                }
             }
 
-        })
+        }
 
         Promise.all(promises).then( () => {
 

@@ -71,18 +71,18 @@
 </div>
 
 <div id="hashModal" class="modal fade" role="dialog" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog" style="width: 60%">
     <!-- Modal content for ratio-->
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Filter links by percentage of shared hashes
+        <h4 class="modal-title">Filter links by percentage of shared sequence
           between pairs of plasmids
         </h4>
       </div>
       <div class="modal-body" id="modal-body-hash">
         <div class="col-sm-4">
-          <div class="header_taxa">% of shared hashes</div>
+          <div class="header_taxa">min % of shared sequence</div>
           <div class="form-group" data-toggle="tooltip"
                title="Provide a value between 100 and 0">
             <input id="formHash" type="text" class="form-control"
@@ -115,16 +115,13 @@
         <button type="button" class="btn btn-default btn-circle"
                 data-toggle="popover"
                 data-trigger="focus"
-                data-original-title="Shared hashes menu help"
+                data-original-title="Shared sequence menu help"
                 data-content="Here you can color or remove links based
-                        on the shared hashes between two plasmids.
-                        <li>% of shared hashes - This cutoff sets the minimum
-                        percentage of shared hashes between two plasmids. By
+                        on the shared sequence between two plasmids.
+                        <li>min % of shared sequence - This cutoff sets the minimum
+                        percentage of shared sequence between two plasmids. By
                         default it removes every link between two plasmids that
-                        do not share 80% of the hashes between them. The
-                        percentage of hashes can be used as a proxy for the
-                        percentage of the two plasmids sequence that must
-                        overlap in terms of length.</li>
+                        do not share at least 80% of the sequence.</li>
                         <li>Pick a color - allows the user to pick a color to
                         highlight desired links. This is the default behavior
                         of submit button, however if remove links is 'on', this
@@ -135,6 +132,10 @@
                 aria-describedby="tooltip" style="position: absolute;
                         left:2%;"
                 id="questionHash">
+          <!--The-->
+          <!--percentage of hashes can be used as a proxy for the-->
+          <!--percentage of the two plasmids sequence that must-->
+          <!--overlap in terms of length.-->
           <span class="glyphicon glyphicon-question-sign"></span>
         </button>
         <button type="submit" class="btn btn-default"
