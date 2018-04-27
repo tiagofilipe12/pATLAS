@@ -12,7 +12,7 @@ with the filters or imports.
  click on the **reset nodes** button located at the top of the pATLAS interface.
 
 
-##Taxa
+## Taxa
 
 Bar plot with the number of occurences of each taxa (Species, Genera, Families and Orders)
 in the current selection.
@@ -20,9 +20,9 @@ in the current selection.
 ![](gitbook/images/speciesplot.png)
 
 
-##Annotation
+## Annotation
 
-Similar to [Taxa plots](statistics.md#Taxa), but with information on 
+Similar to [Taxa plots](Statistics.md#Taxa), but with information on
 resistance and virulence genes, and plasmid families.
 
 ##Other
