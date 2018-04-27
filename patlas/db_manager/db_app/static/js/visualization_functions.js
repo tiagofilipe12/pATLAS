@@ -614,6 +614,7 @@ const onLoad = () => {
       [textToExport])
   })
 
+
   /**
    * Function that handles for the first time the projectJson file. It will
    * parse for the first time the dropdowns associated with the import from
@@ -655,6 +656,7 @@ const onLoad = () => {
     }
   })
 
+
   /**
    * Dynamically updates each one of the dropdowns and if the click is on the
    * viewList2 dropdown it will fire the projectLoadSubmit click event.
@@ -669,6 +671,7 @@ const onLoad = () => {
     }
 
   })
+
 
   /**
    * Function to close the current project and handle the respective selections
@@ -733,13 +736,13 @@ const onLoad = () => {
     }
   })
 
+
   /**
    * function to avoid shift key to be triggered when any modal is open
    */
   $(".modal").on("shown.bs.modal", () => {
     multiSelectOverlay = "disable"
   })
-
   /**
    * function to allow shift key to select nodes again, on modal close
    */
@@ -1361,9 +1364,9 @@ const onLoad = () => {
     $("#vir_label").hide()
     $("#colorLegendBoxVir").empty()
 
-    $("#loading").show()
-
-    iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
+    showDiv().then( () => {
+        iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
+    })
 
   })
 
@@ -1505,8 +1508,8 @@ const onLoad = () => {
       })
       hideAllOtherPlots()
       areaSelection = false
-      $("#loading").show()
-      setTimeout(() => {
+      // $("#loading").show()
+      showDiv().then( () => {
         // colors each node for first element of readFilejson
         const outLists = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outLists[0]
@@ -1516,15 +1519,13 @@ const onLoad = () => {
         typeOfProject["mapping"] = readFilejson
 
         masterReadArray = pushToMasterReadArray(readFilejson)
-      }, 100)
 
-      // }
-      // used to hide when function is not executed properly
-      setTimeout(() => {
         $("#loading").hide()
-      }, 100)
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
+        $("#toolButtonGroup button").removeAttr("disabled")
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+      })
+
     } else {
       // alert user that file may be empty or there is no imported file at all
       fileChecks(readFilejson)
@@ -1547,8 +1548,8 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    $("#loading").show()
-    setTimeout( () => {
+
+    showDiv().then( () => {
       getArrayMapping().done( (result) => {
         // puts to readFilejson object that may store many files
         readFilejson = {
@@ -1559,12 +1560,11 @@ const onLoad = () => {
         listGi = outLists[0]
         listGiFilter = outLists[1]
         masterReadArray = pushToMasterReadArray(readFilejson)
+
+        $("#loading").hide()
+        $("#toolButtonGroup button").removeAttr("disabled")
       })
     })
-    // used to hide when function is not executed properly
-    setTimeout( () => {
-      $("#loading").hide()
-    }, 100)
   })
 
   //* ************//
@@ -1592,8 +1592,8 @@ const onLoad = () => {
       })
       hideAllOtherPlots()
       areaSelection = false
-      $("#loading").show()
-      setTimeout(() => {
+
+      showDiv().then( () => {
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
         listGiFilter = outputList[1]
@@ -1602,15 +1602,13 @@ const onLoad = () => {
         typeOfProject["mashscreen"] = mashJson
 
         masterReadArray = pushToMasterReadArray(readFilejson)
-      }, 100)
 
-      // }
-      // used to hide when function is not executed properly
-      setTimeout(() => {
         $("#loading").hide()
-      }, 100)
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
+        $("#toolButtonGroup button").removeAttr("disabled")
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+      })
+
     } else {
       // alert user that file may be empty or there is no imported file at all
       fileChecks(mashJson)
@@ -1634,8 +1632,8 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    $("#loading").show()
-    setTimeout( () => {
+
+    showDiv().then( () => {
       getArrayMash().done( (result) => {
         // puts to readFilejson object that may store many files
         mashJson = {
@@ -1647,12 +1645,14 @@ const onLoad = () => {
         listGi = outLists[0]
         listGiFilter = outLists[1]
         masterReadArray = pushToMasterReadArray(mashJson)
+
+        $("#loading").hide()
+        $("#toolButtonGroup button").removeAttr("disabled")
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
       })
     })
-    // used to hide when function is not executed properly
-    setTimeout( () => {
-      $("#loading").hide()
-    }, 100)
+
   })
 
   //* ********* ***//
@@ -1676,7 +1676,7 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
-      setTimeout(() => {
+      showDiv().then( () => {
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
         listGiFilter = outputList[1]
@@ -1685,14 +1685,14 @@ const onLoad = () => {
         typeOfProject["assembly"] = assemblyJson
 
         masterReadArray = pushToMasterReadArray(assemblyJson)
+
+        $("#loading").hide()
+        $("#toolButtonGroup button").removeAttr("disabled")
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+
       }, 100)
 
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
-      // used to hide when function is not executed properly
-      setTimeout( () => {
-        $("#loading").hide()
-      }, 100)
     } else {
       // alert user that file may be empty or there is no imported file at all
       fileChecks(assemblyJson)
@@ -1711,28 +1711,31 @@ const onLoad = () => {
     previousTableList = []
     // transform selector object that handles plots and hide their
     // respective divs
-    Object.keys(selector).map( (el) => { selector[el].state = false })
+    Object.keys(selector).map((el) => {
+      selector[el].state = false
+    })
     hideAllOtherPlots()
     areaSelection = false
-    $("#loading").show()
-    getArrayAssembly().then( (results) => {
-      readFilejson = assemblyJson = results
-      const readString = JSON.parse(Object.values(results)[0])
-      fileChecks(readString)
-      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
-        .show()
-      const outputList = readColoring(g, listGi, graphics, renderer, readString)
-      listGi = outputList[0]
-      listGiFilter = outputList[1]
-      masterReadArray = pushToMasterReadArray(assemblyJson)
-    })
+    showDiv().then(() => {
+      getArrayAssembly().then((results) => {
+        readFilejson = assemblyJson = results
+        const readString = JSON.parse(Object.values(results)[0])
+        fileChecks(readString)
+        $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+          .show()
+        const outputList = readColoring(g, listGi, graphics, renderer, readString)
+        listGi = outputList[0]
+        listGiFilter = outputList[1]
+        masterReadArray = pushToMasterReadArray(assemblyJson)
 
-    $("#slideRight").prop("disabled", false)
-    $("#slideLeft").prop("disabled", false)
-    // used to hide when function is not executed properly
-    setTimeout( () => {
-      $("#loading").hide()
-    }, 100)
+        $("#loading").hide()
+        $("#toolButtonGroup button").removeAttr("disabled")
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+
+      })
+
+    })
   })
 
   //* ********* ***//
@@ -1756,7 +1759,7 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
-      setTimeout(() => {
+      showDiv().then( () => {
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
         listGiFilter = outputList[1]
@@ -1765,14 +1768,14 @@ const onLoad = () => {
         typeOfProject["consensus"] = consensusJson
 
         masterReadArray = pushToMasterReadArray(consensusJson)
-      }, 100)
 
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
-      // used to hide when function is not executed properly
-      setTimeout( () => {
         $("#loading").hide()
-      }, 100)
+        $("#toolButtonGroup button").removeAttr("disabled")
+        $("#slideRight").prop("disabled", false)
+        $("#slideLeft").prop("disabled", false)
+
+      })
+
     } else {
       // alert user that file may be empty or there is no imported file at all
       fileChecks(consensusJson)
@@ -1862,12 +1865,10 @@ const onLoad = () => {
     //* * Loading Screen goes on **//
     showDiv().then( () => {
       // removes nodes
-      setTimeout( () => {
-        actualRemoval(g, graphics, onLoad, false)
-        freezeShift = true
-        // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
-      }, 100)
+      freezeShift = true
+
+      actualRemoval(g, graphics, onLoad, false)
+
     })
   })
 
