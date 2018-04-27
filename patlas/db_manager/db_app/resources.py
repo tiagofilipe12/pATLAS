@@ -66,6 +66,9 @@ req_parser.add_argument("taxa", dest="taxa", type=str, help="taxa "
 req_parser.add_argument("plasmid_name", dest="plasmid_name", type=str,
                           help="plasmid name to be queried")
 
+req_parser.add_argument("perc_hashes", dest="perc_hashes", type=float,
+                        help="the percentage of hashes to be queried")
+
 ## define all resources
 
 class GetSpecies(Resource):
@@ -196,3 +199,41 @@ class GetPlasmidName(Resource):
         # contains method allows us to query in array that is converted to a
         # string
         return records
+
+class GetAccessionHashes(Resource):
+    # @marshal_with(entry_field)
+    def get(self):
+        # Put req_parser inside get function. Only this way it parses the request.
+        args = req_parser.parse_args()
+
+        # convert values to decimal instead of percentages and the convert it
+        # back to string
+        query_hash_cutoff = float(args.perc_hashes) * 0.01
+
+        # Fetch all entries
+        records = db.session.query(Plasmid).all()
+
+        # this is the list that will be returned to front-end
+        resultingObj = {}
+
+        # iterate through all database records
+        for record in records:
+
+            linkList = record.json_entry["significantLinks"]
+
+            # checks if linkList is empty, i.e., if the current plasmid_id has
+            # links
+            if linkList:
+
+                # iterate through each link
+                for link in linkList:
+                    linkedAccession = link["accession"]
+                    percHashlink = link["percentage_hashes"]
+                    if percHashlink >= query_hash_cutoff:
+                        if record.plasmid_id in resultingObj.keys():
+                            resultingObj[record.plasmid_id].append(linkedAccession)
+                        else:
+                            resultingObj[record.plasmid_id] = [linkedAccession]
+
+
+        return resultingObj

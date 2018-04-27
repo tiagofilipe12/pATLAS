@@ -385,6 +385,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
 ///////////////////
 // link coloring //
 ///////////////////
+
 /**
  * Function to control the coloring of links either in distance filters or
  * in size ratio filters.
@@ -400,13 +401,37 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
  */
 const linkColoring = (g, graphics, renderer, mode, toggle) => {
 
+  /**
+   * Variable that will store promises
+   * @type {Array}
+   */
   const promises = []
+
+  /**
+   * Variable that will make a store of all links in order to avoid adding links more than once
+   * @type {Array}
+   */
   const storeLinks = []
+
+  /**
+   * Function that iterates through all arrays
+   */
   g.forEachLink( (link) => {
+
+    /**
+     * Variable for linkUI vivagraph object. Checks if it is undefined or not
+     * @type {null}
+     */
     const linkUI = (typeof link !== "undefined") ? graphics.getLinkUI(link.id) : null
+
+    /**
+     * Variable to define the color of the link. Here the variable is initiated.
+     */
     let linkColor
-    // the lower the value the more intense the color is
+
+    // the lower the value the darker the color is
     if (mode === "distance") {
+
       const dist = link.data.distance * 10
       if (document.getElementById("colorForm").value === "Green color scheme" || document.getElementById("colorForm").value === "") {
         linkColor = chroma.mix("#65B661", "#CAE368", dist).hex().replace("#", "0x") + "FF"
@@ -420,7 +445,9 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
       // since linkUI seems to use alpha in its color definition we had to set alpha to 100%
       // opacity by adding "FF" at the end of color string
       linkUI.color = linkColor
+
     } else {
+
       // used for "size" mode
       // checks if link has size ratio inside the specified value
       if (100 - parseFloat($("#formRatio").val()) >= link.data.sizeRatio * 100) {
@@ -435,11 +462,13 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
           promises.push(link)
         }
       }
+
     }
   })
+
   Promise.all(promises).then( () => {
 
-    for (let l of storeLinks) {
+    for (const l of storeLinks) {
       g.removeLink(l)
     }
 
@@ -447,7 +476,68 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
     renderer.rerender()
 
   })
+
 }
+
+const removeBasedOnHashes = (g, graphics, renderer, toggle) => {
+
+  console.log($("#formHash").val())
+
+  $.get("api/getaccessionhash/", {"perc_hashes": $("#formHash").val()})
+    .then( (results) => {
+        // results here is an array of arrays with the following structure
+        // [fromId, toId].
+
+        console.log(results)
+        console.log(Object.keys(results).length)
+
+        const storeLinks = []
+        const promises = []
+
+        /**
+         * Function that iterates through all arrays
+         */
+        g.forEachLink( (link) => {
+
+            /**
+             * Variable for linkUI vivagraph object. Checks if it is undefined or not
+             * @type {null}
+             */
+            const linkUI = (typeof link !== "undefined") ? graphics.getLinkUI(link.id) : null
+
+            /**
+             * Variable to define the color of the link. Here the variable is initiated.
+             */
+            let linkColor
+
+
+            if (toggle === true) {
+                // stores nodes in array to remove after this loop
+                storeLinks.push(link)
+                promises.push(link)
+            } else {
+                // just colors the links within the selection
+                linkColor = $("#cp4Form").val().replace("#", "0x") + "FF"
+                linkUI.color = linkColor
+                promises.push(link)
+            }
+
+        })
+
+        Promise.all(promises).then( () => {
+
+            for (const l of storeLinks) {
+                g.removeLink(l)
+            }
+
+            $("#loading").hide()
+            renderer.rerender()
+
+  })
+    })
+}
+
+
 
 /**
  * A function to reset the color of all links to default color scheme.
@@ -485,7 +575,6 @@ const colorLegendFunction = (readMode) => {
 }
 
 
-// Clear nodes function for reset-sliders button
 /**
  * Function to clear all nodes to default state, storing previous color in
  * backupColor

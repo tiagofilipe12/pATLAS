@@ -786,7 +786,7 @@ Careful when using this in other popovers in the future*/
     max-height: 500px;
 }
 
-#toggleRatio, toggleHash{
+#toggleRatio, #toggleHash{
     width: 100%;
 }
 

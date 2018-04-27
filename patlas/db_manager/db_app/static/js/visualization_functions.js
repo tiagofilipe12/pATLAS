@@ -590,7 +590,7 @@ const onLoad = () => {
   // changes the behavior of tooltip to show only on click
   $("#questionPlots, #questionTable, #questionHeatmap, #questionMap, " +
     "#questionRatio, #exportProjectQuestion, #importProjectQuestion, " +
-    "#questionCombined").popover()
+    "#questionCombined, #questionHash").popover()
 
 
   $("#infoMap, #infoMash, #infoAssembly").popover( { container: "body" } )
@@ -749,7 +749,8 @@ const onLoad = () => {
       // closed
       $("#questionTable, #questionHeatmap, #questionPlots, #questionMap, " +
         "#questionRatio, #infoMap, #infoMash, #infoAssembly, " +
-        "#exportProjectQuestion, #importProjectQuestion, #questionCombined")
+        "#exportProjectQuestion, #importProjectQuestion, #questionCombined, " +
+        "#questionHash")
         .popover("hide")
     })
 
@@ -1429,9 +1430,9 @@ const onLoad = () => {
    * to highlight the selected links in the desired color or remove the links
    * that are not in the selected range.
    */
-  $("#ratioSubmit").unbind("click").bind("click", () => {
+  $("#ratioSubmit").unbind("click").bind("click", (e) => {
 
-    event.preventDefault()
+    e.preventDefault()
 
     const toggleRatioStatus = $("#toggleRatio").prop("checked")
 
@@ -1441,7 +1442,36 @@ const onLoad = () => {
 
     showDiv().then(
       setTimeout( () => {
-        linkColoring(g, graphics, renderer, "size", toggleRatioStatus)//, totalNumberOfLinks)
+        linkColoring(g, graphics, renderer, "size", toggleRatioStatus)
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+      }, 100)
+    )
+
+  })
+
+
+  //**************//
+  //* SHARED HASHES *//
+  //**************//
+
+  /**
+   * Button event to submit the query for the links that present a given
+   * threshold of shared hashes between two plasmids. This may function as a
+   * proxy of the sequence overlap between the two plasmids.
+   */
+  $("#hashSubmit").unbind("click").bind("click", (e) => {
+
+    e.preventDefault()
+
+    const toggleRatioStatus = $("#toggleHash").prop("checked")
+
+    $("#reset-links").click()
+    $("#scaleLegend").empty()
+
+    showDiv().then(
+      setTimeout( () => {
+        removeBasedOnHashes(g, graphics, renderer, toggleRatioStatus)
         // enables button group again
         $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
