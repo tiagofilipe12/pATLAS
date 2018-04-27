@@ -1,43 +1,29 @@
-/*globals resetAllNodes, storeRecenterDom,
- buildCircleNodeShader, requestPlasmidTable, selector,
-  hideAllOtherPlots, toggleManager,
-   resRepetitivePlotFunction, pfRepetitivePlotFunction,
-    virRepetitivePlotFunction, statsParser, nodeColorReset,
-     resetDisplayTaxaBox, showDiv, layoutGet,
-      singleDropdownPopulate,
-       filterDisplayer, slider,
-        removeFirstCharFromArray, colorList, resetLinkColor,
-         handleFileSelect, downloadSeqByColor,
-          downloadSeq,
-           abortRead, arrayToCsv,
-            linkColoring,
-             Mousetrap, associativeObj,
-              taxaRequest, getArrayMapping,
-               getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
-                getArrayAssembly, startMultiSelect, requesterDB,
-                 addAllNodes, addAllLinks, quickFixString, fileChecks,
-                  initResize,
-                   controlFiltersSameLevel, fileDownloader, importProject,
-                    setProjectView, readFilejson, mashJson, assemblyJson,
-                     consensusJson, projectJson, listGiFilter, storeMasterNode,
-                     recenterDOM, defaultZooming, freezeShift, renderer,
-                     downloadTypeHandler,
-                     colorNodes, initCallback, multiSelectOverlay, multiSelectOverlayObj,
-                      areaSelection, pageReRun, currentQueryNode, pfSubmitFunction,
-                      legendInst, resSubmitFunction, virSubmitFunction, parseQueriesIntersection,
-                      iterateArrays, readColoring, pushToMasterReadArray, repetitivePlotFunction,
-                       heatmapMaker, makeTable, centerToggleQuery, toggleOnSearch,
-                       resGetter, plasmidFamilyGetter, virulenceGetter,
-                        slideToRight, slideToLeft, minNodeSize, WebglCircle, devel,
-                         Viva, sliderMinMax, listLengths, firstInstace, getArray,
-                         counter, listGi, list, graphSize, readIndex, requestDBList,
-                          reloadAccessionList, firstClickMenu, bootstrapTableList,
-                          setupPopupDisplay, legendIndex, legendSliderControler,
-                          typeOfProject, previousTableList, nodeColor,
-                          clickedPopupButtonCard, clickedPopupButtonRes,
-                          clickedPopupButtonFamily, selectedFilter, idsArrays,
-                          masterReadArray, getLinkedNodes, pageReload, clickerButton,
-                           clickedHighchart, clickedPopupButtonVir, listPlots*/
+/*globals resetAllNodes, storeRecenterDom, buildCircleNodeShader,
+requestPlasmidTable, selector, hideAllOtherPlots, toggleManager,
+resRepetitivePlotFunction, pfRepetitivePlotFunction, virRepetitivePlotFunction,
+statsParser, nodeColorReset, resetDisplayTaxaBox, showDiv, layoutGet,
+singleDropdownPopulate, filterDisplayer, slider, removeFirstCharFromArray,
+colorList, resetLinkColor, handleFileSelect, downloadSeqByColor, downloadSeq,
+abortRead, arrayToCsv, linkColoring, Mousetrap, associativeObj, taxaRequest,
+getArrayMapping, getArrayMash, colorLegendFunction, noUiSlider, actualRemoval,
+getArrayAssembly, startMultiSelect, requesterDB, addAllNodes, addAllLinks,
+quickFixString, fileChecks, initResize, controlFiltersSameLevel, fileDownloader,
+importProject, setProjectView, readFilejson, mashJson, assemblyJson,
+consensusJson, projectJson, listGiFilter, storeMasterNode, recenterDOM,
+defaultZooming, freezeShift, renderer, downloadTypeHandler, colorNodes,
+initCallback, multiSelectOverlay, multiSelectOverlayObj, areaSelection,
+pageReRun, currentQueryNode, pfSubmitFunction, legendInst, resSubmitFunction,
+virSubmitFunction, parseQueriesIntersection, iterateArrays, readColoring,
+pushToMasterReadArray, repetitivePlotFunction, heatmapMaker, makeTable,
+centerToggleQuery, toggleOnSearch, resGetter, plasmidFamilyGetter,
+virulenceGetter, slideToRight, slideToLeft, minNodeSize, WebglCircle, devel,
+Viva, sliderMinMax, listLengths, firstInstace, getArray, counter, listGi, list,
+graphSize, readIndex, requestDBList, reloadAccessionList, firstClickMenu,
+bootstrapTableList, setupPopupDisplay, legendIndex, legendSliderControler,
+typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
+clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
+masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
+clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs*/
 
 
 /**
@@ -143,7 +129,7 @@ const onLoad = () => {
 
   //* Starts graphics renderer *//
   const renderGraph = (graphics) => {
-    //const graphics = Viva.Graph.View.webglGraphics()
+
     //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
     // to render nodes:
@@ -219,6 +205,7 @@ const onLoad = () => {
     slider.noUiSlider.on("update", (values, handle) => {
       inputs[handle].value = Math.trunc(Math.exp(values[handle]))
     })
+
 
     /**
      * event listener for the slider of lengths within
@@ -590,7 +577,7 @@ const onLoad = () => {
   // changes the behavior of tooltip to show only on click
   $("#questionPlots, #questionTable, #questionHeatmap, #questionMap, " +
     "#questionRatio, #exportProjectQuestion, #importProjectQuestion, " +
-    "#questionCombined").popover()
+    "#questionCombined, #questionHash").popover()
 
 
   $("#infoMap, #infoMash, #infoAssembly").popover( { container: "body" } )
@@ -613,6 +600,7 @@ const onLoad = () => {
     fileDownloader(`${projectName}.json`, "data:application/json;charset=utf-8",
       [textToExport])
   })
+
 
   /**
    * Function that handles for the first time the projectJson file. It will
@@ -655,6 +643,7 @@ const onLoad = () => {
     }
   })
 
+
   /**
    * Dynamically updates each one of the dropdowns and if the click is on the
    * viewList2 dropdown it will fire the projectLoadSubmit click event.
@@ -669,6 +658,7 @@ const onLoad = () => {
     }
 
   })
+
 
   /**
    * Function to close the current project and handle the respective selections
@@ -733,13 +723,13 @@ const onLoad = () => {
     }
   })
 
+
   /**
    * function to avoid shift key to be triggered when any modal is open
    */
   $(".modal").on("shown.bs.modal", () => {
     multiSelectOverlay = "disable"
   })
-
   /**
    * function to allow shift key to select nodes again, on modal close
    */
@@ -749,7 +739,8 @@ const onLoad = () => {
       // closed
       $("#questionTable, #questionHeatmap, #questionPlots, #questionMap, " +
         "#questionRatio, #infoMap, #infoMash, #infoAssembly, " +
-        "#exportProjectQuestion, #importProjectQuestion, #questionCombined")
+        "#exportProjectQuestion, #importProjectQuestion, #questionCombined, " +
+        "#questionHash")
         .popover("hide")
     })
 
@@ -1360,9 +1351,9 @@ const onLoad = () => {
     $("#vir_label").hide()
     $("#colorLegendBoxVir").empty()
 
-    $("#loading").show()
-
-    iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
+    showDiv().then( () => {
+        iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
+    })
 
   })
 
@@ -1429,9 +1420,9 @@ const onLoad = () => {
    * to highlight the selected links in the desired color or remove the links
    * that are not in the selected range.
    */
-  $("#ratioSubmit").unbind("click").bind("click", () => {
+  $("#ratioSubmit").unbind("click").bind("click", (e) => {
 
-    event.preventDefault()
+    e.preventDefault()
 
     const toggleRatioStatus = $("#toggleRatio").prop("checked")
 
@@ -1441,7 +1432,36 @@ const onLoad = () => {
 
     showDiv().then(
       setTimeout( () => {
-        linkColoring(g, graphics, renderer, "size", toggleRatioStatus)//, totalNumberOfLinks)
+        linkColoring(g, graphics, renderer, "size", toggleRatioStatus)
+        // enables button group again
+        $("#toolButtonGroup button").removeAttr("disabled")
+      }, 100)
+    )
+
+  })
+
+
+  //**************//
+  //* SHARED HASHES *//
+  //**************//
+
+  /**
+   * Button event to submit the query for the links that present a given
+   * threshold of shared hashes between two plasmids. This may function as a
+   * proxy of the sequence overlap between the two plasmids.
+   */
+  $("#hashSubmit").unbind("click").bind("click", (e) => {
+
+    e.preventDefault()
+
+    const toggleRatioStatus = $("#toggleHash").prop("checked")
+
+    $("#reset-links").click()
+    $("#scaleLegend").empty()
+
+    showDiv().then(
+      setTimeout( () => {
+        removeBasedOnHashes(g, graphics, renderer, toggleRatioStatus)
         // enables button group again
         $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
@@ -1475,8 +1495,8 @@ const onLoad = () => {
       })
       hideAllOtherPlots()
       areaSelection = false
-      $("#loading").show()
-      setTimeout(() => {
+      // $("#loading").show()
+      showDiv().then( () => {
         // colors each node for first element of readFilejson
         const outLists = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outLists[0]
@@ -1486,15 +1506,10 @@ const onLoad = () => {
         typeOfProject["mapping"] = readFilejson
 
         masterReadArray = pushToMasterReadArray(readFilejson)
-      }, 100)
 
-      // }
-      // used to hide when function is not executed properly
-      setTimeout(() => {
-        $("#loading").hide()
-      }, 100)
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
+        hideDivsFileInputs()
+      })
+
     } else {
       // alert user that file may be empty or there is no imported file at all
       fileChecks(readFilejson)
@@ -1517,8 +1532,8 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    $("#loading").show()
-    setTimeout( () => {
+
+    showDiv().then( () => {
       getArrayMapping().done( (result) => {
         // puts to readFilejson object that may store many files
         readFilejson = {
@@ -1529,12 +1544,10 @@ const onLoad = () => {
         listGi = outLists[0]
         listGiFilter = outLists[1]
         masterReadArray = pushToMasterReadArray(readFilejson)
+
+        hideDivsFileInputs()
       })
     })
-    // used to hide when function is not executed properly
-    setTimeout( () => {
-      $("#loading").hide()
-    }, 100)
   })
 
   //* ************//
@@ -1562,8 +1575,8 @@ const onLoad = () => {
       })
       hideAllOtherPlots()
       areaSelection = false
-      $("#loading").show()
-      setTimeout(() => {
+
+      showDiv().then( () => {
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
         listGiFilter = outputList[1]
@@ -1572,24 +1585,21 @@ const onLoad = () => {
         typeOfProject["mashscreen"] = mashJson
 
         masterReadArray = pushToMasterReadArray(readFilejson)
-      }, 100)
 
-      // }
-      // used to hide when function is not executed properly
-      setTimeout(() => {
-        $("#loading").hide()
-      }, 100)
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
+        hideDivsFileInputs()
+      })
+
     } else {
       // alert user that file may be empty or there is no imported file at all
       fileChecks(mashJson)
     }
   })
 
+
   $("#cancel_infile_mash").unbind("click").bind("click", () => {
     mashJson = abortRead()
   })
+
 
   $("#sampleMash").unbind("click").bind("click", (event) => {
     event.preventDefault()
@@ -1604,8 +1614,8 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    $("#loading").show()
-    setTimeout( () => {
+
+    showDiv().then( () => {
       getArrayMash().done( (result) => {
         // puts to readFilejson object that may store many files
         mashJson = {
@@ -1617,12 +1627,11 @@ const onLoad = () => {
         listGi = outLists[0]
         listGiFilter = outLists[1]
         masterReadArray = pushToMasterReadArray(mashJson)
+
+        hideDivsFileInputs()
       })
     })
-    // used to hide when function is not executed properly
-    setTimeout( () => {
-      $("#loading").hide()
-    }, 100)
+
   })
 
   //* ********* ***//
@@ -1646,7 +1655,7 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
-      setTimeout(() => {
+      showDiv().then( () => {
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
         listGiFilter = outputList[1]
@@ -1655,14 +1664,11 @@ const onLoad = () => {
         typeOfProject["assembly"] = assemblyJson
 
         masterReadArray = pushToMasterReadArray(assemblyJson)
+
+        hideDivsFileInputs()
+
       }, 100)
 
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
-      // used to hide when function is not executed properly
-      setTimeout( () => {
-        $("#loading").hide()
-      }, 100)
     } else {
       // alert user that file may be empty or there is no imported file at all
       fileChecks(assemblyJson)
@@ -1681,28 +1687,28 @@ const onLoad = () => {
     previousTableList = []
     // transform selector object that handles plots and hide their
     // respective divs
-    Object.keys(selector).map( (el) => { selector[el].state = false })
+    Object.keys(selector).map((el) => {
+      selector[el].state = false
+    })
     hideAllOtherPlots()
     areaSelection = false
-    $("#loading").show()
-    getArrayAssembly().then( (results) => {
-      readFilejson = assemblyJson = results
-      const readString = JSON.parse(Object.values(results)[0])
-      fileChecks(readString)
-      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
-        .show()
-      const outputList = readColoring(g, listGi, graphics, renderer, readString)
-      listGi = outputList[0]
-      listGiFilter = outputList[1]
-      masterReadArray = pushToMasterReadArray(assemblyJson)
-    })
+    showDiv().then(() => {
+      getArrayAssembly().then((results) => {
+        readFilejson = assemblyJson = results
+        const readString = JSON.parse(Object.values(results)[0])
+        fileChecks(readString)
+        $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+          .show()
+        const outputList = readColoring(g, listGi, graphics, renderer, readString)
+        listGi = outputList[0]
+        listGiFilter = outputList[1]
+        masterReadArray = pushToMasterReadArray(assemblyJson)
 
-    $("#slideRight").prop("disabled", false)
-    $("#slideLeft").prop("disabled", false)
-    // used to hide when function is not executed properly
-    setTimeout( () => {
-      $("#loading").hide()
-    }, 100)
+        hideDivsFileInputs()
+
+      })
+
+    })
   })
 
   //* ********* ***//
@@ -1726,7 +1732,7 @@ const onLoad = () => {
       hideAllOtherPlots()
       areaSelection = false
       $("#loading").show()
-      setTimeout(() => {
+      showDiv().then( () => {
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
         listGiFilter = outputList[1]
@@ -1735,14 +1741,11 @@ const onLoad = () => {
         typeOfProject["consensus"] = consensusJson
 
         masterReadArray = pushToMasterReadArray(consensusJson)
-      }, 100)
 
-      $("#slideRight").prop("disabled", false)
-      $("#slideLeft").prop("disabled", false)
-      // used to hide when function is not executed properly
-      setTimeout( () => {
-        $("#loading").hide()
-      }, 100)
+        hideDivsFileInputs()
+
+      })
+
     } else {
       // alert user that file may be empty or there is no imported file at all
       fileChecks(consensusJson)
@@ -1832,12 +1835,10 @@ const onLoad = () => {
     //* * Loading Screen goes on **//
     showDiv().then( () => {
       // removes nodes
-      setTimeout( () => {
-        actualRemoval(g, graphics, onLoad, false)
-        freezeShift = true
-        // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
-      }, 100)
+      freezeShift = true
+
+      actualRemoval(g, graphics, onLoad, false)
+
     })
   })
 
