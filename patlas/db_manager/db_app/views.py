@@ -107,8 +107,10 @@ def generate_download():
     A response with the stream of the file to be generated in the client side
     """
 
-    var_response = request.args["accession"].replace("[", "") \
-        .replace("]", "").replace('"', "").split(",")
+    var_response = request.args["accession"].replace(".", "_").split(",")
+
+    print("tst")
+    print(var_response)
 
     query = db.session.query(SequenceDB).filter(
         SequenceDB.plasmid_id.in_(var_response)).all()
@@ -143,8 +145,7 @@ def generate_metadata_download():
     This file
     """
 
-    var_response = request.args["accession"].replace("[", "") \
-        .replace("]", "").replace('"', "").split(",")
+    var_response = request.args["accession"].replace(".", "_").split(",")
 
     query = db.session.query(Plasmid).filter(
         Plasmid.plasmid_id.in_(var_response)).all()
@@ -163,6 +164,13 @@ def generate_metadata_download():
                 yield json.dumps({record.plasmid_id: record.json_entry})
         yield "]"
 
-    return Response(generate(), mimetype="text/csv")
+    return Response(generate(), mimetype="text/csv",
+                    headers={"content-disposition":
+                        "attachment; filename=pATLAS"
+                        "_metadata_{}.txt".format(
+                            str(abs(hash("".join(var_response))))
+                        )
+                    }
+                    )
 
 ## TODO a similar api can be added for the other tables in fact to fetch metadata
