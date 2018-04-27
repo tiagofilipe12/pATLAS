@@ -1507,10 +1507,7 @@ const onLoad = () => {
 
         masterReadArray = pushToMasterReadArray(readFilejson)
 
-        $("#loading").hide()
-        $("#toolButtonGroup button").removeAttr("disabled")
-        $("#slideRight").prop("disabled", false)
-        $("#slideLeft").prop("disabled", false)
+        hideDivsFileInputs()
       })
 
     } else {
@@ -1548,8 +1545,7 @@ const onLoad = () => {
         listGiFilter = outLists[1]
         masterReadArray = pushToMasterReadArray(readFilejson)
 
-        $("#loading").hide()
-        $("#toolButtonGroup button").removeAttr("disabled")
+        hideDivsFileInputs()
       })
     })
   })
@@ -1590,10 +1586,7 @@ const onLoad = () => {
 
         masterReadArray = pushToMasterReadArray(readFilejson)
 
-        $("#loading").hide()
-        $("#toolButtonGroup button").removeAttr("disabled")
-        $("#slideRight").prop("disabled", false)
-        $("#slideLeft").prop("disabled", false)
+        hideDivsFileInputs()
       })
 
     } else {
@@ -1602,9 +1595,11 @@ const onLoad = () => {
     }
   })
 
+
   $("#cancel_infile_mash").unbind("click").bind("click", () => {
     mashJson = abortRead()
   })
+
 
   $("#sampleMash").unbind("click").bind("click", (event) => {
     event.preventDefault()
@@ -1633,10 +1628,7 @@ const onLoad = () => {
         listGiFilter = outLists[1]
         masterReadArray = pushToMasterReadArray(mashJson)
 
-        $("#loading").hide()
-        $("#toolButtonGroup button").removeAttr("disabled")
-        $("#slideRight").prop("disabled", false)
-        $("#slideLeft").prop("disabled", false)
+        hideDivsFileInputs()
       })
     })
 
@@ -1673,10 +1665,7 @@ const onLoad = () => {
 
         masterReadArray = pushToMasterReadArray(assemblyJson)
 
-        $("#loading").hide()
-        $("#toolButtonGroup button").removeAttr("disabled")
-        $("#slideRight").prop("disabled", false)
-        $("#slideLeft").prop("disabled", false)
+        hideDivsFileInputs()
 
       }, 100)
 
@@ -1715,10 +1704,7 @@ const onLoad = () => {
         listGiFilter = outputList[1]
         masterReadArray = pushToMasterReadArray(assemblyJson)
 
-        $("#loading").hide()
-        $("#toolButtonGroup button").removeAttr("disabled")
-        $("#slideRight").prop("disabled", false)
-        $("#slideLeft").prop("disabled", false)
+        hideDivsFileInputs()
 
       })
 
@@ -1756,10 +1742,7 @@ const onLoad = () => {
 
         masterReadArray = pushToMasterReadArray(consensusJson)
 
-        $("#loading").hide()
-        $("#toolButtonGroup button").removeAttr("disabled")
-        $("#slideRight").prop("disabled", false)
-        $("#slideLeft").prop("disabled", false)
+        hideDivsFileInputs()
 
       })
 
