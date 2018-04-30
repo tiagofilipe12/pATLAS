@@ -1,36 +1,34 @@
 # Download API
 
-Plasmid Atlas provides resources that other users may require and use.
-Database requests can be done through some urls similarly to what is
+pATLAS database requests can be done through URLs, similar to what is
 done in [eutils](https://www.ncbi.nlm.nih.gov/books/NBK25500/) .
 
 ## Download metadata
 
-If you have a list of accession numbers, you can provide it through:
+If you have a list of accession numbers present in pATLAS database, 
+you can download all metadata through:
 
 ```
 http://www.patlas.site/api/sendmetadata/?accession=<accession_list>
 ```
 
-This will fetch an array of jsons in which each json object contains
-all metadata available for that accession number in the pATLAS database.
+It will fetch an array of json objects in which each contains all metadata
+ available for that accession number.
 
-**Note** - Of course this doesn't accept any accession number, just
-accession numbers of plasmids contained in pATLAS, thus, that are
-available in NCBI reqseq plasmid ftp.
 
 ## Download sequences
 
-If you have a list of accession numbers, you can download their
-respective sequences by using the following API:
+The sequences of plasmids from pATLAS database can be downloaded through 
+the following API when providing a list of the accession numbers:
 
 ```
 http://www.patlas.site/api/senddownload/?accession=<accession_list>
 ```
 
-This will generate a fasta file with the accession numbers requested,
-containing the sequences associated with each accession number.
+It will generate a fasta file with the accession numbers requested and
+ the sequences associated with each accession number.
 
-**Note** - This is currently being used by pATLAS in the `download`
-button. It downloads the accession numbers associated with the current
-selection.
+**Note** - The `download` button in the top bar downloads the accession 
+numbers associated with the current selection. See [Top navigation bar](topbar.md)
+ for more information. [Download button in table](table.md#download-button)
+ also uses this api.

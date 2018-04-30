@@ -8,7 +8,16 @@ plasmid network in pATLAS.
 At the bottom and center of the page there are 6 buttons, 4 enabled
 and 2 disabled by default.
 
-### Play/Pause
+<img width="300" height="150" src="gitbook/images/overlay_buttons.png" alt="bottom Buttons"/>
+
+1. [Play/Pause button](#play-and-pause)
+2. [Area selection](#area-selection)
+3. [Zoom in](#zooming-buttons)
+4. [Zoom out](#zooming-buttons)
+5. [Slide file to left](#arrow-buttons)
+6. [Slide file to right](#arrow-buttons)
+
+### Play and Pause
 
 The leftmost button with a `play` sign allow
 the force directed layout to start computing again. By default the
@@ -29,13 +38,14 @@ and lock area selection.
 
 ### Zooming buttons
 
-At the middle of these 6 buttons there are two buttons that control the zooming level.
+At the middle of these 6 buttons there are two buttons that control the
+zooming level, a zoom in button and a zoom out button.
 
 ### Arrow buttons
 
 The two arrow buttons on the rightmost side of these 6 buttons are disabled
 by default and they are only enabled when multiple `JSON` files are loaded
-with mapping or mash screen results import features.
+through the import of mapping, mash screen or sequence results.
 
 ## Click event on nodes
 

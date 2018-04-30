@@ -8,15 +8,15 @@
 
 # Introduction
 
-Welcome to [Plasmid Atlas](http://www.patlas.site) (also known as pATLAS).
+Welcome to [pATLAS](http://www.patlas.site), the plasmid atlas.
 
 ## Briefly
 
-Plasmid Atlas is a web-base tool that empowers researchers to easily and rapidly access
+pATLAS is a web-base tool that empowers researchers to easily and rapidly access
 information related with plasmids present in `NCBI's refseq` database.
 In pATLAS each node (or circle) represents
 a plasmid and each link between two plasmids means that those two plasmids
-share around 90% average nucleotide identity.
+share over 90% average nucleotide identity.
 
 With this tool we have two main goals:
 
@@ -27,7 +27,6 @@ well as facilitate the access to that metadata.
 
 ![](gitbook/images/patlas.gif)
 
-(Too much movement? Don't worry this will be frozen when you load the page.)
 
 ## Main features
 
@@ -35,7 +34,7 @@ well as facilitate the access to that metadata.
 * Browse by resistance genes
 * Browse by plasmid families
 * Import JSON files from mapping results, mash screen results and even
-import a new sequence as a new node (e.g. an assembled plasmid or any
+import a new plasmid sequence as a new node (e.g. an assembled plasmid or any
 other Fasta representing a putative plasmid).
 * Plot data related with custom selections.
 * Download sequences for selected plasmids
