@@ -46,3 +46,13 @@ The sequence pipeline can be run with the following command:
 `nextflow run tiagofilipe12/pATLASflow --assembly --fasta "your_folder/*.fasta"`
 
 The resulting `JSON` file can then be provided to pATLAS in the **Sequence** menu.
+
+## Consensus
+
+A consensus approach between the Mash screen and Mapping results.
+To generate this `JSON` input users must run the following command:
+
+`nextflow run tiagofilipe12/pATLASflow --mapping --mash_screen --reads "your_folder/*.fastq"`
+
+Then, the following `JSON` file can then be provided to pATLAS in the
+**Consensus** menu.
