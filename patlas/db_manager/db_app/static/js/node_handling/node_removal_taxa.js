@@ -71,9 +71,17 @@ const reAddNode = (g, jsonObj, newList, newListHashes, listGiFilter) => {
     for (let i = 0; i < eachArray.length; i++) {
       // this constructs a sorted array
       // TODO try to make this array ordered in the database using MASHix.py
+
+      /**
+       * builds an array of each entry in significant links which contains
+       * accession number as 0, distance as 1, percentage of shared hashes as 2,
+       * and size of the plasmid as 3 (indexes respectively)
+       * type {Array}
+       */
       const entry = eachArray[i].replace(/[{}'u\[\] ]/g, "").split(",").slice(0).sort()
+
       const linkDistance = entry[1].split(":")[1]
-      const linkLength = entry[2].split(":")[1]
+      const linkLength = entry[3].split(":")[1]
       const linkAccession = entry[0].split(":")[1]
       const sizeRatio = Math.min(length, linkLength) / Math.max(length, linkLength)
 
@@ -316,6 +324,18 @@ const showDiv = () => {
     $("#toolButtonGroup button").attr("disabled", "disabled")
     resolve($("#loading").show())
   })
+}
+
+
+/**
+ * Function to hide divs associated with file imports. Preventing from clicking
+ * on buttons while loading new files.
+ */
+const hideDivsFileInputs = () => {
+  $("#loading").hide()
+  $("#toolButtonGroup button").removeAttr("disabled")
+  $("#slideRight").prop("disabled", false)
+  $("#slideLeft").prop("disabled", false)
 }
 
 // function to reset node colors

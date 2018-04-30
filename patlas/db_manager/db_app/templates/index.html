@@ -10,20 +10,30 @@
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='bundle.min.js') }}"></script>
   <!-- Place this tag in your head or just before your close body tag. -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
+
   <!-- custom js scripts -->
+
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/pATLASGlobals.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/abrPlusFamilies.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/circle_nodes.js') }}"></script>
+
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/visualization_functions.js') }}"></script>
+
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/dropdowns/dropdownPopulation.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/alternative_loading.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/resetDisplayTaxaBox.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/taxaRequest.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/fileSliderHandler.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/custom_colors.js') }}"></script>
-  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/circle_nodes.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node_removal_taxa.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/toggle_nodes.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/node-positioning.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/AddAllNodesLinks.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/popupControls.js') }}"></script>
-  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
+
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/advancedFilters.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/input_file_handler.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/importJsonSamples.js') }}"></script>
@@ -32,13 +42,12 @@
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/legendFunctions.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/dropdownPopulation.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
-  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/abrPlusFamilies.js') }}"></script>
+
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/makeHash.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/get-node-positions.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/overlay-graph.js') }}"></script>
-  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/sort_array_by_value.js') }}"></script>
-  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
+
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/projects/importProjects.js') }}"></script>
 
   <!--<link rel="stylesheet" type="text/css" href="patlas/db_manager/db_app/static/css/visualization_functions.css"/>-->
@@ -703,78 +712,7 @@
 </div>
 
 
-<!-- Modal for length-->
-<div id="ratioModal" class="modal fade" role="dialog" tabindex="-1">
-  <div class="modal-dialog">
-    <!-- Modal content for ratio-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Filter links by size ratio between
-          pairs of plasmids
-        </h4>
-      </div>
-      <div class="modal-body" id="modal-body-ratio">
-        <div class="col-sm-4">
-          <div class="header_taxa">Max difference (%)</div>
-          <div class="form-group" data-toggle="tooltip"
-               title="Provide a value between 100 and 0">
-            <input id="formRatio" type="text" class="form-control"
-                   placeholder="Default value = 30" value="30"/>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="header_taxa">Pick a color</div>
-          <div id="cp4"
-               class="input-group colorpicker-component"
-               title="Using color option">
-            <input type="text" class="form-control"
-                   id="cp4Form"/>
-            <span class="input-group-addon"><i></i></span>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="header_taxa">Remove links?</div>
-          <div>
-            <input data-toggle="toggle" type="checkbox"
-                   data-onstyle="success" data-offstyle="default"
-                   data-on="Remove links on"
-                   data-off="Remove links off"
-                   data-width="100%"
-                   id="toggleRatio">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-circle"
-                data-toggle="popover"
-                data-trigger="focus"
-                data-original-title="Size ratio help"
-                data-content="Here you can color or remove links based
-                        on the ratio between the size of two plasmids.
-                        <li>Max difference (%) - This cutoff sets the maximum
-                        percentage difference between two plasmids. By default the
-                        smaller plasmid need to have at least 70% of the size of the
-                        larger plasmid. All other links that does not respect this
-                        criteria will be highlighted or removed.</li>
-                        <li>Pick a color - allows the user to pick a color to
-                        highlight desired links. This is the default behavior
-                        of submit button, however if remove links is 'on', this
-                        will be ignored since links will be removed.</li>
-                        <li>Remove links? - This button allows to remove links
-                        or not. By default it is set to 'off'.</li>"
-                data-html="true"
-                aria-describedby="tooltip" style="position: absolute;
-                        left:2%;"
-                id="questionRatio">
-          <span class="glyphicon glyphicon-question-sign"></span>
-        </button>
-        <button type="submit" class="btn btn-default"
-                data-dismiss="modal" id="ratioSubmit">Submit</button>
-      </div>
-    </div>
-  </div>
-</div>
+{% include 'linkHandlersModal.html' %}
 
 <!-- Modal for taxa-->
 <div id="taxaModal" class="modal fade" role="dialog" tabindex="-1">
@@ -924,12 +862,14 @@
 <div id="wrapper" class="toggled">
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
-    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="pATLAS" style="width:100%;height:auto;"/>
-    <ul class="sidebar-nav" id="sidebar-menus">
-      <li class="sidebar-brand">
-        <!--unused space filled with img-->
-      </li>
-      <div id="collapseGroup">
+    <div style="position: relative">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="pATLAS" style="width:100%;height:auto;"/>
+    </div>
+    <ul class="sidebar-nav" id="sidebar-menus" style="position: relative;">
+      <!--<li class="sidebar-brand">-->
+        <!--&lt;!&ndash;unused space filled with img&ndash;&gt;-->
+      <!--</li>-->
+      <div id="collapseGroup" style="width: 100%;">
       <li data-toggle="collapse" data-target="#collapse1" class="collapse_groups">
         <a href="#">Browse</a>
         <div id="collapse1" class="panel-collapse collapse">
@@ -946,6 +886,11 @@
                     data-toggle="modal" data-backdrop="static"
                     data-target="#ratioModal"
                     id="ratio_filter">Size ratio
+            </button>
+            <button class="list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#hashModal"
+                    id="hashFilter">Shared sequence
             </button>
             <button class="list-group-item" href="#"
                     data-toggle="modal" data-backdrop="static"
@@ -1126,34 +1071,33 @@
         <div class="btn-group" id="toolButtonGroup">
           <button class="btn btn-default" id="go_back"
                   type="button" data-toogle="tooptip"
-                  title="Return to full tree view" style="display: none">
+                  title="Return to full tree view">
             <span class="glyphicon glyphicon-home"></span></button>
           <button class="btn btn-default" id="Re_run"
                   type="button" data-toggle="modal" data-backdrop="static"
                   data-target="#reRunModal"
-                  title="Apply filters" style="display: none">
+                  title="Apply filters">
             <span class="glyphicon glyphicon-filter"></span></button>
           <!--for now this button is disabled since it does not have funcitonality-->
           <button class="btn btn-default" id="download_ds"
                   type="button" data-toogle="tooptip"
-                  title="Download current selection" style="display: none">
+                  title="Download current selection">
             <span class="glyphicon glyphicon-save"></span></button>
           <button class="btn btn-default" id="tableShow"
                   type="button" data-toogle="tooptip"
-                  title="Table with metadata" style="display:
-                            none">
+                  title="Table with metadata">
             <span class="glyphicon glyphicon-list-alt"></span></button>
-          <button class="btn btn-default" id="heatmapButtonTab"
-                  type="button" data-toogle="tooptip"
-                  title="Heatmap for multiple import comparison" style="display:
-                            none">
-            <span class="glyphicon glyphicon-th"></span>
-          </button>
           <button class="btn btn-default"
                   data-toggle="tooltip" type="button"
                   title="Quick stats"
-                  id="plotButton" style="display: none">
+                  id="plotButton">
             <span class="glyphicon glyphicon-stats"></span>
+          </button>
+
+          <button class="btn btn-default" id="heatmapButtonTab"
+                  type="button" data-toogle="tooptip"
+                  title="Heatmap for multiple import comparison">
+            <span class="glyphicon glyphicon-th"></span>
           </button>
 
           <!--<button class="btn btn-default" id="download_img"
@@ -1166,8 +1110,8 @@
       <form class="navbar-form navbar-right">
         <input data-toggle="toggle" type="checkbox"
                data-onstyle="success" data-offstyle="default"
-               data-on="Plasmid name"
-               data-off="Accession no"
+               data-on="Plasmid"
+               data-off="Accession"
                title="Switch between plasmid and accession search"
                id="toggle-event">
         <div class="form-group" data-toggle="tooltip"
@@ -1178,10 +1122,14 @@
         <div class="btn-group">
           <button id="submitButton" type="submit" data-toggle="tooltip"
                   title="Centers at the provided accession corresponding node"
-                  class="btn btn-default">Go</button>
+                  class="btn btn-default">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
           <button id="clearButton" data-toggle="tooltip"
                   title="Remove color for all selected species" type="button"
-                  class="btn btn-info">Clear</button>
+                  class="btn btn-info">
+            <span class="glyphicon glyphicon-erase"></span>
+          </button>
         </div>
       </form>
     </div><!-- /.navbar-collapse -->

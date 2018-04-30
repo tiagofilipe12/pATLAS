@@ -5,20 +5,20 @@ try:
     from db_manager.db_app.resources import GetSpecies, GetAccession, \
         GetResistances, \
         GetPlasmidFinder, GetAccessionRes, GetAccessionPF, GetPlasmidName, \
-        GetAccessionVir, GetVirulence, GetAccessionTaxa
+        GetAccessionVir, GetVirulence, GetAccessionTaxa, GetAccessionHashes
 except ImportError:
     try:
         from db_app import app
         from db_app.resources import GetSpecies, GetAccession, \
             GetResistances, \
             GetPlasmidFinder, GetAccessionRes, GetAccessionPF, GetPlasmidName, \
-            GetAccessionVir, GetVirulence, GetAccessionTaxa
+            GetAccessionVir, GetVirulence, GetAccessionTaxa, GetAccessionHashes
     except ImportError:
         from patlas.db_manager.db_app import app
         from patlas.db_manager.db_app.resources import GetSpecies, GetAccession, \
             GetResistances, GetPlasmidFinder, GetAccessionRes, \
             GetAccessionPF, GetPlasmidName, GetAccessionVir, GetVirulence, \
-            GetAccessionTaxa
+            GetAccessionTaxa, GetAccessionHashes
 
 ## start api
 api = Api(app)
@@ -51,3 +51,6 @@ endpoint="get_accessionvir")
 
 api.add_resource(GetAccessionTaxa, "/api/getaccessiontaxa/",
 endpoint="get_accessiontaxa")
+
+api.add_resource(GetAccessionHashes, "/api/getaccessionhash/",
+endpoint="get_accessionhash")

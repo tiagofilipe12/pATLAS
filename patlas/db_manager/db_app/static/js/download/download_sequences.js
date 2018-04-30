@@ -25,6 +25,7 @@ const downloadSeq = (listAcc) => {
   downloadTypeHandler(acc)
 }
 
+
 /**
  * A function that allow to get all the accesion numbers to be downloaded
  * from colors of the nodes (green)

@@ -1,6 +1,6 @@
 /**
  * Function that enables to sort an array by its values and count the number
- * of occurences of repetitive elements in array
+ * of occurrences of repetitive elements in array
  * @param {Array} startingArray - The array to be sorted
  * @returns {Array} finalArray - The array with the sorted entries in
  * descending order
