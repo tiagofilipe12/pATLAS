@@ -30,4 +30,5 @@ It will generate a fasta file with the accession numbers requested and
 
 **Note** - The `download` button in the top bar downloads the accession 
 numbers associated with the current selection. See [Top navigation bar](topbar.md)
- for more information.
+ for more information. [Download button in table](table.md#download-button)
+ also uses this api.

@@ -1,7 +1,7 @@
 # Table of Contents
 
 * [Introduction](Introduction.md)
-* [Usage](usage.md)
+* Usage
     * [Sidebar](Sidebar.md)
         * [Browse](Browse.md)
         * [Import](Import.md)
