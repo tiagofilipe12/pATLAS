@@ -65,8 +65,12 @@ const emptyFiles = () => {
 
 /**
  * initiates vivagraph main functions
- * onLoad consists of mainly three functions: init, precompute and renderGraph
- * This function is executed after onLoadWelcome function
+ * onLoad consists of mainly two main functions: init and renderGraph
+ * This function is executed after onLoadWelcome function and it is used on
+ * actualRemoval function. This is why the events associated with all buttons
+ * are inside this function, i.e., actualRemoval removes everything within the
+ * couve-flor div and then everything needs to be re-added and all the events
+ * also need to be re-added.
  */
 const onLoad = () => {
 
