@@ -1,45 +1,56 @@
 # Top navigation bar
 
-At the top of pATLAS page there is a bar that by default has:
+This navigation bar is open by default, however some options are not
+available immediately after loading the page (don't worry, proper errors
+will raise if something goes wrong). Here is the general aspect of the
+Top navigation bar:
 
-* On the top left corner:
+<img width="900" height="150" src="gitbook/images/topbar.png" alt="topbar"/>
 
-    * The sidebar button, that will open the sidebar menu
 
-    * Two buttons to reset nodes and links, respectively.
+1. Button that opens the [side menu](Sidebar.md).
 
-* On the top right corner:
+2. Button that resets colors of all plasmids/nodes and clears every selection
+previously made.
 
-    * A slider button that enables switching the searches from accession
-    numbers to plasmid name and the other war around.
+3. Button that resets the colors of all links.
 
-    * The form where the user adds text to search for the accession
-    number or plasmid name
+4. `Home` button that will reload the initial network (nodes and links).
+However, previous selections made through the [side menu](Sidebar.md)
+will be kept, allowing the user to re-use previous selections but in
+the full matrix.
 
-    * A `Go` button that will submit the desired search.
+5. `Filter` button, which filters the current selection and displays
+all currently selected plasmids/nodes or all currently selected
+plasmids/nodes and all their linked plasmids/nodes (as well as the
+respective links). This may be particularly handy to filter queries.
 
-    * A `Clear` button that will clear the form.
+6. `Download` button, that enable users to download the currently
+selected plasmids. This sill download the queried accession numbers to
+a file named `pATLAS_download_<random_hash>.fas`. For more on this
+subject, see [Download api](download_api.md).
 
-## Additional buttons
+7. `Table` button, that opens a table with information available for the
+currently selected plasmids/nodes.
 
-When any custom user selection is made **five** new buttons will appear:
+8. `Statistics` button, that will open abar plot with the species
+present in the current selection. This will also allow access to all
+other statistic plots through the statistics popup (for further details
+see [Statistics](Statistics.md).
 
-* A `home` button, that will reload the initial network (nodes and links).
+9. `Heatmap` button will generate a heatmap that allows to compare
+multiple mapping or mash screen or even sequence results (for more
+details on how to import results go to [here](Import.md)).
 
-* A `filter` button, that will filter the current selection and display
-all currently selected nodes and all their linked nodes (and thus their
-links). This is particularly handy, when the user wants to visualize
-data that it doesn't know where it is in the whole network.
+10. A slider that enables the user to search for a specific accession
+number or plasmid name (depending on the state of the slider). Then
+users may give a name or accession number to the form on the left (11th
+button in this image).
 
-* A `download` button, that enable the user to download the selected
-plasmids. This will download the queried accession number to a file named
-`pATLAS_download_<random_hash>.fas`
+11. A search form in which users may search for a specific accession number or
+plasmid name, as mentioned before.
 
-* A `table` button, that by default will open a table with information available
-for the current selection (see [Table](table.md)) and that has a tab that
-can call an heatmap that allows to compare multiple mapping and mash
-screen `JSON` files (see [Heatmap](heatmap.md)).
+12. A button to submit the queried accession number or plasmid name
+(written in **11**).
 
-* A `quick statistics` button, that will open a bar plot with the species present
-in current selection. This will also allow access to all other statistics plots
-through the statistics popup (for further details see [Statistics](Statistics.md).
+13. A button that clears the form in **11**.

@@ -1,6 +1,9 @@
 # Sidebar menu
 
-Clicking the sidebar menu <img width="15" src="gitbook/images/sidebarmenu.png" alt="sidebar"/> will open five buttons:
+Clicking the sidebar menu <img width="15" src="gitbook/images/sidebarmenu.png" alt="sidebarmenu"/>
+will open a dropdown with six buttons:
+
+<img src="gitbook/images/sidebar.png" alt="sidebar"/>
 
 ## Browse
 
