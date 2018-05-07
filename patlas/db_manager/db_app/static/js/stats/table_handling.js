@@ -277,7 +277,7 @@ const parseReadObj = (readObjects, masterReadArray) => {
             fileEntries[i2] : parseFloat(fileEntries[i2][0])
           // checks if it is an import from Mash file
           if (fileEntries[i2].constructor !== Array) {
-            const parsedCutoff = (assemblyJson === false) ? cutoffParser() : cutoffParserSeq()
+            const parsedCutoff = cutoffParser()
             if (percValue >= parsedCutoff) {
 
               // checks if it is already in y labels (containing plasmid accessions
@@ -294,8 +294,8 @@ const parseReadObj = (readObjects, masterReadArray) => {
             }
           } else {
             // executes for mash files
-            const copyNumber = parseFloat(fileEntries[i2][1])
-            if (percValue >= cutoffParserMash() && copyNumber >= copyNumberCutoff()) {
+            const parsedCutoff = (assemblyJson === false) ? cutoffParserMash() : cutoffParserSeq()
+            if (percValue >= parsedCutoff) {
               // checks if it is already in y labels (containing plasmid accessions
               if (masterReadArray.indexOf(i2) < 0) {
                 plasmidIndex = masterReadArray.indexOf(i2)

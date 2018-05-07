@@ -74,6 +74,8 @@ const emptyFiles = () => {
  */
 const onLoad = () => {
 
+  $("#toolButtonGroup button").removeAttr("disabled")
+
   /**
    * group of variables that allow to fetch input forms min and max values to
    * live update the slider bar
@@ -1898,15 +1900,20 @@ const onLoad = () => {
   $("#heatmapButtonTab").unbind("click").bind("click", () => {
     $("#heatmapModal").modal()
     // transform internal accession numbers to ncbi acceptable accesions
-    if (readFilejson !== false) {
+
+    // if (assemblyJson !== false) {
+
+      // heatmapMaker(masterReadArray, assemblyJson)
+      // readFilejson = false
+      // mashJson = false
+
+    // } else if (readFilejson !== false) {
+
       heatmapMaker(masterReadArray, readFilejson)
-      mashJson = false
-      assemblyJson = false
-    } else if (assemblyJson !== false) {
-      heatmapMaker(masterReadArray, assemblyJson)
-      readFilejson = false
-      mashJson = false
-    }
+    //   mashJson = false
+    //   assemblyJson = false
+    //
+    // }
   })
 
 
