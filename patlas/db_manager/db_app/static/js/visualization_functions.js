@@ -1815,6 +1815,7 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
 
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", true)
+    $("#fileNameDiv").hide()
 
     hideAllOtherPlots()
   })
