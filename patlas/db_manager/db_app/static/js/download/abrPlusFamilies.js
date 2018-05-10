@@ -17,12 +17,35 @@ const makeCardClickable = (string) => {
     string.replace("ARO:", "") + "' target='_blank'>" + string + "</a>"
 }
 
+
+const generatePlotLengthData = (queryArrayRange) => {
+
+  let data = []
+
+  for (const entry of queryArrayRange) {
+    data.push(
+      {
+        x: parseFloat(entry.range[0]),
+        x2: parseFloat(entry.range[1]),
+        y: 0
+      }
+    )
+  }
+
+  return data
+}
+
+
 const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
                           queryArrayCardARO, queryArrayCardCoverage,
                           queryArrayCardIdentity, queryArrayCardRange,
                           queryArrayResfinderGenes, queryArrayResfinderAccession,
                           queryArrayResfinderCoverage, queryArrayResfinderIdentity,
                           queryArrayResfinderRange) => {
+
+  let lenghtData = []
+  console.log("test: ", parseFloat($("#lengthPop").html().split("</span>")[1]))
+
   $("#cardGenePopSpan").html(queryArrayCardGenes.toString().replace(/["]+/g, ""))
   $("#cardGenbankPopSpan").html(queryArrayCardAccession.toString())
   $("#cardAroPopSpan").html(queryArrayCardARO.toString())
@@ -35,6 +58,45 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
   $("#resfinderCoveragePopSpan").html(queryArrayResfinderCoverage.toString())
   $("#resfinderIdPopSpan").html(queryArrayResfinderIdentity.toString())
   $("#resfinderRangePopSpan").html(queryArrayResfinderRange.toString())
+
+  const cardLenghtData = generatePlotLengthData(queryArrayCardRange)
+
+  Highcharts.chart('resistancePopupPlot', {
+    chart: {
+      type: 'xrange'
+    },
+    title: {
+      text: 'Resistance genes'
+    },
+    xAxis: {
+      // type: 'datetime'
+      min: 0,
+      max: parseFloat($("#lengthPop").html().split("</span>")[1])
+    },
+    yAxis: {
+      title: {
+        text: ''
+      },
+      categories: ['CARD', 'ResFinder'],
+      reversed: true,
+      labels: {
+        rotation: 270
+      },
+    },
+    series: [{
+      showInLegend: false,
+      // name: 'Project 1',
+      // pointPadding: 0,
+      // groupPadding: 0,
+      borderColor: 'gray',
+      // pointWidth: 20,
+      data: cardLenghtData,
+      dataLabels: {
+        enabled: true
+      }
+    }]
+
+  });
 }
 
 // this function is intended to use in single query instances such as
@@ -48,7 +110,7 @@ const resGetter = (nodeId) => {
     const queryArrayCardAccession = []
     const queryArrayCardCoverage = []
     const queryArrayCardIdentity = []
-    const queryArrayCardRange = []
+    let queryArrayCardRange = []
     const queryArrayCardARO = []
 
     // set of arrays for resfinder db
@@ -56,7 +118,7 @@ const resGetter = (nodeId) => {
     const queryArrayResfinderAccession = []
     const queryArrayResfinderCoverage = []
     const queryArrayResfinderIdentity = []
-    const queryArrayResfinderRange = []
+    let queryArrayResfinderRange = []
 
     try {
       // totalLength array corresponds to gene names
@@ -75,8 +137,9 @@ const resGetter = (nodeId) => {
       for (const i in totalLenght) {
         if ({}.hasOwnProperty.call(totalLenght, i)) {
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
-            rangeList[i].replace(" ", "").replace(", ", ":") :
-            (rangeList[i] + "]").replace(", ", ":")
+            rangeList[i].replace(/[\[\] ]/g, "").split(",") :
+            (rangeList[i] + "]").replace(/[\[\] ]/g, "").split(",")
+
           if (databaseList[i].indexOf("card") > -1) {
             num = num + 1
             const numString = num.toString()
@@ -87,8 +150,13 @@ const resGetter = (nodeId) => {
               makeItClickable(acessionList[i].split(":")[0]))
             queryArrayCardCoverage.push(" " + numString + ": " + coverageList[i])
             queryArrayCardIdentity.push(" " + numString + ": " + identityList[i])
-            queryArrayCardRange.push(" " + numString + ": " + rangeEntry)
+            queryArrayCardRange.push( {
+                "range": rangeEntry
+              }
+            )
             queryArrayCardARO.push(" " + numString + ": " +  makeCardClickable(aroList[i]))
+
+
           } else {
             num2 = num2 + 1
             const numString2 = num2.toString()
@@ -97,7 +165,10 @@ const resGetter = (nodeId) => {
               makeItClickable(acessionList[i]))
             queryArrayResfinderCoverage.push(" " + numString2 + ": " + coverageList[i])
             queryArrayResfinderIdentity.push(" " + numString2 + ": " + identityList[i])
-            queryArrayResfinderRange.push(" " + numString2 + ": " + rangeEntry)
+            queryArrayResfinderRange.push( {
+                "range": rangeEntry
+              }
+            )
           }
         }
       }
