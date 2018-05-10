@@ -108,8 +108,9 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
   let legendInst = false // by default legend is off
-  let storeLis  // initiates storeLis to store the legend entries and colors
+  let storeLis = ""  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
+
   const cardQuery = document.getElementById("p_Card").innerHTML,
     resfinderQuery = document.getElementById("p_Resfinder").innerHTML
 
@@ -161,17 +162,17 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  if (legendInst === true) {
+  // if (legendInst === true) {
 
-    $("#res_label").show()
-    $("#colorLegendBoxRes").empty()
-      .append(
-        storeLis +
-        "<li class='centeredList'><button class='jscolor btn btn-default'" +
-        " style='background-color:#666370' ></button>&nbsp;unselected</li>"
-      )
-      .show()
-  }
+  $("#res_label").show()
+  await $("#colorLegendBoxRes").empty()
+    .append(
+      storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+    )
+    .show()
+  // }
   return legendInst
 }
 
@@ -184,7 +185,7 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   // now processes the current selection
   const pfQuery = document.getElementById("p_Plasmidfinder").innerHTML
 
-  let selectedPf = pfQuery.replace("Plasmidfinder: ", "").split(",").filter(Boolean)
+  let selectedPf = pfQuery.replace("Plasmidfinder:", "").split(",").filter(Boolean)
 
   selectedPf = removeFirstCharFromArray(selectedPf)
 
@@ -230,16 +231,16 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  if (legendInst === true) {
-    $("#pf_label").show()
-    $("#colorLegendBoxPf").empty()
-      .append(
-        storeLis +
-        "<li class='centeredList'><button class='jscolor btn btn-default'" +
-        " style='background-color:#666370' ></button>&nbsp;unselected</li>"
-      )
-      .show()
-  }
+  // if (legendInst === true) {
+  $("#pf_label").show()
+  await $("#colorLegendBoxPf").empty()
+    .append(
+      storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+    )
+    .show()
+  // }
   return legendInst
 }
 
@@ -251,7 +252,7 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const pfQuery = document.getElementById("p_Virulence").innerHTML
-  let selectedVir = pfQuery.replace("Virulence: ", "").split(",").filter(Boolean)
+  let selectedVir = pfQuery.replace("Virulence:", "").split(",").filter(Boolean)
 
   selectedVir = removeFirstCharFromArray(selectedVir)
 
@@ -296,15 +297,15 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   }
   // if legend is requested then execute this!
   // shows legend
-  if (legendInst === true) {
-    $("#vir_label").show()
-    $("#colorLegendBoxVir").empty()
-      .append(
-        storeLis +
-        "<li class='centeredList'><button class='jscolor btn btn-default'" +
-        " style='background-color:#666370' ></button>&nbsp;unselected</li>"
-      )
-      .show()
-  }
+  // if (legendInst === true) {
+  $("#vir_label").show()
+  await $("#colorLegendBoxVir").empty()
+    .append(
+      storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+    )
+    .show()
+  // }
   return legendInst
 }

@@ -888,8 +888,6 @@ const onLoad = () => {
     hideAllOtherPlots()
     areaSelection = false
 
-    $("#pf_label").show()
-
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
     // empties taxa and plasmidfinder legend
@@ -982,8 +980,6 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
 
     hideAllOtherPlots()
-
-    $("#res_label").show()
 
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
@@ -1079,8 +1075,6 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-
-    $("#vir_label").show()
 
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
@@ -1344,8 +1338,6 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-
-    $("#taxa_label").show()
 
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
