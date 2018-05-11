@@ -845,3 +845,7 @@ Careful when using this in other popovers in the future*/
     border-radius: 5px;
     box-shadow: 1px 2px 5px #333;
 }
+
+#resistancePopupPlot{
+    height: 200px;
+}

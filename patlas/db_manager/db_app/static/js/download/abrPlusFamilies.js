@@ -18,7 +18,7 @@ const makeCardClickable = (string) => {
 }
 
 
-const generatePlotLengthData = (queryArrayRange) => {
+const generatePlotLengthData = (queryArrayRange, idx) => {
 
   let data = []
 
@@ -27,7 +27,7 @@ const generatePlotLengthData = (queryArrayRange) => {
       {
         x: parseFloat(entry.range[0]),
         x2: parseFloat(entry.range[1]),
-        y: 0
+        y: idx
       }
     )
   }
@@ -44,7 +44,6 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
                           queryArrayResfinderRange) => {
 
   let lenghtData = []
-  console.log("test: ", parseFloat($("#lengthPop").html().split("</span>")[1]))
 
   $("#cardGenePopSpan").html(queryArrayCardGenes.toString().replace(/["]+/g, ""))
   $("#cardGenbankPopSpan").html(queryArrayCardAccession.toString())
@@ -59,7 +58,10 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
   $("#resfinderIdPopSpan").html(queryArrayResfinderIdentity.toString())
   $("#resfinderRangePopSpan").html(queryArrayResfinderRange.toString())
 
-  const cardLenghtData = generatePlotLengthData(queryArrayCardRange)
+  const cardLenghtData = generatePlotLengthData(queryArrayCardRange, 0)
+  const resFinderLengthData = generatePlotLengthData(queryArrayResfinderRange, 1)
+
+  lenghtData = cardLenghtData.concat(resFinderLengthData)
 
   Highcharts.chart('resistancePopupPlot', {
     chart: {
@@ -69,8 +71,8 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
       text: 'Resistance genes'
     },
     xAxis: {
-      // type: 'datetime'
       min: 0,
+      // gets sequence length from this div
       max: parseFloat($("#lengthPop").html().split("</span>")[1])
     },
     yAxis: {
@@ -85,18 +87,14 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
     },
     series: [{
       showInLegend: false,
-      // name: 'Project 1',
-      // pointPadding: 0,
-      // groupPadding: 0,
       borderColor: 'gray',
-      // pointWidth: 20,
-      data: cardLenghtData,
+      pointWidth: 30,
+      data: lenghtData,
       dataLabels: {
         enabled: true
       }
     }]
-
-  });
+  })
 }
 
 // this function is intended to use in single query instances such as
