@@ -18,6 +18,15 @@ const makeCardClickable = (string) => {
 }
 
 
+/**
+ * Function that parses the queryArrays with ranges
+ * @param {Array} queryArrayRange - The array that contains the objects for each
+ * queried annotation.
+ * @param {Number} idx - The series index to pass, in the case the plot have more
+ * than one annotation type.
+ * @returns {Array} - returns an array that can be merged with other similar
+ * array or fed to the highcharts series.data
+ */
 const generatePlotLengthData = (queryArrayRange, idx) => {
 
   let data = []
@@ -29,13 +38,32 @@ const generatePlotLengthData = (queryArrayRange, idx) => {
         {
           x: parseFloat(entry.range[0]),
           x2: parseFloat(entry.range[1]),
-          y: idx
+          y: idx,
+          name: entry.genes
         }
       )
     }
   }
 
   return data
+
+}
+
+
+/**
+ * Function that parses the query range array and make it available to display
+ * in html div
+ * @param {Array} queryArrayRange - The array to be queried and converted into
+ * a string
+ * @returns {String} - returns a string capable of being read by the jquery
+ * html() function.
+ */
+const getRangeToString = (queryArrayRange) => {
+
+  return queryArrayRange.map( (e, index) => {
+    // returns per entry something like "1: [1000:2000]"
+    return `${index + 1}: [${e.range.toString().replace(",", ":")}]`
+  }).join(", ")
 
 }
 
@@ -54,13 +82,13 @@ const resPopupPopulate = async (queryArrayCardGenes, queryArrayCardAccession,
   $("#cardAroPopSpan").html(queryArrayCardARO.toString())
   $("#cardCoveragePopSpan").html(queryArrayCardCoverage.toString())
   $("#cardIdPopSpan").html(queryArrayCardIdentity.toString())
-  $("#cardRangePopSpan").html(queryArrayCardRange.toString())
+  $("#cardRangePopSpan").html(getRangeToString(queryArrayCardRange))
 
   $("#resfinderGenePopSpan").html(queryArrayResfinderGenes.toString().replace(/["]+/g, ""))
   $("#resfinderGenbankPopSpan").html(queryArrayResfinderAccession.toString())
   $("#resfinderCoveragePopSpan").html(queryArrayResfinderCoverage.toString())
   $("#resfinderIdPopSpan").html(queryArrayResfinderIdentity.toString())
-  $("#resfinderRangePopSpan").html(queryArrayResfinderRange.toString())
+  $("#resfinderRangePopSpan").html(getRangeToString(queryArrayResfinderRange))
 
   const cardLenghtData = await generatePlotLengthData(queryArrayCardRange, 0)
   const resFinderLengthData = await generatePlotLengthData(queryArrayResfinderRange, 1)
@@ -98,6 +126,9 @@ const resPopupPopulate = async (queryArrayCardGenes, queryArrayCardAccession,
       pointWidth: 30,
       data: lenghtData,
       dataLabels: {
+        formatter() {
+          return this.point.name
+        },
         enabled: true
       }
     }],
@@ -159,7 +190,8 @@ const resGetter = (nodeId) => {
             queryArrayCardCoverage.push(" " + numString + ": " + coverageList[i])
             queryArrayCardIdentity.push(" " + numString + ": " + identityList[i])
             queryArrayCardRange.push( {
-                "range": rangeEntry
+                "range": rangeEntry,
+                "genes": totalLenght[i]
               }
             )
             queryArrayCardARO.push(" " + numString + ": " +  makeCardClickable(aroList[i]))
@@ -174,7 +206,8 @@ const resGetter = (nodeId) => {
             queryArrayResfinderCoverage.push(" " + numString2 + ": " + coverageList[i])
             queryArrayResfinderIdentity.push(" " + numString2 + ": " + identityList[i])
             queryArrayResfinderRange.push( {
-                "range": rangeEntry
+                "range": rangeEntry,
+                "genes": totalLenght[i]
               }
             )
           }
