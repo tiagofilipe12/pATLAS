@@ -43,7 +43,7 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
                           queryArrayResfinderCoverage, queryArrayResfinderIdentity,
                           queryArrayResfinderRange) => {
 
-  let lenghtData = []
+  $("#resistancePopupPlot").empty()
 
   $("#cardGenePopSpan").html(queryArrayCardGenes.toString().replace(/["]+/g, ""))
   $("#cardGenbankPopSpan").html(queryArrayCardAccession.toString())
@@ -61,7 +61,7 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
   const cardLenghtData = generatePlotLengthData(queryArrayCardRange, 0)
   const resFinderLengthData = generatePlotLengthData(queryArrayResfinderRange, 1)
 
-  lenghtData = cardLenghtData.concat(resFinderLengthData)
+  const lenghtData = cardLenghtData.concat(resFinderLengthData)
 
   Highcharts.chart('resistancePopupPlot', {
     chart: {
