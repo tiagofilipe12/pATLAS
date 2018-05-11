@@ -22,21 +22,25 @@ const generatePlotLengthData = (queryArrayRange, idx) => {
 
   let data = []
 
-  for (const entry of queryArrayRange) {
-    data.push(
-      {
-        x: parseFloat(entry.range[0]),
-        x2: parseFloat(entry.range[1]),
-        y: idx
-      }
-    )
+  if (queryArrayRange !== "N/A") {
+
+    for (const entry of queryArrayRange) {
+      data.push(
+        {
+          x: parseFloat(entry.range[0]),
+          x2: parseFloat(entry.range[1]),
+          y: idx
+        }
+      )
+    }
   }
 
   return data
+
 }
 
 
-const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
+const resPopupPopulate = async (queryArrayCardGenes, queryArrayCardAccession,
                           queryArrayCardARO, queryArrayCardCoverage,
                           queryArrayCardIdentity, queryArrayCardRange,
                           queryArrayResfinderGenes, queryArrayResfinderAccession,
@@ -58,14 +62,17 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
   $("#resfinderIdPopSpan").html(queryArrayResfinderIdentity.toString())
   $("#resfinderRangePopSpan").html(queryArrayResfinderRange.toString())
 
-  const cardLenghtData = generatePlotLengthData(queryArrayCardRange, 0)
-  const resFinderLengthData = generatePlotLengthData(queryArrayResfinderRange, 1)
+  const cardLenghtData = await generatePlotLengthData(queryArrayCardRange, 0)
+  const resFinderLengthData = await generatePlotLengthData(queryArrayResfinderRange, 1)
 
   const lenghtData = cardLenghtData.concat(resFinderLengthData)
 
   Highcharts.chart('resistancePopupPlot', {
     chart: {
-      type: 'xrange'
+      type: 'xrange',
+      zoomType: "x",
+      panKey: "ctrl",   //key used to navigate the graph when zoomed
+      panning: true     // allow panning of the graph when zoomed
     },
     title: {
       text: 'Resistance genes'
@@ -93,7 +100,10 @@ const resPopupPopulate = (queryArrayCardGenes, queryArrayCardAccession,
       dataLabels: {
         enabled: true
       }
-    }]
+    }],
+    credits: {
+      enabled: false
+    }
   })
 }
 
