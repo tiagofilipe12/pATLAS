@@ -75,18 +75,10 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
  * when there is no nodes queried before and the popup is closed. When,
  * there is already a popup set, this will have stored a string with the
  * accession number of the previously stored node.
- * @param {Boolean} clickedPopupButtonCard - checks if Card button was
- * previously clicked
- * @param {Boolean} clickedPopupButtonRes - checks if ResFinder section of
- * the popup was previously set
- * @param {Boolean} clickedPopupButtonFamily - checks if plasmid finder
- * button was previosuly opened
  * @returns {String} currentQueryNode - returns currentQueryNode to be
  * stored globally for future executions of this functions
  */
-const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
-                           clickedPopupButtonCard, clickedPopupButtonRes,
-                           clickedPopupButtonFamily) => {
+const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
 
   const queriedNode = g.forEachNode((node) => {
     const nodeUI = graphics.getNodeUI(node.id)
@@ -98,13 +90,6 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
       renderer.moveTo(x, y)
       nodeUI.backupColor = nodeUI.color
       nodeUI.color = 0x900C3F
-      // this sets the popup internal buttons to allow them to run,
-      // otherwise they won"t run because its own function returns this
-      // variable to false, preventing the popup to expand with its
-      // respective functions
-      clickedPopupButtonCard = true
-      clickedPopupButtonRes = true
-      clickedPopupButtonFamily = true
       // requests table for sequences metadata
       requestPlasmidTable(node, setupPopupDisplay)
       // also needs to reset previous node to its original color
@@ -143,24 +128,14 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode,
  * when there is no nodes queried before and the popup is closed. When,
  * there is already a popup set, this will have stored a string with the
  * accession number of the previously stored node.
- * @param {Boolean} clickedPopupButtonCard - checks if Card button was
- * previously clicked
- * @param {Boolean} clickedPopupButtonRes - checks if ResFinder section of
- * the popup was previously set
- * @param {Boolean} clickedPopupButtonFamily - checks if plasmid finder
- * button was previously opened
  * @returns {Promise<String|*>} currentQueryNode - returns currentQueryNode to be
  * stored globally for future executions of this functions
  */
-const toggleOnSearch = async (g, graphics, renderer, currentQueryNode,
-                              clickedPopupButtonCard, clickedPopupButtonRes,
-                              clickedPopupButtonFamily) => {
+const toggleOnSearch = async (g, graphics, renderer, currentQueryNode) => {
   const query = $("#formValueId").val()
   // await allows to wait for the response from the query
   // result is an accession get from db
   const result = await $.get("api/getplasmidname/", {"plasmid_name": query})
-  currentQueryNode = await centerToggleQuery(g, graphics, renderer, result.plasmid_id, currentQueryNode,
-    clickedPopupButtonCard, clickedPopupButtonRes,
-    clickedPopupButtonFamily)
+  currentQueryNode = await centerToggleQuery(g, graphics, renderer, result.plasmid_id, currentQueryNode)
   return currentQueryNode
 }

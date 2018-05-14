@@ -287,6 +287,9 @@ const reGetListGi = (g, graphics) => {
  * re_run is triggered and true if go_back is triggered
  */
 const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
+
+  $("#closePop").click()
+
   // checks for area selection
   if (forgetListGiFilter === false) {
     listGiFilter = (listGiFilter.length === 0) ?

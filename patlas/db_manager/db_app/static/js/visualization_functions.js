@@ -23,7 +23,8 @@ bootstrapTableList, setupPopupDisplay, legendIndex, legendSliderControler,
 typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
 clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
-clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs*/
+clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
+xRangePlotList*/
 
 
 /**
@@ -786,6 +787,11 @@ const onLoad = () => {
 
   //* * mouse click on nodes **//
   events.click( (node, e) => {
+
+    // when clicking in a new node, the first thing to assure is that is closes
+    // the previous instance of the popup
+    $("#closePop").click()
+
     pageReRun = false
     $("#resTab").removeClass("active")
     $("#resButton").removeClass("active")
@@ -821,9 +827,9 @@ const onLoad = () => {
     // otherwise they won't run because its own function returns this
     // variable to false, preventing the popup to expand with its
     // respective functions
-    clickedPopupButtonCard = true
-    clickedPopupButtonRes = true
-    clickedPopupButtonFamily = true
+    // clickedPopupButtonCard = true
+    // clickedPopupButtonRes = true
+    // clickedPopupButtonFamily = true
 
     // requests table for sequences metadata
     requestPlasmidTable(node, setupPopupDisplay)
@@ -1985,6 +1991,8 @@ const onLoad = () => {
     $("#virTab").removeClass("active")
     $("#virButton").removeClass("active")
 
+    $("#closePop").click()
+
     event.preventDefault()    // prevents page from reloading
     if (toggleStatus === false) {
       const formvalueId = $("#formValueId").val()
@@ -1992,28 +2000,17 @@ const onLoad = () => {
         formvalueId.replace(".", "_")
 
       currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
-        currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-        clickedPopupButtonFamily)
+        currentQueryNode)
     } else {
       // executed for plasmid search
-      toggleOnSearch(g, graphics, renderer,
-        currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-        clickedPopupButtonFamily)
+      toggleOnSearch(g, graphics, renderer, currentQueryNode)
       // then is here used to parse the results from async/await function
         .then( (result) => {
           currentQueryNode = result
         })
     }
-    // this sets the popup internal buttons to allow them to run,
-    // otherwise they won't run because its own function returns this
-    // variable to false, preventing the popup to expand with its
-    // respective functions
-    clickedPopupButtonCard = true
-    clickedPopupButtonRes = true
-    clickedPopupButtonFamily = true
-    clickedPopupButtonVir = true
-  })
 
+  })
 
   /**
    * Button that clears the form to search for plasmid name or accession number.
@@ -2037,6 +2034,14 @@ const onLoad = () => {
     $("#pfTab").removeClass("active")
     $("#plasmidButton").removeClass("active")
     $("#popup_description").hide()
+
+    clickedPopupButtonCard = false
+    clickedPopupButtonFamily = false
+    clickedPopupButtonVir = false
+
+    // when the popup is closed the plot with the annotations should be hidden
+    $("#resistancePopupPlot").hide()
+    xRangePlotList = []
 
     if (currentQueryNode !== false) {
       graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
@@ -2094,7 +2099,9 @@ const onLoad = () => {
    * Button that controls the display of the resistance information in the popup
    */
   $("#resButton").unbind("click").bind("click", () => {
-    clickedPopupButtonCard = resGetter(currentQueryNode)
+    if (clickedPopupButtonCard === false) {
+      clickedPopupButtonCard = resGetter(currentQueryNode)
+    }
   })
 
 
@@ -2103,7 +2110,9 @@ const onLoad = () => {
    * in the popup
    */
   $("#plasmidButton").unbind("click").bind("click", () => {
-    clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
+    if (clickedPopupButtonFamily === false) {
+      clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
+    }
   })
 
 
@@ -2111,7 +2120,9 @@ const onLoad = () => {
    * Button that controls the display of the virulence information in the popup
    */
   $("#virButton").unbind("click").bind("click", () => {
-    clickedPopupButtonVir = virulenceGetter(currentQueryNode)
+    if (clickedPopupButtonVir === false) {
+      clickedPopupButtonVir = virulenceGetter(currentQueryNode)
+    }
   })
 
 
