@@ -23,7 +23,8 @@ bootstrapTableList, setupPopupDisplay, legendIndex, legendSliderControler,
 typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
 clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
-clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs*/
+clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
+xRangePlotList*/
 
 
 /**
@@ -786,6 +787,11 @@ const onLoad = () => {
 
   //* * mouse click on nodes **//
   events.click( (node, e) => {
+
+    // when clicking in a new node, the first thing to assure is that is closes
+    // the previous instance of the popup
+    $("#closePop").click()
+
     pageReRun = false
     $("#resTab").removeClass("active")
     $("#resButton").removeClass("active")
@@ -2040,6 +2046,7 @@ const onLoad = () => {
 
     // when the popup is closed the plot with the annotations should be hidden
     $("#resistancePopupPlot").hide()
+    xRangePlotList = []
 
     if (currentQueryNode !== false) {
       graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor

@@ -847,6 +847,6 @@ Careful when using this in other popovers in the future*/
 }
 
 #resistancePopupPlot{
-    height: 200px;
+    height: 300px;
     display: none;
 }

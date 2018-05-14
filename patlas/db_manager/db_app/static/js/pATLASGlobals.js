@@ -190,3 +190,5 @@ let getLinkedNodes = false // a boolean variable to control the Re_run behavior
 let freezeShift = true
 
 let slider
+
+let xRangePlotList = []

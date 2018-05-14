@@ -1,3 +1,5 @@
+/*globals xRangePlotList*/
+
 // function to turn string into a clickable link ... useful for accession
 // numbers
 const makeItClickable = (string) => {
@@ -103,7 +105,7 @@ const populateHighchartXrange = (lenghtData) => {
       title: {
         text: ''
       },
-      categories: ["CARD", "ResFinder", "PlasmidFinder", "VFDB"],
+      categories: ["CARD", "ResFinder", "PFinder", "VFDB"],
       reversed: true,
       labels: {
         rotation: 270
@@ -136,8 +138,6 @@ const resPopupPopulate = async (queryArrayCardGenes, queryArrayCardAccession,
                           queryArrayResfinderCoverage, queryArrayResfinderIdentity,
                           queryArrayResfinderRange) => {
 
-  $("#resistancePopupPlot").empty()
-
   $("#cardGenePopSpan").html(queryArrayCardGenes.toString().replace(/["]+/g, ""))
   $("#cardGenbankPopSpan").html(queryArrayCardAccession.toString())
   $("#cardAroPopSpan").html(queryArrayCardARO.toString())
@@ -154,9 +154,9 @@ const resPopupPopulate = async (queryArrayCardGenes, queryArrayCardAccession,
   const cardLenghtData = await generatePlotLengthData(queryArrayCardRange, 0)
   const resFinderLengthData = await generatePlotLengthData(queryArrayResfinderRange, 1)
 
-  const lenghtData = cardLenghtData.concat(resFinderLengthData)
+  xRangePlotList = xRangePlotList.concat(resFinderLengthData, cardLenghtData)
 
-  await populateHighchartXrange(lenghtData)
+  await populateHighchartXrange(xRangePlotList)
 
   $("#resistancePopupPlot").show()
 
@@ -173,7 +173,7 @@ const resGetter = (nodeId) => {
     const queryArrayCardAccession = []
     const queryArrayCardCoverage = []
     const queryArrayCardIdentity = []
-    let queryArrayCardRange = []
+    const queryArrayCardRange = []
     const queryArrayCardARO = []
 
     // set of arrays for resfinder db
@@ -265,7 +265,7 @@ const resGetter = (nodeId) => {
   return false
 }
 
-const pfPopupPopulate = (queryArrayPFGenes, queryArrayPFAccession,
+const pfPopupPopulate = async (queryArrayPFGenes, queryArrayPFAccession,
                          queryArrayPFCoverage, queryArrayPFIdentity,
                          queryArrayPFRange) => {
 
@@ -273,13 +273,23 @@ const pfPopupPopulate = (queryArrayPFGenes, queryArrayPFAccession,
   $("#pfGenbankPopSpan").html(queryArrayPFAccession.toString())
   $("#pfCoveragePopSpan").html(queryArrayPFCoverage.toString())
   $("#pfIdentityPopSpan").html(queryArrayPFIdentity.toString())
-  $("#pfRangePopSpan").html(queryArrayPFRange.toString())
+  $("#pfRangePopSpan").html(getRangeToString(queryArrayPFRange))
+
+
+  const pfFinderLengthData = await generatePlotLengthData(queryArrayPFRange, 2)
+
+  xRangePlotList = xRangePlotList.concat(pfFinderLengthData)
+
+  await populateHighchartXrange(xRangePlotList)
+
+  $("#resistancePopupPlot").show()
 }
 
 const plasmidFamilyGetter = (nodeId) => {
   // here in this function there is no need to parse the
   // data.json_entry.database entry since it is a single database
   $.post("api/getplasmidfinder/", {"accession": JSON.stringify([nodeId])}, (data, status) => {
+
     // first we need to gather all information in a format that may be
     // passed to jquery to append to popup_descriptions div
     // set of arrays for card db
@@ -300,8 +310,9 @@ const plasmidFamilyGetter = (nodeId) => {
         if ({}.hasOwnProperty.call(totalLength, i)) {
           const num = (parseFloat(i) + 1).toString()
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
-            rangeList[i].replace(" ", "").replace(",", ":") :
-            (rangeList[i] + "]").replace(", ", ":")
+            rangeList[i].replace(/[\[\] ]/g, "").split(",") :
+            (rangeList[i] + "]").replace(/[\[\] ]/g, "").split(",")
+
           queryArrayPFGenes.push(" " + num + ": " + totalLength[i])
           // card retrieves some odd numbers after the accession... that
           // prevent to form a linkable item to genbank
@@ -309,7 +320,12 @@ const plasmidFamilyGetter = (nodeId) => {
             makeItClickable(accessionList[i].split(":")[0]))
           queryArrayPFCoverage.push(" " + num + ": " + coverageList[i])
           queryArrayPFIdentity.push(" " + num + ": " + identityList[i])
-          queryArrayPFRange.push(" " + num + ": " + rangeEntry)
+          queryArrayPFRange.push( {
+              "range": rangeEntry,
+              "genes": totalLength[i]
+            }
+          )
+
         }
       }
       // then actually add it to popup_description div
@@ -329,7 +345,7 @@ const plasmidFamilyGetter = (nodeId) => {
   })
 }
 
-const virPopupPopulate = (queryArrayVirGenes, queryArrayVirAccession,
+const virPopupPopulate = async (queryArrayVirGenes, queryArrayVirAccession,
                          queryArrayVirCoverage, queryArrayVirIdentity,
                          queryArrayVirRange) => {
 
@@ -337,7 +353,16 @@ const virPopupPopulate = (queryArrayVirGenes, queryArrayVirAccession,
   $("#virGenbankPopSpan").html(queryArrayVirAccession.toString())
   $("#virCoveragePopSpan").html(queryArrayVirCoverage.toString())
   $("#virIdentityPopSpan").html(queryArrayVirIdentity.toString())
-  $("#virRangePopSpan").html(queryArrayVirRange.toString())
+  $("#virRangePopSpan").html(getRangeToString(queryArrayVirRange))
+
+  const virulenceLengthData = await generatePlotLengthData(queryArrayVirRange, 3)
+
+  xRangePlotList = xRangePlotList.concat(virulenceLengthData)
+
+  await populateHighchartXrange(xRangePlotList)
+
+  $("#resistancePopupPlot").show()
+
 }
 
 const virulenceGetter = (nodeId) => {
@@ -364,8 +389,8 @@ const virulenceGetter = (nodeId) => {
         if ({}.hasOwnProperty.call(totalLength, i)) {
           const num = (parseFloat(i) + 1).toString()
           const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
-            rangeList[i].replace(" ", "").replace(",", ":") :
-            (rangeList[i] + "]").replace(", ", ":")
+            rangeList[i].replace(/[\[\] ]/g, "").split(",") :
+            (rangeList[i] + "]").replace(/[\[\] ]/g, "").split(",")
           queryArrayVirGenes.push(" " + num + ": " + totalLength[i])
           // card retrieves some odd numbers after the accession... that
           // prevent to form a linkable item to genbank
@@ -373,7 +398,12 @@ const virulenceGetter = (nodeId) => {
             makeItClickable(accessionList[i].split(":")[0]))
           queryArrayVirCoverage.push(" " + num + ": " + coverageList[i])
           queryArrayVirIdentity.push(" " + num + ": " + identityList[i])
-          queryArrayVirRange.push(" " + num + ": " + rangeEntry)
+          queryArrayVirRange.push(
+            {
+              "range": rangeEntry,
+              "genes": totalLength[i]
+            }
+          )
         }
       }
       // then actually add it to popup_description div
