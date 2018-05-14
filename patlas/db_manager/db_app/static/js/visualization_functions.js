@@ -1991,6 +1991,8 @@ const onLoad = () => {
     $("#virTab").removeClass("active")
     $("#virButton").removeClass("active")
 
+    $("#closePop").click()
+
     event.preventDefault()    // prevents page from reloading
     if (toggleStatus === false) {
       const formvalueId = $("#formValueId").val()
@@ -2007,16 +2009,8 @@ const onLoad = () => {
           currentQueryNode = result
         })
     }
-    // this sets the popup internal buttons to allow them to run,
-    // otherwise they won't run because its own function returns this
-    // variable to false, preventing the popup to expand with its
-    // respective functions
-    // clickedPopupButtonCard = true
-    // clickedPopupButtonRes = true
-    // clickedPopupButtonFamily = true
-    // clickedPopupButtonVir = true
-  })
 
+  })
 
   /**
    * Button that clears the form to search for plasmid name or accession number.

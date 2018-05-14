@@ -316,6 +316,7 @@ const parseReadObj = (readObjects, masterReadArray) => {
   return [xCategories, positionsMap, valuesArray]
 }
 
+
 /**
  * Function to construct an heatmap that allows users to compare multiple
  * samples in a single and effective manner
@@ -372,7 +373,8 @@ const heatmapMaker = (masterReadArray, readObjects) => {
         return "<b>" + this.series.xAxis.categories[this.point.x] + "</b>" +
           " file" + " <br><b>" + this.point.value +
           "</b> % coverage <br><b>" +
-          this.series.yAxis.categories[this.point.y] + "</b>"
+          "Accession number: " + this.series.yAxis.categories[this.point.y] +
+          "</b>"
       }
     },
     series: [{
@@ -382,6 +384,14 @@ const heatmapMaker = (masterReadArray, readObjects) => {
       dataLabels: {
         enabled: true,
         color: "#000000"
+      },
+      point: {
+        events: {
+          click(event) {
+            clickedHighchart = event.point.series.yAxis.categories[event.point.y]
+            $("#submitButton").click()
+          }
+        }
       }
     }],
     exporting: {
