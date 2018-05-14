@@ -39,7 +39,7 @@ let pageReload = false
 let pageReRun = false
 
 // starts a global instance for checking if button was clicked before
-let clickedPopupButtonRes = false
+// let clickedPopupButtonRes = false
 let clickedPopupButtonCard = false
 let clickedPopupButtonFamily = false
 let clickedPopupButtonVir = false
@@ -55,7 +55,8 @@ let bootstrapTableList = []
 // dictionary to store all the connections between species and other taxa
 // level available. This needs to be stored here because there is no reason
 // to execute the getArrayTaxa twice.
-const dictGenera = {}
+// const dictGenera = {}
+
 // buttonSubmit current node
 let currentQueryNode = false
 

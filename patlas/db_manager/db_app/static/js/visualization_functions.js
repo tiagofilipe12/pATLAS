@@ -827,9 +827,9 @@ const onLoad = () => {
     // otherwise they won't run because its own function returns this
     // variable to false, preventing the popup to expand with its
     // respective functions
-    clickedPopupButtonCard = true
-    clickedPopupButtonRes = true
-    clickedPopupButtonFamily = true
+    // clickedPopupButtonCard = true
+    // clickedPopupButtonRes = true
+    // clickedPopupButtonFamily = true
 
     // requests table for sequences metadata
     requestPlasmidTable(node, setupPopupDisplay)
@@ -1998,13 +1998,10 @@ const onLoad = () => {
         formvalueId.replace(".", "_")
 
       currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
-        currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-        clickedPopupButtonFamily)
+        currentQueryNode)
     } else {
       // executed for plasmid search
-      toggleOnSearch(g, graphics, renderer,
-        currentQueryNode, clickedPopupButtonCard, clickedPopupButtonRes,
-        clickedPopupButtonFamily)
+      toggleOnSearch(g, graphics, renderer, currentQueryNode)
       // then is here used to parse the results from async/await function
         .then( (result) => {
           currentQueryNode = result
@@ -2014,10 +2011,10 @@ const onLoad = () => {
     // otherwise they won't run because its own function returns this
     // variable to false, preventing the popup to expand with its
     // respective functions
-    clickedPopupButtonCard = true
-    clickedPopupButtonRes = true
-    clickedPopupButtonFamily = true
-    clickedPopupButtonVir = true
+    // clickedPopupButtonCard = true
+    // clickedPopupButtonRes = true
+    // clickedPopupButtonFamily = true
+    // clickedPopupButtonVir = true
   })
 
 
@@ -2043,6 +2040,10 @@ const onLoad = () => {
     $("#pfTab").removeClass("active")
     $("#plasmidButton").removeClass("active")
     $("#popup_description").hide()
+
+    clickedPopupButtonCard = false
+    clickedPopupButtonFamily = false
+    clickedPopupButtonVir = false
 
     // when the popup is closed the plot with the annotations should be hidden
     $("#resistancePopupPlot").hide()
@@ -2104,7 +2105,9 @@ const onLoad = () => {
    * Button that controls the display of the resistance information in the popup
    */
   $("#resButton").unbind("click").bind("click", () => {
-    clickedPopupButtonCard = resGetter(currentQueryNode)
+    if (clickedPopupButtonCard === false) {
+      clickedPopupButtonCard = resGetter(currentQueryNode)
+    }
   })
 
 
@@ -2113,7 +2116,9 @@ const onLoad = () => {
    * in the popup
    */
   $("#plasmidButton").unbind("click").bind("click", () => {
-    clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
+    if (clickedPopupButtonFamily === false) {
+      clickedPopupButtonFamily = plasmidFamilyGetter(currentQueryNode)
+    }
   })
 
 
@@ -2121,7 +2126,9 @@ const onLoad = () => {
    * Button that controls the display of the virulence information in the popup
    */
   $("#virButton").unbind("click").bind("click", () => {
-    clickedPopupButtonVir = virulenceGetter(currentQueryNode)
+    if (clickedPopupButtonVir === false) {
+      clickedPopupButtonVir = virulenceGetter(currentQueryNode)
+    }
   })
 
 
