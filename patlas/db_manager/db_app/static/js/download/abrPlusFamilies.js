@@ -99,7 +99,7 @@ const populateHighchartXrange = (lenghtData) => {
       panning: true     // allow panning of the graph when zoomed
     },
     title: {
-      text: "Resistance genes"
+      text: "Annotations"
     },
     xAxis: {
       min: 0,
