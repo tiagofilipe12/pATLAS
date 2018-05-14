@@ -1,4 +1,4 @@
-/*globals xRangePlotList*/
+/*globals xRangePlotList, Highcharts*/
 
 // function to turn string into a clickable link ... useful for accession
 // numbers
@@ -80,7 +80,7 @@ const getRangeToString = (queryArrayRange) => {
 }
 
 /**
- * Funtion to construct the xrange plot
+ * Function to construct the xrange plot
  * @param {Array} lenghtData - The array with the values to feed to the chart
  * data.
  */
@@ -103,7 +103,7 @@ const populateHighchartXrange = (lenghtData) => {
     },
     yAxis: {
       title: {
-        text: ''
+        text: ""
       },
       categories: ["CARD", "ResFinder", "PFinder", "VFDB"],
       reversed: true,
@@ -125,6 +125,14 @@ const populateHighchartXrange = (lenghtData) => {
     }],
     credits: {
       enabled: false
+    },
+    tooltip: {
+      formatter() {
+        console.log(this)
+        return `<br><b>gene name:</b> ${this.point.name}</br>
+<br><b>range:</b> ${this.x.toString()} - ${this.x2.toString()}</br>
+<br><b>database:</b> ${this.yCategory}</br></ul>`
+      }
     }
   })
 
