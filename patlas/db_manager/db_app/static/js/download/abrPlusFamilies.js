@@ -277,7 +277,6 @@ const resGetter = (nodeId) => {
 
     } catch (error) {
 
-      console.log(error)
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no Resistance information available in database."
       $("#alertId_db").show()
