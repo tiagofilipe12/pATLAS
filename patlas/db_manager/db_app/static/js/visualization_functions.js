@@ -2038,6 +2038,9 @@ const onLoad = () => {
     $("#plasmidButton").removeClass("active")
     $("#popup_description").hide()
 
+    // when the popup is closed the plot with the annotations should be hidden
+    $("#resistancePopupPlot").hide()
+
     if (currentQueryNode !== false) {
       graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
     }

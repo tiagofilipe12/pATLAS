@@ -53,17 +53,78 @@ const generatePlotLengthData = (queryArrayRange, idx) => {
 /**
  * Function that parses the query range array and make it available to display
  * in html div
- * @param {Array} queryArrayRange - The array to be queried and converted into
- * a string
+ * @param {Array|String} queryArrayRange - The array to be queried and converted into
+ * a string. This variable can be a string with "N/A" when no data is retrieved
+ * from the database.
  * @returns {String} - returns a string capable of being read by the jquery
  * html() function.
  */
 const getRangeToString = (queryArrayRange) => {
 
-  return queryArrayRange.map( (e, index) => {
-    // returns per entry something like "1: [1000:2000]"
-    return `${index + 1}: [${e.range.toString().replace(",", ":")}]`
-  }).join(", ")
+  // check if the array is empty and if so return the same value
+  if (queryArrayRange === "N/A") {
+
+    return "N/A"
+
+  } else {
+    // otherwise parse the array to return a single string
+    return queryArrayRange.map((e, index) => {
+      // returns per entry something like "1: [1000:2000]"
+      return `${index + 1}: [${e.range.toString().replace(",", ":")}]`
+    }).join(", ")
+
+  }
+
+}
+
+/**
+ * Funtion to construct the xrange plot
+ * @param {Array} lenghtData - The array with the values to feed to the chart
+ * data.
+ */
+const populateHighchartXrange = (lenghtData) => {
+
+  Highcharts.chart("resistancePopupPlot", {
+    chart: {
+      type: "xrange",
+      zoomType: "x",
+      panKey: "ctrl",   //key used to navigate the graph when zoomed
+      panning: true     // allow panning of the graph when zoomed
+    },
+    title: {
+      text: "Resistance genes"
+    },
+    xAxis: {
+      min: 0,
+      // gets sequence length from this div
+      max: parseFloat($("#lengthPop").html().split("</span>")[1])
+    },
+    yAxis: {
+      title: {
+        text: ''
+      },
+      categories: ["CARD", "ResFinder", "PlasmidFinder", "VFDB"],
+      reversed: true,
+      labels: {
+        rotation: 270
+      },
+    },
+    series: [{
+      showInLegend: false,
+      borderColor: "gray",
+      pointWidth: 30,
+      data: lenghtData,
+      dataLabels: {
+        formatter() {
+          return this.point.name
+        },
+        enabled: true
+      }
+    }],
+    credits: {
+      enabled: false
+    }
+  })
 
 }
 
@@ -95,47 +156,10 @@ const resPopupPopulate = async (queryArrayCardGenes, queryArrayCardAccession,
 
   const lenghtData = cardLenghtData.concat(resFinderLengthData)
 
-  Highcharts.chart('resistancePopupPlot', {
-    chart: {
-      type: 'xrange',
-      zoomType: "x",
-      panKey: "ctrl",   //key used to navigate the graph when zoomed
-      panning: true     // allow panning of the graph when zoomed
-    },
-    title: {
-      text: 'Resistance genes'
-    },
-    xAxis: {
-      min: 0,
-      // gets sequence length from this div
-      max: parseFloat($("#lengthPop").html().split("</span>")[1])
-    },
-    yAxis: {
-      title: {
-        text: ''
-      },
-      categories: ['CARD', 'ResFinder'],
-      reversed: true,
-      labels: {
-        rotation: 270
-      },
-    },
-    series: [{
-      showInLegend: false,
-      borderColor: 'gray',
-      pointWidth: 30,
-      data: lenghtData,
-      dataLabels: {
-        formatter() {
-          return this.point.name
-        },
-        enabled: true
-      }
-    }],
-    credits: {
-      enabled: false
-    }
-  })
+  await populateHighchartXrange(lenghtData)
+
+  $("#resistancePopupPlot").show()
+
 }
 
 // this function is intended to use in single query instances such as
