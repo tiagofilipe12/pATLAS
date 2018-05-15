@@ -75,7 +75,6 @@ const setProjectView = async (projectInitialView, view) => {
           // append things to displayer in respective taxaModal
           for (const item in projectInitialView[k]) {
             if (projectInitialView[k].hasOwnProperty(item)) {
-              console.log(projectInitialView[k][item])
               await filterDisplayerProjects(projectInitialView[k][item], stringClass,
                 `#p_${stringClass}`)
             }
@@ -191,8 +190,6 @@ const setProjectView = async (projectInitialView, view) => {
 
     for (const key in projectInitialView) {
 
-      console.log("test_la: ",projectInitialView[key])
-
       if (key === "species") {
         await $("#speciesList").selectpicker("val", projectInitialView[key])
       }
@@ -210,8 +207,6 @@ const setProjectView = async (projectInitialView, view) => {
       }
 
     }
-
-    console.log("ai!")
 
     $("#taxaModalSubmit").click()
 

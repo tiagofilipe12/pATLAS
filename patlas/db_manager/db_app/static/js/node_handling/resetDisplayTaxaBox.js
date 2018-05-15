@@ -24,7 +24,6 @@ const filterDisplayer = (taxaName, stringClass, divStringClass) => {
   const taxaElements = $(divStringClass).html().split(/[:,]/)
   const taxaToParse = " " + taxaName + ","
   if (taxaElements.indexOf(taxaToParse.replace(",", "")) > -1) {
-    console.log("test_taxael")
     // remove string from array
     const index = taxaElements.indexOf(taxaToParse.replace(",", "")) // gets
     // the index of the string if higher than -1 then remove it
@@ -34,7 +33,6 @@ const filterDisplayer = (taxaName, stringClass, divStringClass) => {
         .append(taxaElementsToString(taxaElements))
     }
   } else {
-    console.log("divString: ", divStringClass)
     // if not already in taxaElements then add it
     $(divStringClass).append(taxaToParse)
   }
