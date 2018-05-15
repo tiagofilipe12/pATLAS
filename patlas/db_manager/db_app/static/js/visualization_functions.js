@@ -381,6 +381,11 @@ const onLoad = () => {
     projectJson = newProjectJson
   })
 
+  $(".btn-file").unbind("click").bind("click", () => {
+    $("#cancel_infile, #cancel_infile_mash, #cancel_assembly, " +
+      "#cancel_consensus").click()
+  })
+
 
   //*********//
   //* TABLE *//
@@ -690,7 +695,6 @@ const onLoad = () => {
     emptyFiles()
 
   })
-
 
   // event for shift key down
   // shows overlay div and exectures startMultiSelect
@@ -1520,7 +1524,7 @@ const onLoad = () => {
   })
 
   $("#cancel_infile").unbind("click").bind("click", () => {
-    readFilejson = abortRead()
+    readFilejson = abortRead("file_text")
   })
 
   $("#sampleMapping").unbind("click").bind("click", (event) => {
@@ -1600,7 +1604,7 @@ const onLoad = () => {
 
 
   $("#cancel_infile_mash").unbind("click").bind("click", () => {
-    mashJson = abortRead()
+    mashJson = abortRead("file_text_mash")
   })
 
 
@@ -1679,7 +1683,7 @@ const onLoad = () => {
   })
 
   $("#cancel_assembly").unbind("click").bind("click", () => {
-    assemblyJson = abortRead()
+    assemblyJson = abortRead("assembly_text")
   })
 
   $("#sampleAssembly").unbind("click").bind("click", (event) => {
@@ -1756,7 +1760,7 @@ const onLoad = () => {
   })
 
   $("#cancel_consensus").unbind("click").bind("click", () => {
-    consensusJson = abortRead()
+    consensusJson = abortRead("consensus_text")
   })
 
 

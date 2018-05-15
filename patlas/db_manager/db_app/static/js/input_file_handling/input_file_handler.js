@@ -4,11 +4,12 @@
 /**
  * Function that cancel reader, which basically deletes the file to be
  * loaded from the form
+ * @param {String} divToClean - the div that needs to be emptied
  * @return {String} - empty string to assign to file loaded file variable
  */
-const abortRead = () => {
+const abortRead = (divToClean) => {
   // cancels the loading it self
-  document.getElementById("file_text").value = ""
+  document.getElementById(divToClean).value = ""
   return ""
 }
 
