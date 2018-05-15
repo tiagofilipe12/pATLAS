@@ -288,6 +288,8 @@ const reGetListGi = (g, graphics) => {
  */
 const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
 
+  console.log(listGiFilter.length, listGiFilter)
+
   $("#closePop").click()
 
   // checks for area selection

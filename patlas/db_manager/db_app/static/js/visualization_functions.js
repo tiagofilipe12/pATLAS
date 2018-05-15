@@ -631,7 +631,7 @@ const onLoad = () => {
       const viewParsed = $("#viewList").val().toLowerCase().replace(" ", "")
 
       const projectInitialView = importProject(projectJson, viewParsed)
-      
+
       // check if current selected view isn't false
       if (projectInitialView !== false) {
 
