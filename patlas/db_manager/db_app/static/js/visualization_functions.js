@@ -1865,7 +1865,6 @@ const onLoad = () => {
       // removes nodes and forces adding same nodes
       setTimeout( () => {
         actualRemoval(g, graphics, onLoad, true)
-        freezeShift = true
         // enables button group again
         $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
