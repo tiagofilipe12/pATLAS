@@ -694,7 +694,7 @@ const onLoad = () => {
 
   // event for shift key down
   // shows overlay div and exectures startMultiSelect
-  document.addEventListener("keydown", (e) => {
+  $(document).unbind("keydown").bind("keydown", (e) => {
     if (e.which === 16 && multiSelectOverlay === false && freezeShift === false) { // shift key
       // should close popup open so it doesn't get into listGiFilter
       $("#closePop").click()
@@ -717,12 +717,13 @@ const onLoad = () => {
 
   // event for shift key up
   // destroys overlay div and transformes multiSelectOverlay to false
-  document.addEventListener("keyup", (e) => {
+  $(document).unbind("keyup").bind("keyup", (e) => {
+  // document.addEventListener("keyup", (e) => {
     if (e.which === 16 && multiSelectOverlay !== "disable") {
       $(".graph-overlay").hide()
       $("#colorLegend").hide()
       if (multiSelectOverlay !== false) {
-        multiSelectOverlayObj.destroy()
+        multiSelectOverlayObj = false
       }
       multiSelectOverlay = false
     }
@@ -1838,7 +1839,7 @@ const onLoad = () => {
     //* * Loading Screen goes on **//
     showDiv().then( () => {
       // removes nodes
-      freezeShift = true
+      // freezeShift = true
 
       actualRemoval(g, graphics, onLoad, false)
 
@@ -2273,8 +2274,8 @@ const onLoad = () => {
       $("#refreshButton").removeClass("btn-success").addClass("btn-default")
 
       // if this variable is indefined then doesn't attempt to destroy it
-      if (typeof multiSelectOverlayObj !== "undefined") {
-        multiSelectOverlayObj.destroy()
+      if (typeof multiSelectOverlayObj !== false) {
+        multiSelectOverlayObj = false
       }
 
       // if shift key is frozen (let it go let it goooo)

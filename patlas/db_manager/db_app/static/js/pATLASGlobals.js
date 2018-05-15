@@ -78,9 +78,9 @@ let graphSize
 
 /**
  * variable that stores the multi selection overlay object
- * type {undefined|Object}
+ * type {boolean|Object}
  */
-let multiSelectOverlayObj
+let multiSelectOverlayObj = false
 
 let legendInst
 
