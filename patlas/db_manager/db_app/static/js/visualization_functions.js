@@ -619,6 +619,8 @@ const onLoad = () => {
    */
   $("#projectLoadSubmit").unbind("click").bind("click", () => {
 
+    console.log(projectJson)
+
     // first check if viewList has nothing selected
     if ($("#viewList").val() === "") {
       $("#alertIdnoSelectedview").show()
@@ -631,6 +633,8 @@ const onLoad = () => {
       const viewParsed = $("#viewList").val().toLowerCase().replace(" ", "")
 
       const projectInitialView = importProject(projectJson, viewParsed)
+
+      console.log(projectInitialView)
 
       // check if current selected view isn't false
       if (projectInitialView !== false) {
@@ -711,9 +715,7 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       resetAllNodes(graphics, g, nodeColor, renderer)
-      // also reset file handlers that interfere with Re_run
-      readFilejson = false
-      assemblyJson = false
+
     }
   })
 
@@ -1296,11 +1298,15 @@ const onLoad = () => {
       selectedFamily = familyQuery.replace("Family:", "").split(",").filter(Boolean),
       selectedOrder = orderQuery.replace("Order:", "").split(",").filter(Boolean)
 
+    console.log(selectedGenus)
+
     // remove first char from selected* arrays
     selectedSpecies = removeFirstCharFromArray(selectedSpecies)
     selectedGenus = removeFirstCharFromArray(selectedGenus)
     selectedFamily = removeFirstCharFromArray(selectedFamily)
     selectedOrder = removeFirstCharFromArray(selectedOrder)
+
+    console.log(selectedGenus)
 
     //* *** Alert for taxa filter ****//
 
@@ -1325,6 +1331,8 @@ const onLoad = () => {
 
           divAlert.style.display = "block"
 
+          console.log("pim")
+
         }
       }
     }
@@ -1344,6 +1352,8 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
+
+    console.log(alertArrays)
 
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
