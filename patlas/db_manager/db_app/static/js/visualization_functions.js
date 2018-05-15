@@ -381,6 +381,11 @@ const onLoad = () => {
     projectJson = newProjectJson
   })
 
+
+  /**
+   * Event that clears div with text of selected files when upload file buttons
+   * are clicked.
+   */
   $(".btn-file").unbind("click").bind("click", () => {
     $("#cancel_infile, #cancel_infile_mash, #cancel_assembly, " +
       "#cancel_consensus").click()
