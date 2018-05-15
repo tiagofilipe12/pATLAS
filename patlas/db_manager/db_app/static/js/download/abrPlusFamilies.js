@@ -104,7 +104,10 @@ const populateHighchartXrange = (lenghtData) => {
     xAxis: {
       min: 0,
       // gets sequence length from this div
-      max: parseFloat($("#lengthPop").html().split("</span>")[1])
+      max: parseFloat($("#lengthPop").html().split("</span>")[1]),
+      title: {
+        text: "Sequence length (bp)"
+      },
     },
     yAxis: {
       title: {
