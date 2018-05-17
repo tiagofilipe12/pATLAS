@@ -390,13 +390,22 @@ const heatmapMaker = (masterReadArray, readObjects) => {
         // gets contig name based on the accession number of the plasmid
         const getContigName = accessionEntry[
           this.series.yAxis.categories[this.point.y]
-          ][2]
+          ]
+
+        // sets a default string that will be outputed for all the types of imports
+        let returnString = "<b>File name: </b>" + this.series.xAxis.categories[this.point.x] +
+          "<br>" + this.point.value + " <b>% coverage</b>" +
+          "<br><b>Accession number: </b>" + this.series.yAxis.categories[this.point.y]
+
+        // adds contig information when array has 3 entries,
+        // the third is the contig name --- This is only used in the case of
+        // assembly import
+        if (getContigName.length === 3) {
+          returnString += "<br><b>Contig name: </b>" + getContigName[2]
+        }
 
         // then returns the actual tooltip format
-        return "<b>File name: </b>" + this.series.xAxis.categories[this.point.x] +
-          "<br>" + this.point.value + " <b>% coverage</b>" +
-          "<br><b>Accession number: </b>" + this.series.yAxis.categories[this.point.y] +
-          "<br><b>Contig name: </b>" + getContigName
+        return returnString
       }
     },
     series: [{
