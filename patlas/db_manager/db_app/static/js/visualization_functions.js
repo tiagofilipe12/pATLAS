@@ -488,8 +488,8 @@ const onLoad = () => {
    * Button events that clear all uploaded files, avoiding that different type
    * of files are loaded at the same time.
    */
-  $("#uploadFile, #uploadFileMash, #uploadFileAssembly, #uploadFileConsensus, #uploadFileProject")
-    .unbind("click").bind("click", () => {
+  $("#uploadFile, #uploadFileMash, #uploadFileAssembly, #uploadFileConsensus, " +
+    "#uploadFileProject").unbind("click").bind("click", () => {
     emptyFiles()
   })
 
@@ -1652,6 +1652,7 @@ const onLoad = () => {
 
   $("#assemblySubmit").unbind("click").bind("click", (event) => {
     event.preventDefault()
+
     if (assemblyJson !== false) {
       const readString = JSON.parse(Object.values(assemblyJson)[0])
       fileChecks(readString)
@@ -1905,21 +1906,9 @@ const onLoad = () => {
    */
   $("#heatmapButtonTab").unbind("click").bind("click", () => {
     $("#heatmapModal").modal()
-    // transform internal accession numbers to ncbi acceptable accesions
 
-    // if (assemblyJson !== false) {
+    heatmapMaker(masterReadArray, readFilejson)
 
-      // heatmapMaker(masterReadArray, assemblyJson)
-      // readFilejson = false
-      // mashJson = false
-
-    // } else if (readFilejson !== false) {
-
-      heatmapMaker(masterReadArray, readFilejson)
-    //   mashJson = false
-    //   assemblyJson = false
-    //
-    // }
   })
 
 
@@ -2076,6 +2065,7 @@ const onLoad = () => {
       "#copyNumberPop",
       "#percentagePopMashDist",
       "#hashPop",
+      "#contigPop",
       "#cardPop",
       "#cardGenePop",
       "#cardGenbankPop",

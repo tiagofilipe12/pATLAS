@@ -812,7 +812,7 @@ Careful when using this in other popovers in the future*/
 }
 
 #importDiv, #percentagePop, #percentagePopMash, #copyNumberPop,
-#percentagePopMashDist, #hashPop{
+#percentagePopMashDist, #hashPop, #contigPop{
     display: none;
 }
 

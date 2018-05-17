@@ -108,7 +108,7 @@ const cutoffParserConsensus = () => {
  * a reference plasmid and the query sequence.
  */
 const nodeIter = (g, readColor, gi, graphics, perc, copyNumber, percMash,
-                  percMashDist, sharedHashes) => {
+                  percMashDist, sharedHashes, contigName) => {
   
   g.forEachNode( (node) => {
 
@@ -136,6 +136,7 @@ const nodeIter = (g, readColor, gi, graphics, perc, copyNumber, percMash,
       if (percMashDist) {
         node.data["sharedHashes"] = sharedHashes.toString()
         node.data["percMashDist"] = percMashDist.toFixed(2).toString()
+        node.data["contigName"] = contigName.toString()
       }
     }
   })
@@ -255,16 +256,22 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
             meanValue = parseFloat(minValue) + ((1 - parseFloat(minValue)) / 2)
           }
         } else {  // if assembly
+
+          const contigName = perc[2]
+
           if (identity >= cutoffParserSeq() && copyNumber >= cutoffHashSeq()) {
             const newPerc = rangeConverter(identity, cutoffParserSeq(), 1, 0, 1)
             const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
             const scale = chroma.scale(["lightsalmon", "maroon"])
             palette(scale, 10, readMode)
-            nodeIter(g, readColor, gi, graphics, false, false, false, identity, copyNumber)
+            nodeIter(g, readColor, gi, graphics, false, false, false, identity,
+              copyNumber, contigName)
+
             if (listGi.includes(gi)) {
               listGiFilter.push(gi)
             }
           }
+
           if (Object.keys(readString).length === counter) {
             // min value is the one fetched from the input form or by default 0.6
             // values are fixed to two decimal
@@ -642,5 +649,6 @@ const pushToMasterReadArray = (readFilejson) => {
       }
     }
   }
+
   return returnArray
 }
