@@ -258,8 +258,6 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
  */
 const parseReadObj = (readObjects, masterReadArray) => {
 
-  console.log(readObjects, masterReadArray)
-
   const xCategories = []
   const positionsMap = []
   const valuesArray = []
