@@ -27,18 +27,28 @@ const loadFilesToObj = async (files, textId) => {
 
   let arrayOfObj = {}
 
+  let arrayOfFiles = []
+
   // append fle name to text form displaying current selection
   for (const file of files) {
+
     const fileName = file.name
+    arrayOfFiles.push(fileName)
+
     // checks if it is a json file extension
     if (!file.name.includes(".json")) {
       alert("File extension not supported. Only '.json' files are supported.")
     } else {
       // append the filename to the form
       if (files.length > 1) {
+        // if more than one file is loaded
+        // sets the box to show the number of files imported
         $(textId).val(`${files.length.toString()} files imported`)
+        // then create a tooltip that displays the actual files that are loaded
+        $(textId).attr("title", arrayOfFiles.join(";\n"))
       } else {
-        $(textId).val(file.name)
+        $(textId).val(fileName)
+        $(textId).attr("title", fileName)
       }
       // opens the instance of the reader
       const reader = new FileReader()
