@@ -371,7 +371,7 @@ const parseReadObj = (readObjects, masterReadArray) => {
  * @param {Object} readObjects - An object that maps each accession number
  * and their percentage values to the respective file.
  */
-const heatmapMaker = (masterReadArray, readObjects) => {
+const heatmapMaker = (g, masterReadArray, readObjects) => {
   // clear heatmap div
   $("#chartContainer2").empty()
   const tripleArray = parseReadObj(readObjects, masterReadArray)
@@ -428,10 +428,14 @@ const heatmapMaker = (masterReadArray, readObjects) => {
           this.series.yAxis.categories[this.point.y]
           ]
 
+        const plasmidLength = g.getNode(this.series.yAxis.categories[this.point.y])
+          .data.seqLength.split("</span>")[1]
+
         // sets a default string that will be outputed for all the types of imports
         let returnString = "<b>File name: </b>" + this.series.xAxis.categories[this.point.x] +
           "<br>" + this.point.value + " <b>% coverage</b>" +
-          "<br><b>Accession number: </b>" + this.series.yAxis.categories[this.point.y]
+          "<br><b>Accession number: </b>" + this.series.yAxis.categories[this.point.y] +
+          "<br><b>Plasmid length: </b>" + plasmidLength
 
         // adds contig information when array has 3 entries,
         // the third is the contig name --- This is only used in the case of

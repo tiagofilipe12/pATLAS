@@ -1907,7 +1907,7 @@ const onLoad = () => {
   $("#heatmapButtonTab").unbind("click").bind("click", () => {
     $("#heatmapModal").modal()
 
-    heatmapMaker(masterReadArray, readFilejson)
+    heatmapMaker(g, masterReadArray, readFilejson)
 
   })
 
