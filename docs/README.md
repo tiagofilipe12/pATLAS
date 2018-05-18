@@ -16,3 +16,4 @@
     * [Relationships and distances estimations](distances.md)
     * [Antibiotic and plasmid family detection](ABR_api.md)
     * [Downloads](download_api.md)
+    * [Import files](import_api.md)
