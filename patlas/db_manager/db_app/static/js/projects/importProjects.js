@@ -1,4 +1,4 @@
-/*globals FileSaver, iterateArrays, selectedFilter, filterDisplayer,
+/*globals FileSaver, iterateArrays, selectedFilter, filterDisplayerProjects,
  readFilejson, mashJson, assemblyJson, consensusJson*/
 
 /**

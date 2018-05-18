@@ -2273,7 +2273,7 @@ const onLoad = () => {
       $("#refreshButton").removeClass("btn-success").addClass("btn-default")
 
       // if this variable is indefined then doesn't attempt to destroy it
-      if (typeof multiSelectOverlayObj !== false) {
+      if (multiSelectOverlayObj !== false) {
         multiSelectOverlayObj = false
       }
 

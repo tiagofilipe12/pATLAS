@@ -134,7 +134,6 @@ const nodeIter = (g, readColor, gi, graphics, perc, copyNumber, percMash,
 
       // for mash dist aka assembly
       if (percMashDist) {
-        console.log("test")
         node.data["sharedHashes"] = sharedHashes.toString()
         node.data["percMashDist"] = percMashDist.toFixed(2).toString()
         node.data["contigName"] = contigName.toString()

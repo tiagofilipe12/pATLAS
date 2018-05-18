@@ -1,5 +1,5 @@
 /*globals Highcharts, cutoffParser, cutoffParserMash, assemblyJson,
- cutoffParserSeq */
+ cutoffParserSeq, copyNumberCutoff, cutoffHashSeq */
 
 /**
  * Function to compare two arrays and check if they are equal, i.e. if they
@@ -135,7 +135,7 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
             const seqPercentageMashScreen = ( g.getNode(accession) &&
               g.getNode(accession).data.percMash) ?
                 g.getNode(accession).data.percMash : "N/A"
-            
+
             // gets percentage for mash dist / sequence import
             const seqPercentageMashDist = ( g.getNode(accession) &&
               g.getNode(accession).data.percMashDist) ?
