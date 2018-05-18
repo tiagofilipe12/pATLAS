@@ -134,6 +134,7 @@ const nodeIter = (g, readColor, gi, graphics, perc, copyNumber, percMash,
 
       // for mash dist aka assembly
       if (percMashDist) {
+        console.log("test")
         node.data["sharedHashes"] = sharedHashes.toString()
         node.data["percMashDist"] = percMashDist.toFixed(2).toString()
         node.data["contigName"] = contigName.toString()
@@ -240,7 +241,8 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
             const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
             const scale = chroma.scale(["lightsalmon", "maroon"])
             palette(scale, 10, readMode)
-            nodeIter(g, readColor, gi, graphics, false, copyNumber, identity)
+            nodeIter(g, readColor, gi, graphics, false, copyNumber, identity,
+              false, false, false)
             if (listGi.includes(gi)) {
               listGiFilter.push(gi)
             }
@@ -317,7 +319,8 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
-          nodeIter(g, readColor, gi, graphics, mappingPerc, mashScreenCopy, mashScreenPerc, false, false)
+          nodeIter(g, readColor, gi, graphics, mappingPerc, mashScreenCopy,
+            mashScreenPerc, false, false, false)
 
           if (listGi.includes(gi) && !listGiFilter.includes(gi)) {
             listGiFilter.push(gi)
@@ -345,7 +348,8 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           const readColor = chroma.mix("lightsalmon", "maroon", newPerc).hex().replace("#", "0x")
           const scale = chroma.scale(["lightsalmon", "maroon"])
           palette(scale, 10, readMode)
-          nodeIter(g, readColor, gi, graphics, perc, false, false, false, false)
+          nodeIter(g, readColor, gi, graphics, perc, false, false, false, false,
+            false)
 
           if (listGi.includes(gi)) {
             listGiFilter.push(gi)

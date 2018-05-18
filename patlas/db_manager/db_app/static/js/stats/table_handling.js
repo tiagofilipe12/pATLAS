@@ -118,13 +118,33 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
               "id": "",
               "length": "",
               "percentage": "",
+              "percentageMashScreen": "",
+              "percentageMashDist": "",
+              "contigName": "",
               "speciesName": "",
               "plasmidName": "",
               "resGenes": "",
               "pfGenes": ""
             }
-            // gets percentage
-            const seqPercentage = (g.getNode(accession) && g.getNode(accession).data.percentage) ? g.getNode(accession).data.percentage : "N/A"
+            // gets percentage for mapping import
+            const seqPercentage = (g.getNode(accession) &&
+              g.getNode(accession).data.percentage) ?
+              g.getNode(accession).data.percentage : "N/A"
+
+            // gets percentage for mash screen import
+            const seqPercentageMashScreen = ( g.getNode(accession) &&
+              g.getNode(accession).data.percMash) ?
+                g.getNode(accession).data.percMash : "N/A"
+            
+            // gets percentage for mash dist / sequence import
+            const seqPercentageMashDist = ( g.getNode(accession) &&
+              g.getNode(accession).data.percMashDist) ?
+                  g.getNode(accession).data.percMashDist : "N/A"
+
+            // get contig name if it exists. only mash dist
+            const gotContigName = (g.getNode(accession) &&
+              g.getNode(accession).data.contigName) ?
+              g.getNode(accession).data.contigName : "N/A"
 
             // iterates through main database entries
             for (let mainRequest of requests.sequences) {
@@ -133,6 +153,9 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
                 entry.id = accession
                 entry.length = mainRequest.json_entry.length
                 entry.percentage = seqPercentage
+                entry.percentageMashScreen = seqPercentageMashScreen
+                entry.percentageMashDist = seqPercentageMashDist
+                entry.contigName = gotContigName
                 entry.speciesName = mainRequest.json_entry.name.split("_").join(" ")
                 entry.plasmidName = mainRequest.json_entry.plasmid_name
                 entry.cluster = mainRequest.json_entry.cluster
@@ -199,7 +222,22 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
                 sortable: true
               }, {
                 field: "percentage",
-                title: "Percentage",
+                title: "Coverage (%)",
+                sortable: true,
+                visible: false
+              }, {
+                field: "percentageMashScreen",
+                title: "Mash screen id (%)",
+                sortable: true,
+                visible: false
+              }, {
+                field: "percentageMashDist",
+                title: "Sequence id (%)",
+                sortable: true,
+                visible: false
+              }, {
+                field: "contigName",
+                title: "Contig name",
                 sortable: true,
                 visible: false
               }, {
