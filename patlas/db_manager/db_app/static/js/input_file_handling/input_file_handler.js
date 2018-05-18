@@ -35,7 +35,11 @@ const loadFilesToObj = async (files, textId) => {
       alert("File extension not supported. Only '.json' files are supported.")
     } else {
       // append the filename to the form
-      $(textId).val(files[0].name)
+      if (files.length > 1) {
+        $(textId).val(`${files.length.toString()} files imported`)
+      } else {
+        $(textId).val(file.name)
+      }
       // opens the instance of the reader
       const reader = new FileReader()
 

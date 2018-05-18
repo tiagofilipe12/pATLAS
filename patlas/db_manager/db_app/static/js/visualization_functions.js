@@ -406,9 +406,11 @@ const onLoad = () => {
     .on("dragleave dragend drop", () => {
       $(".custom-file-form").removeClass("is-dragover")
     })
-    .on("drop", (e) => {
+    .on("drop", async (e) => {
       const files = e.originalEvent.dataTransfer.files
       const textId = e.originalEvent.target.id
+
+      await emptyFiles()
 
       loadFilesToObj(files, `#${textId}`).then( (results) => {
         // parses results to the right type of file import
