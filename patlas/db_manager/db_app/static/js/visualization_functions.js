@@ -395,6 +395,12 @@ const onLoad = () => {
   //* DRAG N DROP *//
   //***************//
 
+  $(".modal")
+    .on("drag dragstart dragend dragover dragenter dragleave drop", (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+    })
+
   $(".custom-file-form")
     .on("drag dragstart dragend dragover dragenter dragleave drop", (e) => {
     e.preventDefault()
