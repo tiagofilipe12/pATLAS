@@ -24,7 +24,7 @@ typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
 clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
-xRangePlotList*/
+xRangePlotList, loadFilesToObj*/
 
 
 /**
@@ -382,6 +382,54 @@ const onLoad = () => {
   })
 
 
+  /**
+   * Event that clears div with text of selected files when upload file buttons
+   * are clicked.
+   */
+  $(".btn-file").unbind("click").bind("click", () => {
+    $("#cancel_infile, #cancel_infile_mash, #cancel_assembly, " +
+      "#cancel_consensus").click()
+  })
+
+  //***************//
+  //* DRAG N DROP *//
+  //***************//
+
+  $(".modal")
+    .on("drag dragstart dragend dragover dragenter dragleave drop", (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+    })
+
+  $(".custom-file-form")
+    .on("drag dragstart dragend dragover dragenter dragleave drop", (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  })
+    .on("dragover dragenter", () => {
+      $(".custom-file-form").addClass("is-dragover")
+    })
+    .on("dragleave dragend drop", () => {
+      $(".custom-file-form").removeClass("is-dragover")
+    })
+    .on("drop", async (e) => {
+      const files = e.originalEvent.dataTransfer.files
+      const textId = e.originalEvent.target.id
+
+      await emptyFiles()
+
+      loadFilesToObj(files, `#${textId}`).then( (results) => {
+        // parses results to the right type of file import
+        if (textId === "file_text") {readFilejson = results}
+        else if (textId === "file_text_mash") {mashJson = results}
+        else if (textId === "assembly_text") {assemblyJson = results}
+        else if (textId === "consensus_text") {consensusJson = results}
+        else if (textId === "project_text") {projectJson = results}
+      })
+
+    })
+
+
   //*********//
   //* TABLE *//
   //*********//
@@ -478,8 +526,8 @@ const onLoad = () => {
    * Button events that clear all uploaded files, avoiding that different type
    * of files are loaded at the same time.
    */
-  $("#uploadFile, #uploadFileMash, #uploadFileAssembly, #uploadFileConsensus, #uploadFileProject")
-    .unbind("click").bind("click", () => {
+  $("#uploadFile, #uploadFileMash, #uploadFileAssembly, #uploadFileConsensus, " +
+    "#uploadFileProject").unbind("click").bind("click", () => {
     emptyFiles()
   })
 
@@ -691,10 +739,9 @@ const onLoad = () => {
 
   })
 
-
   // event for shift key down
   // shows overlay div and exectures startMultiSelect
-  document.addEventListener("keydown", (e) => {
+  $(document).unbind("keydown").bind("keydown", (e) => {
     if (e.which === 16 && multiSelectOverlay === false && freezeShift === false) { // shift key
       // should close popup open so it doesn't get into listGiFilter
       $("#closePop").click()
@@ -711,20 +758,19 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       resetAllNodes(graphics, g, nodeColor, renderer)
-      // also reset file handlers that interfere with Re_run
-      readFilejson = false
-      assemblyJson = false
+
     }
   })
 
   // event for shift key up
   // destroys overlay div and transformes multiSelectOverlay to false
-  document.addEventListener("keyup", (e) => {
+  $(document).unbind("keyup").bind("keyup", (e) => {
+  // document.addEventListener("keyup", (e) => {
     if (e.which === 16 && multiSelectOverlay !== "disable") {
       $(".graph-overlay").hide()
       $("#colorLegend").hide()
       if (multiSelectOverlay !== false) {
-        multiSelectOverlayObj.destroy()
+        multiSelectOverlayObj = false
       }
       multiSelectOverlay = false
     }
@@ -1521,7 +1567,7 @@ const onLoad = () => {
   })
 
   $("#cancel_infile").unbind("click").bind("click", () => {
-    readFilejson = abortRead()
+    readFilejson = abortRead("file_text")
   })
 
   $("#sampleMapping").unbind("click").bind("click", (event) => {
@@ -1601,7 +1647,7 @@ const onLoad = () => {
 
 
   $("#cancel_infile_mash").unbind("click").bind("click", () => {
-    mashJson = abortRead()
+    mashJson = abortRead("file_text_mash")
   })
 
 
@@ -1644,6 +1690,7 @@ const onLoad = () => {
 
   $("#assemblySubmit").unbind("click").bind("click", (event) => {
     event.preventDefault()
+
     if (assemblyJson !== false) {
       const readString = JSON.parse(Object.values(assemblyJson)[0])
       fileChecks(readString)
@@ -1680,7 +1727,7 @@ const onLoad = () => {
   })
 
   $("#cancel_assembly").unbind("click").bind("click", () => {
-    assemblyJson = abortRead()
+    assemblyJson = abortRead("assembly_text")
   })
 
   $("#sampleAssembly").unbind("click").bind("click", (event) => {
@@ -1757,7 +1804,7 @@ const onLoad = () => {
   })
 
   $("#cancel_consensus").unbind("click").bind("click", () => {
-    consensusJson = abortRead()
+    consensusJson = abortRead("consensus_text")
   })
 
 
@@ -1840,7 +1887,7 @@ const onLoad = () => {
     //* * Loading Screen goes on **//
     showDiv().then( () => {
       // removes nodes
-      freezeShift = true
+      // freezeShift = true
 
       actualRemoval(g, graphics, onLoad, false)
 
@@ -1867,7 +1914,6 @@ const onLoad = () => {
       // removes nodes and forces adding same nodes
       setTimeout( () => {
         actualRemoval(g, graphics, onLoad, true)
-        freezeShift = true
         // enables button group again
         $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
@@ -1898,21 +1944,9 @@ const onLoad = () => {
    */
   $("#heatmapButtonTab").unbind("click").bind("click", () => {
     $("#heatmapModal").modal()
-    // transform internal accession numbers to ncbi acceptable accesions
 
-    // if (assemblyJson !== false) {
+    heatmapMaker(g, masterReadArray, readFilejson)
 
-      // heatmapMaker(masterReadArray, assemblyJson)
-      // readFilejson = false
-      // mashJson = false
-
-    // } else if (readFilejson !== false) {
-
-      heatmapMaker(masterReadArray, readFilejson)
-    //   mashJson = false
-    //   assemblyJson = false
-    //
-    // }
   })
 
 
@@ -2069,6 +2103,7 @@ const onLoad = () => {
       "#copyNumberPop",
       "#percentagePopMashDist",
       "#hashPop",
+      "#contigPop",
       "#cardPop",
       "#cardGenePop",
       "#cardGenbankPop",
@@ -2276,8 +2311,8 @@ const onLoad = () => {
       $("#refreshButton").removeClass("btn-success").addClass("btn-default")
 
       // if this variable is indefined then doesn't attempt to destroy it
-      if (typeof multiSelectOverlayObj !== "undefined") {
-        multiSelectOverlayObj.destroy()
+      if (multiSelectOverlayObj !== false) {
+        multiSelectOverlayObj = false
       }
 
       // if shift key is frozen (let it go let it goooo)

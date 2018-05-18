@@ -66,9 +66,9 @@ const setupPopupDisplay = (node, speciesName, plasmidName, clusterId) => {
 
   // empties individual divs for imports
   $("#percentagePopMashDist, #hashPop, #percentagePopMash, #copyNumberPop, " +
-    "#percentagePop").hide()
+    "#percentagePop, #contigPop").hide()
   $("#percentagePopSpan, #percentagePopSpanMash, #copyNumberPopSpan, " +
-    "#percentagePopMashDistSpan, #hashPopSpan").html("")
+    "#percentagePopMashDistSpan, #hashPopSpan, #contigPopSpan").html("")
 
   // adds everything that is common metadata to the database
   if (typeof node.data !== "undefined") {
@@ -100,9 +100,11 @@ const setupPopupDisplay = (node, speciesName, plasmidName, clusterId) => {
     // if statement to append mash dist divs in popup_description
     $("#percentagePopSpanMashDist").html(node.data.percMashDist)
     $("#hashPopSpan").html(node.data.sharedHashes)
+    $("#contigPopSpan").html(node.data.contigName)
 
-    $("#percentagePopMashDist, #hashPop").show()
+    $("#percentagePopMashDist, #hashPop, #contigPop").show()
     $("#importDiv").show()
+
   }
 
   if (!node.data.percentage && !node.data.percMash && !node.data.percMashDist) {

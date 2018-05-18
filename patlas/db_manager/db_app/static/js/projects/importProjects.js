@@ -1,4 +1,4 @@
-/*globals FileSaver, iterateArrays, selectedFilter, filterDisplayer,
+/*globals FileSaver, iterateArrays, selectedFilter, filterDisplayerProjects,
  readFilejson, mashJson, assemblyJson, consensusJson*/
 
 /**
@@ -75,7 +75,7 @@ const setProjectView = async (projectInitialView, view) => {
           // append things to displayer in respective taxaModal
           for (const item in projectInitialView[k]) {
             if (projectInitialView[k].hasOwnProperty(item)) {
-              filterDisplayer(projectInitialView[k][item], stringClass,
+              await filterDisplayerProjects(projectInitialView[k][item], stringClass,
                 `#p_${stringClass}`)
             }
           }
@@ -92,35 +92,35 @@ const setProjectView = async (projectInitialView, view) => {
         // then each dropdown need to be selected according to the current
         // project selection
         if (key === "virulence") {
-          $("#virList2").selectpicker("val", projectInitialView[key])
+          await $("#virList2").selectpicker("val", projectInitialView[key])
         }
 
         if (key === "card") {
-          $("#resCardList2").selectpicker("val", projectInitialView[key])
+          await $("#resCardList2").selectpicker("val", projectInitialView[key])
         }
 
         if (key === "resfinder") {
-          $("#resResfinderList2").selectpicker("val", projectInitialView[key])
+          await $("#resResfinderList2").selectpicker("val", projectInitialView[key])
         }
 
         if (key === "pfinder") {
-          $("#pfList2").selectpicker("val", projectInitialView[key])
+          await $("#pfList2").selectpicker("val", projectInitialView[key])
         }
 
         if (key === "species") {
-          $("#speciesList2").selectpicker("val", projectInitialView[key])
+          await $("#speciesList2").selectpicker("val", projectInitialView[key])
         }
 
         if (key === "genus") {
-          $("#genusList2").selectpicker("val", projectInitialView[key])
+          await $("#genusList2").selectpicker("val", projectInitialView[key])
         }
 
         if (key === "family") {
-          $("#familyList2").selectpicker("val", projectInitialView[key])
+          await $("#familyList2").selectpicker("val", projectInitialView[key])
         }
 
         if (key === "order") {
-          $("#orderList2").selectpicker("val", projectInitialView[key])
+          await $("#orderList2").selectpicker("val", projectInitialView[key])
         }
       }
 
@@ -178,7 +178,7 @@ const setProjectView = async (projectInitialView, view) => {
     // TODO if for some reason this changes to an object it could be parsed similarly to what is done for resistances or taxa
     for (const item of projectInitialView) {
       const stringClass = view.charAt(0).toUpperCase() + view.slice(1)
-      filterDisplayer(item, stringClass, `#p_${stringClass}`)
+      await filterDisplayerProjects(item, stringClass, `#p_${stringClass}`)
     }
 
   }
@@ -191,19 +191,19 @@ const setProjectView = async (projectInitialView, view) => {
     for (const key in projectInitialView) {
 
       if (key === "species") {
-        $("#speciesList").selectpicker("val", projectInitialView[key])
+        await $("#speciesList").selectpicker("val", projectInitialView[key])
       }
 
       if (key === "genus") {
-        $("#genusList").selectpicker("val", projectInitialView[key])
+        await $("#genusList").selectpicker("val", projectInitialView[key])
       }
 
       if (key === "family") {
-        $("#familyList").selectpicker("val", projectInitialView[key])
+        await $("#familyList").selectpicker("val", projectInitialView[key])
       }
 
       if (key === "order") {
-        $("#orderList").selectpicker("val", projectInitialView[key])
+        await $("#orderList").selectpicker("val", projectInitialView[key])
       }
 
     }
@@ -216,11 +216,11 @@ const setProjectView = async (projectInitialView, view) => {
     for (const key in projectInitialView) {
 
       if (key === "card") {
-        $("#cardList").selectpicker("val", projectInitialView[key])
+        await $("#cardList").selectpicker("val", projectInitialView[key])
       }
 
       if (key === "resfinder") {
-        $("#resList").selectpicker("val", projectInitialView[key])
+        await $("#resList").selectpicker("val", projectInitialView[key])
       }
 
     }
@@ -230,14 +230,14 @@ const setProjectView = async (projectInitialView, view) => {
     // for plasmidfinder dropdown
   } else if (view === "plasmidfinder") {
 
-    $("#plasmidFamiliesList").selectpicker("val", projectInitialView)
+    await $("#plasmidFamiliesList").selectpicker("val", projectInitialView)
 
     $("#pfSubmit").click()
 
     // and for virulence dropdown
   } else if (view === "virulence") {
 
-    $("#virList").selectpicker("val", projectInitialView)
+    await $("#virList").selectpicker("val", projectInitialView)
 
     $("#virSubmit").click()
 

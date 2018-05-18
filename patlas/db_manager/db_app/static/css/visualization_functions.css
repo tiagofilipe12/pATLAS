@@ -812,7 +812,7 @@ Careful when using this in other popovers in the future*/
 }
 
 #importDiv, #percentagePop, #percentagePopMash, #copyNumberPop,
-#percentagePopMashDist, #hashPop{
+#percentagePopMashDist, #hashPop, #contigPop{
     display: none;
 }
 
@@ -849,4 +849,8 @@ Careful when using this in other popovers in the future*/
 #resistancePopupPlot{
     height: 300px;
     display: none;
+}
+
+.custom-file-form.is-dragover{
+    background-color: #b4b4b4;
 }

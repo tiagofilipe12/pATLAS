@@ -37,3 +37,21 @@ const filterDisplayer = (taxaName, stringClass, divStringClass) => {
     $(divStringClass).append(taxaToParse)
   }
 }
+
+
+/**
+ * Function similar to filterDisplayer but specific for project imports since
+ * projects select automatically the dropdown menus based on the projectJson
+ * object imported
+ * @param {String} taxaName - the string with the taxa name
+ * @param {String} stringClass - the string class for the taxa level
+ * @param {String} divStringClass - the div which stores the strings in the
+ * modal displayer
+ */
+const filterDisplayerProjects = (taxaName, stringClass, divStringClass) => {
+  const taxaElements = $(divStringClass).html().split(/[:,]/)
+  const taxaToParse = " " + taxaName + ","
+  if (taxaElements.indexOf(taxaToParse.replace(",", "")) <= 0) {
+    $(divStringClass).append(taxaToParse)
+  }
+}

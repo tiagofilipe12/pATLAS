@@ -1,5 +1,5 @@
 /*globals Highcharts, cutoffParser, cutoffParserMash, assemblyJson,
- cutoffParserSeq */
+ cutoffParserSeq, copyNumberCutoff, cutoffHashSeq */
 
 /**
  * Function to compare two arrays and check if they are equal, i.e. if they
@@ -118,13 +118,33 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
               "id": "",
               "length": "",
               "percentage": "",
+              "percentageMashScreen": "",
+              "percentageMashDist": "",
+              "contigName": "",
               "speciesName": "",
               "plasmidName": "",
               "resGenes": "",
               "pfGenes": ""
             }
-            // gets percentage
-            const seqPercentage = (g.getNode(accession) && g.getNode(accession).data.percentage) ? g.getNode(accession).data.percentage : "N/A"
+            // gets percentage for mapping import
+            const seqPercentage = (g.getNode(accession) &&
+              g.getNode(accession).data.percentage) ?
+              g.getNode(accession).data.percentage : "N/A"
+
+            // gets percentage for mash screen import
+            const seqPercentageMashScreen = ( g.getNode(accession) &&
+              g.getNode(accession).data.percMash) ?
+                g.getNode(accession).data.percMash : "N/A"
+
+            // gets percentage for mash dist / sequence import
+            const seqPercentageMashDist = ( g.getNode(accession) &&
+              g.getNode(accession).data.percMashDist) ?
+                  g.getNode(accession).data.percMashDist : "N/A"
+
+            // get contig name if it exists. only mash dist
+            const gotContigName = (g.getNode(accession) &&
+              g.getNode(accession).data.contigName) ?
+              g.getNode(accession).data.contigName : "N/A"
 
             // iterates through main database entries
             for (let mainRequest of requests.sequences) {
@@ -133,6 +153,9 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
                 entry.id = accession
                 entry.length = mainRequest.json_entry.length
                 entry.percentage = seqPercentage
+                entry.percentageMashScreen = seqPercentageMashScreen
+                entry.percentageMashDist = seqPercentageMashDist
+                entry.contigName = gotContigName
                 entry.speciesName = mainRequest.json_entry.name.split("_").join(" ")
                 entry.plasmidName = mainRequest.json_entry.plasmid_name
                 entry.cluster = mainRequest.json_entry.cluster
@@ -199,7 +222,22 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
                 sortable: true
               }, {
                 field: "percentage",
-                title: "Percentage",
+                title: "Coverage (%)",
+                sortable: true,
+                visible: false
+              }, {
+                field: "percentageMashScreen",
+                title: "Mash screen id (%)",
+                sortable: true,
+                visible: false
+              }, {
+                field: "percentageMashDist",
+                title: "Sequence id (%)",
+                sortable: true,
+                visible: false
+              }, {
+                field: "contigName",
+                title: "Contig name",
                 sortable: true,
                 visible: false
               }, {
@@ -257,17 +295,22 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
  * @returns {*[]}
  */
 const parseReadObj = (readObjects, masterReadArray) => {
+
   const xCategories = []
   const positionsMap = []
   const valuesArray = []
+
+  // iterate each file
   for (const i in readObjects) {
-    // iterate each file
+
     if (readObjects.hasOwnProperty(i)) {
+
       // x will contain file Ids
       xCategories.push(i)
       const fileEntries = JSON.parse(readObjects[i])
       const fileIndex = Object.keys(readObjects).indexOf(i)
       let plasmidIndex, coverageValue
+
       for (const i2 in fileEntries) {
         // iterate each entry in each json file
         if (fileEntries.hasOwnProperty(i2)) {
@@ -275,6 +318,7 @@ const parseReadObj = (readObjects, masterReadArray) => {
           // both depending if it is an import from mapping or mash respectively
           const percValue = (typeof(fileEntries[i2]) === "number") ?
             fileEntries[i2] : parseFloat(fileEntries[i2][0])
+
           // checks if it is an import from Mash file
           if (fileEntries[i2].constructor !== Array) {
             const parsedCutoff = cutoffParser()
@@ -292,20 +336,21 @@ const parseReadObj = (readObjects, masterReadArray) => {
               }
               positionsMap.push([fileIndex, plasmidIndex, coverageValue])
             }
+
           } else {
+
             // executes for mash files
-            const parsedCutoff = (assemblyJson === false) ? cutoffParserMash() : cutoffParserSeq()
-            if (percValue >= parsedCutoff) {
-              // checks if it is already in y labels (containing plasmid accessions
-              if (masterReadArray.indexOf(i2) < 0) {
-                plasmidIndex = masterReadArray.indexOf(i2)
-                coverageValue = Math.round(percValue * 100)
-                valuesArray.push(coverageValue)
-              } else {
-                plasmidIndex = masterReadArray.indexOf(i2)
-                coverageValue = Math.round(percValue * 100)
-                valuesArray.push(coverageValue)
-              }
+            const parsedCutoff = (assemblyJson === false) ? cutoffParserMash() :
+              cutoffParserSeq()
+            const parsedCopyNumberCutoff = (assemblyJson === false) ? copyNumberCutoff() :
+              cutoffHashSeq()
+
+            const copyNumber = fileEntries[i2][1]
+
+            if (percValue >= parsedCutoff && copyNumber >= parsedCopyNumberCutoff) {
+              plasmidIndex = masterReadArray.indexOf(i2)
+              coverageValue = Math.round(percValue * 100)
+              valuesArray.push(coverageValue)
               positionsMap.push([fileIndex, plasmidIndex, coverageValue])
             }
           }
@@ -313,6 +358,7 @@ const parseReadObj = (readObjects, masterReadArray) => {
       }
     }
   }
+
   return [xCategories, positionsMap, valuesArray]
 }
 
@@ -325,10 +371,11 @@ const parseReadObj = (readObjects, masterReadArray) => {
  * @param {Object} readObjects - An object that maps each accession number
  * and their percentage values to the respective file.
  */
-const heatmapMaker = (masterReadArray, readObjects) => {
+const heatmapMaker = (g, masterReadArray, readObjects) => {
   // clear heatmap div
   $("#chartContainer2").empty()
   const tripleArray = parseReadObj(readObjects, masterReadArray)
+
   Highcharts.chart("chartContainer2", {
     chart: {
       type: "heatmap",
@@ -343,6 +390,8 @@ const heatmapMaker = (masterReadArray, readObjects) => {
     },
     xAxis: {
       categories: tripleArray[0],
+      min: 0,
+      max: tripleArray[0].length - 1,
       labels: {
         rotation: -45
       }
@@ -370,11 +419,33 @@ const heatmapMaker = (masterReadArray, readObjects) => {
     },
     tooltip: {
       formatter() {
-        return "<b>" + this.series.xAxis.categories[this.point.x] + "</b>" +
-          " file" + " <br><b>" + this.point.value +
-          "</b> % coverage <br><b>" +
-          "Accession number: " + this.series.yAxis.categories[this.point.y] +
-          "</b>"
+        // gets accession entries for this file
+        const accessionEntry = JSON.parse(
+          readObjects[this.series.xAxis.categories[this.point.x]]
+        )
+        // gets contig name based on the accession number of the plasmid
+        const getContigName = accessionEntry[
+          this.series.yAxis.categories[this.point.y]
+          ]
+
+        const plasmidLength = g.getNode(this.series.yAxis.categories[this.point.y])
+          .data.seqLength.split("</span>")[1]
+
+        // sets a default string that will be outputed for all the types of imports
+        let returnString = "<b>File name: </b>" + this.series.xAxis.categories[this.point.x] +
+          "<br>" + this.point.value + " <b>% coverage</b>" +
+          "<br><b>Accession number: </b>" + this.series.yAxis.categories[this.point.y] +
+          "<br><b>Plasmid length: </b>" + plasmidLength
+
+        // adds contig information when array has 3 entries,
+        // the third is the contig name --- This is only used in the case of
+        // assembly import
+        if (getContigName.length === 3) {
+          returnString += "<br><b>Contig name: </b>" + getContigName[2]
+        }
+
+        // then returns the actual tooltip format
+        return returnString
       }
     },
     series: [{
