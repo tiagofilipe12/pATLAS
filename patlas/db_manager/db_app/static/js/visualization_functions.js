@@ -391,6 +391,36 @@ const onLoad = () => {
       "#cancel_consensus").click()
   })
 
+  //***************//
+  //* DRAG N DROP *//
+  //***************//
+
+  $(".custom-file-form")
+    .on("drag dragstart dragend dragover dragenter dragleave drop", (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  })
+    .on("dragover dragenter", () => {
+      $(".custom-file-form").addClass("is-dragover")
+    })
+    .on("dragleave dragend drop", () => {
+      $(".custom-file-form").removeClass("is-dragover")
+    })
+    .on("drop", (e) => {
+      const files = e.originalEvent.dataTransfer.files
+      const textId = e.originalEvent.target.id
+
+      loadFilesToObj(files, `#${textId}`).then( (results) => {
+        // parses results to the right type of file import
+        if (textId === "file_text") {readFilejson = results}
+        else if (textId === "file_text_mash") {mashJson = results}
+        else if (textId === "assembly_text") {assemblyJson = results}
+        else if (textId === "consensus_text") {consensusJson = results}
+        else if (textId === "project_text") {projectJson = results}
+      })
+
+    })
+
 
   //*********//
   //* TABLE *//

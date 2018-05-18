@@ -13,8 +13,46 @@ const abortRead = (divToClean) => {
   return ""
 }
 
-// function to handle ONE file at a time (per button)
-// infile_id refers to the button id and text_id referes to the text form that reads the file
+
+/**
+ * Function that promisifies the return of the object with all file names as keys
+ * and file text entries as string
+ * @param {Array} files - An array with the names of all files
+ * @param {String} textId - the input element that will load the files.
+ * @returns {Promise<{}>} - A promise which results contain the arrayOfObj
+ * variable containing the dictionary of key as file names and values as
+ * the text entries within the files.
+ */
+const loadFilesToObj = async (files, textId) => {
+
+  let arrayOfObj = {}
+
+  // append fle name to text form displaying current selection
+  for (const file of files) {
+    const fileName = file.name
+    // checks if it is a json file extension
+    if (!file.name.includes(".json")) {
+      alert("File extension not supported. Only '.json' files are supported.")
+    } else {
+      // append the filename to the form
+      $(textId).val(files[0].name)
+      // opens the instance of the reader
+      const reader = new FileReader()
+
+      reader.onload = await function (f) {
+        arrayOfObj[fileName] = this.result
+      }
+
+      await reader.readAsText(file)
+
+    }
+  }
+
+  return arrayOfObj
+
+}
+
+
 /**
  * Function to handle one file at a time (per button).
  * @param {String} infileId - button id that loads the file
@@ -24,30 +62,14 @@ const abortRead = (divToClean) => {
  */
 const handleFileSelect = (infileId, textId, callback) => {
   document.getElementById(infileId).addEventListener("change", (e) => {
-    let arrayOfObj = {}
+
     const files = e.target.files // FileList object
-    // append fle name to text fomr displaying current selection
-    for (const file of files) {
-      const fileName = file.name
-      // checks if it is a json file extension
-      if (!file.name.includes(".json")) {
-        alert("File extension not supported. Only '.json' files are supported.")
-      } else {
-        // append the filename to the form
-        $(textId).val(files[0].name)
-        // opens the instance of the reader
-        const reader = new FileReader()
 
-        reader.onload = function (f) {
-          arrayOfObj[fileName] = this.result
-        }
+    loadFilesToObj(files, textId).then( (results) => { callback(results) })
 
-        reader.readAsText(file)
-      }
-    }
-    callback(arrayOfObj)
   }, false)
 }
+
 
 /**
  * Function to check if jsonObj is empty and warn the user for which entries

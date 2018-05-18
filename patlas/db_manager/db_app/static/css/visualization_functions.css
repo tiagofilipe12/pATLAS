@@ -850,3 +850,7 @@ Careful when using this in other popovers in the future*/
     height: 300px;
     display: none;
 }
+
+.custom-file-form.is-dragover{
+    background-color: #b4b4b4;
+}
