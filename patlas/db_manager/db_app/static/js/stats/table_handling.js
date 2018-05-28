@@ -459,6 +459,9 @@ const heatmapMaker = (g, masterReadArray, readObjects) => {
       point: {
         events: {
           click(event) {
+            // empties form value for plasmid or accession search, otherwise it
+            // will conflict with clickedHighchart
+            $("#formValueId").val("")
             clickedHighchart = event.point.series.yAxis.categories[event.point.y]
             $("#submitButton").click()
           }

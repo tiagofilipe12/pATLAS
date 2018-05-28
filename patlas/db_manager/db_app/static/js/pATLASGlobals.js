@@ -70,7 +70,7 @@ let projectJson = false
 
 let readIndex = 0
 
-let clickedHighchart
+let clickedHighchart = false
 
 let graphSize
 
