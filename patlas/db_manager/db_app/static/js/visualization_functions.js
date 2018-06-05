@@ -24,7 +24,7 @@ typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
 clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
-xRangePlotList, loadFilesToObj*/
+xRangePlotList, loadFilesToObj, mappingHighlight*/
 
 
 /**
@@ -309,7 +309,7 @@ const onLoad = () => {
     } else {
       // storeMasterNode is empty in here
       if (readFilejson !== false) {
-        const readReload = JSON.parse(Object.values(readFilejson)[readIndex])
+        const readReload = Object.values(readFilejson)[readIndex]
         $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
           .show()
         requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
@@ -1524,47 +1524,143 @@ const onLoad = () => {
   //* ***READS****//
   //* ************//
 
+
   $("#fileSubmit").unbind("click").bind("click", (event) => {
-    event.preventDefault()
-    if (readFilejson !== false) {
-      masterReadArray = []
-      assemblyJson = false
-      // feeds the first file
-      const readString = JSON.parse(Object.values(readFilejson)[0])
-
-      fileChecks(readString)
-      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
-        .show()
-
-      resetAllNodes(graphics, g, nodeColor, renderer)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map((el) => {
-        selector[el].state = false
-      })
-      hideAllOtherPlots()
-      areaSelection = false
-      // $("#loading").show()
-      showDiv().then( () => {
-        // colors each node for first element of readFilejson
-        const outLists = readColoring(g, listGi, graphics, renderer, readString)
-        listGi = outLists[0]
-        listGiFilter = outLists[1]
-
-        // adds read queries to the typeOfProject
-        typeOfProject["mapping"] = readFilejson
-
-        masterReadArray = pushToMasterReadArray(readFilejson)
-
-        hideDivsFileInputs()
-      })
-
-    } else {
-      // alert user that file may be empty or there is no imported file at all
-      fileChecks(readFilejson)
-    }
+    fileMode = "mapping"
   })
+
+  $("#redundancyNo").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+
+    // first build readFilejson object
+    Object.keys(readFilejson).map( (fileName) => {
+      const fileString = JSON.parse(readFilejson[fileName])
+      readFilejson[fileName] = fileString
+    })
+
+    // then execute function to color nodes and everything else
+    mappingHighlight(g, graphics, renderer)
+  })
+
+  $("#redundancyYes").unbind("click").bind("click", (event) => {
+
+    event.preventDefault()
+
+    // initiates empty object that will store the final filtered JSON object
+    // that will display the colors
+    parsedReadFileJson = {}
+
+    // list of promises to be collected
+    let promises = []
+
+    Object.keys(readFilejson).map( (fileName) => {
+      // variable that fetches the object associated with each file
+      const fileString = JSON.parse(readFilejson[fileName])
+      // the variable that stores the dictionary of accessions and respective
+      // values from imported results
+      const currentDict = Object.keys(fileString)
+
+      parsedReadFileJson[fileName] = {}
+
+      currentDict.map( (acc) => {
+
+        const currentNodePerc = fileString[acc]
+
+        // if node has no links add it instantly
+        if (g.getLinks(acc).length === 0) {
+
+          parsedReadFileJson[fileName][acc] = currentNodePerc
+          promises.push(acc)
+
+        } else {
+          // but if it has links... check if they are redundant
+          g.forEachLinkedNode(acc, (linkedNode, link) => {
+
+            if (currentDict.includes(linkedNode.id)) {
+
+              if (fileMode === "mapping") {
+                const linkedNodeLength = linkedNode.data.logLength
+                const currentNodeLenght = g.getNode(acc).data.logLength
+
+                const linkedNodePerc = fileString[linkedNode.id]
+
+                /** calculates the difference between the node length times the
+                 * node mapping percentage between the currentNode and its
+                 * linkedNodes
+                 */
+                const calc = currentNodeLenght * currentNodePerc -
+                  linkedNodeLength * linkedNodePerc
+
+                if (calc >= 0) {
+
+                  // if currentNode is a better hit but linkedNode is already in dict
+                  if (Object.keys(parsedReadFileJson[fileName]).includes(linkedNode.id)) {
+                    // remove this accession from the entries in parsedReadFileJson
+                    delete parsedReadFileJson[fileName][linkedNode.id]
+                  }
+
+                  // if it is major or equal to the linkedNode then add it to the library
+                  // if it is minor then the linkedNode will be added in another iteration
+                  parsedReadFileJson[fileName][acc] = currentNodePerc
+                  promises.push(acc)
+                }
+              }
+
+            }
+          })
+        }
+      })
+
+    })
+
+    // assures that all promises are fullfilled before executing everything else
+    Promise.all(promises).then( () => {
+      readFilejson = parsedReadFileJson
+      mappingHighlight(g, graphics, renderer)
+    })
+  })
+
+  // $("#fileSubmit").unbind("click").bind("click", (event) => {
+  //   event.preventDefault()
+  //   if (readFilejson !== false) {
+  //     masterReadArray = []
+  //     assemblyJson = false
+  //     // feeds the first file
+  //     const readString = JSON.parse(Object.values(readFilejson)[0])
+  //
+  //     fileChecks(readString)
+  //     $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+  //       .show()
+  //
+  //     resetAllNodes(graphics, g, nodeColor, renderer)
+  //     previousTableList = []
+  //     // transform selector object that handles plots and hide their
+  //     // respective divs
+  //     Object.keys(selector).map((el) => {
+  //       selector[el].state = false
+  //     })
+  //     hideAllOtherPlots()
+  //     areaSelection = false
+  //     // $("#loading").show()
+  //     showDiv().then( () => {
+  //       // colors each node for first element of readFilejson
+  //       const outLists = readColoring(g, listGi, graphics, renderer, readString)
+  //       listGi = outLists[0]
+  //       listGiFilter = outLists[1]
+  //
+  //       // adds read queries to the typeOfProject
+  //       typeOfProject["mapping"] = readFilejson
+  //
+  //       masterReadArray = pushToMasterReadArray(readFilejson)
+  //
+  //       hideDivsFileInputs()
+  //     })
+  //
+  //   } else {
+  //     // alert user that file may be empty or there is no imported file at all
+  //     fileChecks(readFilejson)
+  //   }
+  // })
 
   $("#cancel_infile").unbind("click").bind("click", () => {
     readFilejson = abortRead("file_text")

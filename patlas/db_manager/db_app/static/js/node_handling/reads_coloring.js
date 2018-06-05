@@ -617,7 +617,9 @@ const pushToMasterReadArray = (readFilejson) => {
   // iterate for all files and save to masterReadArray to use in heatmap
   for (const i in readFilejson) {
     if (readFilejson.hasOwnProperty(i)) {
-      const fileEntries = JSON.parse(readFilejson[i])
+      // sample files require to parse this object to JSON.
+      const fileEntries = (typeof readFilejson[i] === "string") ?
+        JSON.parse(readFilejson[i]) : readFilejson[i]
       // iterate each accession number
       for (const i2 in fileEntries) {
         if (fileEntries.hasOwnProperty(i2)) {

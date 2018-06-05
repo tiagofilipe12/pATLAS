@@ -307,7 +307,8 @@ const parseReadObj = (readObjects, masterReadArray) => {
 
       // x will contain file Ids
       xCategories.push(i)
-      const fileEntries = JSON.parse(readObjects[i])
+      const fileEntries = (typeof readFilejson[i] === "string") ?
+        JSON.parse(readFilejson[i]) : readFilejson[i]
       const fileIndex = Object.keys(readObjects).indexOf(i)
       let plasmidIndex, coverageValue
 
@@ -372,6 +373,7 @@ const parseReadObj = (readObjects, masterReadArray) => {
  * and their percentage values to the respective file.
  */
 const heatmapMaker = (g, masterReadArray, readObjects) => {
+  console.log(readObjects)
   // clear heatmap div
   $("#chartContainer2").empty()
   const tripleArray = parseReadObj(readObjects, masterReadArray)
@@ -420,9 +422,11 @@ const heatmapMaker = (g, masterReadArray, readObjects) => {
     tooltip: {
       formatter() {
         // gets accession entries for this file
-        const accessionEntry = JSON.parse(
+        const accessionEntry = (typeof readObjects[
+          this.series.xAxis.categories[this.point.x]] === "string") ?
+          JSON.parse(readObjects[this.series.xAxis.categories[this.point.x]]) :
           readObjects[this.series.xAxis.categories[this.point.x]]
-        )
+
         // gets contig name based on the accession number of the plasmid
         const getContigName = accessionEntry[
           this.series.yAxis.categories[this.point.y]

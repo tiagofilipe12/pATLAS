@@ -193,3 +193,11 @@ let freezeShift = true
 let slider
 
 let xRangePlotList = []
+
+/**
+ * Variable that controls the type of input being provided
+ * @type {boolean|String} - By default this variable is false but when files are
+ * imported this will change to a string that corresponds to the type of file
+ * being imported. This behavior is set when the file import modal is dismissed
+ */
+let fileMode = false

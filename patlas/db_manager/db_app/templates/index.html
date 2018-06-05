@@ -41,6 +41,7 @@
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/zooming_control.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/graph_control/legendFunctions.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/dropdownPopulation.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/input_file_handling/fileModes.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/download/download_sequences.js') }}"></script>
 
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/devel/makeHash.js') }}"></script>
@@ -220,7 +221,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        Frequently asked questions
+        <h3>Frequently asked questions</h3>
       </div>
       <div class="modal-body" id="formModalBody">
         {% include 'faqs.html' %}
@@ -240,7 +241,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        Video tutorial
+        <h3>Video tutorial</h3>
         <!--<img src="{{ url_for('static', filename='images/logo.png') }}"-->
         <!--alt="pATLAS" style="width:30%;height:auto; display:block;-->
         <!--margin:auto;"/>-->
@@ -270,7 +271,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Heatmap for all imported samples</h4>
+        <h3 class="modal-title">Heatmap for all imported samples</h3>
       </div>
       <div class="modal-body table-responsive" id="modalHeatBody">
         <div id="chartContainer2">
@@ -313,8 +314,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Table for selected plasmids
-          metadata</h4>
+        <h3 class="modal-title">Table for selected plasmids
+          metadata</h3>
       </div>
       <div class="modal-body table-responsive" id="modalTableBody">
         <div id="toolbar">
@@ -372,7 +373,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Select input file (mapping results)</h4>
+        <h3 class="modal-title">Select input file (mapping results)</h3>
       </div>
       <div class="modal-body" id="modal-body-file">
 
@@ -433,7 +434,10 @@
       </div>
 
       <div class="modal-footer">
-        <button type="submit" class="btn btn-default" data-dismiss="modal" id="fileSubmit">Ok</button>
+        <button class="btn btn-default" id="fileSubmit" data-dismiss="modal"
+                type="button" data-toggle="modal" data-backdrop="static"
+                data-target="#redundancyModal"
+                >Ok
         <button class="btn btn-danger" id="cancel_infile">Clear selection</button>
 
       </div>
@@ -450,7 +454,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Select input file (mash results)</h4>
+        <h3 class="modal-title">Select input file (mash results)</h3>
       </div>
       <div class="modal-body" id="modal-body-mash">
         <div class="row uploadFile" id="uploadFileMash">
@@ -537,7 +541,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Select input file (sequence import)</h4>
+        <h3 class="modal-title">Select input file (sequence import)</h3>
       </div>
       <div class="modal-body" id="modal-body-fileAssembly">
         <div class="row uploadFile" id="uploadFileAssembly">
@@ -621,7 +625,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Display distances with a gradient of color?</h4>
+        <h3 class="modal-title">Display distances with a gradient of color?</h3>
       </div>
       <div class="modal-body" id="modal-body-scheme">
         <div class="dropdown" id="color_scheme">
@@ -657,7 +661,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Filter nodes by sequence length</h4>
+        <h3 class="modal-title">Filter nodes by sequence length</h3>
       </div>
       <div class="modal-body" id="modal-body-length">
         <div class="row">
@@ -695,7 +699,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Filter nodes by species taxa</h4>
+        <h3 class="modal-title">Filter nodes by species taxa</h3>
       </div>
       <div class="modal-body" id="modal-body-taxa">
 
@@ -1141,7 +1145,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Filtering graph for the current selection</h4>
+        <h3 class="modal-title">Filtering graph for the current selection</h3>
       </div>
       <div class="modal-body" id="modalBodyReRun">
 
@@ -1159,6 +1163,35 @@
   </div>
 </div>
 
+<!-- Modal for Re_run-->
+<div id="redundancyModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="modal-title">Redundancy removal</h3>
+      </div>
+      <div class="modal-body" id="modalBodyRedundancy">
+
+        <h4><b>Do you want to remove redundancy from the
+          results? </b></h4>
+        <p>This means that plasmids that are related will not be
+          highlighted, and instead the most likely plasmid (from that group)
+          will be displayed.</p>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-default"
+                  data-dismiss="modal" id="redundancyYes">Yes</button>
+          <button type="submit" class="btn btn-default"
+                  data-dismiss="modal" id="redundancyNo">No</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div id="modalPlot" class="modal fade" role="dialog" tabindex="-1"
      data-backdrop="static">
   <div class="modal-dialog" style="width: 70%">
@@ -1166,7 +1199,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Quick statistics histograms</h4>
+        <h3 class="modal-title">Quick statistics histograms</h3>
       </div>
       <div class="modal-body" id="modal-body-plot">
         <div class="alert alert-warning alert-dismissable fade in"
@@ -1266,8 +1299,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Filter plasmids by
-          resistance genes</h4>
+        <h3 class="modal-title">Filter plasmids by
+          resistance genes</h3>
       </div>
       <div class="modal-body" id="modalBodyABR">
 
@@ -1328,8 +1361,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Filter plasmids by
-          plasmid family genes</h4>
+        <h3 class="modal-title">Filter plasmids by
+          plasmid family genes</h3>
       </div>
       <div class="modal-body" id="modalBodyFAM">
 
@@ -1386,8 +1419,8 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Filter plasmids by
-          virulence factor genes</h4>
+        <h3 class="modal-title">Filter plasmids by
+          virulence factor genes</h3>
       </div>
       <div class="modal-body" id="modalBodyVir">
 
