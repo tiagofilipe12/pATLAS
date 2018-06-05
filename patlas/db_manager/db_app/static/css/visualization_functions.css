@@ -213,8 +213,13 @@
     *overflow: hidden;
 }
 
-#mappingCutoffWrapper{
+.mappingCutoffWrapper{
     margin-top: 2%;
+    text-align: center;
+}
+
+.mappingCutoffWrapper .form-group{
+    display: inline-block;
 }
 
 .uploadFile{
@@ -223,9 +228,9 @@
 }
 
 /*resize search box for gi*/
-#cutoffValue, #cutoffValueMash, #copyNumberValue, #cutoffValueSeq, #cutoffHashSeq{
-    width: 200px;
-}
+/*#cutoffValue, #cutoffValueMash, #copyNumberValue, #cutoffValueSeq, #cutoffHashSeq{*/
+    /*width: 200px;*/
+/*}*/
 
 #modal-body-scheme{
     height: 100px;
