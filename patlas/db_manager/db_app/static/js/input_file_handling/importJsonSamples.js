@@ -28,7 +28,7 @@ const getArrayAssembly = async () => {
   const firstPromise = await $.getJSON("/ass_sample1")
   const secondPromise = await $.getJSON("/ass_sample2")
   return {
-    "assembly_sample1": JSON.stringify(firstPromise),
-    "assembly_sample2": JSON.stringify(secondPromise)
+    "assembly_sample1": firstPromise,
+    "assembly_sample2": secondPromise
   }
 }

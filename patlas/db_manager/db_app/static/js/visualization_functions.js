@@ -1526,6 +1526,7 @@ const onLoad = () => {
 
 
   $("#fileSubmit").unbind("click").bind("click", (event) => {
+    event.preventDefault()
     fileMode = "mapping"
   })
 
@@ -1553,9 +1554,15 @@ const onLoad = () => {
     // list of promises to be collected
     let promises = []
 
-    Object.keys(readFilejson).map( (fileName) => {
+    // asserts which dict to use
+    const queryFileJson = (mashJson) ? mashJson :
+      (assemblyJson) ? assemblyJson :
+        (consensusJson) ? consensusJson :
+          readFilejson
+
+    Object.keys(queryFileJson).map( (fileName) => {
       // variable that fetches the object associated with each file
-      const fileString = JSON.parse(readFilejson[fileName])
+      const fileString = JSON.parse(queryFileJson[fileName])
       // the variable that stores the dictionary of accessions and respective
       // values from imported results
       const currentDict = Object.keys(fileString)
@@ -1564,6 +1571,11 @@ const onLoad = () => {
 
       currentDict.map( (acc) => {
 
+        /**
+         * The result of the approach being imported to that accession number.
+         * It is a number for mapping but for mash screen and assembly it is an
+         * array.
+         */
         const currentNodePerc = fileString[acc]
 
         // if node has no links add it instantly
@@ -1578,11 +1590,20 @@ const onLoad = () => {
 
             if (currentDict.includes(linkedNode.id)) {
 
-              if (fileMode === "mapping") {
-                const linkedNodeLength = linkedNode.data.logLength
-                const currentNodeLenght = g.getNode(acc).data.logLength
+              /**
+               * The result of the approach being imported for the linked
+               * accession number. It is a number for the mapping but for mash
+               * screen and assembly it is an array.
+               */
+              const linkedNodePerc = fileString[linkedNode.id]
 
-                const linkedNodePerc = fileString[linkedNode.id]
+              // gets linked node length in log scale
+              const linkedNodeLength = linkedNode.data.logLength
+
+              // gets the current node length in log scale
+              const currentNodeLenght = g.getNode(acc).data.logLength
+
+              if (fileMode === "mapping") {
 
                 /** calculates the difference between the node length times the
                  * node mapping percentage between the currentNode and its
@@ -1591,10 +1612,13 @@ const onLoad = () => {
                 const calc = currentNodeLenght * currentNodePerc -
                   linkedNodeLength * linkedNodePerc
 
+                // adds node if it is better or equally likely to be the correct
+                // plasmid
                 if (calc >= 0) {
 
                   // if currentNode is a better hit but linkedNode is already in dict
-                  if (Object.keys(parsedReadFileJson[fileName]).includes(linkedNode.id)) {
+                  if (Object.keys(parsedReadFileJson[fileName]).includes(linkedNode.id)
+                    && calc > 0) {
                     // remove this accession from the entries in parsedReadFileJson
                     delete parsedReadFileJson[fileName][linkedNode.id]
                   }
@@ -1604,6 +1628,39 @@ const onLoad = () => {
                   parsedReadFileJson[fileName][acc] = currentNodePerc
                   promises.push(acc)
                 }
+              } else if (fileMode === "mash_screen") {
+                const linkedNodeId = linkedNodePerc[0]
+                //const linkedNodeCN = linkedNodePerc[1]
+
+                const currentNodeId = currentNodePerc[0]
+                //const currentNodeCN = currentNodePerc[1]
+
+                /**
+                 * Calculates the difference between the node length times the
+                 * node mash screen identity between the currentNode and its
+                 * linkedNodes
+                 */
+                const calc = currentNodeLenght * currentNodeId -
+                  linkedNodeLength - linkedNodeId
+
+                // if current node is more likely and its copy number is the
+                // same as the linkedNode, then it can be highlighted, otherwise
+                if (calc >= 0) {
+
+                  // if currentNode is a better hit but linkedNode is already in dict
+                  // and their copy number is equal
+                  if (Object.keys(parsedReadFileJson[fileName]).includes(linkedNode.id)
+                    && calc > 0) {
+                    // remove this accession from the entries in parsedReadFileJson
+                    delete parsedReadFileJson[fileName][linkedNode.id]
+                  }
+
+                  // if it is major or equal to the linkedNode then add it to the library
+                  // if it is minor then the linkedNode will be added in another iteration
+                  parsedReadFileJson[fileName][acc] = currentNodePerc
+                  promises.push(acc)
+                }
+
               }
 
             }
@@ -1613,54 +1670,12 @@ const onLoad = () => {
 
     })
 
-    // assures that all promises are fullfilled before executing everything else
+    // assures that all promises are fulfilled before executing everything else
     Promise.all(promises).then( () => {
       readFilejson = parsedReadFileJson
       mappingHighlight(g, graphics, renderer)
     })
   })
-
-  // $("#fileSubmit").unbind("click").bind("click", (event) => {
-  //   event.preventDefault()
-  //   if (readFilejson !== false) {
-  //     masterReadArray = []
-  //     assemblyJson = false
-  //     // feeds the first file
-  //     const readString = JSON.parse(Object.values(readFilejson)[0])
-  //
-  //     fileChecks(readString)
-  //     $("#fileNameDiv").html(Object.keys(readFilejson)[0])
-  //       .show()
-  //
-  //     resetAllNodes(graphics, g, nodeColor, renderer)
-  //     previousTableList = []
-  //     // transform selector object that handles plots and hide their
-  //     // respective divs
-  //     Object.keys(selector).map((el) => {
-  //       selector[el].state = false
-  //     })
-  //     hideAllOtherPlots()
-  //     areaSelection = false
-  //     // $("#loading").show()
-  //     showDiv().then( () => {
-  //       // colors each node for first element of readFilejson
-  //       const outLists = readColoring(g, listGi, graphics, renderer, readString)
-  //       listGi = outLists[0]
-  //       listGiFilter = outLists[1]
-  //
-  //       // adds read queries to the typeOfProject
-  //       typeOfProject["mapping"] = readFilejson
-  //
-  //       masterReadArray = pushToMasterReadArray(readFilejson)
-  //
-  //       hideDivsFileInputs()
-  //     })
-  //
-  //   } else {
-  //     // alert user that file may be empty or there is no imported file at all
-  //     fileChecks(readFilejson)
-  //   }
-  // })
 
   $("#cancel_infile").unbind("click").bind("click", () => {
     readFilejson = abortRead("file_text")
@@ -1683,8 +1698,7 @@ const onLoad = () => {
       getArrayMapping().done( (result) => {
         // puts to readFilejson object that may store many files
         readFilejson = {
-          // has to be stringified to be passed to pushToMasterReadArray
-          "mapping_sample1": JSON.stringify(result)
+          "mapping_sample1": result
         }
         const outLists = readColoring(g, listGi, graphics, renderer, result)
         listGi = outLists[0]
@@ -1702,43 +1716,7 @@ const onLoad = () => {
 
   $("#fileSubmit_mash").unbind("click").bind("click", (event) => {
     event.preventDefault()
-    if (mashJson !== false) {
-      masterReadArray = []
-      assemblyJson = false
-      readFilejson = mashJson // converts mashJson into readFilejson to
-      const readString = JSON.parse(Object.values(mashJson)[0])
-      fileChecks(readString)
-      $("#fileNameDiv").html(Object.keys(mashJson)[0])
-        .show()
-
-      // it and use the same function (readColoring)
-      resetAllNodes(graphics, g, nodeColor, renderer)
-      previousTableList = []
-      // transform selector object that handles plots and hide their
-      // respective divs
-      Object.keys(selector).map((el) => {
-        selector[el].state = false
-      })
-      hideAllOtherPlots()
-      areaSelection = false
-
-      showDiv().then( () => {
-        const outputList = readColoring(g, listGi, graphics, renderer, readString)
-        listGi = outputList[0]
-        listGiFilter = outputList[1]
-
-        // adds mash screen queries to the typeOfProject
-        typeOfProject["mashscreen"] = mashJson
-
-        masterReadArray = pushToMasterReadArray(readFilejson)
-
-        hideDivsFileInputs()
-      })
-
-    } else {
-      // alert user that file may be empty or there is no imported file at all
-      fileChecks(mashJson)
-    }
+    fileMode = "mash_screen"
   })
 
 
@@ -1765,13 +1743,13 @@ const onLoad = () => {
       getArrayMash().done( (result) => {
         // puts to readFilejson object that may store many files
         mashJson = {
-          // has to be stringified to be passed to pushToMasterReadArray
-          "mash_sample1": JSON.stringify(result)
+          "mash_sample1": result
         }
         readFilejson = mashJson
         const outLists = readColoring(g, listGi, graphics, renderer, result)
         listGi = outLists[0]
         listGiFilter = outLists[1]
+        console.log(listGiFilter)
         masterReadArray = pushToMasterReadArray(mashJson)
 
         hideDivsFileInputs()

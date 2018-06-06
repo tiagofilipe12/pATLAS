@@ -4,12 +4,49 @@ previousTableList, readFilejson, nodeColor, listGi, fileChecks*/
 
 const mappingHighlight = (g, graphics, renderer) => {
 
-  if (readFilejson !== false) {
+  // feeds the first file
+  const readString = (typeof Object.values(readFilejson)[0] === "string") ?
+    JSON.parse(Object.values(readFilejson)[0]) : Object.values(readFilejson)[0]
+
+  if (mashJson !== false) {
     masterReadArray = []
     assemblyJson = false
-    // feeds the first file
-    const readString = (typeof Object.values(readFilejson)[0] === "string") ?
-      JSON.parse(Object.values(readFilejson)[0]) : Object.values(readFilejson)[0]
+    // readFilejson = mashJson // converts mashJson into readFilejson to
+    // const readString = JSON.parse(Object.values(mashJson)[0])
+    fileChecks(readString)
+    $("#fileNameDiv").html(Object.keys(mashJson)[0])
+      .show()
+
+    // it and use the same function (readColoring)
+    resetAllNodes(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map((el) => {
+      selector[el].state = false
+    })
+    hideAllOtherPlots()
+    areaSelection = false
+
+    showDiv().then( () => {
+      const outputList = readColoring(g, listGi, graphics, renderer, readString)
+      listGi = outputList[0]
+      listGiFilter = outputList[1]
+
+      // adds mash screen queries to the typeOfProject
+      typeOfProject["mashscreen"] = readFilejson
+
+      masterReadArray = pushToMasterReadArray(readFilejson)
+
+      hideDivsFileInputs()
+    })
+
+  } else if (readFilejson !== false) {
+    masterReadArray = []
+    assemblyJson = false
+    // // feeds the first file
+    // const readString = (typeof Object.values(readFilejson)[0] === "string") ?
+    //   JSON.parse(Object.values(readFilejson)[0]) : Object.values(readFilejson)[0]
     // const readString = Object.values(readFilejson)[0]
 
     fileChecks(readString)

@@ -210,6 +210,10 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
   let meanValue, minValue
   let counter = 0
 
+  console.log(readString)
+
+  console.log("test", listGiFilter)
+
   for (let string in readString) {
     if ({}.hasOwnProperty.call(readString, string)) {
       counter += 1
@@ -614,7 +618,7 @@ const resetAllNodes = (graphics, g, nodeColor, renderer) => {
  */
 const pushToMasterReadArray = (readFilejson) => {
   const returnArray = []
-  // iterate for all files and save to masterReadArray to use in heatmap
+  // iterate for all files and save to masterReadArray to use in heat map
   for (const i in readFilejson) {
     if (readFilejson.hasOwnProperty(i)) {
       // sample files require to parse this object to JSON.
@@ -627,15 +631,9 @@ const pushToMasterReadArray = (readFilejson) => {
           const percValue = (typeof(fileEntries[i2]) === "number") ?
             fileEntries[i2] : parseFloat(fileEntries[i2][0])
           if (fileEntries[i2].constructor !== Array) {
-            // if (assemblyJson === false) {
             if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParser()) {
               returnArray.push(i2)
             }
-            // } else {
-            // assemblyJson is defined
-            // if (returnArray.indexOf(i2) < 0 && percValue >= cutoffParserSeq()) {
-            //   returnArray.push(i2)
-            // }
           } else {
             const copyNumber = parseFloat(fileEntries[i2][1])
             if (assemblyJson === false) {
