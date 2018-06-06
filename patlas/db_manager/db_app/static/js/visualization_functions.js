@@ -2433,12 +2433,13 @@ const onLoad = () => {
     }
   })
 
+
   /** control the visualization of multiple files for read mode
    * The default idea is that the first file in this readFilejson object is the
    * one to be loaded when uploading then everything else should use cycler.
-   * This button allows to slide to the rightmost file.
+   * This button allows to slide to the rightmost or leftmost file.
    */
-  $("#slideRight").unbind("click").bind("click", () => {
+  $("#slideRight, #slideLeft").unbind("click").bind("click", (e) => {
     resetAllNodes(graphics, g, nodeColor, renderer)
     previousTableList = []
     // transform selector object that handles plots and hide their
@@ -2446,28 +2447,12 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    console.log(readFilejson)
-    const outArray = slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer)
-    readIndex = outArray[0]
-    listGiFilter = outArray[1][1]
-    listGi = outArray[1][0]
-  })
 
+    // checks the target button before sliding right or left
+    const outArray = (e.target.id === "slideRight") ?
+      slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer) :
+      slideToLeft(readFilejson, readIndex, g, listGi, graphics, renderer)
 
-  /** control the visualization of multiple files for read mode
-   * The default idea is that the first file in this readFilejson object is the
-   * one to be loaded when uploading then everything else should use cycler.
-   * This button allows to slide to the leftmost file.
-   */
-  $("#slideLeft").unbind("click").bind("click", () => {
-    resetAllNodes(graphics, g, nodeColor, renderer)
-    previousTableList = []
-    // transform selector object that handles plots and hide their
-    // respective divs
-    Object.keys(selector).map( (el) => { selector[el].state = false })
-    hideAllOtherPlots()
-    areaSelection = false
-    const outArray = slideToLeft(readFilejson, readIndex, g, listGi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]
     listGi = outArray[1][0]

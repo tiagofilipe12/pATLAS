@@ -18,12 +18,17 @@ const slideToRight = (readJson, readIndex, g, listGi, graphics, renderer) => {
     readIndex += 1 : readIndex = 0
     // change div containing naming of the file
     $("#fileNameDiv").html(Object.keys(readJson)[readIndex])
-    const nextFile = JSON.parse(Object.values(readJson)[readIndex])
+
+    const nextFile = (typeof Object.values(readJson)[readIndex] === "string") ?
+      JSON.parse(Object.values(readJson)[readIndex]) :
+      Object.values(readJson)[readIndex]
+
     fileChecks(nextFile)
     const listGiFilter = readColoring(g, listGi, graphics, renderer, nextFile)
     return [readIndex, listGiFilter]
   }
 }
+
 // function to slide to left
 const slideToLeft = (readJson, readIndex, g, listGi, graphics, renderer) => {
   if (readIndex < Object.values(readJson).length || readIndex > 0) {
@@ -33,7 +38,11 @@ const slideToLeft = (readJson, readIndex, g, listGi, graphics, renderer) => {
       readIndex -= 1 : readIndex = Object.values(readJson).length - 1
     // change div containing naming of the file
     $("#fileNameDiv").html(Object.keys(readJson)[readIndex])
-    const nextFile = JSON.parse(Object.values(readJson)[readIndex])
+
+    const nextFile = (typeof Object.values(readJson)[readIndex] === "string") ?
+      JSON.parse(Object.values(readJson)[readIndex]) :
+      Object.values(readJson)[readIndex]
+
     fileChecks(nextFile)
     const listGiFilter = readColoring(g, listGi, graphics, renderer, nextFile)
     return [readIndex, listGiFilter]

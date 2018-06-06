@@ -11,7 +11,7 @@ const mappingHighlight = (g, graphics, renderer) => {
     JSON.parse(Object.values(readFilejson)[0]) : Object.values(readFilejson)[0]
 
   masterReadArray = []
-  
+
   fileChecks(readString)
 
   if (mashJson !== false) {
