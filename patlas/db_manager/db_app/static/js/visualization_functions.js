@@ -1533,14 +1533,29 @@ const onLoad = () => {
   $("#redundancyNo").unbind("click").bind("click", (event) => {
     event.preventDefault()
 
+    // asserts which dict to use
+    const queryFileJson = (mashJson) ? mashJson :
+      (assemblyJson) ? assemblyJson :
+        (consensusJson) ? consensusJson :
+          readFilejson
+
+    let promises = []
+
+    // re-assigns readFilejson to an object avoid it to be false
+    readFilejson = {}
+
     // first build readFilejson object
-    Object.keys(readFilejson).map( (fileName) => {
-      const fileString = JSON.parse(readFilejson[fileName])
+    Object.keys(queryFileJson).map( (fileName) => {
+      const fileString = JSON.parse(queryFileJson[fileName])
       readFilejson[fileName] = fileString
+      promises.push(fileName)
     })
 
-    // then execute function to color nodes and everything else
-    mappingHighlight(g, graphics, renderer)
+
+    Promise.all(promises).then( () => {
+      mappingHighlight(g, graphics, renderer)
+    })
+
   })
 
   $("#redundancyYes").unbind("click").bind("click", (event) => {
@@ -2431,6 +2446,7 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
+    console.log(readFilejson)
     const outArray = slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer)
     readIndex = outArray[0]
     listGiFilter = outArray[1][1]

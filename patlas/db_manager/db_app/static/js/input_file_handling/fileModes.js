@@ -10,12 +10,16 @@ const mappingHighlight = (g, graphics, renderer) => {
   const readString = (typeof Object.values(readFilejson)[0] === "string") ?
     JSON.parse(Object.values(readFilejson)[0]) : Object.values(readFilejson)[0]
 
+  masterReadArray = []
+  
+  fileChecks(readString)
+
   if (mashJson !== false) {
-    masterReadArray = []
+    // masterReadArray = []
     assemblyJson = false
     // readFilejson = mashJson // converts mashJson into readFilejson to
     // const readString = JSON.parse(Object.values(mashJson)[0])
-    fileChecks(readString)
+    // fileChecks(readString)
     $("#fileNameDiv").html(Object.keys(mashJson)[0])
       .show()
 
@@ -45,13 +49,11 @@ const mappingHighlight = (g, graphics, renderer) => {
 
   } else if (assemblyJson !== false) {
 
-    console.log(readString)
-
     // const readString = JSON.parse(Object.values(assemblyJson)[0])
-    fileChecks(readString)
+    // fileChecks(readString)
     $("#fileNameDiv").html(Object.keys(assemblyJson)[0])
       .show()
-    masterReadArray = []
+    // masterReadArray = []
     // readFilejson = assemblyJson
     resetAllNodes(graphics, g, nodeColor, renderer)
     previousTableList = []
@@ -76,14 +78,14 @@ const mappingHighlight = (g, graphics, renderer) => {
     })
 
   } else if (readFilejson !== false) {
-    masterReadArray = []
+    // masterReadArray = []
     assemblyJson = false
     // // feeds the first file
     // const readString = (typeof Object.values(readFilejson)[0] === "string") ?
     //   JSON.parse(Object.values(readFilejson)[0]) : Object.values(readFilejson)[0]
     // const readString = Object.values(readFilejson)[0]
 
-    fileChecks(readString)
+    // fileChecks(readString)
     $("#fileNameDiv").html(readString)
       .show()
 
