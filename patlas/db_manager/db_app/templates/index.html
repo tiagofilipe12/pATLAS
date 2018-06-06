@@ -611,7 +611,11 @@
 
       <div class="modal-footer">
 
-        <button type="submit" class="btn btn-default" data-dismiss="modal" id="assemblySubmit">Ok</button>
+        <button class="btn btn-default" id="assemblySubmit" data-dismiss="modal"
+                type="button" data-toggle="modal" data-backdrop="static"
+                data-target="#redundancyModal"
+        >Ok
+        </button>
         <button class="btn btn-danger" id="cancel_assembly">Clear selection</button>
       </div>
     </div>

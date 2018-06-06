@@ -210,10 +210,6 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
   let meanValue, minValue
   let counter = 0
 
-  console.log(readString)
-
-  console.log("test", listGiFilter)
-
   for (let string in readString) {
     if ({}.hasOwnProperty.call(readString, string)) {
       counter += 1
