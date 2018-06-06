@@ -4,3 +4,5 @@
 
 * Adds redundancy removal option for mapping, mash screen and sequence
 imports.
+
+* Adds drag and drop of files to imports and projects menu.
