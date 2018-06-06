@@ -86,7 +86,8 @@ const mappingHighlight = (g, graphics, renderer) => {
     // const readString = Object.values(readFilejson)[0]
 
     // fileChecks(readString)
-    $("#fileNameDiv").html(readString)
+    
+    $("#fileNameDiv").html(Object.keys(readFilejson)[0])
       .show()
 
     resetAllNodes(graphics, g, nodeColor, renderer)
