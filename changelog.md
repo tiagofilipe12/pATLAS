@@ -6,3 +6,7 @@
 imports.
 
 * Adds drag and drop of files to imports and projects menu.
+
+* Adds project export/import
+
+* Adds advanced filters

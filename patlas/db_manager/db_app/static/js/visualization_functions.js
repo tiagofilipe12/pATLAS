@@ -24,7 +24,7 @@ typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
 clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
-xRangePlotList, loadFilesToObj, mappingHighlight, fileMode*/
+xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version*/
 
 
 /**
@@ -581,6 +581,14 @@ const onLoad = () => {
     $("#alertIdNoProject").hide()  // hide this div
   })
 
+  $("#alertClose_noProject").unbind("click").bind("click", () => {
+    $("#alertId_noProject").hide()  // hide this div
+  })
+
+  $("#alertClose_Version").unbind("click").bind("click", () => {
+    $("#alertId_Version").hide()  // hide this div
+  })
+
 
   //**********//
   //* LEGEND *//
@@ -643,17 +651,39 @@ const onLoad = () => {
   //************//
 
   $("#projectSubmit").unbind("click").bind("click", () => {
-    // the variable that contains the project to export
-    const textToExport = JSON.stringify(typeOfProject)
 
-    // checks if div is empty and if so gives a default name, otherwise
-    // fetches user defined name
-    const projectName = ($("#projectName").val() === "") ?
-      "my-patlas-project" :  $("#projectName").val()
+    /**
+     * Creates a copy of typeOfProject
+     * @type {{} & Object}
+     */
+    const noVersionTypeOfProject = Object.assign({}, typeOfProject)
 
-    // downloads the file
-    fileDownloader(`${projectName}.json`, "data:application/json;charset=utf-8",
-      [textToExport])
+    // then delete the version
+    delete noVersionTypeOfProject["version"]
+
+    // check if any element is not false
+    const checkFalse = (element) => {
+      return element === false
+    }
+
+    const checkTypeOfProject = Object.values(noVersionTypeOfProject)
+      .every(checkFalse)
+
+    // if any selection is made then project may be exported
+    if (!checkTypeOfProject) {
+      const textToExport = JSON.stringify(typeOfProject)
+
+      // checks if div is empty and if so gives a default name, otherwise
+      // fetches user defined name
+      const projectName = ($("#projectName").val() === "") ?
+        "my-patlas-project" : $("#projectName").val()
+
+      // downloads the file
+      fileDownloader(`${projectName}.json`, "data:application/json;charset=utf-8",
+        [textToExport])
+    } else {
+      $("#alertId_noProject").show()
+    }
   })
 
 
@@ -667,8 +697,10 @@ const onLoad = () => {
    */
   $("#projectLoadSubmit").unbind("click").bind("click", () => {
 
+    console.log(projectJson)
+
     // first check if viewList has nothing selected
-    if ($("#viewList").val() === "") {
+    if (!$("#viewList").val()) {
       $("#alertIdnoSelectedview").show()
     } else if ($("#project_text").val() === "") {
       $("#alertIdNoProject").show()
@@ -691,6 +723,15 @@ const onLoad = () => {
 
         // sets the project in the current patlas view
         setProjectView(projectInitialView, viewParsed)
+
+        const fileVersion = JSON.parse(Object.values(projectJson)[0]).version
+
+        if (fileVersion !== version) {
+          $("#alertVersionText").html(`Project file was generated in a different
+           pATLAS version. Current version: ${version}. Your file was generated 
+           in version: ${fileVersion}`)
+          $("#alertId_Version").show()
+        }
 
       } else {
         $("#alertIdEmptySelectedview").show()

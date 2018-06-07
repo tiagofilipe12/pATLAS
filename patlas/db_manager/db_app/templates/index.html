@@ -836,6 +836,21 @@
   Try to change the parameters provided through import menu.
 </div>
 
+<div class="alert alert-warning alert-dismissable fade in" id="alertId_noProject"
+     style="display: none">
+  <button type="button" class="close" id="alertClose_noProject" aria-hidden="true"
+          data-hide="true">&times;</button>
+  <strong>Warning!</strong> No selection was made to export to Project. Please
+  make a selection before exporting project
+</div>
+
+<div class="alert alert-info alert-dismissable fade in" id="alertId_Version"
+     style="display: none">
+  <button type="button" class="close" id="alertClose_Version" aria-hidden="true"
+          data-hide="true">&times;</button>
+  <div id="alertVersionText"><!--To be filled upon error handling --></div>
+</div>
+
 <!--Alert message to check that some selection is made-->
 <div class="alert alert-danger alert-dismissable fade in" id="alertJsonFile"
      style="display: none">
