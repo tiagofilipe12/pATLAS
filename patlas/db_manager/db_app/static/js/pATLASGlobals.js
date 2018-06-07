@@ -2,12 +2,15 @@
  * A bunch of global functions to be used throughout patlas
  */
 
+const version = "1.4.0"
+
 /**
  * variable that will store the object to be exported to a json file on
  * "projects export"
  * @type {Object}
  */
 let typeOfProject = {
+  version,
   "taxa": false,
   "resistance": false,
   "plasmidfinder": false,

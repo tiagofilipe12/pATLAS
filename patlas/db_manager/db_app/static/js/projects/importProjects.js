@@ -27,7 +27,6 @@ const fileDownloader = (fileName, typeOfFile, textToExport) => {
  */
 const importProject = (importedFileProject, view) => {
   // get first imported project
-  // TODO in the future this should receive a single project?
   const firstProject = JSON.parse(
     importedFileProject[Object.keys(importedFileProject)[0]]
   )

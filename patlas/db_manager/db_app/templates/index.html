@@ -150,7 +150,7 @@
           contained in High Throughput Sequencing data.
         </p>
 
-        <h3><b>Version:</b> 1.3.0</h3>
+        <h3><b>Version:</b> 1.4.0</h3>
         <p class="mainText">
         </p>
         <h3><b>Last pATLAS database update:</b> 18 April 2018</h3>
@@ -836,6 +836,21 @@
   Try to change the parameters provided through import menu.
 </div>
 
+<div class="alert alert-warning alert-dismissable fade in" id="alertId_noProject"
+     style="display: none">
+  <button type="button" class="close" id="alertClose_noProject" aria-hidden="true"
+          data-hide="true">&times;</button>
+  <strong>Warning!</strong> No selection was made to export to Project. Please
+  make a selection before exporting project
+</div>
+
+<div class="alert alert-info alert-dismissable fade in" id="alertId_Version"
+     style="display: none">
+  <button type="button" class="close" id="alertClose_Version" aria-hidden="true"
+          data-hide="true">&times;</button>
+  <div id="alertVersionText"><!--To be filled upon error handling --></div>
+</div>
+
 <!--Alert message to check that some selection is made-->
 <div class="alert alert-danger alert-dismissable fade in" id="alertJsonFile"
      style="display: none">
@@ -1185,8 +1200,13 @@
         <h4><b>Do you want to remove redundancy from the
           results? </b></h4>
         <p>This means that plasmids that are related will not be
-          highlighted, and instead the most likely plasmid (from that group)
-          will be displayed.</p>
+          highlighted, and instead only the most likely plasmid (from a given
+          group of related plasmids) will be displayed.
+        </p>
+        <p>
+          Further documentation on the usage of "Yes" option will be available
+          soon.
+        </p>
 
         <div class="modal-footer">
           <button type="submit" class="btn btn-default"
