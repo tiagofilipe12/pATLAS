@@ -697,8 +697,6 @@ const onLoad = () => {
    */
   $("#projectLoadSubmit").unbind("click").bind("click", () => {
 
-    console.log(projectJson)
-
     // first check if viewList has nothing selected
     if (!$("#viewList").val()) {
       $("#alertIdnoSelectedview").show()

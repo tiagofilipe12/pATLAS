@@ -10,7 +10,7 @@ const version = "1.4.0"
  * @type {Object}
  */
 let typeOfProject = {
-  "version": version,
+  version,
   "taxa": false,
   "resistance": false,
   "plasmidfinder": false,
