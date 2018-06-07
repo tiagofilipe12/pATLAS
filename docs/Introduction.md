@@ -30,12 +30,13 @@ well as facilitate the access to that metadata.
 
 ## Main features
 
-* Browse by taxa
-* Browse by resistance genes
-* Browse by plasmid families
-* Import JSON files from mapping results, mash screen results and even
-import a new plasmid sequence as a new node (e.g. an assembled plasmid or any
-other Fasta representing a putative plasmid).
-* Plot data related with custom selections.
-* Download sequences for selected plasmids
-* Display metadata for one plasmid or multiple selected plasmids
+* Browse by taxa.
+* Browse by resistance genes.
+* Browse by plasmid families.
+* Browse by virulence genes.
+* Import JSON files from mapping results, mash screen results and mash
+dist results (for assemblies).
+* Generate many plots for custom selections.
+* Download sequences for selected plasmids.
+* Display metadata for one plasmid or multiple selected plasmids.
+* Ability to share projects between sessions and users.
