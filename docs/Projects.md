@@ -10,10 +10,14 @@ computer.
 
 To save a project after making a custom selections go to the [Sidebar Menu](Sidebar.md)
 and select Projects -> Export. You can save your project with a custom name
-or, if the project name textbox is left empty, it will be saved with the
+or, if the project name text box is left empty, it will be saved with the
 default name: `my-patlas-project.json`.
 
 ![](gitbook/images/project_export.gif)
+
+### Version
+
+Project files save information o the current pATLAS version.
 
 ## Importing a project
 
@@ -23,6 +27,14 @@ After selecting the file you wish to import and the **view** that you
 wish to use on the first interaction, the project will be loaded into pATLAS.
 
 ![](gitbook/images/project_import.gif)
+
+### Version
+
+Project files contain a `version` field that is used to make sure that
+everything should work in the current pATLAS version available in
+www.patlas.site. Some functions may change between versions and thus
+with this version checking the user will be warned if the project
+version is different from the current pATLAS version.
 
 ### Views
 
@@ -38,12 +50,12 @@ and the nodes will be colored by Taxa. Other views may be selected through the d
 ### Use custom selections through project files
 
 Selections can be made in specific menus by importing a project file
-instead of selecting many options in the dropdown menus.
+instead of selecting many options in the drop down menus.
 
 #### Usage example
 
 To select 50 taxa to be visualized in the node graph, instead of
-clicking 50 times in the dropdown menu you may use the project import option
+clicking 50 times in the drop down menu you may use the project import option
 by providing  file with the following structure:
 
 ```
