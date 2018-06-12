@@ -1,52 +1,44 @@
 #!/usr/bin/env python3
 
-## Last update: 14/12/2017
+## Last update: 12/06/2018
 ## Author: T.F. Jesus
 ## This script aids MASHix.py getting family names for each genera of bacteria
 
-# import os
-# import sys
 import json
-# try:
-#     from db_manager.db_app import db, models
-# except ImportError:
-#     from patlas.db_manager.db_app import db, models
-
-## parses input genera list file
-#def get_species(species_list):
-    #species_file = open(species_file, "r")
-
-    # print(list_of_genera)
-    # #list_of_species = []
-    # ##parse genera_list input file
-    # for line in species_file:
-    #     genus = line.strip("\n").split(" ")[0]
-    #     species = "_".join(line.strip("\n").split(" "))
-    #     if "Candidatus" in species:
-    #         #print(species)
-    #         species = "_".join(species.split("_")[1:])
-    #         #print(species)
-    #         genus = line.strip("\n").split(" ")[1]
-    #     list_of_genera.append(genus)
-    #     list_of_species.append(species)
-    # species_file.close()
-    # # list_of_genera.remove("")
-    # print("species query size: " + str(len(list_of_species)))
-    # return list_of_species, list_of_genera
 
 ## function to fetch taxids given a list of genera
 def fetch_taxid(taxa_list, names_file):
+
+    conflicting_instances = [
+        "bug",
+        "insect",
+        "angiosperm",
+        "fungus",
+        "cnidarian",
+        "mudpuppy",
+        "mantid",
+        "mussel"
+    ]
+
     name = open(names_file, "r")
     ## parses names.dmp file and outputs a list of taxid
-    # taxid_list = []
     taxid_dic = {}
+
     for line in name:
         field_delimiter = line.split("|")
-        if field_delimiter[1].strip() in taxa_list and field_delimiter[
-            3].strip() == "scientific name":
+        if field_delimiter[1].strip() in taxa_list and field_delimiter[3]\
+                .strip() == "scientific name":
+
             taxid = field_delimiter[0].strip()
-            # taxid_list.append(taxid)
-            taxid_dic[field_delimiter[1].strip()] = taxid  # genus:taxid
+            debugging_field = field_delimiter[2].strip()
+
+            if any(x in debugging_field for x in conflicting_instances):
+                #this will avoid that a wrong taxid gets into the taxid_dic
+                print("weird entry: " + debugging_field)
+            else:
+                # everything else that is a bacteria will get into taxid_dic
+                # genus:taxid
+                taxid_dic[field_delimiter[1].strip()] = taxid
 
     print("taxid_list: " + str(len(taxid_dic)))
     name.close()
@@ -93,8 +85,7 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
     super_dic = {}
     # then cycle each species in list
     for species in species_list:
-        #print(species)
-        #print(x) # used to count the number of species already parsed
+
         k = species.split(" ")[0]  # cycle genera
         # for k in taxid_dic:
         ## get family!!
@@ -118,14 +109,6 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
     return super_dic
 
 def executor(names_file, nodes_file, species_list):
-    #try:
-    #    names_file = sys.argv[1]
-    #    nodes_file = sys.argv[2]
-    #    genera_file = sys.argv[3]
-    #except:
-    #    print("Usage: taxa_fetch.py <names.dmp> <nodes.dmp> <genera.lst>")
-    #    print("Outputs bacteria taxa tree for all genera in input\n")
-    #    raise SystemExit
 
     ## obtains a list of all species in input file and genera!!
     print("Gathering species information...")
@@ -134,6 +117,8 @@ def executor(names_file, nodes_file, species_list):
     ## executes first function for genera
     print("Gathering genera information...")
     taxid_dic = fetch_taxid(genera_list, names_file)
+
+    print(taxid_dic)
 
     ## executes second function for genera
     parent_taxid_dic = family_taxid(taxid_dic, nodes_file)
@@ -163,36 +148,20 @@ def executor(names_file, nodes_file, species_list):
 
     return super_dic
 
-    # rows = models.Plasmid.query.all()
-    # print("wallowing aka 'chafurdating' the database...")
-    # for row in rows:
-    #     accession = row.plasmid_id
-    #     entry = row.json_entry
-    #     # print(row)
-    #     species = row.json_entry["name"]
-    #     # have to remove row before starting modifying it
-    #     db.session.delete(row)
-    #     db.session.commit() # effectively assures that row is deleted
-    #     #print(row, accession, entry)
-    #     if species in super_dic:
-    #         taxa = super_dic[species]
-    #     else:
-    #         taxa = "unknown"
-    #     entry["taxa"] = taxa
-    #     #print(row, accession, entry)
-    #     updated_row = models.Plasmid(
-    #         plasmid_id = accession,
-    #         json_entry = entry
-    #     )
-    #     try:
-    #         # row gets properly modified
-    #         db.session.add(updated_row)
-    #         db.session.commit()
-    #     except:
-    #         db.session.rollback()
-    #         raise
-    #
-    # db.session.close()
 
-#if __name__ == "__main__":
-#    main()
+## function execution for test purposes
+# def main():
+#
+#     file_fetch = open()
+#
+#     list_fetch = [line.strip() for line in file_fetch]
+#
+#     executor(
+#         "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/names.dmp",
+#         "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/nodes.dmp",
+#         list_fetch
+#     )
+#
+#
+# if __name__ == "__main__":
+#     main()

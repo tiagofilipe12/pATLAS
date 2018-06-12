@@ -7,7 +7,6 @@
 ## Note: each header in fasta is considered a reference
 
 import argparse
-import sys
 import os
 import re
 from subprocess import Popen, PIPE
