@@ -34,7 +34,7 @@ def fetch_taxid(taxa_list, names_file):
 
             if any(x in debugging_field for x in conflicting_instances):
                 #this will avoid that a wrong taxid gets into the taxid_dic
-                print("weird entry: " + debugging_field)
+                print("skipping weird entry: " + debugging_field)
             else:
                 # everything else that is a bacteria will get into taxid_dic
                 # genus:taxid
@@ -44,20 +44,22 @@ def fetch_taxid(taxa_list, names_file):
     name.close()
     return taxid_dic
 
-##2
 ## function to gather parentid and if parent id is family stops
 def family_taxid(taxid_dic, nodes_file):
     nodes = open(nodes_file, "r")
     parent_taxid_dic = {}
+
     for line in nodes:
         field_delimiter = line.split("|")
-        ## search only in bacteria, invertebrates
-        ## searches if values are ids
-        if field_delimiter[4].strip() == "0" or field_delimiter[
-            4].strip() == "4":
-            if field_delimiter[0].strip() in taxid_dic.values():
-                parent_taxid = field_delimiter[1].strip()
-                parent_taxid_dic[field_delimiter[0].strip()] = parent_taxid
+
+        # This was previously used to search only in bacteria and fungi but
+        # slime molds were giving problems with this filter.
+        # if field_delimiter[4].strip() == "0" or field_delimiter[
+        #     4].strip() == "4":
+
+        if field_delimiter[0].strip() in taxid_dic.values():
+            parent_taxid = field_delimiter[1].strip()
+            parent_taxid_dic[field_delimiter[0].strip()] = parent_taxid
 
     nodes.close()
     print("parent_taxid_list: " + str(len(parent_taxid_dic)))
@@ -82,6 +84,7 @@ def fetch_taxid_by_id(parent_taxid_dic, names_file):
 
 def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
                     order_taxid_dic, species_list):
+
     super_dic = {}
     # then cycle each species in list
     for species in species_list:
@@ -118,8 +121,6 @@ def executor(names_file, nodes_file, species_list):
     print("Gathering genera information...")
     taxid_dic = fetch_taxid(genera_list, names_file)
 
-    print(taxid_dic)
-
     ## executes second function for genera
     parent_taxid_dic = family_taxid(taxid_dic, nodes_file)
 
@@ -149,19 +150,19 @@ def executor(names_file, nodes_file, species_list):
     return super_dic
 
 
-## function execution for test purposes
-# def main():
-#
-#     file_fetch = open()
-#
-#     list_fetch = [line.strip() for line in file_fetch]
-#
-#     executor(
-#         "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/names.dmp",
-#         "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/nodes.dmp",
-#         list_fetch
-#     )
-#
-#
-# if __name__ == "__main__":
-#     main()
+# function execution for test purposes
+def main():
+
+    file_fetch = open("")
+
+    list_fetch = [line.strip() for line in file_fetch]
+
+    executor(
+        "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/names.dmp",
+        "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/nodes.dmp",
+        list_fetch
+    )
+
+
+if __name__ == "__main__":
+    main()
