@@ -151,18 +151,18 @@ def executor(names_file, nodes_file, species_list):
 
 
 # function execution for test purposes
-def main():
-
-    file_fetch = open("")
-
-    list_fetch = [line.strip() for line in file_fetch]
-
-    executor(
-        "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/names.dmp",
-        "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/nodes.dmp",
-        list_fetch
-    )
-
-
-if __name__ == "__main__":
-    main()
+# def main():
+#
+#     file_fetch = open("")
+#
+#     list_fetch = [line.strip() for line in file_fetch]
+#
+#     executor(
+#         "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/names.dmp",
+#         "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/nodes.dmp",
+#         list_fetch
+#     )
+#
+#
+# if __name__ == "__main__":
+#     main()

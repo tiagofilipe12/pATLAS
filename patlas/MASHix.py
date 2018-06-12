@@ -7,6 +7,7 @@
 ## Note: each header in fasta is considered a reference
 
 import argparse
+import sys
 import os
 import re
 from subprocess import Popen, PIPE
@@ -25,6 +26,9 @@ except ImportError:
     from patlas.utils.hist_util import plot_histogram
     from patlas.utils.taxa_fetch import executor
     from patlas.db_manager.db_app import db, models
+
+# This is a rather sketchy solution TODO remove this with a refactor of node_crawler
+sys.setrecursionlimit(10000)
 
 
 class Record:
