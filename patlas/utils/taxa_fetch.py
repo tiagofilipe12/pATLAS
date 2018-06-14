@@ -1,30 +1,53 @@
 #!/usr/bin/env python3
 
-## Last update: 12/06/2018
+## Last update: 14/06/2018
 ## Author: T.F. Jesus
 ## This script aids MASHix.py getting family names for each genera of bacteria
 
 import json
+import argparse
 
-## function to fetch taxids given a list of genera
-def fetch_taxid(taxa_list, names_file):
+def fetch_taxid(taxa_list, names_file, weirdos):
+    """
+    Function to get taxids levels from taxa file list of species. It queries
+    species name and fetches the corresponding taxids
 
-    conflicting_instances = [
-        "bug",
-        "insect",
-        "angiosperm",
-        "fungus",
-        "cnidarian",
-        "mudpuppy",
-        "mantid",
-        "mussel"
-    ]
+    Parameters
+    ----------
+    taxa_list: list
+        The list of species to get taxids
+    names_file
+        The file input with names from ncbi taxonomy
+
+    Returns
+    -------
+    taxid_dic: dict
+        The dictionary with the correspondence of genera and taxids
+
+    """
+
+    conflicting_instances = []
+
+    if weirdos:
+        conflicting_instances.extend([
+            "bug",
+            "insect",
+            "angiosperm",
+            "fungus",
+            "cnidarian",
+            "mudpuppy",
+            "mantid",
+            "mussel"
+        ])
+
+    print(conflicting_instances)
 
     name = open(names_file, "r")
     ## parses names.dmp file and outputs a list of taxid
     taxid_dic = {}
 
     for line in name:
+
         field_delimiter = line.split("|")
         if field_delimiter[1].strip() in taxa_list and field_delimiter[3]\
                 .strip() == "scientific name":
@@ -44,8 +67,26 @@ def fetch_taxid(taxa_list, names_file):
     name.close()
     return taxid_dic
 
-## function to gather parentid and if parent id is family stops
+
 def family_taxid(taxid_dic, nodes_file):
+    """
+    Function to get upper level taxids (genera, family and order)
+
+    Parameters
+    ----------
+    taxid_dic: dict
+        The dictionary with the correspondence of genera and taxids
+    nodes_file
+        The nodes.dmp file from NCBI taxonomy
+
+    Returns
+    -------
+    parent_taxid_dic: dict
+        A dictionary of the correspondence between the taxonomic name and their
+        corresponding taxids
+
+    """
+
     nodes = open(nodes_file, "r")
     parent_taxid_dic = {}
 
@@ -82,8 +123,9 @@ def fetch_taxid_by_id(parent_taxid_dic, names_file):
     name.close()
     return taxa_name_dic
 
+
 def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
-                    order_taxid_dic, species_list):
+                    order_taxid_dic, species_list, weirdos):
     """
     The function that builds the final dict that will be dumped to the database
     and creates the taxa_tree.json file that will be available through the /taxa
@@ -91,11 +133,18 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
 
     Parameters
     ----------
-    taxid_dic
-    parent_taxid_dic
-    family_taxid_dic
-    order_dic
-    order_taxid_dic
+    taxid_dic: dict
+        The dictionary with the correspondence of genera and taxids
+    parent_taxid_dic: dict
+        The dictionary with the correspondence of families taxids and genera
+        taxids
+    family_taxid_dic: dict
+        The dictionary with the correspondence of families and taxids
+    order_dic: dict
+        The dictionary with the correspondence of order taxids and families
+        taxids
+    order_taxid_dic: dict
+        the dictionary with the correspondence of orders and taxids
     species_list: list
         The list of all the species available in refseq headers stripped.
 
@@ -109,20 +158,24 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
 
     # a list of all species that appear in plasmids refseq that are not truly
     # species
-    forbidden_species = [
-        "orf",
-        "Enterobacter",
-        "unknown",
-        "Uncultured",
-        "Peanut",
-        "Pigeon",
-        "Wheat",
-        "Beet",
-        "Blood",
-        "Onion",
-        "Tomato",
-        "Zea"
-    ]
+
+    forbidden_species = []
+
+    if weirdos:
+        forbidden_species.extend([
+            "orf",
+            "Enterobacter",
+            "unknown",
+            "Uncultured",
+            "Peanut",
+            "Pigeon",
+            "Wheat",
+            "Beet",
+            "Blood",
+            "Onion",
+            "Tomato",
+            "Zea"
+        ])
 
     super_dic = {}
     # then cycle each species in list
@@ -161,7 +214,28 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
 
     return super_dic
 
-def executor(names_file, nodes_file, species_list):
+def executor(names_file, nodes_file, species_list, weirdos=True):
+    """
+    The actual function that generates the dict to be dumped to file or database
+    depending if this function is being called from within this script or from
+    MASHix.py, respectively.
+
+    Parameters
+    ----------
+    names_file
+        the file names.dmp from ncbi taxonomy
+    nodes_file
+        the file nodes.dmp from ncbi taxonomy
+    species_list: list
+        the list of species
+
+    Returns
+    -------
+    super_dic: dict
+        Returns a dictionary with the entire taxonomic tree of each species
+        entry (for genera, family and order)
+
+    """
 
     ## obtains a list of all species in input file and genera!!
     print("Gathering species information...")
@@ -169,7 +243,7 @@ def executor(names_file, nodes_file, species_list):
 
     ## executes first function for genera
     print("Gathering genera information...")
-    taxid_dic = fetch_taxid(genera_list, names_file)
+    taxid_dic = fetch_taxid(genera_list, names_file, weirdos)
 
     ## executes second function for genera
     parent_taxid_dic = family_taxid(taxid_dic, nodes_file)
@@ -190,7 +264,8 @@ def executor(names_file, nodes_file, species_list):
 
     ## Species is missing from this final output!
     super_dic = build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic,
-                                order_dic, order_taxid_dic, species_list)
+                                order_dic, order_taxid_dic, species_list,
+                                weirdos)
 
     # write to file
     print("creating file and writing to it...")
@@ -200,19 +275,51 @@ def executor(names_file, nodes_file, species_list):
     return super_dic
 
 
-#function execution for test purposes
+# main function to allow the execution outside the MASHix.py file
 def main():
+    """
+    This main function is used when the script is executed in standalone method
+    without importing the executor function.
+    """
 
-    file_fetch = open("/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/species_list_v1_4_1_11_06_2018.lst")
+    parser = argparse.ArgumentParser(description="Compares all entries in a "
+                                                 "fasta file using MASH")
+
+    main_options = parser.add_argument_group("Main options")
+
+    main_options.add_argument("-i", "--input_list", dest="input_list",
+                              required=True, help="provide a file with a list"
+                                                  "of species. Each species"
+                                                  "should be in each line.")
+
+    main_options.add_argument("-non", "--nodes_ncbi", dest="nodes_file",
+                               required=True, help="specify the path to the "
+                                                   "file containing nodes.dmp "
+                                                   "from NCBI" )
+    main_options.add_argument("-nan", "--names_ncbi", dest="names_file",
+                               required=True, help="specify the path to the "
+                                                   "file containing names.dmp "
+                                                   "from NCBI")
+    main_options.add_argument("-w", "--weirdos", dest="weirdos",
+                              action='store_true', help="This option allows "
+                                                        "the user"
+                                                  "to add a checks for weird"
+                                                  "entries. This is mainly used"
+                                                  "to parse the plasmids "
+                                                  "refseq, so if you do not "
+                                                  "want this to be used, use "
+                                                  "this option")
+
+    args = parser.parse_args()
+
+    names_file = args.names_file
+    nodes_file = args.nodes_file
+
+    file_fetch = open(args.input_list)
 
     list_fetch = [line.strip() for line in file_fetch]
 
-    executor(
-        "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/names.dmp",
-        "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/nodes.dmp",
-        list_fetch
-    )
-
+    executor(names_file, nodes_file, list_fetch, args.weirdos)
 
 if __name__ == "__main__":
     main()

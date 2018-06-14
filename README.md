@@ -6,8 +6,6 @@
   <br/>
 </p>
 
-# Badges and more badges!
-
 [![Join the chat at https://gitter.im/plasmidATLAS/Lobby](https://badges.gitter.im/plasmidATLAS/Lobby.svg)](https://gitter.im/plasmidATLAS/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e4d557080bbb45d5b8ad414a97b9b6aa)](https://www.codacy.com/app/tiagofilipe12/pATLAS?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tiagofilipe12/pATLAS&amp;utm_campaign=Badge_Grade)
 
@@ -149,3 +147,58 @@ on the input type provided.
                     'db_manager/db_app/static/csv/aro_index.csv'"
 
 ```
+
+### taxa_fetch.py
+
+This script is located in `utils` folder and can be used to generate a
+JSON file with the corresponding taxonomic tree. It fetches for a given
+species, the genera, family and order to which it belongs.
+Note: for plasmids I have to make some filtering in the resulting taxids
+and list of species that other users may want to skip
+
+#### Options:
+
+```
+-i INPUT_LIST, --input_list INPUT_LIST
+                        provide a file with a listof species. Each
+                        speciesshould be in each line.
+-non NODES_FILE, --nodes_ncbi NODES_FILE
+                        specify the path to the file containing nodes.dmp from
+                        NCBI
+-nan NAMES_FILE, --names_ncbi NAMES_FILE
+                        specify the path to the file containing names.dmp from
+                        NCBI
+-w, --weirdos         This option allows the userto add a checks for
+                        weirdentries. This is mainly usedto parse the plasmids
+                        refseq, so if you do not want this to be used, use
+                        this option
+
+```
+
+##### List of entries that will be filtered from `weirdos` option
+
+* From taxonomy levels:
+    * "bug"
+    * "insect"
+    * "angiosperm"
+    * "fungus"
+    * "cnidarian"
+    * "mudpuppy"
+    * "mantid"
+    * "mussel"
+
+* From species in fasta headers:
+    * "orf"
+    * "Enterobacter"
+    * "unknown"
+    * "Uncultured"
+    * "Peanut"
+    * "Pigeon"
+    * "Wheat"
+    * "Beet"
+    * "Blood"
+    * "Onion"
+    * "Tomato"
+    * "Zea"
+
+Note: Yes people like to give interesting names to bacteria...
