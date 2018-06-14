@@ -189,9 +189,9 @@ and list of species that other users may want to skip
 
 * From species in fasta headers:
     * "orf"
-    * "Enterobacter"
     * "unknown"
     * "Uncultured"
+    * "uncultured"
     * "Peanut"
     * "Pigeon"
     * "Wheat"
@@ -200,5 +200,18 @@ and list of species that other users may want to skip
     * "Onion"
     * "Tomato"
     * "Zea"
+    * "Endosymbiont"
+    * "Bacillaceae"
+    * "Comamonadaceae"
+    * "Enterobacteriaceae"
+    * "Opitutaceae"
+    * "Rhodobacteraceae"
+    * "Bacterium"
+    * "Endophytic"
+
+* It also attempts to fix some bugs in species naming like the
+following:
+    * "B bronchiseptica"
+    * "S pyogenes"
 
 Note: Yes people like to give interesting names to bacteria...

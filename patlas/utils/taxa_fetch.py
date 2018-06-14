@@ -40,8 +40,6 @@ def fetch_taxid(taxa_list, names_file, weirdos):
             "mussel"
         ])
 
-    print(conflicting_instances)
-
     name = open(names_file, "r")
     ## parses names.dmp file and outputs a list of taxid
     taxid_dic = {}
@@ -161,12 +159,19 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
 
     forbidden_species = []
 
+    fix_short_names = {}
+
     if weirdos:
         forbidden_species.extend([
             "orf",
-            "Enterobacter",
             "unknown",
+            "Bacillaceae",
+            "Comamonadaceae",
+            "Enterobacteriaceae",
+            "Opitutaceae",
+            "Rhodobacteraceae",
             "Uncultured",
+            "uncultured",
             "Peanut",
             "Pigeon",
             "Wheat",
@@ -174,14 +179,31 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
             "Blood",
             "Onion",
             "Tomato",
-            "Zea"
+            "Zea",
+            "Endosymbiont",
+            "Bacterium",
+            "Endophytic"
         ])
 
+        # custom entries that needed fixing
+        fix_short_names["S pyogenes"] = "Streptococcus pyogenes"
+        fix_short_names["B bronchiseptica"] = "Bordetella bronchiseptica"
+
     super_dic = {}
+
     # then cycle each species in list
     for species in species_list:
 
-        k = species.split()[0]  # cycle genera
+        # some instances may have quotes... so...
+        species = species.replace("'", "")
+
+        # get the genera
+        k = species.split()[0]
+
+        # fixes species name according to dict, if weirdos option is True and
+        # the weird species name is known in fix_short_names dictionary
+        if species in fix_short_names:
+            species = fix_short_names[species]
 
         # check if k contains a forbidden species
         if k not in forbidden_species:
@@ -211,6 +233,9 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
                 super_dict_values = [k, "unknown", "unknown"]
                 # check if the genera match the genera being parsed.
             super_dic[species] = super_dict_values
+
+        else:
+            print("weird species: ", species)
 
     return super_dic
 
