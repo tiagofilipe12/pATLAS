@@ -112,7 +112,16 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
     forbidden_species = [
         "orf",
         "Enterobacter",
-        "unknown"
+        "unknown",
+        "Uncultured",
+        "Peanut",
+        "Pigeon",
+        "Wheat",
+        "Beet",
+        "Blood",
+        "Onion",
+        "Tomato",
+        "Zea"
     ]
 
     super_dic = {}
@@ -131,7 +140,6 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
                     pass
             except IndexError:
                 species += " sp."
-                print(species)
 
             # constructs the dictionary if genera is in taxid dic
             if k in taxid_dic:
