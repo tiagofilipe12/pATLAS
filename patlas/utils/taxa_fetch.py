@@ -84,30 +84,72 @@ def fetch_taxid_by_id(parent_taxid_dic, names_file):
 
 def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
                     order_taxid_dic, species_list):
+    """
+    The function that builds the final dict that will be dumped to the database
+    and creates the taxa_tree.json file that will be available through the /taxa
+    view.
+
+    Parameters
+    ----------
+    taxid_dic
+    parent_taxid_dic
+    family_taxid_dic
+    order_dic
+    order_taxid_dic
+    species_list: list
+        The list of all the species available in refseq headers stripped.
+
+    Returns
+    -------
+    super_dic: dict
+        The dictionary with all the taxonomic relationships for each species.
+        It contains a structure like this: species: [genus, family, order]
+
+    """
+
+    # a list of all species that appear in plasmids refseq that are not truly
+    # species
+    forbidden_species = [
+        "orf",
+        "Enterobacter",
+        "unknown"
+    ]
 
     super_dic = {}
     # then cycle each species in list
     for species in species_list:
 
-        k = species.split(" ")[0]  # cycle genera
-        # for k in taxid_dic:
-        ## get family!!
-        if k in taxid_dic:
-            if parent_taxid_dic[taxid_dic[k]]:
-                family = family_taxid_dic[parent_taxid_dic[taxid_dic[k]]]
-                ## get order!!
-                if order_dic[parent_taxid_dic[taxid_dic[k]]]:
-                    order = order_taxid_dic[order_dic[parent_taxid_dic[
-                        taxid_dic[k]]]]
-                    super_dict_values = [k, family, order]
+        k = species.split()[0]  # cycle genera
+
+        # check if k contains a forbidden species
+        if k not in forbidden_species:
+
+            # checks if species contains a two-term naming system and if not
+            # adds a sp. to the genera.
+            try:
+                if species.split()[1]:
+                    pass
+            except IndexError:
+                species += " sp."
+                print(species)
+
+            # constructs the dictionary if genera is in taxid dic
+            if k in taxid_dic:
+                if parent_taxid_dic[taxid_dic[k]]:
+                    family = family_taxid_dic[parent_taxid_dic[taxid_dic[k]]]
+                    ## get order!!
+                    if order_dic[parent_taxid_dic[taxid_dic[k]]]:
+                        order = order_taxid_dic[order_dic[parent_taxid_dic[
+                            taxid_dic[k]]]]
+                        super_dict_values = [k, family, order]
+                    else:
+                        super_dict_values = [k, family, "unknown"]
                 else:
-                    super_dict_values = [k, family, "unknown"]
+                    super_dict_values = [k, "unknown", "unknown"]
             else:
                 super_dict_values = [k, "unknown", "unknown"]
-        else:
-            super_dict_values = [k, "unknown", "unknown"]
-            # check if the genera match the genera being parsed.
-        super_dic[species] = super_dict_values
+                # check if the genera match the genera being parsed.
+            super_dic[species] = super_dict_values
 
     return super_dic
 
@@ -150,19 +192,19 @@ def executor(names_file, nodes_file, species_list):
     return super_dic
 
 
-# function execution for test purposes
-# def main():
-#
-#     file_fetch = open("")
-#
-#     list_fetch = [line.strip() for line in file_fetch]
-#
-#     executor(
-#         "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/names.dmp",
-#         "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/nodes.dmp",
-#         list_fetch
-#     )
-#
-#
-# if __name__ == "__main__":
-#     main()
+#function execution for test purposes
+def main():
+
+    file_fetch = open("/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/species_list_v1_4_1_11_06_2018.lst")
+
+    list_fetch = [line.strip() for line in file_fetch]
+
+    executor(
+        "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/names.dmp",
+        "/home/tiago/Documents/pATLAS/full_plasmid_db_v1_4_1_11_06_2018/nodes.dmp",
+        list_fetch
+    )
+
+
+if __name__ == "__main__":
+    main()
