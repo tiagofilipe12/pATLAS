@@ -12,18 +12,27 @@ except ImportError:
     from patlas.templates.process_abricate import Abricate
 
 def get_card_dict(csv_file):
-    '''Function to construct a correspondence between nucleotide accession
+    """
+    Function to construct a correspondence between nucleotide accession
     numbers and aro accession numbers
 
-    :param csv_file: str, Input file string to open
-    :return: dic, dictionary with correspondence between dna_accession and
+    Parameters
+    ----------
+    csv_file: str
+        Input file string to open
+
+    Returns
+    -------
+    dictionary with correspondence between dna_accession and
     aro_accession
-    '''
+
+    """
+
     csv_dict = {}
     with open(csv_file) as f:
         next(f)
         for line in f:
-            tab_split = line.split(",")
+            tab_split = line.split("\t")
             aro_accession = tab_split[0]
             # dna accessions have a \n character at the end of the string
             dna_accession = tab_split[-1].strip("\n")
@@ -212,11 +221,10 @@ def main():
         help="Provide the db to output in psql models.")
     parser.add_argument("-id", "--identity", dest="identity",
                          default="90", help="minimum identity to be "
-                                               "reported "
-                                           "to db")
+                                             "reported to db. Default: 90%")
     parser.add_argument("-cov", "--coverage", dest="coverage",
                          default="80", help="minimum coverage do be "
-                                               "reported to db")
+                                               "reported to db. Default: 80%")
     parser.add_argument("-csv", "--csv", dest="csvfile",
                          nargs=1, help="Provide card csv file to get  "
                                        "correspondence between DNA accessions "
@@ -236,7 +244,7 @@ def main():
         rel_path_csv_file = "db_manager/db_app/static/csv/aro_index.csv"
         csv_file = os.path.join(script_dir, rel_path_csv_file)
     else:
-        csv_file = args.csvfile
+        csv_file = args.csvfile[0]
 
     # gets dict of aro and dna accessions
     csv_dict = get_card_dict(csv_file)
