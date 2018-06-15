@@ -249,6 +249,7 @@ const onLoad = () => {
       // the next if statement is only executed on development session, it
       // is way less efficient than the non development session.
       if (devel === true) {
+        console.log("devel session")
         getArray.done(function (json) {
           $.each(json, function (sequenceInfo, dictDist) {
             counter++

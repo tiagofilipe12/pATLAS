@@ -259,19 +259,19 @@ def master_fasta(fastas, output_tag, mother_directory):
                 if accession in sequence_info:
                     print(accession + " - duplicated entry")
                     truePlasmid = False
-                else:
-                    if truePlasmid:
-                        sequence_info[accession] = (species, length,
-                                                    plasmid_name)  # outputs
+                #else:
+                #   if truePlasmid:
+                #        sequence_info[accession] = (species, length,
+                #                                    plasmid_name)  # outputs
                     # dict at the beginning of each new entry
 
-                        length_dict[accession] = length
+                #        length_dict[accession] = length
 
             else:
                 ## had to add a method to remove \n characters from the
                 # counter for sequence length
-                #if truePlasmid:
-                length += len(line.replace("\n", ""))  ## necessary since
+                if truePlasmid:
+                    length += len(line.replace("\n", ""))  ## necessary since
                             # fasta sequences may be spread in multiple lines
 
             if truePlasmid:
@@ -287,7 +287,7 @@ def master_fasta(fastas, output_tag, mother_directory):
                 length_dict[accession] = length
 
     # writes to length file
-    length_json = open(os.path.join(mother_directory, "_length_{}.json".format(
+    length_json = open(os.path.join(mother_directory, "length_{}.json".format(
         output_tag)), "w")
     length_json.write(json.dumps(length_dict))
     length_json.close()
