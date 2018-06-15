@@ -203,6 +203,7 @@ def master_fasta(fastas, output_tag, mother_directory):
         output_tag))
     master_fasta = open(out_file, "w")
     sequence_info = {}
+    length_dict = {}
 
     ## creates a list file, listing all species in input sequences
     all_species = []
@@ -251,7 +252,6 @@ def master_fasta(fastas, output_tag, mother_directory):
                     truePlasmid = False
                     continue
                 else:
-                    #TODO if statement above not entering here at all
                     truePlasmid = True
 
                 # if accession in sequence_info keys then truePlasmid false
@@ -265,11 +265,13 @@ def master_fasta(fastas, output_tag, mother_directory):
                                                     plasmid_name)  # outputs
                     # dict at the beginning of each new entry
 
+                        length_dict[accession] = length
+
             else:
                 ## had to add a method to remove \n characters from the
                 # counter for sequence length
-                if truePlasmid:
-                    length += len(line.replace("\n", ""))  ## necessary since
+                #if truePlasmid:
+                length += len(line.replace("\n", ""))  ## necessary since
                             # fasta sequences may be spread in multiple lines
 
             if truePlasmid:
@@ -282,6 +284,13 @@ def master_fasta(fastas, output_tag, mother_directory):
             if truePlasmid:
                 sequence_info[accession] = (species, length, plasmid_name) ## adds
         # to dict last entry of each input file
+                length_dict[accession] = length
+
+    # writes to length file
+    length_json = open(os.path.join(mother_directory, "_length_{}.json".format(
+        output_tag)), "w")
+    length_json.write(json.dumps(length_dict))
+    length_json.close()
 
     master_fasta.close()
     ## writes a species list to output file
@@ -626,7 +635,7 @@ def node_crawler(node, links, crawled_nodes, cluster_array, master_dict):
         except KeyError:
             continue
 
-##
+
 def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
                          threads, nodes_file, names_file, species_lst):
     """
