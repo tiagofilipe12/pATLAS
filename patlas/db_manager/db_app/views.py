@@ -39,7 +39,7 @@ def index():
 
 @app.route("/test")
 def main_summary():
-    return repetitiveFunction("db_app/static/json/import_to_vivagraph.json")
+    return repetitiveFunction("db_app/static/json/import_to_vivagraph_v1.4.1.json")
 
 @app.route("/fullDS")
 def full_ds():
