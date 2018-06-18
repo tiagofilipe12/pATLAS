@@ -24,7 +24,7 @@ let typeOfProject = {
 }
 
 // if this is a developer session please enable the below line of code
-const devel = true
+const devel = false
 
 // boolean that controls the prerender function if rerun
 // is activated
