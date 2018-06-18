@@ -2,7 +2,7 @@
  * A bunch of global functions to be used throughout patlas
  */
 
-const version = "1.4.0"
+const version = "1.4.1"
 
 /**
  * variable that will store the object to be exported to a json file on
