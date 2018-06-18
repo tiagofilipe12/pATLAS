@@ -2166,7 +2166,9 @@ const onLoad = () => {
    * Button that searches for a given plasmid or accession number in the graph
    * network. It uses for that search the input box near to the button.
    */
-  $("#submitButton").unbind("click").bind("click", (event) => {
+  $("#submitButton").unbind("click").bind("click", async (event) => {
+    event.preventDefault()    // prevents page from reloading
+
     $("#resTab").removeClass("active")
     $("#resButton").removeClass("active")
     $("#pfTab").removeClass("active")
@@ -2176,22 +2178,20 @@ const onLoad = () => {
 
     $("#closePop").click()
 
-    event.preventDefault()    // prevents page from reloading
     if (toggleStatus === false) {
       const formvalueId = $("#formValueId").val()
       const query = (formvalueId === "") ? clickedHighchart :
         formvalueId.replace(".", "_")
 
-      currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
+      currentQueryNode = await centerToggleQuery(g, graphics, renderer, query,
         currentQueryNode)
     } else {
       // executed for plasmid search
-      toggleOnSearch(g, graphics, renderer, currentQueryNode)
+      const currentQueryNode = await toggleOnSearch(g, graphics, renderer, currentQueryNode)
       // then is here used to parse the results from async/await function
-        .then( (result) => {
-          currentQueryNode = result
-        })
     }
+
+    setTimeout(() => { renderer.rerender() }, 0)
 
   })
 

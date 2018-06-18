@@ -97,7 +97,6 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
         const previousNodeUI = graphics.getNodeUI(currentQueryNode)
         previousNodeUI.color = previousNodeUI.backupColor   // default color
       }
-      renderer.rerender()
       return sequence // this just returns true if it enters this if statement
     }
   })

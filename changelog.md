@@ -16,6 +16,7 @@
 ### Bug fixes
 
 * Several minor fixes to the `MASHix.py` script.
+* Patched renderer after searching for a plasmid
 
 ## Version 1.4.0
 
