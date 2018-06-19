@@ -1,7 +1,7 @@
 <div class="row" id="modal-body-taxa-1">
 
   <!--dropdown for order-->
-  <div class="dropdown col-sm-3" id="order_dropdown">
+  <div class="col-sm-3" id="order_dropdown">
     <div class="header_taxa">Order filter</div>
 
     <!--</ul> -->
@@ -16,7 +16,7 @@
     </select>
   </div>
   <!--dropdown for family-->
-  <div class="dropdown col-sm-3" id="family_dropdown">
+  <div class="col-sm-3" id="family_dropdown">
     <div class="header_taxa">Family filter</div>
 
     <!--</ul> -->
@@ -27,18 +27,18 @@
     </select>
   </div>
   <!--dropdown for genus-->
-  <div class="dropdown col-sm-3" id="genus_dropdown">
+  <div class="col-sm-3" id="genus_dropdown">
     <div class="header_taxa">Genus filter</div>
 
     <select class="selectpicker" data-dropup-auto="false"
-            multiple data-width="80%"
+            multiple data-width="80%" data-toggle="dropdown" role="menu"
             data-selected-text-format="count" data-live-search="true"
             data-title="No items selected" id="genusList"
             data-size="15">
       <!--populated by visualization_function.js-->
     </select>
   </div>
-  <div class="dropdown col-sm-3 " id="species_dropdown">
+  <div class="col-sm-3 " id="species_dropdown">
     <div class="header_taxa">Species filter</div>
 
     <!--example select dropdown-->
