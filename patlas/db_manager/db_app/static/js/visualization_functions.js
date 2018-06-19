@@ -934,10 +934,10 @@ const onLoad = () => {
     // clear = true;
     event.preventDefault()
     // this needs an array for reusability purposes
-    resetDisplayTaxaBox(["p_Plasmidfinder"])
+    resetDisplayTaxaBox(["p_PlasmidFinder"])
 
     // resets dropdown selections
-    $("#plasmidFamiliesList").selectpicker("deselectAll")
+    $("#plasmidFinderList").selectpicker("deselectAll")
 
     // slider.noUiSlider.set([min, max])
     // nodeColorReset(graphics, g, nodeColor, renderer)
@@ -1029,7 +1029,7 @@ const onLoad = () => {
 
     // resets dropdown selections
     $("#cardList").selectpicker("deselectAll")
-    $("#resList").selectpicker("deselectAll")
+    $("#resfinderList").selectpicker("deselectAll")
 
     // slider.noUiSlider.set([min, max])
     // nodeColorReset(graphics, g, nodeColor, renderer)
@@ -1125,7 +1125,7 @@ const onLoad = () => {
     resetDisplayTaxaBox(["p_Virulence"])
 
     // resets dropdown selections
-    $("#virList").selectpicker("deselectAll")
+    $("#virulenceList").selectpicker("deselectAll")
 
     // slider.noUiSlider.set([min, max])
     // nodeColorReset(graphics, g, nodeColor, renderer)
@@ -1201,6 +1201,27 @@ const onLoad = () => {
       })
     })
   })
+
+  /**
+   * event listener for dropdown clicks that populate the displayer in modal
+   */
+  $("#orderList, #familyList, #genusList, #speciesList, #cardList, " +
+    "#resfinderList, #plasmidFinderList, #virulenceList")
+    .on("changed.bs.select", (e) => {
+
+      const arrayOfSelections = $(`#${e.target.id}`).selectpicker("val")
+
+      // fill panel group displaying current selected taxa filters
+      let stringClass = e.target.id.slice(0, -4)
+      // convert first char to upper case
+      stringClass  = stringClass.charAt(0).toUpperCase() + stringClass.slice(1)
+      // const tempVar = this.lastChild.innerHTML
+      
+      // checks if a taxon is already in display
+      const divStringClass = "#p_" + stringClass
+
+      filterDisplayer(arrayOfSelections, stringClass, divStringClass)
+    })
 
 
   //* ******************//
