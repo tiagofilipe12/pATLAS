@@ -182,7 +182,15 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
             "Zea",
             "Endosymbiont",
             "Bacterium",
-            "Endophytic"
+            "Endophytic",
+            "Gammaproteobacteria",
+            "Polymorphum", # this is in fact a genera but with parsing issues through ncbi taxonomy
+            "Tenericutes",
+            "Cryphonectria",
+            "Nostocales",   # this is in fact a genera but with parsing issues through ncbi taxonomy
+            "Sedimenticola", # this is in fact a genera but with parsing issues through ncbi taxonomy
+            "Thiolapillus", # this is in fact a genera but with parsing issues through ncbi taxonomy
+            "Xanthomonadales"
         ])
 
         # custom entries that needed fixing
@@ -198,7 +206,7 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
         species = species.replace("'", "")
 
         # get the genera
-        k = species.split()[0]
+        k = species.split()[0].strip()
 
         # fixes species name according to dict, if weirdos option is True and
         # the weird species name is known in fix_short_names dictionary
