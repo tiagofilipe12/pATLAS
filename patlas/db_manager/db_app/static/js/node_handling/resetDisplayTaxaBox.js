@@ -22,7 +22,6 @@ const resetDisplayTaxaBox = (array) => {
  * arrayOfSelections will be outputted in text format
  */
 const filterDisplayer = (arrayOfSelections, stringClass, divStringClass) => {
-  console.log(arrayOfSelections, stringClass, divStringClass)
 
   const taxaToParse = arrayOfSelections.join(", ")
 

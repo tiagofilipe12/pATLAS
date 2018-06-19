@@ -1216,7 +1216,7 @@ const onLoad = () => {
       // convert first char to upper case
       stringClass  = stringClass.charAt(0).toUpperCase() + stringClass.slice(1)
       // const tempVar = this.lastChild.innerHTML
-      
+
       // checks if a taxon is already in display
       const divStringClass = "#p_" + stringClass
 
