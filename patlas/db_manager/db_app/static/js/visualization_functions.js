@@ -2513,4 +2513,23 @@ const onLoad = () => {
     initCallback(g, layout, devel)
   })
 
+  // $(document).keydown(function(e) {
+  //
+  //   console.log("test")
+  //   if(e.which === 40 || e.which === 38) {
+  //     openNavbar = $(".dropdown.open")
+  //     if(openNavbar[0]) {
+  //       menu = openNavbar.children(".dropdown-menu")
+  //       console.log(menu)
+  //       hovered = menu.find("li:hover")
+  //       console.log(hovered[0])
+  //       if(hovered[0]) {
+  //         if(e.which === 40) hovered.next().children().focus()
+  //         else hovered.prev().children().focus()
+  //       }
+  //       else menu.find("option").first().children().focus()
+  //     }
+  //   }
+  // })
+
 } // closes onload

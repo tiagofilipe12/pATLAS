@@ -50,12 +50,12 @@ getArrayTaxa().done((json) => {
   for (let i = 0; i < classArray.length; i++) {
     $(classArray[i]).on("click", function() {
       // fill panel group displaying current selected taxa filters //
-      const stringClass = this.className.slice(0, -5)
-      const tempVar = this.firstChild.innerHTML
+      const stringClass = this.className.split(" ")[0].slice(0, -5)
+      const tempVar = this.lastChild.innerHTML
 
       // checks if a taxon is already in display
       const divStringClass = "#p_" + stringClass
-
+      
       filterDisplayer(tempVar, stringClass, divStringClass)
     })
   }
@@ -100,8 +100,8 @@ getArrayRes().done( (json) => {
   for (let i = 0; i < classArray.length; i++) {
     $(classArray[i]).on("click", function() {
       // fill panel group displaying current selected taxa filters //
-      const stringClass = this.className.slice(0, -5)
-      const tempVar = this.firstChild.innerHTML
+      const stringClass = this.className.split(" ")[0].slice(0, -5)
+      const tempVar = this.lastChild.innerHTML
 
       // checks if a taxon is already in display
       const divStringClass = "#p_" + stringClass
@@ -141,8 +141,8 @@ getArrayPf().done((json) => {
 
   $(".PlasmidfinderClass").on("click", function() {
     // fill panel group displaying current selected taxa filters //
-    const stringClass = this.className.slice(0, -5)
-    const tempVar = this.firstChild.innerHTML
+    const stringClass = this.className.split(" ")[0].slice(0, -5)
+    const tempVar = this.lastChild.innerHTML
     // checks if a taxon is already in display
     const divStringClass = "#p_" + stringClass
 
@@ -180,8 +180,8 @@ getArrayVir().done( (json) => {
 
   $(".VirulenceClass").on("click", function() {
     // fill panel group displaying current selected taxa filters //
-    const stringClass = this.className.slice(0, -5)
-    const tempVar = this.firstChild.innerHTML
+    const stringClass = this.className.split(" ")[0].slice(0, -5)
+    const tempVar = this.lastChild.innerHTML
     // checks if a taxon is already in display
     const divStringClass = "#p_" + stringClass
 
