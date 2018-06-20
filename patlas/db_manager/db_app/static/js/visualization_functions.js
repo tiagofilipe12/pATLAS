@@ -989,6 +989,8 @@ const onLoad = () => {
     $("#colorLegendBoxRes").empty()
     $("#vir_label").hide()
     $("#colorLegendBoxVir").empty()
+    $("#advanced_label").hide()
+    $("#colorLegendBoxAdvanced").empty()
 
     $("#readString").empty()
     $("#readLegend").empty()
@@ -1082,6 +1084,8 @@ const onLoad = () => {
     $("#colorLegendBoxVir").empty()
     $("#pf_label").hide()
     $("#colorLegendBoxPf").empty()
+    $("#advanced_label").hide()
+    $("#colorLegendBoxAdvanced").empty()
 
     $("#readString").empty()
     $("#readLegend").empty()
@@ -1177,6 +1181,8 @@ const onLoad = () => {
     $("#colorLegendBoxRes").empty()
     $("#pf_label").hide()
     $("#colorLegendBoxPf").empty()
+    $("#advanced_label").hide()
+    $("#colorLegendBoxAdvanced").empty()
 
     $("#readString").empty()
     $("#readLegend").empty()
@@ -1275,6 +1281,16 @@ const onLoad = () => {
         listGiFilter = parseQueriesIntersection(g, graphics, renderer,
           objectOfSelections, typeToProject)
       })
+
+      // empties taxa and plasmidfinder legend
+      $("#res_label").hide()
+      $("#colorLegendBoxRes").empty()
+      $("#pf_label").hide()
+      $("#colorLegendBoxPf").empty()
+      $("#vir_label").hide()
+      $("#colorLegendBoxVir").empty()
+      $("#taxa_label").hide()
+      $("#colorLegendBox").empty()
 
     }
   )
@@ -1461,6 +1477,8 @@ const onLoad = () => {
     $("#colorLegendBoxPf").empty()
     $("#vir_label").hide()
     $("#colorLegendBoxVir").empty()
+    $("#advanced_label").hide()
+    $("#colorLegendBoxAdvanced").empty()
 
     showDiv().then( () => {
         iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)

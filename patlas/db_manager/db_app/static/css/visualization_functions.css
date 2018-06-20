@@ -800,7 +800,8 @@ Careful when using this in other popovers in the future*/
     text-align: center;
 }
 
-#assemblyLabel, #read_label, #distance_label, #vir_label, #pf_label, #res_label, #taxa_label {
+#assemblyLabel, #read_label, #distance_label, #vir_label, #pf_label, #res_label,
+#taxa_label, #advanced_label {
     display: none;
     font-size: 16px;
 }
