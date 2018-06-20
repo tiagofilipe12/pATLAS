@@ -26,7 +26,7 @@ const filterDisplayer = (arrayOfSelections, stringClass, divStringClass) => {
   const taxaToParse = arrayOfSelections.join(", ")
 
   $(divStringClass).empty()
-    .append(`${stringClass}: ${taxaToParse}`)
+    .append(`${stringClass}:${taxaToParse}`)
 }
 
 
