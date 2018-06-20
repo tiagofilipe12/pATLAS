@@ -308,6 +308,5 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
     .show()
   // }
 
-  console.log(listGiFilter)
   return legendInst
 }
