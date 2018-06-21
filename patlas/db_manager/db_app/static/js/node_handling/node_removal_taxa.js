@@ -203,7 +203,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
       })
       .then( () => {
         renderGraph(graphics)
-        console.log(selectedFilter)
 
         if (readString !== false ) {
 
@@ -233,7 +232,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
 
           $("#virSubmit").click()
 
-        } else if (selectedFilter === "intersect") {
+        } else if (selectedFilter === "∩") {
 
           $("#intersectionsModalSubmit").click()
 
