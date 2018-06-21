@@ -15,8 +15,22 @@
 
 ### Bug fixes
 
+#### backend
+
 * Several minor fixes to the `MASHix.py` script.
-* Patched renderer after searching for a plasmid
+* Patched the recursive function `node_crawler` in `MASHix.py`, allowing
+a higher number of recursive instances for this function.
+
+#### frontend
+
+* Patched renderer after searching for a plasmid.
+
+### UX improvements
+
+* Improved readability of union and intersection legend, as well as,
+its modal.
+* Fixed `popup_description`
+
 
 ## Version 1.4.0
 
