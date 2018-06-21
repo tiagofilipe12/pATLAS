@@ -951,8 +951,7 @@ const onLoad = () => {
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton, #colorLegend").hide()
     } else {
-      $("#colorLegendBox").empty()
-      $("#taxa_label").hide()
+
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").hide()
     }
@@ -1046,8 +1045,7 @@ const onLoad = () => {
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton, #colorLegend").hide()
     } else {
-      $("#colorLegendBox").empty()
-      document.getElementById("taxa_label").style.display = "none" // hide label
+
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").hide()
     }
@@ -1143,8 +1141,7 @@ const onLoad = () => {
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton, #colorLegend").hide()
     } else {
-      $("#colorLegendBox").empty()
-      document.getElementById("taxa_label").style.display = "none" // hide label
+
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").hide()
     }
@@ -1247,6 +1244,15 @@ const onLoad = () => {
     // hide divs for buttons when selections are not made
     $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
       " #plotButton, #colorLegend").hide()
+
+    // an array of dropdown selectors to remove the disabled attr
+    const arrayOfSelectors = ["orderList2", "familyList2", "genusList2",
+      "speciesList2", "resResfinderList2", "resCardList2"]
+
+    // sets dropdowns to enable state so that tey can be selected again
+    for (const selector of arrayOfSelectors) {
+      $(`#${selector}`).prop("disabled", false)
+    }
   })
 
   /**
