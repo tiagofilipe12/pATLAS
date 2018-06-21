@@ -203,6 +203,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
       })
       .then( () => {
         renderGraph(graphics)
+        console.log(selectedFilter)
 
         if (readString !== false ) {
 
@@ -236,7 +237,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
 
           $("#intersectionsModalSubmit").click()
 
-        } else if (selectedFilter === "union") {
+        } else if (selectedFilter === "∪") {
 
           $("#unionModalSubmit").click()
 
@@ -324,7 +325,7 @@ const actualRemoval = (g, graphics, onload, forgetListGiFilter) => {
 const showDiv = () => {
   return new Promise( (resolve) => {
     // disables this button group
-    $("#toolButtonGroup button").attr("disabled", "disabled")
+    // $("#toolButtonGroup button").attr("disabled", "disabled")
     resolve($("#loading").show())
   })
 }
@@ -336,7 +337,7 @@ const showDiv = () => {
  */
 const hideDivsFileInputs = () => {
   $("#loading").hide()
-  $("#toolButtonGroup button").removeAttr("disabled")
+  // $("#toolButtonGroup button").removeAttr("disabled")
   $("#slideRight").prop("disabled", false)
   $("#slideLeft").prop("disabled", false)
 }

@@ -508,7 +508,7 @@ const onLoad = () => {
       listGiFilter = bootstrapTableList
       bootstrapTableList = []
       // enables button group again
-      $("#toolButtonGroup button").removeAttr("disabled")
+      // $("#toolButtonGroup button").removeAttr("disabled")
       $("#loading").hide()
       renderer.rerender()
     })
@@ -1009,7 +1009,7 @@ const onLoad = () => {
             " #plotButton, #colorLegend").show()
         }
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
         $("#loading").hide()
       })
     })
@@ -1106,7 +1106,7 @@ const onLoad = () => {
             " #plotButton, #colorLegend").show()
         }
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
         $("#loading").hide()
       })
     })
@@ -1202,7 +1202,7 @@ const onLoad = () => {
             " #plotButton, #colorLegend").show()
         }
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
         $("#loading").hide()
       })
     })
@@ -1503,7 +1503,7 @@ const onLoad = () => {
     showDiv().then( () => {
       linkColoring(g, graphics, renderer, "distance", false)
       // enables button group again
-      $("#toolButtonGroup button").removeAttr("disabled")
+      // $("#toolButtonGroup button").removeAttr("disabled")
     })
     const readMode = false
     colorLegendFunction(readMode)
@@ -1563,7 +1563,7 @@ const onLoad = () => {
       setTimeout( () => {
         linkColoring(g, graphics, renderer, "size", toggleRatioStatus)
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     )
 
@@ -1592,7 +1592,7 @@ const onLoad = () => {
       setTimeout( () => {
         removeBasedOnHashes(g, graphics, renderer, toggleRatioStatus)
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     )
 
@@ -2103,7 +2103,7 @@ const onLoad = () => {
       setTimeout( () => {
         actualRemoval(g, graphics, onLoad, true)
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     })
   })
@@ -2148,7 +2148,7 @@ const onLoad = () => {
         previousTableList = makeTable(areaSelection, listGiFilter,
           previousTableList, g, graphics, graphSize)
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
       })
   })
 
