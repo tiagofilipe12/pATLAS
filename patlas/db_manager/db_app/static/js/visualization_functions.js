@@ -1372,8 +1372,7 @@ const onLoad = () => {
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton, #colorLegend").hide()
     } else {
-      $("#colorLegendBox").empty()
-      document.getElementById("taxa_label").style.display = "none" // hide label
+
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").hide()
     }
