@@ -115,7 +115,7 @@ const setStoreLis = (objectOfSelections, currentColor, selectedFilter) => {
   let storeLis = "<li class='centeredList'><button" +
     " class='jscolor btn btn-default' style='background-color: " +
     currentColor.toString().replace("0x", "#") + "'></button>&nbsp;" +
-    selectedFilter + " selection</li>"
+    selectedFilter + "</li>"
 
   return storeLis + "</li>"
 }
@@ -224,15 +224,35 @@ const parseQueriesIntersection = async (g, graphics, renderer,
 
     listGiFilter = await arraysIntersection(arrayOfArrays)
     selectedColor = "0x" + "#0076c3".replace("#", "")
-    selectedFilter = "intersect"
+    selectedFilter = "∩"
 
   } else {
 
     listGiFilter = await mergeNRemoveDuplicatesFromArray(arrayOfArrays)
     selectedColor = "0x" + "#339e0b".replace("#", "")
-    selectedFilter = "union"
+    selectedFilter = "∪"
 
   }
+
+  // parsing to write the intersection or union string
+  const taxaStrings = (taxa) && taxa.join(" ∪ ")
+  const resStrings = (res) && res.join(" ∪ ")
+  const virStrings = (objectOfSelections.virulence) &&
+    objectOfSelections.virulence.join(" ∪ ")
+  const pfStrings = (objectOfSelections.pfinder) &&
+    objectOfSelections.pfinder.join(" ∪ ")
+
+  let stringToSelection = ""
+
+  // loop to write stringToSelection
+  for (const el of [taxaStrings, pfStrings, resStrings, virStrings]){
+    if (el) {
+      stringToSelection += `[${el}] <b>${selectedFilter}</b> `
+    }
+  }
+
+  // removes last selected filter from stringToSelection
+  stringToSelection = stringToSelection.substring(0, stringToSelection.length - 9)
 
   // color nodes after having tempList
   await colorNodes(g, graphics, renderer, listGiFilter, selectedColor)
@@ -240,7 +260,7 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   // after everything is done then render the respective divs
   $("#loading").hide()
 
-  const storeLis = setStoreLis(objectOfSelections, selectedColor, selectedFilter)
+  const storeLis = setStoreLis(objectOfSelections, selectedColor, stringToSelection)
 
   // show legend
 
@@ -250,8 +270,9 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   $("#fileNameDiv").hide()
 
   $("#colorLegend").show()
-  document.getElementById("taxa_label").style.display = "block" // show label
-  $("#colorLegendBox").empty()
+
+  $("#advanced_label").show()
+  $("#colorLegendBoxAdvanced").empty()
     .append(storeLis +
       "<li class='centeredList'><button class='jscolor btn btn-default'" +
       " style='background-color:#666370' ></button>&nbsp;unselected</li>")

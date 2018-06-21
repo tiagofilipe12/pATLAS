@@ -11,31 +11,22 @@ const resetDisplayTaxaBox = (array) => {
   }
 }
 
-// function to remove taxa elements from div with main control string
-const taxaElementsToString = (taxaElements) => {
-  const starter = taxaElements[0] + ":"
-  const allOthers = taxaElements.slice(1, taxaElements.length)
-  return (starter + allOthers.toString())
-}
 
-// function that controls if taxa is present in div and adds or removes
-// depending if it is already there or not
-const filterDisplayer = (taxaName, stringClass, divStringClass) => {
-  const taxaElements = $(divStringClass).html().split(/[:,]/)
-  const taxaToParse = " " + taxaName + ","
-  if (taxaElements.indexOf(taxaToParse.replace(",", "")) > -1) {
-    // remove string from array
-    const index = taxaElements.indexOf(taxaToParse.replace(",", "")) // gets
-    // the index of the string if higher than -1 then remove it
-    if (index !== -1) {
-      taxaElements.splice(index, 1)
-      $(divStringClass).empty()
-        .append(taxaElementsToString(taxaElements))
-    }
-  } else {
-    // if not already in taxaElements then add it
-    $(divStringClass).append(taxaToParse)
-  }
+/**
+ * Function that is responsible for updating the respective element that
+ * displays the information of the selected taxa, resistances, virulence or
+ * plasmidfinder genes.
+ * @param {Array} arrayOfSelections
+ * @param {String} stringClass - the string with the class name
+ * @param {String} divStringClass - the string with the div to which the
+ * arrayOfSelections will be outputted in text format
+ */
+const filterDisplayer = (arrayOfSelections, stringClass, divStringClass) => {
+
+  const taxaToParse = arrayOfSelections.join(", ")
+
+  $(divStringClass).empty()
+    .append(`${stringClass}:${taxaToParse}`)
 }
 
 

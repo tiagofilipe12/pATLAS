@@ -219,7 +219,7 @@ const setProjectView = async (projectInitialView, view) => {
       }
 
       if (key === "resfinder") {
-        await $("#resList").selectpicker("val", projectInitialView[key])
+        await $("#resfinderList").selectpicker("val", projectInitialView[key])
       }
 
     }
@@ -229,17 +229,16 @@ const setProjectView = async (projectInitialView, view) => {
     // for plasmidfinder dropdown
   } else if (view === "plasmidfinder") {
 
-    await $("#plasmidFamiliesList").selectpicker("val", projectInitialView)
+    await $("#plasmidFinderList").selectpicker("val", projectInitialView)
 
     $("#pfSubmit").click()
 
     // and for virulence dropdown
   } else if (view === "virulence") {
 
-    await $("#virList").selectpicker("val", projectInitialView)
+    await $("#virulenceList").selectpicker("val", projectInitialView)
 
     $("#virSubmit").click()
 
   }
-
 }

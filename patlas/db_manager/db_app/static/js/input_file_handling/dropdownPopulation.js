@@ -183,9 +183,9 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   let legendInst = false // by default legend is off
   let storeLis = ""  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
-  const pfQuery = document.getElementById("p_Plasmidfinder").innerHTML
+  const pfQuery = document.getElementById("p_PlasmidFinder").innerHTML
 
-  let selectedPf = pfQuery.replace("Plasmidfinder:", "").split(",").filter(Boolean)
+  let selectedPf = pfQuery.replace("PlasmidFinder:", "").split(",").filter(Boolean)
 
   selectedPf = removeFirstCharFromArray(selectedPf)
 
@@ -261,7 +261,7 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
 
   // check if arrays are empty
   if (selectedVir.length !== 0) {
-    // if only card has selected entries
+
     for (let i in selectedVir) {
       if ({}.hasOwnProperty.call(selectedVir, i)) {
         // establish current color to use
@@ -307,5 +307,6 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
     )
     .show()
   // }
+
   return legendInst
 }

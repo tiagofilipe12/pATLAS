@@ -249,6 +249,7 @@ const onLoad = () => {
       // the next if statement is only executed on development session, it
       // is way less efficient than the non development session.
       if (devel === true) {
+        console.log("devel session")
         getArray.done(function (json) {
           $.each(json, function (sequenceInfo, dictDist) {
             counter++
@@ -507,7 +508,7 @@ const onLoad = () => {
       listGiFilter = bootstrapTableList
       bootstrapTableList = []
       // enables button group again
-      $("#toolButtonGroup button").removeAttr("disabled")
+      // $("#toolButtonGroup button").removeAttr("disabled")
       $("#loading").hide()
       renderer.rerender()
     })
@@ -933,10 +934,10 @@ const onLoad = () => {
     // clear = true;
     event.preventDefault()
     // this needs an array for reusability purposes
-    resetDisplayTaxaBox(["p_Plasmidfinder"])
+    resetDisplayTaxaBox(["p_PlasmidFinder"])
 
     // resets dropdown selections
-    $("#plasmidFamiliesList").selectpicker("deselectAll")
+    $("#plasmidFinderList").selectpicker("deselectAll")
 
     // slider.noUiSlider.set([min, max])
     // nodeColorReset(graphics, g, nodeColor, renderer)
@@ -950,8 +951,7 @@ const onLoad = () => {
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton, #colorLegend").hide()
     } else {
-      $("#colorLegendBox").empty()
-      $("#taxa_label").hide()
+
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").hide()
     }
@@ -988,6 +988,8 @@ const onLoad = () => {
     $("#colorLegendBoxRes").empty()
     $("#vir_label").hide()
     $("#colorLegendBoxVir").empty()
+    $("#advanced_label").hide()
+    $("#colorLegendBoxAdvanced").empty()
 
     $("#readString").empty()
     $("#readLegend").empty()
@@ -1006,7 +1008,7 @@ const onLoad = () => {
             " #plotButton, #colorLegend").show()
         }
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
         $("#loading").hide()
       })
     })
@@ -1028,7 +1030,7 @@ const onLoad = () => {
 
     // resets dropdown selections
     $("#cardList").selectpicker("deselectAll")
-    $("#resList").selectpicker("deselectAll")
+    $("#resfinderList").selectpicker("deselectAll")
 
     // slider.noUiSlider.set([min, max])
     // nodeColorReset(graphics, g, nodeColor, renderer)
@@ -1043,8 +1045,7 @@ const onLoad = () => {
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton, #colorLegend").hide()
     } else {
-      $("#colorLegendBox").empty()
-      document.getElementById("taxa_label").style.display = "none" // hide label
+
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").hide()
     }
@@ -1081,6 +1082,8 @@ const onLoad = () => {
     $("#colorLegendBoxVir").empty()
     $("#pf_label").hide()
     $("#colorLegendBoxPf").empty()
+    $("#advanced_label").hide()
+    $("#colorLegendBoxAdvanced").empty()
 
     $("#readString").empty()
     $("#readLegend").empty()
@@ -1101,7 +1104,7 @@ const onLoad = () => {
             " #plotButton, #colorLegend").show()
         }
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
         $("#loading").hide()
       })
     })
@@ -1124,7 +1127,7 @@ const onLoad = () => {
     resetDisplayTaxaBox(["p_Virulence"])
 
     // resets dropdown selections
-    $("#virList").selectpicker("deselectAll")
+    $("#virulenceList").selectpicker("deselectAll")
 
     // slider.noUiSlider.set([min, max])
     // nodeColorReset(graphics, g, nodeColor, renderer)
@@ -1138,8 +1141,7 @@ const onLoad = () => {
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton, #colorLegend").hide()
     } else {
-      $("#colorLegendBox").empty()
-      document.getElementById("taxa_label").style.display = "none" // hide label
+
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").hide()
     }
@@ -1176,6 +1178,8 @@ const onLoad = () => {
     $("#colorLegendBoxRes").empty()
     $("#pf_label").hide()
     $("#colorLegendBoxPf").empty()
+    $("#advanced_label").hide()
+    $("#colorLegendBoxAdvanced").empty()
 
     $("#readString").empty()
     $("#readLegend").empty()
@@ -1195,11 +1199,32 @@ const onLoad = () => {
             " #plotButton, #colorLegend").show()
         }
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
         $("#loading").hide()
       })
     })
   })
+
+  /**
+   * event listener for dropdown clicks that populate the displayer in modal
+   */
+  $("#orderList, #familyList, #genusList, #speciesList, #cardList, " +
+    "#resfinderList, #plasmidFinderList, #virulenceList")
+    .on("changed.bs.select", (e) => {
+
+      const arrayOfSelections = $(`#${e.target.id}`).selectpicker("val")
+
+      // fill panel group displaying current selected taxa filters
+      let stringClass = e.target.id.slice(0, -4)
+      // convert first char to upper case
+      stringClass  = stringClass.charAt(0).toUpperCase() + stringClass.slice(1)
+      // const tempVar = this.lastChild.innerHTML
+
+      // checks if a taxon is already in display
+      const divStringClass = "#p_" + stringClass
+
+      filterDisplayer(arrayOfSelections, stringClass, divStringClass)
+    })
 
 
   //* ******************//
@@ -1219,6 +1244,15 @@ const onLoad = () => {
     // hide divs for buttons when selections are not made
     $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
       " #plotButton, #colorLegend").hide()
+
+    // an array of dropdown selectors to remove the disabled attr
+    const arrayOfSelectors = ["orderList2", "familyList2", "genusList2",
+      "speciesList2", "resResfinderList2", "resCardList2"]
+
+    // sets dropdowns to enable state so that tey can be selected again
+    for (const selector of arrayOfSelectors) {
+      $(`#${selector}`).prop("disabled", false)
+    }
   })
 
   /**
@@ -1253,6 +1287,16 @@ const onLoad = () => {
         listGiFilter = parseQueriesIntersection(g, graphics, renderer,
           objectOfSelections, typeToProject)
       })
+
+      // empties taxa and plasmidfinder legend
+      $("#res_label").hide()
+      $("#colorLegendBoxRes").empty()
+      $("#pf_label").hide()
+      $("#colorLegendBoxPf").empty()
+      $("#vir_label").hide()
+      $("#colorLegendBoxVir").empty()
+      $("#taxa_label").hide()
+      $("#colorLegendBox").empty()
 
     }
   )
@@ -1334,8 +1378,7 @@ const onLoad = () => {
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton, #colorLegend").hide()
     } else {
-      $("#colorLegendBox").empty()
-      document.getElementById("taxa_label").style.display = "none" // hide label
+
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").hide()
     }
@@ -1439,6 +1482,8 @@ const onLoad = () => {
     $("#colorLegendBoxPf").empty()
     $("#vir_label").hide()
     $("#colorLegendBoxVir").empty()
+    $("#advanced_label").hide()
+    $("#colorLegendBoxAdvanced").empty()
 
     showDiv().then( () => {
         iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
@@ -1463,7 +1508,7 @@ const onLoad = () => {
     showDiv().then( () => {
       linkColoring(g, graphics, renderer, "distance", false)
       // enables button group again
-      $("#toolButtonGroup button").removeAttr("disabled")
+      // $("#toolButtonGroup button").removeAttr("disabled")
     })
     const readMode = false
     colorLegendFunction(readMode)
@@ -1523,7 +1568,7 @@ const onLoad = () => {
       setTimeout( () => {
         linkColoring(g, graphics, renderer, "size", toggleRatioStatus)
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     )
 
@@ -1552,7 +1597,7 @@ const onLoad = () => {
       setTimeout( () => {
         removeBasedOnHashes(g, graphics, renderer, toggleRatioStatus)
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     )
 
@@ -2063,7 +2108,7 @@ const onLoad = () => {
       setTimeout( () => {
         actualRemoval(g, graphics, onLoad, true)
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     })
   })
@@ -2108,7 +2153,7 @@ const onLoad = () => {
         previousTableList = makeTable(areaSelection, listGiFilter,
           previousTableList, g, graphics, graphSize)
         // enables button group again
-        $("#toolButtonGroup button").removeAttr("disabled")
+        // $("#toolButtonGroup button").removeAttr("disabled")
       })
   })
 
@@ -2165,7 +2210,9 @@ const onLoad = () => {
    * Button that searches for a given plasmid or accession number in the graph
    * network. It uses for that search the input box near to the button.
    */
-  $("#submitButton").unbind("click").bind("click", (event) => {
+  $("#submitButton").unbind("click").bind("click", async (event) => {
+    event.preventDefault()    // prevents page from reloading
+
     $("#resTab").removeClass("active")
     $("#resButton").removeClass("active")
     $("#pfTab").removeClass("active")
@@ -2175,22 +2222,20 @@ const onLoad = () => {
 
     $("#closePop").click()
 
-    event.preventDefault()    // prevents page from reloading
     if (toggleStatus === false) {
       const formvalueId = $("#formValueId").val()
       const query = (formvalueId === "") ? clickedHighchart :
         formvalueId.replace(".", "_")
 
-      currentQueryNode = centerToggleQuery(g, graphics, renderer, query,
+      currentQueryNode = await centerToggleQuery(g, graphics, renderer, query,
         currentQueryNode)
     } else {
       // executed for plasmid search
-      toggleOnSearch(g, graphics, renderer, currentQueryNode)
+      const currentQueryNode = await toggleOnSearch(g, graphics, renderer, currentQueryNode)
       // then is here used to parse the results from async/await function
-        .then( (result) => {
-          currentQueryNode = result
-        })
     }
+
+    setTimeout(() => { renderer.rerender() }, 0)
 
   })
 

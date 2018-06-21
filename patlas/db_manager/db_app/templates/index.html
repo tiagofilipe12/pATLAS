@@ -101,13 +101,6 @@
                style="width: 30px; height: 30px"/> for a better experience.
         </p>
       </div>
-      <div>
-        <a title="Web Analytics" href="http://statcounter.com/"
-           target="_blank">
-          <img src="//c.statcounter.com/11567956/0/ab4c856f/1/"
-               alt="Web Analytics" >
-        </a>
-      </div>
       <div class="modal-footer">
         <div id="counternclose"
              style="position: absolute; left:3%; bottom: 3%;">
@@ -150,13 +143,12 @@
           contained in High Throughput Sequencing data.
         </p>
 
-        <h3><b>Version:</b> 1.4.0</h3>
+        <h3><b>Version:</b> 1.4.1</h3>
         <p class="mainText">
         </p>
-        <h3><b>Last pATLAS database update:</b> 18 April 2018</h3>
-        <h4><b>Last NCBI database update:</b> 12 January 2018</h4>
+        <h3><b>Last pATLAS database update:</b> 18 June 2018</h3>
         <h4><b>Mash version:</b> 2.0</h4>
-        <h4><b>Abricate version:</b> 0.7</h4>
+        <h4><b>Abricate version:</b> 0.8</h4>
         <p class="mainText">
         </p>
         <h3><b>Dev team</b></h3>
@@ -636,10 +628,10 @@
         <h3 class="modal-title">Display distances with a gradient of color?</h3>
       </div>
       <div class="modal-body" id="modal-body-scheme">
-        <div class="dropdown" id="color_scheme">
+        <div id="color_scheme">
           <div class="header_taxa">Select a color scheme</div>
           <select class="selectpicker" data-dropup-auto="false"
-                  title="Green color scheme" id="colorForm"
+                  data-title="Green color scheme" id="colorForm"
                   width="auto" data-size="7"
                   data-header="Select a color">
             <option></option>
@@ -707,7 +699,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h3 class="modal-title">Filter nodes by species taxa</h3>
+        <h3 class="modal-title">Filter by taxa</h3>
       </div>
       <div class="modal-body" id="modal-body-taxa">
 
@@ -1406,7 +1398,7 @@
                 <div class="panel-body"
                      id="displayCurrentBoxFAM">
                   <!--Populated by visualization_functions.js-->
-                  <p id="p_Plasmidfinder">Plasmidfinder:</p>
+                  <p id="p_PlasmidFinder">PlasmidFinder:</p>
                 </div>
               </div>
             </div>
@@ -1505,6 +1497,14 @@
         src="{{ url_for('static', filename='node_modules/nouislider/distribute/nouislider.min.js') }}"></script>
 <script language="javascript" type="text/javascript"
         src="{{ url_for('static', filename='js/menu-toggle.js') }}"></script>
+
+<div>
+  <a title="Web Analytics" href="http://statcounter.com/"
+     target="_blank">
+    <img src="//c.statcounter.com/11567956/0/ab4c856f/1/"
+         alt="Web Analytics" >
+  </a>
+</div>
 
 </body>
 
