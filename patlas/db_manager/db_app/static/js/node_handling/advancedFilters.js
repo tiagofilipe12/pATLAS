@@ -235,19 +235,19 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   }
 
   // parsing to write the intersection or union string
-  const taxaStrings = (taxa) && taxa.join(" + ")
-  const resStrings = (res) && res.join(" + ")
+  const taxaStrings = (taxa) && taxa.join(" ∪ ")
+  const resStrings = (res) && res.join(" ∪ ")
   const virStrings = (objectOfSelections.virulence) &&
-    objectOfSelections.virulence.join(" + ")
+    objectOfSelections.virulence.join(" ∪ ")
   const pfStrings = (objectOfSelections.pfinder) &&
-    objectOfSelections.pfinder.join(" + ")
+    objectOfSelections.pfinder.join(" ∪ ")
 
   let stringToSelection = ""
 
   // loop to write stringToSelection
   for (const el of [taxaStrings, pfStrings, resStrings, virStrings]){
     if (el) {
-      stringToSelection += `${el} <b>${selectedFilter}</b> `
+      stringToSelection += `[${el}] <b>${selectedFilter}</b> `
     }
   }
 
