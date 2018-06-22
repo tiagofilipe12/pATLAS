@@ -67,14 +67,15 @@ available through pATLAS. This expects an import file structure like this:
 Again the key is a plasmid accession number available in pATLAS, while
 the values for are arrays of 3 elements:
 
-1) The identity percentage (`1 - mash distance`) of a given contig with
+- The identity percentage (`1 - mash distance`) of a given contig with
 the plasmid available in the database.
-2) The number of shared hashes between the query contig and the plasmid
+- The number of shared hashes between the query contig and the plasmid
 available in the database.
+
     * **Shared hashes explanation**
         * This value is calculated for each row in `mash dist` output.
         This is the last element of each row in mash dist output.
-3) The contig name retrieved from each row in the mash dist output.
+- The contig name retrieved from each row in the mash dist output.
 
 **Note:** you can use [this index](https://github.com/tiagofilipe12/mash_wrapper/releases/download/1.0.5/patlas.msh)
 that contain all the plasmids available in pATLAS to mash dist pipelines.

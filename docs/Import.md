@@ -74,14 +74,15 @@ This option was created because plasmids are highly chimeric and modular
 by nature and this renders that results often contains redundant
 information. Consider the following examples:
 
-1) Two plasmids are highly related (and thus they are linked in pATLAS)
+- Two plasmids are highly related (and thus they are linked in pATLAS)
 and results show that HTS data has a
 100% identity with both, but one of them is larger than the other (let's
 say one has 5kb and another has 50kb). In this case the plasmid with
 the same % identity but that is larger is the more likely plasmid to be
 present in our data.
 
-2) HTS data suggest that we may have:
+- HTS data suggest that we may have:
+
     * one plasmid with 100% identity and sequence length of 5kb.
     * another plasmid with 90% identity and sequence length of 50kb.
     * both plasmids are highly related (and thus they are linked in
