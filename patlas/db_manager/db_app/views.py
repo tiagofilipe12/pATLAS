@@ -1,17 +1,19 @@
 try:
     from db_manager.db_app import app, db
-    from db_manager.db_app.models import Plasmid, SequenceDB
+    from db_manager.db_app.models import Plasmid, SequenceDB, UrlDatabase
 except ImportError:
     try:
         from db_app import app, db
-        from db_app.models import Plasmid, SequenceDB
+        from db_app.models import Plasmid, SequenceDB, UrlDatabase
     except ImportError:
         from patlas.db_manager.db_app import app, db
-        from patlas.db_manager.db_app.models import Plasmid, SequenceDB
+        from patlas.db_manager.db_app.models import Plasmid, SequenceDB, \
+            UrlDatabase
 
 
 from flask import json, render_template, Response
 from flask_restful import request
+import ctypes
 
 
 def repetitiveFunction(path):
@@ -172,5 +174,37 @@ def generate_metadata_download():
                         )
                     }
                     )
+
+@app.route("/results/", methods=["GET", "POST"])
+def show_highlighted_results():
+    if request.method == "GET":
+        #receive a get from the frontend
+        print(request.args["mapping"])
+        # TODO query to database to fetch data
+
+        #render_template("index.html", request_results=request.args["id"])
+    else:
+        #receive a post request in the backend
+
+        # check if dict is empty or not. This will fail if a string is provided
+        if request.form:
+            # generate a positive hash for each dict that is given to this post
+            hash_url = ctypes.c_size_t(
+                hash(frozenset(request.form.items()))
+            ).value
+            print(hash_url)
+
+            append_to_db = UrlDatabase(
+                id = hash_url,
+                json_entry = request.form
+            )
+
+            db.session.add(append_to_db)
+            db.session.commit()
+            db.session.close()
+            return "test"
+
+        else:
+            return ("ERROR: attempted to hash something that is not a JSON")
 
 ## TODO a similar api can be added for the other tables in fact to fetch metadata
