@@ -23,5 +23,7 @@ except ImportError as e:
         from patlas.db_manager.cron_delete import super_delete
 # import views, models, resources, api
 
-super_delete()
-
+# starts the schedule for removing old entries from the psql database that
+# stores JSON files from other applications that submit a post request to
+# UrlDatabase model.
+super_delete(86400)

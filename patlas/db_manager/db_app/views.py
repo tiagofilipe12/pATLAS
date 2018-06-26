@@ -14,6 +14,8 @@ except ImportError:
 from flask import json, render_template, Response
 from flask_restful import request
 import ctypes
+import sqlalchemy
+from collections import OrderedDict
 
 
 def repetitiveFunction(path):
@@ -177,34 +179,67 @@ def generate_metadata_download():
 
 @app.route("/results/", methods=["GET", "POST"])
 def show_highlighted_results():
-    if request.method == "GET":
-        #receive a get from the frontend
-        print(request.args["mapping"])
-        # TODO query to database to fetch data
+    """Method that allows to receive post requests and display results in pATLAS
+    from external sources
 
-        #render_template("index.html", request_results=request.args["id"])
+    This function allows external applications to send JSON files to pATLAS
+    and store them in a psql database table, which will enable to view results
+    in an unique view for each selection. POST requests generate a unique hash
+    for a given JSON dictionary that is sent through the request and return
+    them in an unique url to the application that sent the POST request. Then,
+    users may access their results in the specified url.
+
+    Returns
+    -------
+    This function returns a string with the url that will allow to visualize
+    results. If the post request doesn't have a dictionary a warning will be
+    raised for the post sender.
+
+    """
+
+    if request.method == "GET":
+        # receive a get from the frontend
+        print(request.args["query"])
+        queried_json = db.session.query(UrlDatabase).get(request.args["query"])
+        print(type(queried_json.json_entry))
+        print(queried_json.json_entry)
+
+        return render_template("index.html",
+                               request_results=queried_json.json_entry)
     else:
-        #receive a post request in the backend
+        # receive a POST request in the backend
 
         # check if dict is empty or not. This will fail if a string is provided
         if request.form:
+            # orders dictionary so that the hash doesn't change.
+            ordered_dict = OrderedDict((k, v) for k, v in sorted(
+                request.form.items(), key=lambda x: x[0]))
+
             # generate a positive hash for each dict that is given to this post
             hash_url = ctypes.c_size_t(
-                hash(frozenset(request.form.items()))
+                hash(frozenset(ordered_dict.items()))
             ).value
-            print(hash_url)
 
             append_to_db = UrlDatabase(
-                id = hash_url,
-                json_entry = request.form
+                id=hash_url,
+                json_entry=request.form
             )
 
-            db.session.add(append_to_db)
-            db.session.commit()
-            db.session.close()
-            return "test"
+            # tries to commit to database, if it fails then retrieve a warning
+            # but it is still able to return the url for the end application
+            try:
+                db.session.add(append_to_db)
+                db.session.commit()
+                db.session.close()
+            except sqlalchemy.exc.IntegrityError:
+                print("WARNING: Attempted to push to database an already "
+                      "existing key ({}). None will be added but it will return"
+                      " a url to the request anyway.".format(hash_url))
+
+            return "http://127.0.0.1:5000/results?query={}".format(str(hash_url))
 
         else:
-            return ("ERROR: attempted to hash something that is not a JSON")
-
-## TODO a similar api can be added for the other tables in fact to fetch metadata
+            # if a dictionary is not found then return a warning to the end
+            # application
+            return "ERROR: attempted to hash something that is not a JSON. " \
+                   "POST request must have a JSON format suitable for pATLAS."

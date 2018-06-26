@@ -63,6 +63,11 @@ class SequenceDB(db.Model):
         return "<SequenceDB %r>" % (self.sequence_entry)
 
 class UrlDatabase(db.Model):
+    """
+    The class that configures the psql database entries that allow to store
+    information from JSON files sent via post request and that are accessible
+    through GET method in pATLAS.
+    """
     __tablename__ = "url_database"
     id = db.Column(db.String, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
