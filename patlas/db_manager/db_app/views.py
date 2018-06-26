@@ -11,21 +11,35 @@ except ImportError:
             UrlDatabase
 
 
-from flask import json, render_template, Response
+from flask import json, render_template, Response, redirect, url_for
 from flask_restful import request
 import ctypes
 import sqlalchemy
 from collections import OrderedDict
 
 
+def make_summary(path):
+    with open(path) as data_file:
+        data = json.load(data_file)
+    return data
+
+
 def repetitiveFunction(path):
-    '''Function that repeated in all views and that can be used to add any
+    """Function that repeated in all views and that can be used to add any
     json object to a view
 
-    :param path: str, is the relative path to the json file to be loaded.
-    Note that path is relative to this script
-    :return: Json object that will be added to the respective view
-    '''
+    Parameters
+    ----------
+    path: str
+        Is the relative path to the json file to be loaded.
+        Note that path is relative to this script
+
+    Returns
+    -------
+    Json object that will be added to the respective view
+
+    """
+
     data = make_summary(path)
     response = app.response_class(
         response=json.dumps(data),
@@ -39,31 +53,65 @@ def repetitiveFunction(path):
 @app.route("/")
 @app.route("/index")
 def index():
-    return render_template("index.html")
+    """This function renders the pATLAS index.html
+
+    This function will render the pATLAS page. When this is redirected from
+    `show_highlighted_results` it will render the page but passing a variable
+    containing data to highlight nodes in the vivagraph visualization.
+
+    Returns
+    -------
+    Render a template and possibly a variable to the front end
+    """
+
+    # checks if db query returns some json_entry. if not raises AttributeError
+    try:
+        # checks if request.args is empty or not
+        if bool(request.args):
+            queried_json = db.session.query(UrlDatabase).get(request.args["query"])
+            print(queried_json.json_entry)
+            return render_template("index.html",
+                                   request_results=queried_json.json_entry)
+        else:
+            return render_template("index.html", request_results="false")
+
+    except AttributeError:
+        # if no results are displayed show some other template warning
+        # the user
+        return render_template("failed_request_results.html")
+
 
 @app.route("/test")
 def main_summary():
-    return repetitiveFunction("db_app/static/json/import_to_vivagraph_v1.4.1.json")
+    return repetitiveFunction(
+        "db_app/static/json/import_to_vivagraph_v1.4.1.json"
+    )
+
 
 @app.route("/fullDS")
 def full_ds():
     return repetitiveFunction("db_app/static/json/filtered_v1.4.1.json")
 
+
 @app.route("/taxa")
 def taxa_summary():
     return repetitiveFunction("db_app/static/json/taxa_tree.json")
+
 
 @app.route("/resistance")
 def res_summary():
     return repetitiveFunction("db_app/static/json/resistance.json")
 
+
 @app.route("/plasmidfinder")
 def pf_summary():
     return repetitiveFunction("db_app/static/json/plasmidfinder.json")
 
+
 @app.route("/virulence")
 def vir_summary():
     return repetitiveFunction("db_app/static/json/virulence.json")
+
 
 ## routes for sample files
 @app.route("/map_sample")
@@ -72,11 +120,13 @@ def map_sample():
         "db_app/static/json/samples/reads_sample_resultSRR5201504.json"
     )
 
+
 @app.route("/ass_sample1")
 def ass_sample1():
     return repetitiveFunction(
         "db_app/static/json/samples/assembly1.json"
     )
+
 
 @app.route("/ass_sample2")
 def ass_sample2():
@@ -84,18 +134,12 @@ def ass_sample2():
         "db_app/static/json/samples/assembly2.json"
     )
 
+
 @app.route("/mash_sample")
 def mash_sample():
     return repetitiveFunction(
         "db_app/static/json/samples/mash_screen_sample_sorted.json"
     )
-
-## functions
-
-def make_summary(path):
-    with open(path) as data_file:
-        data = json.load(data_file)
-    return data
 
 
 @app.route("/api/senddownload/", methods=["get"])
@@ -177,6 +221,7 @@ def generate_metadata_download():
                     }
                     )
 
+
 @app.route("/results/", methods=["GET", "POST"])
 def show_highlighted_results():
     """Method that allows to receive post requests and display results in pATLAS
@@ -199,36 +244,28 @@ def show_highlighted_results():
 
     if request.method == "GET":
         # receive a get from the frontend
-        queried_json = db.session.query(UrlDatabase).get(request.args["query"])
 
-        # check for json_entry result
-        try:
-            # then render the index.html and a request_results that will be parsed
-            # by the same html file to a js global variable
-            return render_template("index.html",
-                                   request_results=queried_json.json_entry)
-        except AttributeError:
-            # if no results are displayed show some other template warning
-            # the user
-            return render_template("failed_request_results.html")
-
+        # this redirects to the index view
+        return redirect(url_for("index", query=request.args["query"]))
     else:
         # receive a POST request in the backend
+        # fetch the nested json
+        request_json = request.get_json()
 
         # check if dict is empty or not. This will fail if a string is provided
-        if request.form:
-            # orders dictionary so that the hash doesn't change.
-            ordered_dict = OrderedDict((k, v) for k, v in sorted(
-                request.form.items(), key=lambda x: x[0]))
+        if request_json:
+            # converts dict to a string so it can be more easily hashed, since
+            # nested dicts can be trickier to hash.
+            stringify_dict = json.dumps(request_json)
 
             # generate a positive hash for each dict that is given to this post
             hash_url = ctypes.c_size_t(
-                hash(frozenset(ordered_dict.items()))
+                hash(stringify_dict)
             ).value
 
             append_to_db = UrlDatabase(
                 id=hash_url,
-                json_entry=request.form
+                json_entry=request_json
             )
 
             # tries to commit to database, if it fails then retrieve a warning

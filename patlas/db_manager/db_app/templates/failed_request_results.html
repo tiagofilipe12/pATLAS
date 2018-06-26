@@ -59,11 +59,13 @@
     }
 
   </style>
+
   <script>
     const clickButton = () => {
       window.open("http://www.patlas.site", "_blank")
     }
   </script>
+
 </head>
 <body>
 <img src="{{ url_for('static', filename='images/logo.png') }}"
@@ -71,9 +73,9 @@
                      margin:auto;"/>
 <div id="warning_msg">
   <p>Oops... it seems that the following url doesn't exist in the database.</p>
-  <p>Are you absolutely positive that this is a valid url?</p>
-  <!--TODO add a form that allows to search by a given url-->
-  <button type="button" class="myButton" onClick="clickButton()">Go to pATLAS!</button>
+  <button type="button" class="myButton" onClick="clickButton()">
+    Go to pATLAS!
+  </button>
 </div>
 
 </body>

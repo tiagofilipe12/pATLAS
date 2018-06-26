@@ -18,6 +18,7 @@
   <!-- custom js scripts -->
 
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/pATLASGlobals.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/external_resources/requestResults.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
@@ -1183,7 +1184,8 @@
 </div>
 
 <!-- Modal for Re_run-->
-<div id="redundancyModal" class="modal fade" role="dialog" tabindex="-1">
+<div id="redundancyModal" data-backdrop="static" data-keyboard="false"
+     class="modal fade" role="dialog" tabindex="-1">
   <div class="modal-dialog">
 
     <div class="modal-content">

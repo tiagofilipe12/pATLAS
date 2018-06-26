@@ -75,8 +75,6 @@ const emptyFiles = () => {
  */
 const onLoad = () => {
 
-  parseRequestResults(request_results)
-
   $("#toolButtonGroup button").removeAttr("disabled")
 
   /**
@@ -113,7 +111,7 @@ const onLoad = () => {
   $("#counterClose").unbind("click").bind("click", () => {
     $("#counter").html("")
     $("#counterClose").hide()
-  })a
+  })
 
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
@@ -307,6 +305,7 @@ const onLoad = () => {
           addAllNodes(g, json.nodes, layout)
           addAllLinks(g, json.links)
           renderGraph(graphics)
+          parseRequestResults(request_results)
         })
       }
     } else {
@@ -1632,11 +1631,13 @@ const onLoad = () => {
 
     // first build readFilejson object
     Object.keys(queryFileJson).map( (fileName) => {
-      const fileString = JSON.parse(queryFileJson[fileName])
+      const fileString = (typeof queryFileJson[fileName] === "string") ?
+        JSON.parse(queryFileJson[fileName]) : queryFileJson[fileName]
       readFilejson[fileName] = fileString
       promises.push(fileName)
     })
 
+      console.log(readFilejson)
 
     Promise.all(promises).then( () => {
       mappingHighlight(g, graphics, renderer)
@@ -1666,7 +1667,8 @@ const onLoad = () => {
 
     Object.keys(queryFileJson).map( (fileName) => {
       // variable that fetches the object associated with each file
-      const fileString = JSON.parse(queryFileJson[fileName])
+      const fileString = (typeof queryFileJson[fileName] === "string") ?
+        JSON.parse(queryFileJson[fileName]) : queryFileJson[fileName]
       // the variable that stores the dictionary of accessions and respective
       // values from imported results
       const currentDict = Object.keys(fileString)
