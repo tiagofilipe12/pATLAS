@@ -24,7 +24,8 @@ typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
 clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
-xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version*/
+xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
+parseRequestResults*/
 
 
 /**
