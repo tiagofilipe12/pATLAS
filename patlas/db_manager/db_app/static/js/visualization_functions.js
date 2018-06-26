@@ -75,6 +75,8 @@ const emptyFiles = () => {
  */
 const onLoad = () => {
 
+  parseRequestResults(request_results)
+
   $("#toolButtonGroup button").removeAttr("disabled")
 
   /**
@@ -111,7 +113,7 @@ const onLoad = () => {
   $("#counterClose").unbind("click").bind("click", () => {
     $("#counter").html("")
     $("#counterClose").hide()
-  })
+  })a
 
   // initiate vivagraph instance
   const g = Viva.Graph.graph()

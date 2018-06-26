@@ -199,13 +199,19 @@ def show_highlighted_results():
 
     if request.method == "GET":
         # receive a get from the frontend
-        print(request.args["query"])
         queried_json = db.session.query(UrlDatabase).get(request.args["query"])
-        print(type(queried_json.json_entry))
-        print(queried_json.json_entry)
 
-        return render_template("index.html",
-                               request_results=queried_json.json_entry)
+        # check for json_entry result
+        try:
+            # then render the index.html and a request_results that will be parsed
+            # by the same html file to a js global variable
+            return render_template("index.html",
+                                   request_results=queried_json.json_entry)
+        except AttributeError:
+            # if no results are displayed show some other template warning
+            # the user
+            return render_template("failed_request_results.html")
+
     else:
         # receive a POST request in the backend
 

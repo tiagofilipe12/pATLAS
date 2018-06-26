@@ -4,12 +4,6 @@
 
 const version = "1.4.1"
 
-if (request_results) {
-  console.log(request_results)
-} else {
-  console.log("no requested results")
-}
-
 /**
  * variable that will store the object to be exported to a json file on
  * "projects export"
