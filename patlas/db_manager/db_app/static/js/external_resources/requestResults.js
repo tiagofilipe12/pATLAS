@@ -13,6 +13,7 @@ const parseRequestResults = (request_results) => {
   // this parsing assumes that the 'type' and 'samples' keys are present in
   // request_results, which is handled by the `show_highlighted_results` view
   if (request_results) {
+    $("#requestModalShow").removeAttr("disabled")
     fileMode = request_results.type
 
     if (fileMode === "mapping") {

@@ -76,7 +76,7 @@ const emptyFiles = () => {
  */
 const onLoad = () => {
 
-  $("#toolButtonGroup button").removeAttr("disabled")
+  // $("#toolButtonGroup button").removeAttr("disabled")
 
   /**
    * group of variables that allow to fetch input forms min and max values to
@@ -1638,8 +1638,6 @@ const onLoad = () => {
       promises.push(fileName)
     })
 
-    console.log(queryFileJson)
-
     Promise.all(promises).then( () => {
       mappingHighlight(g, graphics, renderer)
     })
@@ -2162,6 +2160,10 @@ const onLoad = () => {
       })
   })
 
+
+  $("#requestModalShow").unbind("click").bind("click", () => {
+    $("#importRequest").modal()
+  })
 
   /**
    * Button that fires the download of the current selection of nodes

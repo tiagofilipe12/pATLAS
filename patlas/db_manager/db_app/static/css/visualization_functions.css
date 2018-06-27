@@ -664,7 +664,7 @@
 }
 
 #go_back, #Re_run, #download_ds, #tableShow, #heatmapButtonTab, #plotButton,
-#clearButton, #submitButton{
+#clearButton, #submitButton, #requestModalShow{
     height: 34px;
 }
 

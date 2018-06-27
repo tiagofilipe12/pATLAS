@@ -1,5 +1,6 @@
 /*globals makeHash, reloadAccessionList, assembly, listGiFilter,
- colorNodes, readColoring, removeImportInfo, selectedFilter, getLinkedNodes */
+ colorNodes, readColoring, removeImportInfo, selectedFilter, getLinkedNodes,
+  request_results*/
 
 // function that adds links, avoiding duplication below on reAddNode function
 /**
