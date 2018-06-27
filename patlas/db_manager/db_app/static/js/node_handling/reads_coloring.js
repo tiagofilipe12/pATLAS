@@ -37,7 +37,7 @@ const cutoffParser = () => {
  * @returns {number} - The cutoff percentage cutoff value for mash import
  */
 const cutoffParserMash = () => {
-  const cutoffMash = $("#cutoffValueMash").val()
+  const cutoffMash = $(".cutoffValueMash").val()
   return (cutoffMash !== "") ? parseFloat(cutoffMash) : 0.9
 }
 
@@ -47,7 +47,7 @@ const cutoffParserMash = () => {
  * @returns {number} - The copy number cutoff value
  */
 const copyNumberCutoff = () => {
-  const cutoffCopy =$("#copyNumberValue").val()
+  const cutoffCopy =$(".copyNumberValue").val()
   return (cutoffCopy !== "") ? parseFloat(cutoffCopy) : 1
 }
 
@@ -250,7 +250,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
             // min value is the one fetched from the input form or by default 0.6
             // values are fixed to two decimal
             minValue = parseFloat(
-              ($("#cutoffValueMash").val() !== "") ? $("#cutoffValueMash").val() : "0.90"
+              ($(".cutoffValueMash").val() !== "") ? $(".cutoffValueMash").val() : "0.90"
             ).toFixed(2)
             // mean value is the sum of the min value plus the range between the min
             // and max values divided by two

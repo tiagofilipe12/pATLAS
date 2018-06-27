@@ -218,7 +218,7 @@
     display: inline-block;
 }
 
-#mappingCutOff {
+#mappingCutOff, #mashScreenCutOff {
     display: none;
 }
 
