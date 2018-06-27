@@ -222,6 +222,7 @@ def generate_metadata_download():
                     )
 
 
+@app.route("/results", methods=["GET", "POST"])
 @app.route("/results/", methods=["GET", "POST"])
 def show_highlighted_results():
     """Method that allows to receive post requests and display results in pATLAS
