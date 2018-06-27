@@ -209,13 +209,17 @@
     *overflow: hidden;
 }
 
-.mappingCutoffWrapper{
+.mappingCutoffWrapper {
     margin-top: 2%;
     text-align: center;
 }
 
 .mappingCutoffWrapper .form-group{
     display: inline-block;
+}
+
+#mappingCutOff {
+    display: none;
 }
 
 .uploadFile{

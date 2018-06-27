@@ -391,8 +391,8 @@
         <div class="mappingCutoffWrapper row" >
           <div class="form-group header_taxa col-sm-12">Percentage of plasmid coverage
             cutoff (0 - 1).
-            <input type="text" id="cutoffValue"
-                   class="form-control"
+            <input type="text"
+                   class="form-control cutoffValue"
                    placeholder="0.6"/>
 
           </div>
@@ -1207,10 +1207,10 @@
         </p>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-default"
-                  data-dismiss="modal" id="redundancyYes">Yes</button>
-          <button type="submit" class="btn btn-default"
-                  data-dismiss="modal" id="redundancyNo">No</button>
+          <button type="submit" class="btn btn-default redundancyYes"
+                  data-dismiss="modal">Yes</button>
+          <button type="submit" class="btn btn-default redundancyNo"
+                  data-dismiss="modal">No</button>
         </div>
       </div>
 
@@ -1511,6 +1511,8 @@
          alt="Web Analytics" >
   </a>
 </div>
+
+{% include 'import_request_modal.html' %}
 
 </body>
 

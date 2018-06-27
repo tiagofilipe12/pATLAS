@@ -27,7 +27,7 @@ const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
  * @returns {number}
  */
 const cutoffParser = () => {
-  const cutoff = $("#cutoffValue").val()
+  const cutoff = $(".cutoffValue").val()
   return (cutoff !== "") ? parseFloat(cutoff) : 0.6
 }
 

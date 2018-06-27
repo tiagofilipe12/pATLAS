@@ -15,11 +15,12 @@ const parseRequestResults = (request_results) => {
 
     if (fileMode === "mapping") {
       readFilejson = request_results.files
+      $("#mappingCutOff").show()
     }
     // TODO add fileMode for the other imports
 
     $("#welcomeModal").modal("hide")
-    $("#redundancyModal").modal()
+    $("#importRequest").modal()
 
   }
   // else {

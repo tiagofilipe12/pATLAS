@@ -1616,7 +1616,7 @@ const onLoad = () => {
     fileMode = "mapping"
   })
 
-  $("#redundancyNo").unbind("click").bind("click", (event) => {
+  $(".redundancyNo").unbind("click").bind("click", (event) => {
     event.preventDefault()
 
     // asserts which dict to use
@@ -1646,7 +1646,7 @@ const onLoad = () => {
 
   })
 
-  $("#redundancyYes").unbind("click").bind("click", (event) => {
+  $(".redundancyYes").unbind("click").bind("click", (event) => {
 
     event.preventDefault()
 
@@ -2560,6 +2560,22 @@ const onLoad = () => {
    */
   Mousetrap.bind("shift+ctrl+space", () => {
     initCallback(g, layout, devel)
+  })
+
+
+  /**
+   * This synchronizes div that are used to set the cutoff values, either they
+   * are provided through import file menus or through the import request view.
+   */
+  $(".cutoffValue").keyup( (e) => {
+    // this fetches the class, however it assumes that it is the last element
+    // present in the html class attribute
+    const currentClass = e.target.className.split(" ").slice(-1)[0]
+    // this fetches the current target value
+    const changedValue = e.target.value
+    // then updates all forms that have the current class with the value being
+    // set in one of the forms that has the class attr.
+    $(`.${currentClass}`).val(changedValue)
   })
 
 } // closes onload
