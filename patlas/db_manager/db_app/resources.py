@@ -69,26 +69,20 @@ req_parser.add_argument("plasmid_name", dest="plasmid_name", type=str,
 req_parser.add_argument("perc_hashes", dest="perc_hashes", type=float,
                         help="the percentage of hashes to be queried")
 
-## define all resources
 
 class GetSpecies(Resource):
     @marshal_with(entry_field)
     def post(self):
-        #Put req_parser inside get function. Only this way it parses the request.
-        #args = req_parser.parse_args()
         var_response = request.form["accession"].replace("[", "")\
             .replace("]", "").replace('"', "").split(",")
         single_query = db.session.query(Plasmid).filter(
             Plasmid.plasmid_id.in_(var_response)).all()
-        #json_object = json.loads(single_query.json_entry)
-        #print("return query ", single_query)
         return single_query
+
 
 class GetResistances(Resource):
     @marshal_with(card_field)
     def post(self):
-        # Put req_parser inside get function. Only this way it parses the request.
-        #args = req_parser.parse_args()
         var_response = request.form["accession"].replace("[", "")\
             .replace("]", "").replace('"', "").split(",")
         print(var_response)
@@ -96,32 +90,34 @@ class GetResistances(Resource):
             Card.plasmid_id.in_(var_response)).all()
         return single_query
 
+
 class GetPlasmidFinder(Resource):
     @marshal_with(card_field)
     def post(self):
-        # Put req_parser inside get function. Only this way it parses the request.
-        #args = req_parser.parse_args()
         var_response = request.form["accession"].replace("[", "")\
             .replace("]", "").replace('"', "").split(",")
         single_query = db.session.query(Database).filter(
             Database.plasmid_id.in_(var_response)).all()
         return single_query
 
+
 class GetVirulence(Resource):
     @marshal_with(card_field)
     def post(self):
-        # Put req_parser inside get function. Only this way it parses the request.
-        # args = req_parser.parse_args()
+        # Put req_parser inside get function. Only this way it parses the
+        # request.
         var_response = request.form["accession"].replace("[", "") \
             .replace("]", "").replace('"', "").split(",")
         single_query = db.session.query(Positive).filter(
             Positive.plasmid_id.in_(var_response)).all()
         return single_query
 
+
 class GetAccession(Resource):
     @marshal_with(entry_field)
     def get(self):
-        # Put req_parser inside get function. Only this way it parses the request.
+        # Put req_parser inside get function. Only this way it parses the
+        # request.
         args = req_parser.parse_args()
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
@@ -133,7 +129,8 @@ class GetAccession(Resource):
 class GetAccessionRes(Resource):
     @marshal_with(card_field)
     def get(self):
-        # Put req_parser inside get function. Only this way it parses the request.
+        # Put req_parser inside get function. Only this way it parses the
+        # request.
         args = req_parser.parse_args()
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
@@ -147,7 +144,8 @@ class GetAccessionRes(Resource):
 class GetAccessionPF(Resource):
     @marshal_with(card_field)
     def get(self):
-        # Put req_parser inside get function. Only this way it parses the request.
+        # Put req_parser inside get function. Only this way it parses the
+        # request.
         args = req_parser.parse_args()
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
@@ -161,7 +159,8 @@ class GetAccessionPF(Resource):
 class GetAccessionVir(Resource):
     @marshal_with(card_field)
     def get(self):
-        # Put req_parser inside get function. Only this way it parses the request.
+        # Put req_parser inside get function. Only this way it parses the
+        # request.
         args = req_parser.parse_args()
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
@@ -175,7 +174,8 @@ class GetAccessionVir(Resource):
 class GetAccessionTaxa(Resource):
     @marshal_with(entry_field)
     def get(self):
-        # Put req_parser inside get function. Only this way it parses the request.
+        # Put req_parser inside get function. Only this way it parses the
+        # request.
         args = req_parser.parse_args()
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
@@ -189,10 +189,12 @@ class GetAccessionTaxa(Resource):
 class GetPlasmidName(Resource):
     @marshal_with(entry_field)
     def get(self):
-        # Put req_parser inside get function. Only this way it parses the request.
+        # Put req_parser inside get function. Only this way it parses the
+        # request.
         args = req_parser.parse_args()
         # This queries if input plasmid name is present in db
-        # func.lower() function from sqalchemy allows the user to make case insensitive searches
+        # func.lower() function from sqalchemy allows the user to make case
+        # insensitive searches
         records = db.session.query(Plasmid).filter(func.lower(
             Plasmid.json_entry["plasmid_name"].astext) == func.lower(
             args.plasmid_name)).first()
@@ -203,19 +205,19 @@ class GetPlasmidName(Resource):
 class GetAccessionHashes(Resource):
     # @marshal_with(entry_field)
     def get(self):
-        # Put req_parser inside get function. Only this way it parses the request.
+        # Put req_parser inside get function. Only this way it parses the
+        # request.
         args = req_parser.parse_args()
 
         # convert values to decimal instead of percentages and the convert it
         # back to string
         query_hash_cutoff = float(args.perc_hashes) * 0.01
 
-
         # Fetch all entries
         records = db.session.query(Plasmid).all()
 
         # this is the list that will be returned to front-end
-        resultingObj = {}
+        resulting_obj = {}
 
         # iterate through all database records
         for record in records:
@@ -228,13 +230,15 @@ class GetAccessionHashes(Resource):
 
                 # iterate through each link
                 for link in linkList:
-                    linkedAccession = link["accession"]
-                    percHashlink = link["percentage_hashes"]
-                    if percHashlink >= query_hash_cutoff:
-                        if record.plasmid_id in resultingObj.keys():
-                            resultingObj[record.plasmid_id].append(linkedAccession)
+                    linked_accession = link["accession"]
+                    perc_hashlink = link["percentage_hashes"]
+                    if perc_hashlink >= query_hash_cutoff:
+                        if record.plasmid_id in resulting_obj.keys():
+                            resulting_obj[record.plasmid_id].append(
+                                linked_accession)
                         else:
-                            resultingObj[record.plasmid_id] = [linkedAccession]
+                            resulting_obj[record.plasmid_id] = [
+                                linked_accession]
 
 
-        return resultingObj
+        return resulting_obj

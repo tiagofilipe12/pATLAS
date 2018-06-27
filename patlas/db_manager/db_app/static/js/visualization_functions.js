@@ -12,7 +12,7 @@ importProject, setProjectView, readFilejson, mashJson, assemblyJson,
 consensusJson, projectJson, listGiFilter, storeMasterNode, recenterDOM,
 defaultZooming, freezeShift, renderer, downloadTypeHandler, colorNodes,
 initCallback, multiSelectOverlay, multiSelectOverlayObj, areaSelection,
-pageReRun, currentQueryNode, pfSubmitFunction, legendInst, resSubmitFunction,
+pageReRun, pfSubmitFunction, legendInst, resSubmitFunction,
 virSubmitFunction, parseQueriesIntersection, iterateArrays, readColoring,
 pushToMasterReadArray, repetitivePlotFunction, heatmapMaker, makeTable,
 centerToggleQuery, toggleOnSearch, resGetter, plasmidFamilyGetter,
@@ -24,7 +24,8 @@ typeOfProject, previousTableList, nodeColor, clickedPopupButtonCard,
 clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
-xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version*/
+xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
+parseRequestResults, requestResults, currentQueryNode*/
 
 
 /**
@@ -75,7 +76,7 @@ const emptyFiles = () => {
  */
 const onLoad = () => {
 
-  $("#toolButtonGroup button").removeAttr("disabled")
+  // $("#toolButtonGroup button").removeAttr("disabled")
 
   /**
    * group of variables that allow to fetch input forms min and max values to
@@ -249,7 +250,6 @@ const onLoad = () => {
       // the next if statement is only executed on development session, it
       // is way less efficient than the non development session.
       if (devel === true) {
-        console.log("devel session")
         getArray.done(function (json) {
           $.each(json, function (sequenceInfo, dictDist) {
             counter++
@@ -305,6 +305,7 @@ const onLoad = () => {
           addAllNodes(g, json.nodes, layout)
           addAllLinks(g, json.links)
           renderGraph(graphics)
+          parseRequestResults(requestResults)
         })
       }
     } else {
@@ -887,7 +888,8 @@ const onLoad = () => {
     $("#virTab").removeClass("active")
     // this resets previous selected node to previous color
     if (currentQueryNode) {
-      graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
+      graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(
+          currentQueryNode).backupColor
     }
     // then starts making new changes to the newly geerated node
     currentQueryNode = node.id
@@ -1614,7 +1616,7 @@ const onLoad = () => {
     fileMode = "mapping"
   })
 
-  $("#redundancyNo").unbind("click").bind("click", (event) => {
+  $(".redundancyNo").unbind("click").bind("click", (event) => {
     event.preventDefault()
 
     // asserts which dict to use
@@ -1630,11 +1632,11 @@ const onLoad = () => {
 
     // first build readFilejson object
     Object.keys(queryFileJson).map( (fileName) => {
-      const fileString = JSON.parse(queryFileJson[fileName])
+      const fileString = (typeof queryFileJson[fileName] === "string") ?
+        JSON.parse(queryFileJson[fileName]) : queryFileJson[fileName]
       readFilejson[fileName] = fileString
       promises.push(fileName)
     })
-
 
     Promise.all(promises).then( () => {
       mappingHighlight(g, graphics, renderer)
@@ -1642,7 +1644,7 @@ const onLoad = () => {
 
   })
 
-  $("#redundancyYes").unbind("click").bind("click", (event) => {
+  $(".redundancyYes").unbind("click").bind("click", (event) => {
 
     event.preventDefault()
 
@@ -1664,7 +1666,8 @@ const onLoad = () => {
 
     Object.keys(queryFileJson).map( (fileName) => {
       // variable that fetches the object associated with each file
-      const fileString = JSON.parse(queryFileJson[fileName])
+      const fileString = (typeof queryFileJson[fileName] === "string") ?
+        JSON.parse(queryFileJson[fileName]) : queryFileJson[fileName]
       // the variable that stores the dictionary of accessions and respective
       // values from imported results
       const currentDict = Object.keys(fileString)
@@ -2158,6 +2161,10 @@ const onLoad = () => {
   })
 
 
+  $("#requestModalShow").unbind("click").bind("click", () => {
+    $("#importRequest").modal()
+  })
+
   /**
    * Button that fires the download of the current selection of nodes
    */
@@ -2231,7 +2238,8 @@ const onLoad = () => {
         currentQueryNode)
     } else {
       // executed for plasmid search
-      const currentQueryNode = await toggleOnSearch(g, graphics, renderer, currentQueryNode)
+      currentQueryNode = await toggleOnSearch(g, graphics, renderer,
+          currentQueryNode)
       // then is here used to parse the results from async/await function
     }
 
@@ -2555,6 +2563,23 @@ const onLoad = () => {
    */
   Mousetrap.bind("shift+ctrl+space", () => {
     initCallback(g, layout, devel)
+  })
+
+
+  /**
+   * This synchronizes div that are used to set the cutoff values, either they
+   * are provided through import file menus or through the import request view.
+   */
+  $(".cutoffValue, .copyNumberValue, .cutoffValueMash, .cutoffHashSeq, " +
+    ".cutoffValueSeq").keyup( (e) => {
+    // this fetches the class, however it assumes that it is the last element
+    // present in the html class attribute
+    const currentClass = e.target.className.split(" ").slice(-1)[0]
+    // this fetches the current target value
+    const changedValue = e.target.value
+    // then updates all forms that have the current class with the value being
+    // set in one of the forms that has the class attr.
+    $(`.${currentClass}`).val(changedValue)
   })
 
 } // closes onload

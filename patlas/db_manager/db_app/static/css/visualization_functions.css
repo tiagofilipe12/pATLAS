@@ -209,13 +209,21 @@
     *overflow: hidden;
 }
 
-.mappingCutoffWrapper{
+.mappingCutoffWrapper {
     margin-top: 2%;
     text-align: center;
 }
 
 .mappingCutoffWrapper .form-group{
     display: inline-block;
+}
+
+#mappingCutOff, #mashScreenCutOff, #assemblyCutOff{
+    display: none;
+}
+
+#requestModalShow{
+    display: none;
 }
 
 .uploadFile{
@@ -660,7 +668,7 @@
 }
 
 #go_back, #Re_run, #download_ds, #tableShow, #heatmapButtonTab, #plotButton,
-#clearButton, #submitButton{
+#clearButton, #submitButton, #requestModalShow{
     height: 34px;
 }
 

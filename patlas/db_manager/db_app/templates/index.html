@@ -11,9 +11,14 @@
   <!-- Place this tag in your head or just before your close body tag. -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
 
+  <script>
+    const requestResults = {{ request_results|safe }}
+  </script>
+
   <!-- custom js scripts -->
 
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/pATLASGlobals.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/external_resources/requestResults.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/node_handling/reads_coloring.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/quick_stats.js') }}"></script>
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='js/stats/table_handling.js') }}"></script>
@@ -143,7 +148,7 @@
           contained in High Throughput Sequencing data.
         </p>
 
-        <h3><b>Version:</b> 1.4.1</h3>
+        <h3><b>Version:</b> 1.5.0</h3>
         <p class="mainText">
         </p>
         <h3><b>Last pATLAS database update:</b> 18 June 2018</h3>
@@ -386,8 +391,8 @@
         <div class="mappingCutoffWrapper row" >
           <div class="form-group header_taxa col-sm-12">Percentage of plasmid coverage
             cutoff (0 - 1).
-            <input type="text" id="cutoffValue"
-                   class="form-control"
+            <input type="text"
+                   class="form-control cutoffValue"
                    placeholder="0.6"/>
 
           </div>
@@ -471,12 +476,12 @@
         <div class="mappingCutoffWrapper row">
           <div class="form-group header_taxa col-md-6">Provide a
             value for the minimum identity to display (0 - 1).
-            <input id="cutoffValueMash" type="text" class="form-control"
+            <input type="text" class="form-control cutoffValueMash"
                    placeholder="0.9"/>
           </div>
-          <div class="form-group header_taxa col-md-6" id="copyNumberCheck">Provide an integer
+          <div class="form-group header_taxa col-md-6">Provide an integer
             value for minimum copy number.
-            <input id="copyNumberValue" type="text" class="form-control"
+            <input type="text" class="form-control copyNumberValue"
                    placeholder="1"/>
           </div>
 
@@ -556,14 +561,14 @@
         <div class="mappingCutoffWrapper row">
           <div class="form-group header_taxa col-md-5">Provide a
             value for sequence similarity (0 - 1).
-            <input stype="text" id="cutoffValueSeq"
-                   class="form-control"
+            <input stype="text"
+                   class="form-control cutoffValueSeq"
                    placeholder="0.9"/>
           </div>
           <div class="form-group header_taxa col-md-7">Provide a
             value for shared sequence between plasmids and query (0 - 1).
-            <input stype="text" id="cutoffHashSeq"
-                   class="form-control"
+            <input stype="text"
+                   class="form-control cutoffHashSeq"
                    placeholder="0.8"/>
           </div>
         </div>
@@ -1064,38 +1069,42 @@
           <button class="btn btn-default" id="go_back"
                   type="button" data-toogle="tooptip"
                   title="Return to full tree view">
-            <span class="glyphicon glyphicon-home"></span></button>
+            <span class="glyphicon glyphicon-home"></span>
+          </button>
           <button class="btn btn-default" id="Re_run"
                   type="button" data-toggle="modal" data-backdrop="static"
                   data-target="#reRunModal"
                   title="Apply filters">
-            <span class="glyphicon glyphicon-filter"></span></button>
+            <span class="glyphicon glyphicon-filter"></span>
+          </button>
           <!--for now this button is disabled since it does not have funcitonality-->
           <button class="btn btn-default" id="download_ds"
                   type="button" data-toogle="tooptip"
                   title="Download current selection">
-            <span class="glyphicon glyphicon-save"></span></button>
+            <span class="glyphicon glyphicon-save"></span>
+          </button>
           <button class="btn btn-default" id="tableShow"
                   type="button" data-toogle="tooptip"
                   title="Table with metadata">
-            <span class="glyphicon glyphicon-list-alt"></span></button>
+            <span class="glyphicon glyphicon-list-alt"></span>
+          </button>
           <button class="btn btn-default"
                   data-toggle="tooltip" type="button"
                   title="Quick stats"
                   id="plotButton">
             <span class="glyphicon glyphicon-stats"></span>
           </button>
-
           <button class="btn btn-default" id="heatmapButtonTab"
                   type="button" data-toogle="tooptip"
                   title="Heatmap for multiple import comparison">
             <span class="glyphicon glyphicon-th"></span>
           </button>
-
-          <!--<button class="btn btn-default" id="download_img"
+          <button class="btn btn-default" id="requestModalShow"
                   type="button" data-toogle="tooptip"
-                  title="Take a screenshot">
-            <span class="glyphicon glyphicon-save"></span></button>-->
+                  title="Reconfigure imported results">
+            <span class="glyphicon glyphicon-edit"></span>
+          </button>
+
         </div>
 
       </form>
@@ -1127,16 +1136,6 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </div>
-
-
-<!-- /#wrapper -->
-<!-- Menu Toggle Script -->
-<!--<script>-->
-  <!--$("#menu-toggle").click(function(e) {-->
-    <!--e.preventDefault()-->
-    <!--$("#wrapper").toggleClass("toggled")-->
-  <!--})-->
-<!--</script>-->
 
 {% include 'popup.html' %}
 
@@ -1179,7 +1178,8 @@
 </div>
 
 <!-- Modal for Re_run-->
-<div id="redundancyModal" class="modal fade" role="dialog" tabindex="-1">
+<div id="redundancyModal" data-backdrop="static" data-keyboard="false"
+     class="modal fade" role="dialog" tabindex="-1">
   <div class="modal-dialog">
 
     <div class="modal-content">
@@ -1201,10 +1201,10 @@
         </p>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-default"
-                  data-dismiss="modal" id="redundancyYes">Yes</button>
-          <button type="submit" class="btn btn-default"
-                  data-dismiss="modal" id="redundancyNo">No</button>
+          <button type="submit" class="btn btn-default redundancyYes"
+                  data-dismiss="modal">Yes</button>
+          <button type="submit" class="btn btn-default redundancyNo"
+                  data-dismiss="modal">No</button>
         </div>
       </div>
 
@@ -1505,6 +1505,8 @@
          alt="Web Analytics" >
   </a>
 </div>
+
+{% include 'import_request_modal.html' %}
 
 </body>
 

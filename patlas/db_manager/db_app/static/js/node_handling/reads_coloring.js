@@ -27,7 +27,7 @@ const rangeConverter = (x, oldMin, oldMax, newMin, newMax) => {
  * @returns {number}
  */
 const cutoffParser = () => {
-  const cutoff = $("#cutoffValue").val()
+  const cutoff = $(".cutoffValue").val()
   return (cutoff !== "") ? parseFloat(cutoff) : 0.6
 }
 
@@ -37,7 +37,7 @@ const cutoffParser = () => {
  * @returns {number} - The cutoff percentage cutoff value for mash import
  */
 const cutoffParserMash = () => {
-  const cutoffMash = $("#cutoffValueMash").val()
+  const cutoffMash = $(".cutoffValueMash").val()
   return (cutoffMash !== "") ? parseFloat(cutoffMash) : 0.9
 }
 
@@ -47,7 +47,7 @@ const cutoffParserMash = () => {
  * @returns {number} - The copy number cutoff value
  */
 const copyNumberCutoff = () => {
-  const cutoffCopy =$("#copyNumberValue").val()
+  const cutoffCopy =$(".copyNumberValue").val()
   return (cutoffCopy !== "") ? parseFloat(cutoffCopy) : 1
 }
 
@@ -57,7 +57,7 @@ const copyNumberCutoff = () => {
  * @returns {number}
  */
 const cutoffParserSeq = () => {
-  const cutoff = $("#cutoffValueSeq").val()
+  const cutoff = $(".cutoffValueSeq").val()
   return (cutoff !== "") ? parseFloat(cutoff) : 0.9
 }
 
@@ -68,7 +68,7 @@ const cutoffParserSeq = () => {
  * @returns {number}
  */
 const cutoffHashSeq = () => {
-  const cutoff = $("#cutoffHashSeq").val()
+  const cutoff = $(".cutoffHashSeq").val()
   return (cutoff !== "") ? parseFloat(cutoff) : 0.8
 }
 
@@ -229,8 +229,8 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
       if (perc.constructor === Array) {
         // if value is array, enter mash screen mode or assembly mode
         const identity = parseFloat(perc[0])
-        const copyNumber = perc[1]  //copy number may refer to the percentage
-        // of shared hashes
+        const copyNumber = parseFloat(perc[1])  //copy number may refer to
+        // the percentage of shared hashes
 
         // if mash screen
         if (assemblyJson === false) {
@@ -250,7 +250,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
             // min value is the one fetched from the input form or by default 0.6
             // values are fixed to two decimal
             minValue = parseFloat(
-              ($("#cutoffValueMash").val() !== "") ? $("#cutoffValueMash").val() : "0.90"
+              ($(".cutoffValueMash").val() !== "") ? $(".cutoffValueMash").val() : "0.90"
             ).toFixed(2)
             // mean value is the sum of the min value plus the range between the min
             // and max values divided by two
@@ -277,7 +277,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
             // min value is the one fetched from the input form or by default 0.6
             // values are fixed to two decimal
             minValue = parseFloat(
-              ($("#cutoffValueSeq").val() !== "") ? $("#cutoffValueSeq").val() : "0.90"
+              ($(".cutoffValueSeq").val() !== "") ? $(".cutoffValueSeq").val() : "0.90"
             ).toFixed(2)
             // mean value is the sum of the min value plus the range between the min
             // and max values divided by two
@@ -359,7 +359,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           // min value is the one fetched from the input form or by default 0.6
           // values are fixed to two decimal
           minValue = parseFloat(
-            ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
+            ($(".cutoffValue").val() !== "") ? $(".cutoffValue").val() : "0.60"
           ).toFixed(2)
           // mean value is the sum of the min value plus the range between the min
           // and max values divided by two

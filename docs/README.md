@@ -17,3 +17,4 @@
     * [Antibiotic and plasmid family detection](ABR_api.md)
     * [Downloads](download_api.md)
     * [Import files](import_api.md)
+    * [Import results through requests](requests_api.md)
