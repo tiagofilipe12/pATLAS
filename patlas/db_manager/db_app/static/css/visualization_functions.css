@@ -218,7 +218,11 @@
     display: inline-block;
 }
 
-#mappingCutOff, #mashScreenCutOff, #assemblyCutOff {
+#mappingCutOff, #mashScreenCutOff, #assemblyCutOff{
+    display: none;
+}
+
+#requestModalShow{
     display: none;
 }
 
