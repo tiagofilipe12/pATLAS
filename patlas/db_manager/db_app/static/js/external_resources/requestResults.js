@@ -19,15 +19,20 @@ const parseRequestResults = (request_results) => {
     } else if (fileMode === "mash_screen") {
       mashJson = request_results.files
       $("#mashScreenCutOff").show()
+    } else if (fileMode === "assembly") {
+      assemblyJson = request_results.files
+      $("#assemblyCutOff").show()
+    } else {
+      // TODO add exception when object type is unknown
+      // TODO may be this can be handled by the backend
     }
-    // TODO add fileMode for the other imports
 
+    // hide welcome modal and display the import request modal for the user
+    // to select cutoffs and options associated with the type of import
     $("#welcomeModal").modal("hide")
     $("#importRequest").modal()
 
   }
-  // else {
-  //   console.log("no requested results")
-  //   return false
-  // }
+  // else statement is not required because it is used for the default page
+  // render
 }

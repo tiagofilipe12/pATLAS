@@ -19,19 +19,34 @@
           </div>
         </div>
 
-          <div class="mappingCutoffWrapper2 row id="mashScreenCutOff">
-            <div class="form-group header_taxa col-md-6">Provide a
-              value for the minimum identity to display (0 - 1).
-              <input type="text" class="form-control cutoffValueMash"
-                     placeholder="0.9"/>
-            </div>
-            <div class="form-group header_taxa col-md-6">
-              Provide an integer value for minimum copy number.
-              <input type="text" class="form-control copyNumberValue"
-                     placeholder="1"/>
-            </div>
-
+        <div class="mappingCutoffWrapper2 row" id="mashScreenCutOff">
+          <div class="form-group header_taxa col-md-6">Provide a
+            value for the minimum identity to display (0 - 1).
+            <input type="text" class="form-control cutoffValueMash"
+                   placeholder="0.9"/>
           </div>
+          <div class="form-group header_taxa col-md-6">
+            Provide an integer value for minimum copy number.
+            <input type="text" class="form-control copyNumberValue"
+                   placeholder="1"/>
+          </div>
+
+        </div>
+
+      <div class="mappingCutoffWrapper row" id="assemblyCutOff">
+        <div class="form-group header_taxa col-md-5">Provide a
+          value for sequence similarity (0 - 1).
+          <input stype="text"
+                 class="form-control cutoffValueSeq"
+                 placeholder="0.9"/>
+        </div>
+        <div class="form-group header_taxa col-md-7">Provide a
+          value for shared sequence between plasmids and query (0 - 1).
+          <input stype="text"
+                 class="form-control cutoffHashSeq"
+                 placeholder="0.8"/>
+        </div>
+      </div>
 
         <h4><b>Do you want to remove redundancy from the
           results? </b></h4>

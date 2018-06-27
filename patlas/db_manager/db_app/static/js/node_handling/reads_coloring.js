@@ -57,7 +57,7 @@ const copyNumberCutoff = () => {
  * @returns {number}
  */
 const cutoffParserSeq = () => {
-  const cutoff = $("#cutoffValueSeq").val()
+  const cutoff = $(".cutoffValueSeq").val()
   return (cutoff !== "") ? parseFloat(cutoff) : 0.9
 }
 
@@ -68,7 +68,7 @@ const cutoffParserSeq = () => {
  * @returns {number}
  */
 const cutoffHashSeq = () => {
-  const cutoff = $("#cutoffHashSeq").val()
+  const cutoff = $(".cutoffHashSeq").val()
   return (cutoff !== "") ? parseFloat(cutoff) : 0.8
 }
 
@@ -232,9 +232,6 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
         const copyNumber = parseFloat(perc[1])  //copy number may refer to
         // the percentage of shared hashes
 
-        console.log(identity, copyNumber)
-        console.log(cutoffParserMash(), copyNumberCutoff())
-
         // if mash screen
         if (assemblyJson === false) {
 
@@ -280,7 +277,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
             // min value is the one fetched from the input form or by default 0.6
             // values are fixed to two decimal
             minValue = parseFloat(
-              ($("#cutoffValueSeq").val() !== "") ? $("#cutoffValueSeq").val() : "0.90"
+              ($(".cutoffValueSeq").val() !== "") ? $(".cutoffValueSeq").val() : "0.90"
             ).toFixed(2)
             // mean value is the sum of the min value plus the range between the min
             // and max values divided by two
@@ -362,7 +359,7 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
           // min value is the one fetched from the input form or by default 0.6
           // values are fixed to two decimal
           minValue = parseFloat(
-            ($("#cutoffValue").val() !== "") ? $("#cutoffValue").val() : "0.60"
+            ($(".cutoffValue").val() !== "") ? $(".cutoffValue").val() : "0.60"
           ).toFixed(2)
           // mean value is the sum of the min value plus the range between the min
           // and max values divided by two
