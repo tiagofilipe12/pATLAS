@@ -316,7 +316,8 @@ def show_highlighted_results():
                       "existing key ({}). None will be added but it will return"
                       " a url to the request anyway.".format(hash_url))
 
-            return "http://patlas.site/results?query={}".format(str(hash_url))
+            return "http://www.patlas.site/results?query={}".format(
+                str(hash_url))
 
         else:
             # if a dictionary is not found then return a warning to the end
