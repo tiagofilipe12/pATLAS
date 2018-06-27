@@ -15,7 +15,6 @@ from flask import json, render_template, Response, redirect, url_for
 from flask_restful import request
 import ctypes
 import sqlalchemy
-from collections import OrderedDict
 
 
 def make_summary(path):
@@ -24,7 +23,7 @@ def make_summary(path):
     return data
 
 
-def repetitiveFunction(path):
+def repetitive_function(path):
     """Function that repeated in all views and that can be used to add any
     json object to a view
 
@@ -83,61 +82,61 @@ def index():
 
 @app.route("/test")
 def main_summary():
-    return repetitiveFunction(
+    return repetitive_function(
         "db_app/static/json/import_to_vivagraph_v1.4.1.json"
     )
 
 
 @app.route("/fullDS")
 def full_ds():
-    return repetitiveFunction("db_app/static/json/filtered_v1.4.1.json")
+    return repetitive_function("db_app/static/json/filtered_v1.4.1.json")
 
 
 @app.route("/taxa")
 def taxa_summary():
-    return repetitiveFunction("db_app/static/json/taxa_tree.json")
+    return repetitive_function("db_app/static/json/taxa_tree.json")
 
 
 @app.route("/resistance")
 def res_summary():
-    return repetitiveFunction("db_app/static/json/resistance.json")
+    return repetitive_function("db_app/static/json/resistance.json")
 
 
 @app.route("/plasmidfinder")
 def pf_summary():
-    return repetitiveFunction("db_app/static/json/plasmidfinder.json")
+    return repetitive_function("db_app/static/json/plasmidfinder.json")
 
 
 @app.route("/virulence")
 def vir_summary():
-    return repetitiveFunction("db_app/static/json/virulence.json")
+    return repetitive_function("db_app/static/json/virulence.json")
 
 
 ## routes for sample files
 @app.route("/map_sample")
 def map_sample():
-    return repetitiveFunction(
+    return repetitive_function(
         "db_app/static/json/samples/reads_sample_resultSRR5201504.json"
     )
 
 
 @app.route("/ass_sample1")
 def ass_sample1():
-    return repetitiveFunction(
+    return repetitive_function(
         "db_app/static/json/samples/assembly1.json"
     )
 
 
 @app.route("/ass_sample2")
 def ass_sample2():
-    return repetitiveFunction(
+    return repetitive_function(
         "db_app/static/json/samples/assembly2.json"
     )
 
 
 @app.route("/mash_sample")
 def mash_sample():
-    return repetitiveFunction(
+    return repetitive_function(
         "db_app/static/json/samples/mash_screen_sample_sorted.json"
     )
 

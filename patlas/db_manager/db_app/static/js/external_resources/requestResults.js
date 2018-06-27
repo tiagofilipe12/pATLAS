@@ -1,4 +1,4 @@
-/*globals assemblyJson, mashJson, readFilejson*/
+/*globals assemblyJson, mashJson, readFilejson, fileMode*/
 
 /**
  * Function that parses the results coming from external requests. If the
@@ -6,24 +6,24 @@
  * proper visualization of the results. If that is not the case it will not
  * render results but a pATLAS instance
  *
- * @param {Object} request_results - The JSON object that is send by the
+ * @param {Object} requestResults - The JSON object that is send by the
  * database to the current URL
  */
-const parseRequestResults = (request_results) => {
+const parseRequestResults = (requestResults) => {
   // this parsing assumes that the 'type' and 'samples' keys are present in
-  // request_results, which is handled by the `show_highlighted_results` view
-  if (request_results) {
+  // requestResults, which is handled by the `show_highlighted_results` view
+  if (requestResults) {
     $("#requestModalShow").show()
-    fileMode = request_results.type
+    fileMode = requestResults.type
 
     if (fileMode === "mapping") {
-      readFilejson = request_results.samples
+      readFilejson = requestResults.samples
       $("#mappingCutOff").show()
     } else if (fileMode === "mash_screen") {
-      mashJson = request_results.samples
+      mashJson = requestResults.samples
       $("#mashScreenCutOff").show()
     } else if (fileMode === "assembly") {
-      assemblyJson = request_results.samples
+      assemblyJson = requestResults.samples
       $("#assemblyCutOff").show()
     }
 

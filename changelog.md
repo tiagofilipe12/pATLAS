@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 1.5.0
+
+## Database
+
+* Added new table to database in order to store temporary entries,
+containing results sent from `POST` requests that can be displayed
+using unique urls. This included:
+    * Addition of front end capabilities to render results collected
+    from the temporary database entries.
+    * Addition of back end view that enables to handle the `POST`
+    request and to make a `GET` from the pATLAS front end.
+
 ## Version 1.4.1
 
 ### Database update

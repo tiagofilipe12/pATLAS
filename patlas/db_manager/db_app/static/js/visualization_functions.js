@@ -250,7 +250,6 @@ const onLoad = () => {
       // the next if statement is only executed on development session, it
       // is way less efficient than the non development session.
       if (devel === true) {
-        console.log("devel session")
         getArray.done(function (json) {
           $.each(json, function (sequenceInfo, dictDist) {
             counter++
@@ -306,7 +305,7 @@ const onLoad = () => {
           addAllNodes(g, json.nodes, layout)
           addAllLinks(g, json.links)
           renderGraph(graphics)
-          parseRequestResults(request_results)
+          parseRequestResults(requestResults)
         })
       }
     } else {
@@ -889,7 +888,8 @@ const onLoad = () => {
     $("#virTab").removeClass("active")
     // this resets previous selected node to previous color
     if (currentQueryNode) {
-      graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
+      graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(
+          currentQueryNode).backupColor
     }
     // then starts making new changes to the newly geerated node
     currentQueryNode = node.id
@@ -2238,7 +2238,8 @@ const onLoad = () => {
         currentQueryNode)
     } else {
       // executed for plasmid search
-      const currentQueryNode = await toggleOnSearch(g, graphics, renderer, currentQueryNode)
+      const currentQueryNode = await toggleOnSearch(g, graphics, renderer,
+          currentQueryNode)
       // then is here used to parse the results from async/await function
     }
 
