@@ -12,7 +12,7 @@ importProject, setProjectView, readFilejson, mashJson, assemblyJson,
 consensusJson, projectJson, listGiFilter, storeMasterNode, recenterDOM,
 defaultZooming, freezeShift, renderer, downloadTypeHandler, colorNodes,
 initCallback, multiSelectOverlay, multiSelectOverlayObj, areaSelection,
-pageReRun, currentQueryNode, pfSubmitFunction, legendInst, resSubmitFunction,
+pageReRun, pfSubmitFunction, legendInst, resSubmitFunction,
 virSubmitFunction, parseQueriesIntersection, iterateArrays, readColoring,
 pushToMasterReadArray, repetitivePlotFunction, heatmapMaker, makeTable,
 centerToggleQuery, toggleOnSearch, resGetter, plasmidFamilyGetter,
@@ -25,7 +25,7 @@ clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
-parseRequestResults*/
+parseRequestResults, requestResults, currentQueryNode*/
 
 
 /**
@@ -2238,7 +2238,7 @@ const onLoad = () => {
         currentQueryNode)
     } else {
       // executed for plasmid search
-      const currentQueryNode = await toggleOnSearch(g, graphics, renderer,
+      currentQueryNode = await toggleOnSearch(g, graphics, renderer,
           currentQueryNode)
       // then is here used to parse the results from async/await function
     }
