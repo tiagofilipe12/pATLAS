@@ -10,21 +10,20 @@
  * database to the current URL
  */
 const parseRequestResults = (request_results) => {
+  // this parsing assumes that the 'type' and 'samples' keys are present in
+  // request_results, which is handled by the `show_highlighted_results` view
   if (request_results) {
-    fileMode = request_results.fileType
+    fileMode = request_results.type
 
     if (fileMode === "mapping") {
-      readFilejson = request_results.files
+      readFilejson = request_results.samples
       $("#mappingCutOff").show()
     } else if (fileMode === "mash_screen") {
-      mashJson = request_results.files
+      mashJson = request_results.samples
       $("#mashScreenCutOff").show()
     } else if (fileMode === "assembly") {
-      assemblyJson = request_results.files
+      assemblyJson = request_results.samples
       $("#assemblyCutOff").show()
-    } else {
-      // TODO add exception when object type is unknown
-      // TODO may be this can be handled by the backend
     }
 
     // hide welcome modal and display the import request modal for the user

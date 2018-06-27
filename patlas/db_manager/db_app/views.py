@@ -233,6 +233,9 @@ def show_highlighted_results():
     for a given JSON dictionary that is sent through the request and return
     them in an unique url to the application that sent the POST request. Then,
     users may access their results in the specified url.
+    This function also has a group of tests that prevent that erroneous data is
+    passed to the database and retrieves warnings through the requests when
+    wrong type of data is provided.
 
     Returns
     -------
@@ -252,8 +255,42 @@ def show_highlighted_results():
         # fetch the nested json
         request_json = request.get_json()
 
+        # a list of the authorized type
+        authorized_types = ["mapping", "mash_screen", "assembly"]
+
         # check if dict is empty or not. This will fail if a string is provided
         if request_json:
+
+            # checks if type key exists in requested json object
+            if "type" in request_json:
+                # checks if samples key exists in requested json object
+                if "samples" in request_json:
+                    # check the type of 'type' key. It should be a str
+                    type_obj = type(request_json["type"])
+                    if type_obj is not str:
+                        return "The value provided through 'type' entry must " \
+                               "be a string"
+
+                    # check the type of 'samples' key. It should be a dict.
+                    sample_obj = type(request_json["samples"])
+                    if sample_obj is not dict:
+                        return "The value provided through 'sample' entry " \
+                               "must be a dictionary / JSON object."
+
+                    # checks if this type is present in the authorized_types
+                    # list
+                    if request_json["type"] not in authorized_types:
+                        return "'{}' is not a valid type. Valid types are " \
+                               "{}.".format(request_json["type"],
+                                            " or ".join(authorized_types)
+                                            )
+                else:
+                    return "No 'samples' field was provided in the JSON object."
+            else:
+                # if type doesn't exist then pATLAS will not be able to decide
+                # which mode to use in order to display results
+                return "No 'type' field was provided in the JSON object."
+
             # converts dict to a string so it can be more easily hashed, since
             # nested dicts can be trickier to hash.
             stringify_dict = json.dumps(request_json)
