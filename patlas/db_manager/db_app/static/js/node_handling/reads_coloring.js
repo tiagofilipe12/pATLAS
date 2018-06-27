@@ -229,8 +229,11 @@ const readColoring = (g, listGi, graphics, renderer, readString) => {
       if (perc.constructor === Array) {
         // if value is array, enter mash screen mode or assembly mode
         const identity = parseFloat(perc[0])
-        const copyNumber = perc[1]  //copy number may refer to the percentage
-        // of shared hashes
+        const copyNumber = parseFloat(perc[1])  //copy number may refer to
+        // the percentage of shared hashes
+
+        console.log(identity, copyNumber)
+        console.log(cutoffParserMash(), copyNumberCutoff())
 
         // if mash screen
         if (assemblyJson === false) {

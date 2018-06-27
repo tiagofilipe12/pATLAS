@@ -16,6 +16,9 @@ const parseRequestResults = (request_results) => {
     if (fileMode === "mapping") {
       readFilejson = request_results.files
       $("#mappingCutOff").show()
+    } else if (fileMode === "mash_screen") {
+      mashJson = request_results.files
+      $("#mashScreenCutOff").show()
     }
     // TODO add fileMode for the other imports
 

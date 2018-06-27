@@ -1638,7 +1638,7 @@ const onLoad = () => {
       promises.push(fileName)
     })
 
-      console.log(readFilejson)
+    console.log(queryFileJson)
 
     Promise.all(promises).then( () => {
       mappingHighlight(g, graphics, renderer)
@@ -2567,7 +2567,7 @@ const onLoad = () => {
    * This synchronizes div that are used to set the cutoff values, either they
    * are provided through import file menus or through the import request view.
    */
-  $(".cutoffValue, .copyNumberValue").keyup( (e) => {
+  $(".cutoffValue, .copyNumberValue, .cutoffValueMash").keyup( (e) => {
     // this fetches the class, however it assumes that it is the last element
     // present in the html class attribute
     const currentClass = e.target.className.split(" ").slice(-1)[0]
