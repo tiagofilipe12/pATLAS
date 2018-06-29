@@ -735,7 +735,7 @@ Careful when using this in other popovers in the future*/
 
 #aboutModalBody{
     text-align: center;
-    max-height: 600px;
+    max-height: 500px;
     overflow-y: auto;
 }
 

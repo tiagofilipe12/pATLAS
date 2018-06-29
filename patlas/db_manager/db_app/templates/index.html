@@ -124,7 +124,7 @@
 
 <!-- about modal -->
 <div class="modal fade" id="aboutModal" data-backdrop="static"
-     role="dialog" tabindex="-1">
+     role="dialog" tabindex="-1" style="width: 800px; margin: auto;">
   <div class="modal-dialog" id="aboutDialog" style="width: 80%">
     <div class="modal-content">
       <div class="modal-header">
@@ -157,45 +157,58 @@
         <p class="mainText">
         </p>
         <h3><b>Dev team</b></h3>
-        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:tfjesus"
+        <p><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:tfjesus"
                target="_blank" style="color:#6292A9;">Tiago F. Jesus</a>
-        </li>
-        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:bgoncalves"
+        </p>
+        <p><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:bgoncalves"
                target="_blank" style="color:#6292A9;">Bruno F. R. Gonçalves</a>
-        </li>
-        <li>
+        </p>
+        <p>
           <a href="https://github.com/ODiogoSilva"
              target="_blank" style="color:#6292A9;">
             Diogo N. Silva
           </a>
-        </li>
-        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:ramirez"
+        </p>
+        <p><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:ramirez"
                target="_blank" style="color:#6292A9;">Mário Ramirez</a>
-        </li>
-        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:jcarrico"
+        </p>
+        <p><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:jcarrico"
                target="_blank" style="color:#6292A9;">João A. Carriço</a>
-        </li>
+        </p>
         <h3><b>Acknowledgements</b></h3>
-        <p class="mainText">
+
         <li>FCT - "Fundação para a Ciência e a Tecnologia"and
           BacGenTrack (TUBITAK/0004/2014)
           <br>[FCT/ Scientific and
           Technological Research Council of Turkey (Türkiye Bilimsel
           ve Teknolojik Araşrrma Kurumu, TÜBİTAK)]</li>
+        <li>
+          ONEIDA project (LISBOA-01-0145-FEDER-016417) co-funded by FEEI -
+          “Fundos Europeus Estruturais e de Investimento” from “Programa
+          Operacional Regional Lisboa 2020”.
+        </li>
         <br>
-        <li><a href="https://fhs.mcmaster.ca/biochem/mcarthur_andrew.html"
-               target="_blank" style="color:#6292A9;">Andrew McArthur</a>
-        </li>
-        <li><a href="https://genomeinformatics.github.io/people/phillippy/"
-               target="_blank" style="color:#6292A9;">Adam Phillippy</a>
-        </li>
-        <li><a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:cmendes"
-               target="_blank" style="color:#6292A9;">Catarina Inês Mendes</a>
-        </li>
-        <li><a href="https://www.rug.nl/staff/n.monge.gomes.do.couto/"
-               target="_blank" style="color:#6292A9;">Natacha Couto</a>
-        </li>
+        <p>
+          <a href="https://fhs.mcmaster.ca/biochem/mcarthur_andrew.html"
+             target="_blank" style="color:#6292A9;">Andrew McArthur</a>
         </p>
+        <p>
+        <a href="https://genomeinformatics.github.io/people/phillippy/"
+           target="_blank" style="color:#6292A9;">Adam Phillippy</a>
+        </p>
+        <p>
+          <a href="http://darwin.phyloviz.net/dokuwiki/doku.php?id=people:cmendes"
+             target="_blank" style="color:#6292A9;">Catarina Inês Mendes</a>
+        </p>
+        <p>
+          <a href="https://www.rug.nl/staff/n.monge.gomes.do.couto/"
+             target="_blank" style="color:#6292A9;">Natacha Couto</a>
+        </p>
+        <a href="https://www.climb.ac.uk/" target="_blank">
+          <img src="{{ url_for('static', filename='images/climb-logo.png') }}"
+             alt="Climb" style="width:40%; height:auto; display:block;
+                     margin:auto;"/>
+        </a>
         <h3><b>Contact us</b></h3>
         <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
           <img src="{{ url_for('static', filename='images/Lobby.png') }}"
