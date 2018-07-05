@@ -1,14 +1,16 @@
 try:
     from db_manager.db_app import app, db
-    from db_manager.db_app.models import Plasmid, SequenceDB, UrlDatabase
+    from db_manager.db_app.models import Plasmid, SequenceDB, UrlDatabase,\
+        Card, Positive, Database
 except ImportError:
     try:
         from db_app import app, db
-        from db_app.models import Plasmid, SequenceDB, UrlDatabase
+        from db_app.models import Plasmid, SequenceDB, UrlDatabase, Card, \
+            Positive, Database
     except ImportError:
         from patlas.db_manager.db_app import app, db
         from patlas.db_manager.db_app.models import Plasmid, SequenceDB, \
-            UrlDatabase
+            UrlDatabase, Card, Positive, Database
 
 
 from flask import json, render_template, Response, redirect, url_for
@@ -194,8 +196,17 @@ def generate_metadata_download():
 
     var_response = request.args["accession"].replace(".", "_").split(",")
 
-    query = db.session.query(Plasmid).filter(
+    query_plasmid = db.session.query(Plasmid).filter(
         Plasmid.plasmid_id.in_(var_response)).all()
+
+    query_resistance = db.session.query(Card).filter(
+        Card.plasmid_id.in_(var_response)).all()
+
+    query_plasmid_family = db.session.query(Database).filter(
+        Database.plasmid_id.in_(var_response)).all()
+
+    query_virulence = db.session.query(Positive).filter(
+        Positive.plasmid_id.in_(var_response)).all()
 
     def generate():
         """
@@ -203,14 +214,23 @@ def generate_metadata_download():
         for each accession in an array
 
         """
-        yield "["
-        for x, record in enumerate(query):
-            if len(query) - 1 > x:
-                yield json.dumps({record.plasmid_id: record.json_entry}) + ","
-            else:
-                yield json.dumps({record.plasmid_id: record.json_entry})
-        yield "]"
 
+        # generates a dictionary that contains a dictionary per database query
+        dict_to_output = {
+            "Sequence_data": {record.plasmid_id: record.json_entry
+                              for record in query_plasmid},
+            "Resistance": {record.plasmid_id: record.json_entry
+                              for record in query_resistance},
+            "PlasmidFinder": {record.plasmid_id: record.json_entry
+                              for record in query_plasmid_family},
+            "Virulence": {record.plasmid_id: record.json_entry
+                              for record in query_virulence}
+        }
+
+        # dumps this dictionary generated above to the response
+        yield json.dumps(dict_to_output)
+
+    # sends the information to a file
     return Response(generate(), mimetype="text/csv",
                     headers={"content-disposition":
                         "attachment; filename=pATLAS"
