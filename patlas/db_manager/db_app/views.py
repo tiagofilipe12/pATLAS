@@ -234,7 +234,7 @@ def generate_metadata_download():
     return Response(generate(), mimetype="text/csv",
                     headers={"content-disposition":
                         "attachment; filename=pATLAS"
-                        "_metadata_{}.txt".format(
+                        "_metadata_{}.json".format(
                             str(abs(hash("".join(var_response))))
                         )
                     }
