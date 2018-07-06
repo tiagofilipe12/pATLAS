@@ -196,7 +196,7 @@ def generate_download():
                   "existing key ({}). None will be added but it will return"
                   " a url to the request anyway.".format(hash_url))
 
-        return "http://127.0.0.1:5000/downloads/?query={}".format(hash_url)
+        return "http://www.patlas.site/downloads/?query={}".format(hash_url)
 
 
 @app.route("/api/sendmetadata/", methods=["GET", "POST"])
