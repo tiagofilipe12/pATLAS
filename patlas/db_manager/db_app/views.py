@@ -72,7 +72,7 @@ def index():
             queried_json = db.session.query(UrlDatabase).get(request.args["query"])
             print(queried_json.json_entry)
             return render_template("index.html",
-                                   request_results=queried_json.json_entry)
+                request_results=queried_json.json_entry)
         else:
             return render_template("index.html", request_results="false")
 
@@ -171,15 +171,12 @@ def generate_download():
     return Response(generate(),
                     mimetype="text/csv",
                     headers={"content-disposition":
-                        "attachment; filename=pATLAS"
-                        "_download_{}.fas".format(
+                    "attachment; filename=pATLAS_download_{}.fas".format(
                             str(abs(hash("".join(var_response))))
-                        )
-                    }
-                    )
+                    )})
 
 
-@app.route("/api/sendmetadata/", methods=["get"])
+@app.route("/api/sendmetadata/", methods=["GET", "POST"])
 def generate_metadata_download():
     """Api to download metadata for each accession
 
@@ -194,7 +191,12 @@ def generate_metadata_download():
     This file
     """
 
-    var_response = request.args["accession"].replace(".", "_").split(",")
+    if request.method == "GET":
+        var_response = request.args["accession"].replace(".", "_").split(",")
+        print(var_response)
+    else:
+        var_response = request.get_json()
+        print("test: ", var_response)
 
     query_plasmid = db.session.query(Plasmid).filter(
         Plasmid.plasmid_id.in_(var_response)).all()
@@ -220,11 +222,11 @@ def generate_metadata_download():
             "Sequence_data": {record.plasmid_id: record.json_entry
                               for record in query_plasmid},
             "Resistance": {record.plasmid_id: record.json_entry
-                              for record in query_resistance},
+                           for record in query_resistance},
             "PlasmidFinder": {record.plasmid_id: record.json_entry
                               for record in query_plasmid_family},
             "Virulence": {record.plasmid_id: record.json_entry
-                              for record in query_virulence}
+                          for record in query_virulence}
         }
 
         # dumps this dictionary generated above to the response
@@ -233,15 +235,11 @@ def generate_metadata_download():
     # sends the information to a file
     return Response(generate(), mimetype="text/csv",
                     headers={"content-disposition":
-                        "attachment; filename=pATLAS"
-                        "_metadata_{}.json".format(
+                        "attachment; filename=pATLAS_metadata_{}.json".format(
                             str(abs(hash("".join(var_response))))
-                        )
-                    }
-                    )
+                        )})
 
 
-@app.route("/results", methods=["GET", "POST"])
 @app.route("/results/", methods=["GET", "POST"])
 def show_highlighted_results():
     """Method that allows to receive post requests and display results in pATLAS

@@ -19,7 +19,7 @@ json={"type": "mapping", "samples": {"sample_1": {"NZ_CP015088_1":
 "NC_019983_1": 0.608254857045898}}})
 
 r.content
-//Result: http://patlas.site/results?query=15675682358507007771
+# E.g. response: http://patlas.site/results?query=15675682358507007771
 ```
 
 ### Explanation
@@ -28,8 +28,7 @@ In the above example we are sending a post request using `python`
 requests module. Any other language can be used to send this kind of
 `POST`. The only requirements are:
 
-* Send the post to `http://www.patlas.site/results/` or
-`http://www.patlas.site/results`. The final `/` is not mandatory.
+* Send the post to `http://www.patlas.site/results/`.
 * Send a `json` with the request. This `json` must contain a dictionary,
 with two keys:
     * `type`: required for pATLAS to recognize the type of import.
