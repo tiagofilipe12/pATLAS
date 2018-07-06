@@ -2177,7 +2177,7 @@ const onLoad = () => {
     } else {
       // downloads when listGiFilter is defined, namely in taxa filters,
       // mapping results
-      downloadSeq(listGiFilter, g)
+      downloadSeq(listGiFilter)
     }
   })
 

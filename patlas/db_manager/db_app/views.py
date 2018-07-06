@@ -1,19 +1,20 @@
 try:
     from db_manager.db_app import app, db
     from db_manager.db_app.models import Plasmid, SequenceDB, UrlDatabase,\
-        Card, Positive, Database
+        Card, Positive, Database, FastaDownload
 except ImportError:
     try:
         from db_app import app, db
         from db_app.models import Plasmid, SequenceDB, UrlDatabase, Card, \
-            Positive, Database
+            Positive, Database, FastaDownload
     except ImportError:
         from patlas.db_manager.db_app import app, db
         from patlas.db_manager.db_app.models import Plasmid, SequenceDB, \
-            UrlDatabase, Card, Positive, Database
+            UrlDatabase, Card, Positive, Database, FastaDownload
 
 
-from flask import json, render_template, Response, redirect, url_for
+from flask import json, render_template, Response, redirect, url_for, \
+    after_this_request
 from flask_restful import request
 import ctypes
 import sqlalchemy
@@ -143,7 +144,7 @@ def mash_sample():
     )
 
 
-@app.route("/api/senddownload/", methods=["get"])
+@app.route("/api/senddownload/", methods=["GET", "POST"])
 def generate_download():
     """Api to download fasta files
 
@@ -156,24 +157,46 @@ def generate_download():
     A response with the stream of the file to be generated in the client side
     """
 
-    var_response = request.args["accession"].replace(".", "_").split(",")
+    if request.method == "GET":
+        var_response = request.args["accession"].replace(".", "_").split(",")
 
-    print("tst")
-    print(var_response)
+        query = db.session.query(SequenceDB).filter(
+            SequenceDB.plasmid_id.in_(var_response)).all()
 
-    query = db.session.query(SequenceDB).filter(
-        SequenceDB.plasmid_id.in_(var_response)).all()
+        def generate():
+            for record in query:
+                yield ">" + record.plasmid_id + "\n" + record.sequence_entry + "\n"
 
-    def generate():
-        for record in query:
-            yield ">" + record.plasmid_id + "\n" + record.sequence_entry + "\n"
+        return Response(generate(),
+                        mimetype="text/csv",
+                        headers={"content-disposition":
+                        "attachment; filename=pATLAS_download_{}.fas".format(
+                                str(abs(hash("".join(var_response))))
+                        )})
 
-    return Response(generate(),
-                    mimetype="text/csv",
-                    headers={"content-disposition":
-                    "attachment; filename=pATLAS_download_{}.fas".format(
-                            str(abs(hash("".join(var_response))))
-                    )})
+    else:
+        # add to the database the url in which the results may be downloaded
+        request_list = request.form["accessions"]
+
+        hash_url = ctypes.c_size_t(
+            hash(request_list)
+        ).value
+
+        append_to_db = FastaDownload(
+            unique_id=hash_url,
+            accessions=request_list
+        )
+
+        try:
+            db.session.add(append_to_db)
+            db.session.commit()
+            db.session.close()
+        except sqlalchemy.exc.IntegrityError:
+            print("WARNING: Attempted to push to database an already "
+                  "existing key ({}). None will be added but it will return"
+                  " a url to the request anyway.".format(hash_url))
+
+        return "http://127.0.0.1:5000/downloads/?query={}".format(hash_url)
 
 
 @app.route("/api/sendmetadata/", methods=["GET", "POST"])
@@ -193,10 +216,8 @@ def generate_metadata_download():
 
     if request.method == "GET":
         var_response = request.args["accession"].replace(".", "_").split(",")
-        print(var_response)
     else:
         var_response = request.get_json()
-        print("test: ", var_response)
 
     query_plasmid = db.session.query(Plasmid).filter(
         Plasmid.plasmid_id.in_(var_response)).all()
@@ -235,9 +256,9 @@ def generate_metadata_download():
     # sends the information to a file
     return Response(generate(), mimetype="text/csv",
                     headers={"content-disposition":
-                        "attachment; filename=pATLAS_metadata_{}.json".format(
-                            str(abs(hash("".join(var_response))))
-                        )})
+                    "attachment; filename=pATLAS_metadata_{}.json".format(
+                        str(abs(hash("".join(var_response))))
+                    )})
 
 
 @app.route("/results/", methods=["GET", "POST"])
@@ -342,3 +363,46 @@ def show_highlighted_results():
             # application
             return "ERROR: attempted to hash something that is not a JSON. " \
                    "POST request must have a JSON format suitable for pATLAS."
+
+
+@app.route("/downloads/", methods=["GET"])
+def download_sequences():
+        # checks if args are provided to download
+        if bool(request.args):
+            # fetches the array that should be downloaded
+            queried_json = db.session.query(FastaDownload).get(
+                request.args["query"])
+            var_response = json.loads(queried_json.accessions)
+            db.session.close()
+
+            # fetches sequence data itself
+            query = db.session.query(SequenceDB).filter(
+                SequenceDB.plasmid_id.in_(var_response)).all()
+            db.session.close()
+
+            def generate():
+                """
+                The generator
+
+                """
+                for record in query:
+                    yield ">" + record.plasmid_id + "\n" + record.sequence_entry + "\n"
+
+            # The piece of code that assures that every instance will be removed
+            # from the database
+            @after_this_request
+            def remove_entry(response):
+                db.session.query(FastaDownload).filter(
+                    FastaDownload.unique_id == request.args["query"]).delete()
+                db.session.commit()
+                db.session.close()
+                return response
+
+            return Response(generate(),
+                            mimetype="text/csv",
+                            headers={"content-disposition":
+                                "attachment; filename=pATLAS_download_{}.fas".format(
+                                    str(abs(hash("".join(request.args["query"]))))
+                            )})
+        else:
+            return "unique id is not valid."

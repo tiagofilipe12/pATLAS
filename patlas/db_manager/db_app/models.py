@@ -72,3 +72,15 @@ class UrlDatabase(db.Model):
     id = db.Column(db.String, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     json_entry = db.Column(JSON)
+
+
+class FastaDownload(db.Model):
+    """
+    The class that configures the psql database entries that allow to store
+    information from JSON files sent via post request and that are accessible
+    through GET method in pATLAS.
+    """
+    __tablename__ = "fasta_database"
+    unique_id = db.Column(db.String, primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    accessions = db.Column(db.String)

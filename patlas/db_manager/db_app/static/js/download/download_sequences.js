@@ -5,8 +5,14 @@
  */
 const downloadTypeHandler = (accList) => {
 
-  window.open(`http://www.patlas.site/api/senddownload/?accession=${accList.join()}`)
-
+  // window.open(`http://www.patlas.site/api/senddownload/?accession=${accList.join()}`)
+  $.post("api/senddownload/", {"accessions": JSON.stringify(accList)},
+      (data, status) => {
+        if (status === "success") {
+          window.open(data, "_blank")
+        }
+      }
+    )
 }
 
 
