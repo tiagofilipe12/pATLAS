@@ -5,10 +5,10 @@ import threading
 
 try:
     from db_app import db
-    from db_app.models import UrlDatabase
+    from db_app.models import UrlDatabase, FastaDownload
 except ImportError:
     from patlas.db_manager.db_app import db
-    from patlas.db_manager.db_app.models import UrlDatabase
+    from patlas.db_manager.db_app.models import UrlDatabase, FastaDownload
 
 
 def delete_entries():
@@ -22,6 +22,17 @@ def delete_entries():
     # query the database
     db.session.query(UrlDatabase)\
         .filter(UrlDatabase.timestamp <= start_time) \
+        .delete()
+
+    db.session.commit()
+    db.session.close()
+
+    # for download sequence database delete everything after 15 minutes,
+    # because it is only necessary when the user cancels the download
+    start_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=15)
+
+    db.session.query(FastaDownload) \
+        .filter(FastaDownload.timestamp <= start_time) \
         .delete()
 
     db.session.commit()
