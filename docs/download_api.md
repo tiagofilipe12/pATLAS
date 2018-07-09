@@ -59,27 +59,28 @@ It will generate a fasta file with the accession numbers requested and
  the sequences associated with each accession number.
 
 **Limitation**: This type of request to pATLAS database cannot have
-thousands of accessions therefore for request with thousands of
+thousands of accessions therefore for requests with thousands of
 accessions, use the following request type:
 
 Python:
 ```python
 import requests
 
-# Note that form data should be sent as a string
+# Note that form data should be sent as a string and using 'data' instead of 'json'
 r = requests.post("http://www.patlas.site/api/senddownload/",
 data={"accessions": '["NC_017393_1", "NZ_CP009835_1"]'})
 
 r.content
-# E.g. response: http://patlas.site/results?query=15675682358507007771
+# result: http://patlas.site/results?query=15675682358507007771
 ```
 
 Javascript / JQuery:
 ```javascript
 // Note that form data should be sent as a string
-$.post("www.patlas.site/api/senddownload/", {"accessions": JSON.stringify(accList)}, (data, status) => {
+$.post("www.patlas.site/api/senddownload/", {"accessions": JSON.stringify(["NC_017393_1", "NZ_CP009835_1"])}, (data, status) => {
       if (status === "success") {
-        window.open(data, "_blank")
+        console.log(data)
+        // result: http://patlas.site/results?query=15675682358507007771
       }
     }
   )
