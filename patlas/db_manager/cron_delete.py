@@ -27,8 +27,8 @@ def delete_entries():
     db.session.commit()
     db.session.close()
 
-    # for download sequence database delete everything after 15 minutes,
-    # because it is only necessary when the user cancels the download
+    # for downloaded sequence database every entry is deleted if they are
+    # older than 15 minutes
     start_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=15)
 
     db.session.query(FastaDownload) \

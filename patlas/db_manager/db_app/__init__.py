@@ -25,5 +25,6 @@ except ImportError as e:
 
 # starts the schedule for removing old entries from the psql database that
 # stores JSON files from other applications that submit a post request to
-# UrlDatabase model.
+# UrlDatabase model. This will in fact also delete entries in FastaDownload
+# that are older than 15 minutes.
 super_delete(86400)

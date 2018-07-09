@@ -1,4 +1,3 @@
-
 /**
  * function that handles the requests to the database to generate a file
  * @param {Array} accList - an array of all the accessions to be downloaded
@@ -7,12 +6,12 @@ const downloadTypeHandler = (accList) => {
 
   // window.open(`http://www.patlas.site/api/senddownload/?accession=${accList.join()}`)
   $.post("api/senddownload/", {"accessions": JSON.stringify(accList)},
-      (data, status) => {
-        if (status === "success") {
-          window.open(data, "_blank")
-        }
+    (data, status) => {
+      if (status === "success") {
+        window.open(data, "_blank")
       }
-    )
+    }
+  )
 }
 
 

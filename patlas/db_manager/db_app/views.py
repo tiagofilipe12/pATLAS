@@ -178,9 +178,15 @@ def generate_download():
         # add to the database the url in which the results may be downloaded
         request_list = request.form["accessions"]
 
-        hash_url = ctypes.c_size_t(
-            hash(request_list)
-        ).value
+        # checks if list was stringified before the request
+        if "[" and "]" not in request_list:
+            print("Queried data isn't a list: ", type(request_list),
+                  request_list)
+            return "Queried data must be stringified, i.e., the list of " \
+                   "accession number must be stringified before sending the" \
+                   "post request."
+
+        hash_url = ctypes.c_size_t(hash(request_list)).value
 
         append_to_db = FastaDownload(
             unique_id=hash_url,
