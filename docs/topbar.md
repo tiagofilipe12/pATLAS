@@ -26,19 +26,19 @@ plasmids/nodes and all their linked plasmids/nodes (as well as the
 respective links). This may be particularly handy to filter queries.
 
 6. `Download` button, that enable users to download the currently
-selected plasmids. This sill download the queried accession numbers to
+selected plasmids. This will download the queried accession numbers to
 a file named `pATLAS_download_<random_hash>.fas`. For more on this
 subject, see [Download api](download_api.md).
 
 7. `Table` button, that opens a table with information available for the
 currently selected plasmids/nodes.
 
-8. `Statistics` button, that will open abar plot with the species
+8. `Statistics` button, that will open a bar plot with the species
 present in the current selection. This will also allow access to all
 other statistic plots through the statistics popup (for further details
 see [Statistics](Statistics.md).
 
-9. `Heatmap` button will generate a heatmap that allows to compare
+9. `Heatmap` button will generate a heat map that allows to compare
 multiple mapping or mash screen or even sequence results (for more
 details on how to import results go to [here](Import.md)).
 
