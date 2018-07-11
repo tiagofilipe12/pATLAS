@@ -9,8 +9,7 @@ try:
 except IndexError:
     db_name = "plasmid_db_stable"
 
-
-## or 'postgresql://localhost/plasmid_db'
+# or 'postgresql://localhost/plasmid_db'
 SQLALCHEMY_DATABASE_URI = "postgresql:///{}".format(db_name)
 
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, "db_repository")
