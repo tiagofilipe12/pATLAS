@@ -2,7 +2,7 @@
 
 ## Version 1.5.0
 
-## Database
+### Database
 
 * Added new table to database in order to store temporary entries,
 containing results sent from `POST` requests that can be displayed
@@ -11,6 +11,12 @@ using unique urls. This included:
     from the temporary database entries.
     * Addition of back end view that enables to handle the `POST`
     request and to make a `GET` from the pATLAS front end.
+
+### Requests
+
+* Now it is possible to make POST request to download metadata and
+sequences. Also, it is possible to make POST requests to view results
+from external tools.
 
 ## Version 1.4.1
 
