@@ -127,13 +127,17 @@ const taxaRequestWrapper = async (g, graphics, renderer, storeLis,
       const speciesQueryResults = await speciesRequest(g, graphics, renderer,
         sp, currentColor)
 
-      listGiFilter.push(mapRequest(speciesQueryResults))
+      const listToCat = await mapRequest(speciesQueryResults)
+
+      listGiFilter = listGiFilter.concat(listToCat)
 
     } else {
       const taxaQueryResults = await taxaRequest(g, graphics, renderer, sp,
         currentColor)
 
-      listGiFilter.push(await mapRequest(taxaQueryResults))
+      const listToCat = await mapRequest(taxaQueryResults)
+
+      listGiFilter = listGiFilter.concat(listToCat)
 
     }
 

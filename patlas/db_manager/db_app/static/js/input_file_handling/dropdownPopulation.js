@@ -1,9 +1,17 @@
 /*globals colorList, listGiFilter, colorNodes, legendInst, typeOfProject */
 
 // function to remove first char from every string in array
-// of course array must have strings
-const removeFirstCharFromArray = (array) => {
-  return array.map( (el) => el.replace(" ", ""))
+const removeFirstCharFromArray = (arr) => {
+  // return arr.map( (el) => el.replace(" ", ""))
+  const returnArray = arr.map( (el) => {
+    if (el.startsWith(" ")) {
+      return el.slice(1)
+    } else {
+      return el
+    }
+  })
+
+  return returnArray
 }
 
 // function to populate any dropdown menu with select
