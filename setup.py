@@ -23,7 +23,7 @@ setup(
         "plotly>=2.0.15",
         "SQLAlchemy>=1.2.0b2",
         "tqdm>=4.15.0",
-        "psycopg2",
+        "psycopg2>=2.7.1",
     ],
     description="pATLAS is a program to browse plasmids database and identify"
                 " plasmids present within whole genome sequencing data.",
