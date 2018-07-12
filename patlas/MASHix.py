@@ -943,7 +943,6 @@ def main():
     if args.remove:
         print("***********************************")
         print("Removing temporary files and folders...")
-        os.remove(main_fasta)
         for d in os.listdir(mother_directory):
             if d in ["genome_sketchs", "tmp"]:
                 shutil.rmtree(os.path.join(mother_directory, d))
