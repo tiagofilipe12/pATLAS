@@ -2541,13 +2541,16 @@ const onLoad = () => {
     areaSelection = false
 
     // checks the target button before sliding right or left
-    const outArray = (e.target.id === "slideRight") ?
-      slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer) :
-      slideToLeft(readFilejson, readIndex, g, listGi, graphics, renderer)
 
-    readIndex = outArray[0]
-    listGiFilter = outArray[1][1]
-    listGi = outArray[1][0]
+    showDiv().then( () => {
+      const outArray = (e.target.id === "slideRight") ?
+        slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer) :
+        slideToLeft(readFilejson, readIndex, g, listGi, graphics, renderer)
+
+      readIndex = outArray[0]
+      listGiFilter = outArray[1][1]
+      listGi = outArray[1][0]
+    })
   })
 
 
