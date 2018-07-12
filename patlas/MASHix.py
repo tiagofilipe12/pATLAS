@@ -814,6 +814,7 @@ def main():
                                                  "fasta file using MASH")
 
     main_options = parser.add_argument_group("Main options")
+    main_options.add_argument("-db", required=True)
     main_options.add_argument("-i", "--input_references", dest="inputfile",
                               nargs="+", required=True, help="Provide the  "
                                                              "input fasta "
@@ -854,7 +855,7 @@ def main():
     other_options.add_argument("-non", "--nodes_ncbi", dest="nodes_file",
                                required=True, help="specify the path to the "
                                                    "file containing nodes.dmp "
-                                                   "from NCBI" )
+                                                   "from NCBI")
     other_options.add_argument("-nan", "--names_ncbi", dest="names_file",
                                required=True, help="specify the path to the "
                                                    "file containing names.dmp "
