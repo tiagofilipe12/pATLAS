@@ -814,7 +814,11 @@ def main():
                                                  "fasta file using MASH")
 
     main_options = parser.add_argument_group("Main options")
-    main_options.add_argument("-db", required=True)
+    main_options.add_argument("-db", "--database_name", dest="database_name",
+                              required=True,
+                              help="This argument must be provided as the last"
+                                   "argument. It states the database name that"
+                                   "must be used.")
     main_options.add_argument("-i", "--input_references", dest="inputfile",
                               nargs="+", required=True, help="Provide the  "
                                                              "input fasta "
@@ -862,6 +866,11 @@ def main():
                                                    "from NCBI")
 
     args = parser.parse_args()
+
+    if args.database_name != sys.argv[-1]:
+        print("ERROR: '-db' or '--database_name' should be the last "
+              "provided argument")
+        sys.exit(1)
 
     threads = args.threads
     kmer_size = args.kmer_size
@@ -936,7 +945,7 @@ def main():
         print("Removing temporary files and folders...")
         os.remove(main_fasta)
         for d in os.listdir(mother_directory):
-            if d != "results":
+            if d in ["genome_sketchs", "tmp"]:
                 shutil.rmtree(os.path.join(mother_directory, d))
 
     ## Histograms
