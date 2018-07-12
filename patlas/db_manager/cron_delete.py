@@ -7,8 +7,12 @@ try:
     from db_app import db
     from db_app.models import UrlDatabase, FastaDownload
 except ImportError:
-    from patlas.db_manager.db_app import db
-    from patlas.db_manager.db_app.models import UrlDatabase, FastaDownload
+    try:
+        from patlas.db_manager.db_app import db
+        from patlas.db_manager.db_app.models import UrlDatabase, FastaDownload
+    except ImportError:
+        from db_manager.db_app import db
+        from db_manager.db_app.models import UrlDatabase, FastaDownload
 
 
 def delete_entries():
