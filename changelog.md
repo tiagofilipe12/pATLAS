@@ -18,6 +18,18 @@ using unique urls. This included:
 sequences. Also, it is possible to make POST requests to view results
 from external tools.
 
+### bug fixes
+
+* fixed bug with assembly sample file import
+* fixed bug when heatmap is called after filtering from a file, where
+the plasmid length data is missing for a plasmid from another file
+ that is being compared with the current file in the heatmap.
+
+### new features
+
+* added loader to slider buttons (buttons that allow to slide between
+files.
+
 ## Version 1.4.1
 
 ### Database update
