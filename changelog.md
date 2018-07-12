@@ -18,6 +18,12 @@ using unique urls. This included:
 sequences. Also, it is possible to make POST requests to view results
 from external tools.
 
+### Database naming refactor
+
+* Now database name should/can be provided to scripts that interact
+with psql database. E.g. of scripts that require this are: MASHix.py,
+db_create.py, run.py.
+
 ### bug fixes
 
 * fixed bug with assembly sample file import
