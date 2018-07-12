@@ -1942,7 +1942,7 @@ const onLoad = () => {
     showDiv().then(() => {
       getArrayAssembly().then((results) => {
         readFilejson = assemblyJson = results
-        const readString = JSON.parse(Object.values(results)[0])
+        const readString = Object.values(results)[0]
         fileChecks(readString)
         $("#fileNameDiv").html(Object.keys(readFilejson)[0])
           .show()
