@@ -432,8 +432,9 @@ const heatmapMaker = (g, masterReadArray, readObjects) => {
           this.series.yAxis.categories[this.point.y]
           ]
 
-        const plasmidLength = g.getNode(this.series.yAxis.categories[this.point.y])
-          .data.seqLength.split("</span>")[1]
+        const plasmidLength = (g.getNode(this.series.yAxis.categories[this.point.y])) ?
+          g.getNode(this.series.yAxis.categories[this.point.y]).data.seqLength.split("</span>")[1] :
+          "N/A"
 
         // sets a default string that will be outputed for all the types of imports
         let returnString = "<b>File name: </b>" + this.series.xAxis.categories[this.point.x] +
