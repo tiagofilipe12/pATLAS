@@ -30,6 +30,8 @@ db_create.py, run.py.
 * fixed bug when heatmap is called after filtering from a file, where
 the plasmid length data is missing for a plasmid from another file
  that is being compared with the current file in the heatmap.
+* fixed bug when unknown accessions are provided to the remove
+redundancy option
 
 ### new features
 

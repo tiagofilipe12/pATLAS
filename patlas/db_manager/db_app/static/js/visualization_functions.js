@@ -1664,6 +1664,8 @@ const onLoad = () => {
         (consensusJson) ? consensusJson :
           readFilejson
 
+    console.log(queryFileJson)
+
     Object.keys(queryFileJson).map( (fileName) => {
       // variable that fetches the object associated with each file
       const fileString = (typeof queryFileJson[fileName] === "string") ?
@@ -1683,145 +1685,148 @@ const onLoad = () => {
          */
         const currentNodePerc = fileString[acc]
 
-        // if node has no links add it instantly
-        if (g.getLinks(acc).length === 0) {
+        // if check to check if file import has the proper accessions
+        if (g.getLinks(acc)) {
+          // if node has no links add it instantly
+          if (g.getLinks(acc).length === 0) {
 
-          parsedReadFileJson[fileName][acc] = currentNodePerc
-          promises.push(acc)
+            parsedReadFileJson[fileName][acc] = currentNodePerc
+            promises.push(acc)
 
-        } else {
+          } else {
 
-          promises.push(acc)
+            promises.push(acc)
 
-          // but if it has links... check if they are redundant
-          g.forEachLinkedNode(acc, (linkedNode, link) => {
+            // but if it has links... check if they are redundant
+            g.forEachLinkedNode(acc, (linkedNode, link) => {
 
-            if (currentDict.includes(linkedNode.id)) {
-
-              /**
-               * The result of the approach being imported for the linked
-               * accession number. It is a number for the mapping but for mash
-               * screen and assembly it is an array.
-               */
-              const linkedNodePerc = fileString[linkedNode.id]
-
-              // gets linked node length in log scale
-              const linkedNodeLength = linkedNode.data.logLength
-
-              // gets the current node length in log scale
-              const currentNodeLenght = g.getNode(acc).data.logLength
-
-              /**
-               * Start calc variable in order to be used universally between all
-               * fileModes.
-               */
-              let calc
-
-              if (fileMode === "mapping") {
-
-                /** calculates the difference between the node length times the
-                 * node mapping percentage between the currentNode and its
-                 * linkedNodes
-                 */
-                calc = currentNodeLenght * currentNodePerc -
-                  linkedNodeLength * linkedNodePerc
-
-              } else if (fileMode === "mash_screen") {
-                /**
-                 * Variable that fetches the mash screen identity value from
-                 * the array of objects that each accession number for the
-                 * linkedNode has in the input files
-                 */
-                const linkedNodeId = linkedNodePerc[0]
+              if (currentDict.includes(linkedNode.id)) {
 
                 /**
-                 * Variable that fetches the mash screen identity value from
-                 * the array of objects that each accession number for the
-                 * currentNode being cycled by forEachLinkedNode function
-                 * has in the input files.
+                 * The result of the approach being imported for the linked
+                 * accession number. It is a number for the mapping but for mash
+                 * screen and assembly it is an array.
                  */
-                const currentNodeId = currentNodePerc[0]
+                const linkedNodePerc = fileString[linkedNode.id]
+
+                // gets linked node length in log scale
+                const linkedNodeLength = linkedNode.data.logLength
+
+                // gets the current node length in log scale
+                const currentNodeLenght = g.getNode(acc).data.logLength
 
                 /**
-                 * Calculates the difference between the node length times the
-                 * node mash screen identity between the currentNode and its
-                 * linkedNodes
+                 * Start calc variable in order to be used universally between all
+                 * fileModes.
                  */
-                calc = currentNodeLenght * currentNodeId -
-                  linkedNodeLength - linkedNodeId
+                let calc
+
+                if (fileMode === "mapping") {
+
+                  /** calculates the difference between the node length times the
+                   * node mapping percentage between the currentNode and its
+                   * linkedNodes
+                   */
+                  calc = currentNodeLenght * currentNodePerc -
+                    linkedNodeLength * linkedNodePerc
+
+                } else if (fileMode === "mash_screen") {
+                  /**
+                   * Variable that fetches the mash screen identity value from
+                   * the array of objects that each accession number for the
+                   * linkedNode has in the input files
+                   */
+                  const linkedNodeId = linkedNodePerc[0]
+
+                  /**
+                   * Variable that fetches the mash screen identity value from
+                   * the array of objects that each accession number for the
+                   * currentNode being cycled by forEachLinkedNode function
+                   * has in the input files.
+                   */
+                  const currentNodeId = currentNodePerc[0]
+
+                  /**
+                   * Calculates the difference between the node length times the
+                   * node mash screen identity between the currentNode and its
+                   * linkedNodes
+                   */
+                  calc = currentNodeLenght * currentNodeId -
+                    linkedNodeLength - linkedNodeId
 
 
-              } else if (fileMode === "assembly") {
+                } else if (fileMode === "assembly") {
 
-                /**
-                 * Variable that fetches the mash dist identity (1-distance)
-                 * value from the array of objects that each accession number
-                 * for the linkedNode has in the input files
-                 */
-                const linkedNodeID = linkedNodePerc[0]
+                  /**
+                   * Variable that fetches the mash dist identity (1-distance)
+                   * value from the array of objects that each accession number
+                   * for the linkedNode has in the input files
+                   */
+                  const linkedNodeID = linkedNodePerc[0]
 
-                /**
-                 * Variable that fetches the mash dist identity (1-distance)
-                 * value from the array of objects that each accession number
-                 * for the currentNode being cycled by forEachLinkedNode
-                 * function has in the input files.
-                 */
-                const currentNodeID = currentNodePerc[0]
+                  /**
+                   * Variable that fetches the mash dist identity (1-distance)
+                   * value from the array of objects that each accession number
+                   * for the currentNode being cycled by forEachLinkedNode
+                   * function has in the input files.
+                   */
+                  const currentNodeID = currentNodePerc[0]
 
-                /**
-                 * variable that fetches the number of shared hashes between
-                 * the queried sequences and the accession of the plasmid in db
-                 * for the linked node being compared here.
-                 */
-                const linkedNodeHashes = linkedNodePerc[1]
+                  /**
+                   * variable that fetches the number of shared hashes between
+                   * the queried sequences and the accession of the plasmid in db
+                   * for the linked node being compared here.
+                   */
+                  const linkedNodeHashes = linkedNodePerc[1]
 
-                /**
-                 * variable that fetches the number of shared hashes between the
-                 * queried sequences and the accession of the plasmid in db
-                 * for the currentNode.
-                 */
-                const currentNodeHashes = currentNodePerc[1]
+                  /**
+                   * variable that fetches the number of shared hashes between the
+                   * queried sequences and the accession of the plasmid in db
+                   * for the currentNode.
+                   */
+                  const currentNodeHashes = currentNodePerc[1]
 
-                calc = currentNodeID * currentNodeHashes * currentNodeLenght -
-                  linkedNodeID * linkedNodeHashes * linkedNodeLength
-
-              }
-
-              // adds node if it is better or equally likely to be the correct
-              // plasmid
-              if (calc >= 0) {
-
-                // if currentNode is a better hit but linkedNode is already in dict
-                if (Object.keys(parsedReadFileJson[fileName]).includes(linkedNode.id)
-                  && calc > 0) {
-                  // remove this accession from the entries in parsedReadFileJson
-                  delete parsedReadFileJson[fileName][linkedNode.id]
+                  calc = currentNodeID * currentNodeHashes * currentNodeLenght -
+                    linkedNodeID * linkedNodeHashes * linkedNodeLength
 
                 }
 
-                // if calc is >0 then linkedNode.id should never be added. If
-                // a equally probable node exists it will not be linked to this
-                // acc because of the default behavior of vivagraph
-                // forEachLinkedNode function.
-                if (!blackList.includes(linkedNode.id)) {
-                  blackList.push(linkedNode.id)
-                }
+                // adds node if it is better or equally likely to be the correct
+                // plasmid
+                if (calc >= 0) {
 
-                // if it is major or equal to the linkedNode then add it to the library
-                // if it is minor then the linkedNode will be added in another iteration
-                if (!blackList.includes(acc)) {
-                  parsedReadFileJson[fileName][acc] = currentNodePerc
-                } else {
-                  // if the calc value is negative then that node must be
-                  // excluded from the final results.
-                  delete parsedReadFileJson[fileName][acc]
+                  // if currentNode is a better hit but linkedNode is already in dict
+                  if (Object.keys(parsedReadFileJson[fileName]).includes(linkedNode.id)
+                    && calc > 0) {
+                    // remove this accession from the entries in parsedReadFileJson
+                    delete parsedReadFileJson[fileName][linkedNode.id]
+
+                  }
+
+                  // if calc is >0 then linkedNode.id should never be added. If
+                  // a equally probable node exists it will not be linked to this
+                  // acc because of the default behavior of vivagraph
+                  // forEachLinkedNode function.
+                  if (!blackList.includes(linkedNode.id)) {
+                    blackList.push(linkedNode.id)
+                  }
+
+                  // if it is major or equal to the linkedNode then add it to the library
+                  // if it is minor then the linkedNode will be added in another iteration
                   if (!blackList.includes(acc)) {
-                    blackList.push(acc)
+                    parsedReadFileJson[fileName][acc] = currentNodePerc
+                  } else {
+                    // if the calc value is negative then that node must be
+                    // excluded from the final results.
+                    delete parsedReadFileJson[fileName][acc]
+                    if (!blackList.includes(acc)) {
+                      blackList.push(acc)
+                    }
                   }
                 }
               }
-            }
-          })
+            })
+          }
         }
       })
     })
