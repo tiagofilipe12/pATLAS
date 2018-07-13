@@ -1663,9 +1663,7 @@ const onLoad = () => {
       (assemblyJson) ? assemblyJson :
         (consensusJson) ? consensusJson :
           readFilejson
-
-    console.log(queryFileJson)
-
+    
     Object.keys(queryFileJson).map( (fileName) => {
       // variable that fetches the object associated with each file
       const fileString = (typeof queryFileJson[fileName] === "string") ?
