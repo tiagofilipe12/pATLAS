@@ -13,9 +13,10 @@ and 2 disabled by default.
 1. [Play/Pause button](#play-and-pause)
 2. [Area selection](#area-selection)
 3. [Zoom in](#zooming-buttons)
-4. [Zoom out](#zooming-buttons)
-5. [Slide file to left](#arrow-buttons)
-6. [Slide file to right](#arrow-buttons)
+4. [Center graph](#center-graph)
+5. [Zoom out](#zooming-buttons)
+6. [Slide file to left](#arrow-buttons)
+7. [Slide file to right](#arrow-buttons)
 
 ### Play and Pause
 
@@ -40,6 +41,12 @@ and lock area selection.
 
 At the middle of these 6 buttons there are two buttons that control the
 zooming level, a zoom in button and a zoom out button.
+
+### Center graph
+
+Button that centers the graph on the node with more links currently
+displayed. This is particularly useful if you lost track of the cloud of
+plasmids.
 
 ### Arrow buttons
 
