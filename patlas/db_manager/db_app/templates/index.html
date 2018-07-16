@@ -869,6 +869,15 @@
   <div id="alertJsonFileText"><!--To be filled upon error handling --></div>
 </div>
 
+<div class="alert alert-success alert-dismissable fade in" id="alertDownload"
+     style="display: none; width: 300px;">
+  <button type="button" class="close" id="alertDownloadClose" aria-hidden="true"
+          data-hide="true" onclick="document.getElementById('alertDownload')
+          .style.display = 'none'">
+    &times;</button>
+  <div id="fillDownloadAlert"></div>
+</div>
+
 <!--Alert message to check if popups are blocked-->
 <div class="alert alert-danger alert-dismissable fade in" id="alertPopup"
      style="display: none">

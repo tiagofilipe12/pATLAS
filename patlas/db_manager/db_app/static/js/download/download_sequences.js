@@ -8,11 +8,13 @@ const downloadTypeHandler = (accList) => {
   $.post("api/senddownload/", {"accessions": JSON.stringify(accList)},
     (data, status) => {
       if (status === "success") {
-        const newWin = window.open(data, "_blank")
+        $("#fillDownloadAlert").html(`Download your data: <a href=${data} target='_blank'><button class='btn btn-sm btn-success'>Click here!</button>`)
+        $("#alertDownload").show()
+        //const newWin = window.open(data, "_blank")
         // will raise a warning if the browser is blocking popups
-        if (!newWin || newWin.closed || typeof newWin.closed === "undefined") {
-          $("#alertPopup").show()
-        }
+        // if (!newWin || newWin.closed || typeof newWin.closed === "undefined") {
+        //   $("#alertPopup").show()
+        // }
       }
     }
   )

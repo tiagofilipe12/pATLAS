@@ -2184,11 +2184,6 @@ const onLoad = () => {
       // mapping results
       downloadSeq(listGiFilter)
     }
-    showDiv().then( async () => {
-      await getCentralNode(g)
-      await recenterDOM(renderer, layout, [centralNode])
-      $("#loading").hide()
-    })
   })
 
 
@@ -2546,7 +2541,6 @@ const onLoad = () => {
   $("#center_graph").unbind("click").bind("click", () => {
     showDiv().then( async () => {
       await getCentralNode(g)
-      console.log(centralNode)
       await recenterDOM(renderer, layout, [centralNode])
       $("#loading").hide()
     })
