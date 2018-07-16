@@ -38,6 +38,13 @@ const storeRecenterDom = (storeMasterNode, dictDist, sequence, counter) => {
   return returnedArray
 }
 
+
+/**
+ * Function to fetch the node with more links currently being displayed by
+ * vivagraph
+ * @param {Object} g - graph related functions that iterate through nodes
+ * and links.
+ */
 const getCentralNode = (g) =>  {
   g.forEachNode(function(node){
     if (centralNode) {

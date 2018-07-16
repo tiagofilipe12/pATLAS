@@ -2339,6 +2339,14 @@ const onLoad = () => {
     arrayToCsv(targetArray)
   })
 
+  /**
+   * Event to center on the popup node
+   */
+  $("#centerNodePopup").unbind("click").bind("click", () => {
+    const popupAccession = $("#accessionPop a").html()
+    recenterDOM(renderer, layout, [popupAccession])
+  })
+
 
   /**
    * Button that controls the display of the resistance information in the popup
