@@ -55,7 +55,7 @@
 }
 
 #slideLeft, #slideRight, #zoom_out, #zoom_in, #refreshButton, #playpauseButton,
-#closeProject{
+#closeProject, #center_graph{
     height: 34px;
 }
 
@@ -353,9 +353,9 @@
 /*alert boxes*/
 
 .alert{
-    position:absolute;
+    position: absolute;
     z-index: 99;
-    top:10%;
+    top: 10%;
     left: 50%;
     transform: translateX(-50%);
 }

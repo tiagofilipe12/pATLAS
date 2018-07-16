@@ -171,6 +171,13 @@ let multiSelectOverlay = false
 // store the node with more links
 let storeMasterNode = []    //cleared every instance of onload
 // start array that controls taxa filters
+
+/**
+ * Variable that will store the central node in which the dom can be centered
+ * @type {boolean|String}
+ */
+let centralNode = false
+
 const idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"]
 
 let counter = -1 //sets a counter for the loop between the inputs nodes

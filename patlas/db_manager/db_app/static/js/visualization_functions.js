@@ -25,7 +25,7 @@ clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
-parseRequestResults, requestResults, currentQueryNode*/
+parseRequestResults, requestResults, currentQueryNode, centralNode*/
 
 
 /**
@@ -2074,6 +2074,8 @@ const onLoad = () => {
    */
   $("#reRunYes, #reRunNo").unbind("click").bind("click", (e) => {
 
+    centralNode = false
+
     getLinkedNodes = (e.target.id !== "reRunNo")
 
     // resets areaSelection
@@ -2145,7 +2147,6 @@ const onLoad = () => {
     $("#heatmapModal").modal()
 
     heatmapMaker(g, masterReadArray, readFilejson)
-
   })
 
 
@@ -2182,6 +2183,11 @@ const onLoad = () => {
       // mapping results
       downloadSeq(listGiFilter)
     }
+    showDiv().then( async () => {
+      await getCentralNode(g)
+      await recenterDOM(renderer, layout, [centralNode])
+      $("#loading").hide()
+    })
   })
 
 
@@ -2526,6 +2532,14 @@ const onLoad = () => {
       $("#refreshButton").removeClass("btn-default").addClass("btn-success")
 
     }
+  })
+
+  $("#center_graph").unbind("click").bind("click", () => {
+    showDiv().then( async () => {
+      await getCentralNode(g)
+      await recenterDOM(renderer, layout, [centralNode])
+      $("#loading").hide()
+    })
   })
 
 

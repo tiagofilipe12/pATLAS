@@ -1,3 +1,5 @@
+/*globals centralNode */
+
 /**
  * this function repositions the graph to center on the desired node
  * @param {Object} renderer - vivagraph object to render the graph
@@ -34,4 +36,18 @@ const storeRecenterDom = (storeMasterNode, dictDist, sequence, counter) => {
     [sequence, dictDist.length]
 
   return returnedArray
+}
+
+const getCentralNode = (g) =>  {
+  g.forEachNode(function(node){
+    if (centralNode) {
+      // if centralNode is different from false then have to check if it has
+      // more links than the current queried node
+      centralNode = (g.getNode(centralNode).links.length >= node.links.length) ?
+        centralNode : node.id
+    } else {
+      // if centralNode is false then assign the first node
+      centralNode = node.id
+    }
+  })
 }
