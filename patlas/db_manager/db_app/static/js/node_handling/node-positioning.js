@@ -9,6 +9,7 @@
  */
 const recenterDOM = (renderer, layout, storeMasterNode) => {
   const pos = layout.getNodePosition(storeMasterNode[0])
+  console.log(pos)
   renderer.moveTo(pos.x, pos.y)
 }
 
