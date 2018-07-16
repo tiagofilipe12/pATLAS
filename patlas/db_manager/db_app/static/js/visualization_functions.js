@@ -25,7 +25,8 @@ clickedPopupButtonRes, clickedPopupButtonFamily, selectedFilter, idsArrays,
 masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
-parseRequestResults, requestResults, currentQueryNode, centralNode*/
+parseRequestResults, requestResults, currentQueryNode, centralNode,
+getCentralNode*/
 
 
 /**
