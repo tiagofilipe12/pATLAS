@@ -869,6 +869,17 @@
   <div id="alertJsonFileText"><!--To be filled upon error handling --></div>
 </div>
 
+<!--Alert message to check if popups are blocked-->
+<div class="alert alert-danger alert-dismissable fade in" id="alertPopup"
+     style="display: none">
+  <button type="button" class="close" id="alertPopupClose" aria-hidden="true"
+          data-hide="true" onclick="document.getElementById('alertPopup')
+          .style.display = 'none'">
+    &times;</button>
+  <strong>Warning!</strong> Your browser is blocking popups. Please allow them
+  in order to proceed with the download.
+</div>
+
 <div id="wrapper" class="toggled">
   <!-- Sidebar -->
   <div id="sidebar-wrapper">

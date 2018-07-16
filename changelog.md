@@ -24,7 +24,7 @@ from external tools.
 with psql database. E.g. of scripts that require this are: MASHix.py,
 db_create.py, run.py.
 
-### bug fixes
+### Bug fixes
 
 * fixed bug with assembly sample file import
 * fixed bug when heatmap is called after filtering from a file, where
@@ -37,6 +37,7 @@ redundancy option
 
 * added loader to slider buttons (buttons that allow to slide between
 files.
+* added check for popup blocking.
 
 ## Version 1.4.1
 

@@ -28,7 +28,9 @@ respective links). This may be particularly handy to filter queries.
 6. `Download` button, that enable users to download the currently
 selected plasmids. This will download the queried accession numbers to
 a file named `pATLAS_download_<random_hash>.fas`. For more on this
-subject, see [Download api](download_api.md).
+subject, see [Download api](download_api.md). **NOTE:** Some browsers
+may prevent pATLAS from opening new tabs or popups. Downloads will be
+blocked if the user doesn't allow pATLAS to open popups.
 
 7. `Table` button, that opens a table with information available for the
 currently selected plasmids/nodes.
