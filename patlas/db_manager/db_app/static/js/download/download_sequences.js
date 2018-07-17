@@ -15,8 +15,9 @@ const downloadTypeHandler = (accList) => {
       if (status === "success") {
         const deleteRequestData = data.replace("http://www.patlas.site/downloads/?query=", "")
         $("#fillDownloadAlert").html(
-          `Your download is ready: <a href=${data} target='_blank'><button 
-class='btn btn-sm' style='background-color: inherit' 
+          `Your download is ready: <a href=${data} target='_blank' 
+style='color: #3c763d'><button class='btn btn-sm' 
+style='background-color: #eeffe7; border-color: #3c763d;
 onclick='deleteEntry(${deleteRequestData})'><b>Click here!</b></button></a>`
         )
 
