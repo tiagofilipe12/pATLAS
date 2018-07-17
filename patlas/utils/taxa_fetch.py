@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-## Last update: 14/06/2018
-## Author: T.F. Jesus
-## This script aids MASHix.py getting family names for each genera of bacteria
+# Last update: 14/06/2018
+# Author: T.F. Jesus
+# This script aids MASHix.py getting family names for each genera of bacteria
 
 import json
 import argparse
+
 
 def fetch_taxid(taxa_list, names_file, weirdos):
     """
@@ -41,7 +42,7 @@ def fetch_taxid(taxa_list, names_file, weirdos):
         ])
 
     name = open(names_file, "r")
-    ## parses names.dmp file and outputs a list of taxid
+    # parses names.dmp file and outputs a list of taxid
     taxid_dic = {}
 
     for line in name:
@@ -54,7 +55,7 @@ def fetch_taxid(taxa_list, names_file, weirdos):
             debugging_field = field_delimiter[2].strip()
 
             if any(x in debugging_field for x in conflicting_instances):
-                #this will avoid that a wrong taxid gets into the taxid_dic
+                # this will avoid that a wrong taxid gets into the taxid_dic
                 print("skipping weird entry: " + debugging_field)
             else:
                 # everything else that is a bacteria will get into taxid_dic
@@ -104,11 +105,11 @@ def family_taxid(taxid_dic, nodes_file):
     print("parent_taxid_list: " + str(len(parent_taxid_dic)))
     return parent_taxid_dic
 
-##3
-## function to fetch taxids given a list of genera
+
+# function to fetch taxids given a list of genera
 def fetch_taxid_by_id(parent_taxid_dic, names_file):
     name = open(names_file, "r")
-    ## parses names.dmp file and outputs a list of taxid
+    # parses names.dmp file and outputs a list of taxid
     taxa_name_dic = {}
     for line in name:
         field_delimiter = line.split("|")
@@ -184,12 +185,12 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
             "Bacterium",
             "Endophytic",
             "Gammaproteobacteria",
-            "Polymorphum", # this is in fact a genera but with parsing issues through ncbi taxonomy
+            "Polymorphum",  # genera but with parsing issues in ncbi tax
             "Tenericutes",
             "Cryphonectria",
-            "Nostocales",   # this is in fact a genera but with parsing issues through ncbi taxonomy
-            "Sedimenticola", # this is in fact a genera but with parsing issues through ncbi taxonomy
-            "Thiolapillus", # this is in fact a genera but with parsing issues through ncbi taxonomy
+            "Nostocales",   # genera but with parsing issues in ncbi tax
+            "Sedimenticola",    # genera but with parsing issues in ncbi tax
+            "Thiolapillus", # genera but with parsing issues in ncbi tax
             "Xanthomonadales"
         ])
 
@@ -270,32 +271,32 @@ def executor(names_file, nodes_file, species_list, weirdos=True):
 
     """
 
-    ## obtains a list of all species in input file and genera!!
+    # obtains a list of all species in input file and genera!!
     print("Gathering species information...")
     genera_list = [x.split(" ")[0] for x in species_list]
 
-    ## executes first function for genera
+    # executes first function for genera
     print("Gathering genera information...")
     taxid_dic = fetch_taxid(genera_list, names_file, weirdos)
 
-    ## executes second function for genera
+    # executes second function for genera
     parent_taxid_dic = family_taxid(taxid_dic, nodes_file)
 
-    ## executes third function for families, obtains family names and its ids
+    # executes third function for families, obtains family names and its ids
     print("Gathering family information...")
     family_taxid_dic = fetch_taxid_by_id(parent_taxid_dic, names_file)
 
-    ## exectures second function for families
+    # exectures second function for families
 
     order_dic = family_taxid(parent_taxid_dic, nodes_file)
 
-    ## executes third function for orders, obtains order names
+    # executes third function for orders, obtains order names
     print("Gathering order information...")
     order_taxid_dic = fetch_taxid_by_id(order_dic, names_file)
 
     print("creating dictionary with tree of taxa relationships...")
 
-    ## Species is missing from this final output!
+    # Species is missing from this final output!
     super_dic = build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic,
                                 order_dic, order_taxid_dic, species_list,
                                 weirdos)
@@ -353,6 +354,7 @@ def main():
     list_fetch = [line.strip() for line in file_fetch]
 
     executor(names_file, nodes_file, list_fetch, args.weirdos)
+
 
 if __name__ == "__main__":
     main()

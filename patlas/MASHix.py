@@ -255,7 +255,7 @@ def master_fasta(fastas, output_tag, mother_directory):
                 linesplit = line.strip().split("_")  ## splits fasta headers by
                 # _ character
                 species = "_".join(linesplit[3:5])
-                ## if statements to handle some exceptions already found
+                # if statements to handle some exceptions already found
                 if "plasmid" in species.lower():
                     species = "unknown"
                 elif "origin" in species.lower():
@@ -266,14 +266,14 @@ def master_fasta(fastas, output_tag, mother_directory):
                     species = "_".join(linesplit[3:6])
 
                 accession = "_".join(linesplit[0:3]).replace(">", "")
-                ## searches plasmid_name in line given that it may be variable
+                # searches plasmid_name in line given that it may be variable
                 # its position
                 plasmid_name = search_substing(line)
-                ## species related functions
+                # species related functions
                 all_species.append(" ".join(species.split("_")))
 
-                    ## added this if statement to check whether CDS is present in
-                    #  fasta header, since database contain them with CDS in string
+                # added this if statement to check whether CDS is present in
+                # fasta header, since database contain them with CDS in string
                 if "cds" in line.lower():
                     truePlasmid = False
                     continue
