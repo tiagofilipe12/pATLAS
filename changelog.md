@@ -34,6 +34,9 @@ the plasmid length data is missing for a plasmid from another file
 redundancy option.
 * fixed a bug when download button is triggered, centering again the
 graph.
+* fixed a bug on macOS and windows were `window.open` function added
+some type of "offset" to vivagraph canvas, removing window.open and
+adding a new way to download the sequences.
 
 ### new features
 

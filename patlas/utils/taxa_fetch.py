@@ -248,6 +248,7 @@ def build_final_dic(taxid_dic, parent_taxid_dic, family_taxid_dic, order_dic,
 
     return super_dic
 
+
 def executor(names_file, nodes_file, species_list, weirdos=True):
     """
     The actual function that generates the dict to be dumped to file or database
@@ -262,6 +263,8 @@ def executor(names_file, nodes_file, species_list, weirdos=True):
         the file nodes.dmp from ncbi taxonomy
     species_list: list
         the list of species
+    weirdos: bool
+        sets if we want to remove weird entries or not.
 
     Returns
     -------
