@@ -1,32 +1,21 @@
-// TODO function to make delete request ... maybe ajax
-const deleteEntry = (requestData) => {
-  console.log("DELETE REQUEST", requestData)
-}
-
 /**
  * function that handles the requests to the database to generate a file
  * @param {Array} accList - an array of all the accessions to be downloaded
  */
 const downloadTypeHandler = (accList) => {
-
   // window.open(`http://www.patlas.site/api/senddownload/?accession=${accList.join()}`)
   $.post("api/senddownload/", {"accessions": JSON.stringify(accList)},
     (data, status) => {
       if (status === "success") {
-        const deleteRequestData = data.replace("http://www.patlas.site/downloads/?query=", "")
         $("#fillDownloadAlert").html(
           `Your download is ready: <a href=${data} target='_blank' 
 style='color: #3c763d'><button class='btn btn-sm' 
-style='background-color: #eeffe7; border-color: #3c763d;
-onclick='deleteEntry(${deleteRequestData})'><b>Click here!</b></button></a>`
+style='background-color: #eeffe7; border-color: #3c763d;'><b>Click here!</b>
+</button></a>`
         )
 
+        // shows alert
         $("#alertDownload").show()
-        //const newWin = window.open(data, "_blank")
-        // will raise a warning if the browser is blocking popups
-        // if (!newWin || newWin.closed || typeof newWin.closed === "undefined") {
-        //   $("#alertPopup").show()
-        // }
       }
     }
   )

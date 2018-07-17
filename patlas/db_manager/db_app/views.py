@@ -50,8 +50,8 @@ def repetitive_function(path):
     )
     return response
 
-## routes
 
+# routes
 @app.route("/")
 @app.route("/index")
 def index():
@@ -70,10 +70,11 @@ def index():
     try:
         # checks if request.args is empty or not
         if bool(request.args):
-            queried_json = db.session.query(UrlDatabase).get(request.args["query"])
+            queried_json = db.session.query(UrlDatabase).get(
+                request.args["query"])
             print(queried_json.json_entry)
             return render_template("index.html",
-                request_results=queried_json.json_entry)
+                                   request_results=queried_json.json_entry)
         else:
             return render_template("index.html", request_results="false")
 
@@ -115,7 +116,7 @@ def vir_summary():
     return repetitive_function("db_app/static/json/virulence.json")
 
 
-## routes for sample files
+#  routes for sample files
 @app.route("/map_sample")
 def map_sample():
     return repetitive_function(
@@ -173,7 +174,6 @@ def generate_download():
                         "attachment; filename=pATLAS_download_{}.fas".format(
                                 str(abs(hash("".join(var_response))))
                         )})
-
     else:
         # add to the database the url in which the results may be downloaded
         request_list = request.form["accessions"]
