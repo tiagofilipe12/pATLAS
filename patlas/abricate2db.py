@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import sys
 import json
 
 try:
@@ -215,7 +216,13 @@ def main():
                                                              "It can accept "
                                                              "more than one "
                                                              "file in the "
-                                                             "case of resistances")
+                                                             "case of "
+                                                             "resistances")
+    parser.add_argument("-db", "--database_name", dest="database_name",
+                              required=True,
+                              help="This argument must be provided as the last"
+                                   "argument. It states the database name that"
+                                   "must be used.")
     parser.add_argument("-db", "--db", dest="output_psql_db",
         choices=["resistance", "plasmidfinder", "virulence"], required=True,
         help="Provide the db to output in psql models.")
@@ -232,8 +239,14 @@ def main():
                                        "named aro_index.csv. By default this "
                                        "file is already available in patlas "
                                        "repo with a specific path: "
-                                       "'db_manager/db_app/static/csv/aro_index.csv'")
+                                       "'db_manager/db_app/static/csv/"
+                                       "aro_index.csv'")
     args = parser.parse_args()
+
+    if args.database_name != sys.argv[-1]:
+        print("ERROR: '-db' or '--database_name' should be the last "
+              "provided argument")
+        sys.exit(1)
 
     input_file = args.inputfile
     db_type = args.output_psql_db
@@ -262,11 +275,12 @@ def main():
     db_handle.get_storage(list_of_filters, db_type, csv_dict)
 
     # outputs a json file
-    #db_handle.get_json_file(list_of_filters, db_type)
+    # db_handle.get_json_file(list_of_filters, db_type)
 
     # Class to use initial class to output abricate results to db
     print("saving results to db {}".format(db_type))
-    #input_file.get_storage()
+    # input_file.get_storage()
+
 
 if __name__ == "__main__":
     main()
