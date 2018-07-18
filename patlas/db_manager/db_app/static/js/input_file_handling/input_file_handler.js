@@ -9,7 +9,8 @@
  */
 const abortRead = (divToClean) => {
   // cancels the loading it self
-  document.getElementById(divToClean).value = ""
+  document.getElementById(divToClean).value = "drag and drop files here"
+  $(`#${divToClean}`).css({"text-align": "center", "color": "#a5a5a5"})
   return ""
 }
 
@@ -78,6 +79,9 @@ const handleFileSelect = (infileId, textId, callback) => {
   document.getElementById(infileId).addEventListener("change", (e) => {
 
     const files = e.target.files // FileList object
+
+    // change the color of the text inside input
+    $(textId).css({"text-align": "center", "color": "#333333"})
 
     loadFilesToObj(files, textId).then( (results) => { callback(results) })
 

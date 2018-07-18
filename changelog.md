@@ -45,6 +45,7 @@ files.
 * added check for popup blocking.
 * new function that allows to center on the node with more links
 * added new button to center on the node being displayed in the popup
+* added dynamic text to file `inputs`.
 
 ## Version 1.4.1
 

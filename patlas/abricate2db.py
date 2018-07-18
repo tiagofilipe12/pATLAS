@@ -144,22 +144,22 @@ class DbInsertion(Abricate):
         on the entered type.
         '''
         #  are added in other method that inherits the previous ones.
-        for k,v in temp_dict.items():
+        for k, v in temp_dict.items():
             # checks database
             if db_type == "resistance":
                 row = models.Card(
-                        plasmid_id = k,
-                        json_entry = v
+                        plasmid_id=k,
+                        json_entry=v
                     )
             elif db_type == "plasmidfinder":
                 row = models.Database(
-                    plasmid_id = k,
-                    json_entry = v
+                    plasmid_id=k,
+                    json_entry=v
                 )
             elif db_type == "virulence":
                 row = models.Positive(
-                    plasmid_id = k,
-                    json_entry = v
+                    plasmid_id=k,
+                    json_entry=v
                 )
             else:
                 print("Wrong db type specified in '-db' option")
@@ -204,6 +204,7 @@ class DbInsertion(Abricate):
         out_file = open(output_name, "w")
         out_file.write(json.dumps(json_dict))
         out_file.close()
+
 
 def main():
     parser = argparse.ArgumentParser(description="Compares all entries in a "
