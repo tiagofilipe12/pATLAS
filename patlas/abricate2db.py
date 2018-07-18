@@ -218,7 +218,7 @@ def main():
                                                              "file in the "
                                                              "case of "
                                                              "resistances")
-    parser.add_argument("-db", "--database_name", dest="database_name",
+    parser.add_argument("-db_psql", "--database_name", dest="database_name",
                               required=True,
                               help="This argument must be provided as the last"
                                    "argument. It states the database name that"
@@ -244,7 +244,7 @@ def main():
     args = parser.parse_args()
 
     if args.database_name != sys.argv[-1]:
-        print("ERROR: '-db' or '--database_name' should be the last "
+        print("ERROR: '-db_psql' or '--database_name' should be the last "
               "provided argument")
         sys.exit(1)
 
