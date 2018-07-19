@@ -209,8 +209,8 @@ def master_fasta(fastas, output_tag, mother_directory):
     A list with the sequences that shouldn't be removed by the keywords "cds"
     and "origin". This require that we already know which ones should not be
     removed. So it is a good idea to let the script run until this step first
-    each time the database is updated. Using the search 
-    "--search-sequences-to-remove" option.
+    each time the database is updated. Using the search
+    '--search-sequences-to-remove' option.
     """
 
     # initiates output for statistics of removed files
