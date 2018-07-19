@@ -11,6 +11,8 @@ using unique urls. This included:
     from the temporary database entries.
     * Addition of back end view that enables to handle the `POST`
     request and to make a `GET` from the pATLAS front end.
+* `MASHix.py` now has an option that prevent sequences from being
+removed by filters that remove sequences
 
 ### Requests
 
