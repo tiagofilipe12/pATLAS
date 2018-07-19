@@ -202,13 +202,20 @@ def master_fasta(fastas, output_tag, mother_directory):
 
     """
 
+    # initiates output for statistics of removed files
+    remove_seq_out = open(os.path.join(mother_directory,
+                                       "removed_entries_stats.txt"), "w")
+    remove_seq_out.write("\t".join(["fasta header", "sequence length",
+                                    "reason", "filename"]) + "\n")
+
+    # initiates output for filtered fasta
     out_file = os.path.join(mother_directory, "master_fasta_{}.fas".format(
         output_tag))
     master_fasta = open(out_file, "w")
     sequence_info = {}
     length_dict = {}
 
-    ## creates a list file, listing all species in input sequences
+    # creates a list file, listing all species in input sequences
     all_species = []
     species_out = os.path.join(mother_directory, "species_list_{}.lst".format(
         output_tag))
@@ -221,6 +228,7 @@ def master_fasta(fastas, output_tag, mother_directory):
     truePlasmid = False
     previous_sequence = []
     previous_header = False
+    reason = None
 
     for filename in fastas:
 
@@ -234,11 +242,16 @@ def master_fasta(fastas, output_tag, mother_directory):
                 if accession:
                     if accession in sequence_info:
                         print(accession + " - duplicated entry")
-
+                        remove_seq_out.write("\t".join([
+                            previous_header.replace("\n", ""),
+                            str(length),
+                            "duplicate",
+                            filename
+                        ]) + "\n")
                     else:
                         if truePlasmid and accession:
                             sequence_info[accession] = (species, length,
-                                                                 plasmid_name)  # outputs
+                                                        plasmid_name)  # outputs
                             # dict at the beginning of each new entry
                             master_fasta.write(previous_header)
                             master_fasta.write("".join(previous_sequence))
@@ -248,11 +261,21 @@ def master_fasta(fastas, output_tag, mother_directory):
                             length_dict[accession] = length
 
                             # after appending new length to dicts reset lengths
-                            length = 0  # resets sequence length for every > found
+
+                        if not truePlasmid:
+                            remove_seq_out.write("\t".join([
+                                previous_header.replace("\n", ""),
+                                str(length),
+                                reason,
+                                filename
+                            ]) + "\n")
+
+                        # resets sequence length for every >
+                        length = 0
 
                 line = header_fix(line)
                 previous_header = line
-                linesplit = line.strip().split("_")  ## splits fasta headers by
+                linesplit = line.strip().split("_")  # splits fasta headers by
                 # _ character
                 species = "_".join(linesplit[3:5])
                 # if statements to handle some exceptions already found
@@ -276,20 +299,22 @@ def master_fasta(fastas, output_tag, mother_directory):
                 # fasta header, since database contain them with CDS in string
                 if "cds" in line.lower():
                     truePlasmid = False
-                    continue
+                    reason = "cds"
+                   #continue
                 elif "origin" in line.lower():
                     truePlasmid = False
-                    continue
+                    reason = "origin"
+                    #continue
                 else:
                     truePlasmid = True
 
             else:
-                ## had to add a method to remove \n characters from the
+                # had to add a method to remove \n characters from the
                 # counter for sequence length
-                if truePlasmid:
-                    length += len(line.replace("\n", ""))  ## necessary since
-                            # fasta sequences may be spread in multiple lines
-                    previous_sequence.append(line)
+                #if truePlasmid:
+                length += len(line.replace("\n", ""))  # necessary since
+                # fasta sequences may be spread in multiple lines
+                previous_sequence.append(line)
 
             # writes line to file
             # if truePlasmid:
@@ -298,7 +323,12 @@ def master_fasta(fastas, output_tag, mother_directory):
     # used for last instance of all loops
     if accession in sequence_info:
         print(accession + " - duplicated entry")
-
+        remove_seq_out.write("\t".join([
+            previous_header.replace("\n", ""),
+            str(length),
+            "duplicated",
+            filename
+        ]))
     else:
         if truePlasmid and accession:
             sequence_info[accession] = (species, length,
@@ -309,15 +339,15 @@ def master_fasta(fastas, output_tag, mother_directory):
 
             length_dict[accession] = length
 
-
     # writes to length file
     length_json = open(os.path.join(mother_directory, "length_{}.json".format(
         output_tag)), "w")
     length_json.write(json.dumps(length_dict))
     length_json.close()
 
+    remove_seq_out.close()
     master_fasta.close()
-    ## writes a species list to output file
+    # writes a species list to output file
     species_output.write("\n".join(str(i) for i in list(set(all_species))))
     species_output.close()
     return out_file, sequence_info, all_species
@@ -895,6 +925,7 @@ def main():
     main_fasta, sequence_info, all_species = master_fasta(fastas, output_tag,
                                              mother_directory)
 
+    return
     #########################
     ### genera block here ###
     #########################
