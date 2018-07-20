@@ -87,13 +87,13 @@ def index():
 @app.route("/test")
 def main_summary():
     return repetitive_function(
-        "db_app/static/json/import_to_vivagraph_v1.4.1.json"
+        "db_app/static/json/import_to_vivagraph.json"
     )
 
 
 @app.route("/fullDS")
 def full_ds():
-    return repetitive_function("db_app/static/json/filtered_v1.4.1.json")
+    return repetitive_function("db_app/static/json/filtered.json")
 
 
 @app.route("/taxa")
