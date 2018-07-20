@@ -202,16 +202,16 @@ def master_fasta(fastas, output_tag, mother_directory):
 
     """
 
-    sequences_not_to_remove = [
-
-    ]
-    """
-    A list with the sequences that shouldn't be removed by the keywords "cds"
-    and "origin". This require that we already know which ones should not be
-    removed. So it is a good idea to let the script run until this step first
-    each time the database is updated. Using the search
-    '--search-sequences-to-remove' option.
-    """
+    # sequences_not_to_remove = [
+    #
+    # ]
+    # """
+    # A list with the sequences that shouldn't be removed by the keywords "cds"
+    # and "origin". This require that we already know which ones should not be
+    # removed. So it is a good idea to let the script run until this step first
+    # each time the database is updated. Using the search
+    # '--search-sequences-to-remove' option.
+    # """
 
     # initiates output for statistics of removed files
     remove_seq_out = open(os.path.join(mother_directory,
@@ -274,30 +274,30 @@ def master_fasta(fastas, output_tag, mother_directory):
                             # after appending new length to dicts reset lengths
 
                         if not truePlasmid:
-                            # force sequence to be added although truePlasmid
-                            # is false. This because it is in a list that will
-                            # bypass this filter
-                            if sequences_not_to_remove:
-                                sequence_info[accession] = (species, length,
-                                                           plasmid_name)
-                                # dict at the beginning of each new entry
-                                master_fasta.write(previous_header)
-                                master_fasta.write("".join(previous_sequence))
-
-                                previous_sequence = []
-
-                                length_dict[accession] = length
-
-                            # if it is not in this list then the entry needs to
-                            # be removed from fasta file and therefore from
-                            # patlas.
-                            else:
-                                remove_seq_out.write("\t".join([
-                                    previous_header.replace("\n", ""),
-                                    str(length),
-                                    reason,
-                                    filename
-                                ]) + "\n")
+                            # # force sequence to be added although truePlasmid
+                            # # is false. This because it is in a list that will
+                            # # bypass this filter
+                            # if accession in sequences_not_to_remove:
+                            #     sequence_info[accession] = (species, length,
+                            #                                plasmid_name)
+                            #     # dict at the beginning of each new entry
+                            #     master_fasta.write(previous_header)
+                            #     master_fasta.write("".join(previous_sequence))
+                            #
+                            #     previous_sequence = []
+                            #
+                            #     length_dict[accession] = length
+                            #
+                            # # if it is not in this list then the entry needs to
+                            # # be removed from fasta file and therefore from
+                            # # patlas.
+                            # else:
+                            remove_seq_out.write("\t".join([
+                                previous_header.replace("\n", ""),
+                                str(length),
+                                reason,
+                                filename
+                            ]) + "\n")
 
                         # resets sequence length for every >
                         length = 0
@@ -326,7 +326,8 @@ def master_fasta(fastas, output_tag, mother_directory):
 
                 # added this if statement to check whether CDS is present in
                 # fasta header, since database contain them with CDS in string
-                if "cds" in line.lower():
+                if "cds" in line.lower() and line.lower().count("cds") <= 1 \
+                        and "plasmid" not in line.lower():
                     truePlasmid = False
                     reason = "cds"
                    #continue
