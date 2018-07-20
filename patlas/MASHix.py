@@ -267,8 +267,6 @@ def master_fasta(fastas, output_tag, mother_directory):
                             master_fasta.write(previous_header)
                             master_fasta.write("".join(previous_sequence))
 
-                            previous_sequence = []
-
                             length_dict[accession] = length
 
                             # after appending new length to dicts reset lengths
@@ -285,6 +283,8 @@ def master_fasta(fastas, output_tag, mother_directory):
                         # resets sequence length for every >
                         length = 0
 
+                # empties sequence
+                previous_sequence = []
                 line = header_fix(line)
                 previous_header = line
                 linesplit = line.strip().split("_")  # splits fasta headers by
