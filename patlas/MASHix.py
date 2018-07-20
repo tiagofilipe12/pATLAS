@@ -274,24 +274,7 @@ def master_fasta(fastas, output_tag, mother_directory):
                             # after appending new length to dicts reset lengths
 
                         if not truePlasmid:
-                            # # force sequence to be added although truePlasmid
-                            # # is false. This because it is in a list that will
-                            # # bypass this filter
-                            # if accession in sequences_not_to_remove:
-                            #     sequence_info[accession] = (species, length,
-                            #                                plasmid_name)
-                            #     # dict at the beginning of each new entry
-                            #     master_fasta.write(previous_header)
-                            #     master_fasta.write("".join(previous_sequence))
-                            #
-                            #     previous_sequence = []
-                            #
-                            #     length_dict[accession] = length
-                            #
-                            # # if it is not in this list then the entry needs to
-                            # # be removed from fasta file and therefore from
-                            # # patlas.
-                            # else:
+
                             remove_seq_out.write("\t".join([
                                 previous_header.replace("\n", ""),
                                 str(length),
@@ -341,7 +324,6 @@ def master_fasta(fastas, output_tag, mother_directory):
             else:
                 # had to add a method to remove \n characters from the
                 # counter for sequence length
-                #if truePlasmid:
                 length += len(line.replace("\n", ""))  # necessary since
                 # fasta sequences may be spread in multiple lines
                 previous_sequence.append(line)
