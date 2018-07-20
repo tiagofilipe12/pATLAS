@@ -257,9 +257,18 @@ Note: Yes people like to give interesting names to bacteria...
 2) Extract fasta from tar.gz
 3) Download and extract [NCBI taxonomy](ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz),
 which will be fed to pATLAS.
-4) run [MASHix.py](#mashixpy) - the output will include a filtered
+4) Clone this repository:
+```
+git clone https://github.com/tiagofilipe12/pATLAS
+```
+5) Configure the database:
+```
+createdb <database_name>
+pATLAS/patlas/db_manager/db_create.py <database_name>
+```
+6) run [MASHix.py](#mashixpy) - the output will include a filtered
 fasta file (`master_fasta_*.fas`).
-5) run [ABRicate](https://github.com/tseemann/abricate), with CARD,
+7) run [ABRicate](https://github.com/tseemann/abricate), with CARD,
 ResFinder, PlasmidFinder, VFDB databases.
 ```
 # e.g.
@@ -268,16 +277,16 @@ abricate --db resfinder <master_fasta*.fas> > abr_resfinder.tsv
 abricate --db vfdb <master_fasta*.fas> > abr_vfdb.tsv
 abricate --db plasmidfinder <master_fasta*.fas> > abr_plasmidfinder.tsv
 ```
-6) Download the [card index](https://card.mcmaster.ca/download/0/broadstreet-v2.0.2.tar.gz)
+8) Download the [card index](https://card.mcmaster.ca/download/0/broadstreet-v2.0.2.tar.gz)
 necessary for the abricate2db.py script (aro_index.csv).
-7) run [abricate2db.py](abricate2dbpy) - using all the previous tsv as
+9) run [abricate2db.py](#abricate2dbpy) - using all the previous tsv as
 input.
 ```
 # e.g.
 abricate2db.py -i abr_plasmidfinder.tsv -db plasmidfinder \
     -id 80 -cov 90 -csv aro_index.csv -db_psql <database_name>
 ```
-8) [dump database to a sql file](#database-export).
+10) [dump database to a sql file](#database-export).
 
 ### Automation of this steps
 
@@ -314,14 +323,15 @@ git clone https://github.com/tiagofilipe12/pATLAS
 ```
 createdb <your_database>
 ```
-5) Then execute the script `run.py`
+5) [load the generated sql file](#database-import)
+6) Then execute the script `run.py`
 ```
 cd pATLAS/patlas/db_manager
 ./run.py <your_database>
 ```
 Note: the database name is utterly important to properly say to the
 frontend where to get the data.
-6) Go to `127.0.0.1:5000`.
+7) Go to `127.0.0.1:5000`.
 
 ### Optimization of the resources usage by the web page
 
