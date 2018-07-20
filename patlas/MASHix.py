@@ -256,7 +256,7 @@ def master_fasta(fastas, output_tag, mother_directory):
                         remove_seq_out.write("\t".join([
                             previous_header.replace("\n", ""),
                             str(length),
-                            "duplicate",
+                            "duplicated",
                             filename
                         ]) + "\n")
                     else:
