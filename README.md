@@ -12,7 +12,8 @@
 
 # Description
 
-[Plasmid Atlas](http://www.patlas.site) is a web-base tool that empowers researchers to easily and rapidly access
+[Plasmid Atlas](http://www.patlas.site) is a web-base tool that empowers
+researchers to easily and rapidly access
 information related with plasmids present in `NCBI's refseq` database.
 In pATLAS each node (or circle) represents
 a plasmid and each link between two plasmids means that those two plasmids
@@ -30,19 +31,16 @@ well as facilitate the access to that metadata.
 If are interested in learning how to use pATLAS, please refer to
 [gitbook documentation](https://www.gitbook.com/book/tiagofilipe12/patlas/details).
 
-This README is a compilation of how to manage pATLAS back-end and front-end.
-So, do not refer to this README to use pATLAS.
-
 ---
 
 # Development
 
 ## Dependencies
 
-* **Mash** - You can download mash version 2.0.0 directly here:
+* **Mash** (2.0) - You can download mash version 2.0.0 directly here:
 [linux](https://github.com/marbl/Mash/releases/download/v2.0.0/mash-Linux64-v1.1.1.tar.gz) and [OSX](https://github.com/marbl/Mash/releases/download/v1.1.1/mash-OSX64-v1.1.1.tar.gz). Other releases were not tested but may be downloaded in Mash git [releases page](https://github.com/marbl/Mash/releases).
 
-* **Postgresql** - This script uses Postgres database to store the database:
+* **Postgresql** (>= 10.0) - This script uses Postgres database to store the database:
 [releases page](https://www.postgresql.org/download/)
 
 * To install all other dependencies just run: _pip install -r requirements.txt_
@@ -60,28 +58,51 @@ Note that it reads multifastas, i.e., each header in fasta is a reference sequen
 ##### Main options:
 
 ```
-'-i','--input_references' - 'Provide the input fasta files to parse. This will inputs will be joined in a master fasta.'
+'-i','--input_references' - 'Provide the input fasta files to parse.
+                            This will inputs will be joined in a
+                            master fasta.'
 
 '-o','--output' - 'Provide an output tag'
 
 '-t', '--threads' - 'Provide the number of threads to be used'
+
+'-db', '--database_name' - 'This argument must be provided as the last
+argument. It states the database name that must be used.'
 ```
 
 ##### MASH related options:
 ```
-'-k','--kmers' - 'Provide the number of k-mers to be provided to mash sketch. Default: 21'
+'-k','--kmers' - 'Provide the number of k-mers to be provided to mash
+                sketch. Default: 21'
 
-'-p','--pvalue' - 'Provide the p-value to consider a distance significant. Default: 0.05'
+'-p','--pvalue' - 'Provide the p-value to consider a distance
+                significant. Default: 0.05'
 
-'-md','--mashdist' - 'Provide the maximum mash distance to be parsed to the matrix. Default:0.1'
+'-md','--mashdist' - 'Provide the maximum mash distance to be
+                    parsed to the matrix. Default:0.1'
 ```
 
 ##### Other options:
 
 ```
-'-no_rm', '--no-remove' - 'Specify if you do not want to remove the output concatenated fasta.'
+'-no_rm', '--no-remove' - 'Specify if you do not want to remove the
+                        output concatenated fasta.'
 
-'-hist', '--histograms' - 'Checks the distribution of distances values ploting histograms.'
+'-hist', '--histograms' - 'Checks the distribution of distances
+                        values ploting histograms.'
+
+'-non', '--nodes_ncbi' - 'specify the path to the file containing
+                        nodes.dmp from NCBI'
+
+'-nan', '--names_ncbi' - 'specify the path to the file containing
+                        names.dmp from NCBI'
+
+'--search-sequences-to-remove' - 'this option allows to only run the
+                                 part of the script that is required
+                                 to generate the filtered fasta.
+                                 Allowing for instance to debug
+                                 sequences that shoudn't be removed
+                                 using 'cds' and 'origin' keywords'.
 ```
 
 ---
@@ -137,9 +158,17 @@ on the input type provided.
 "-i", "--input_file" - "Provide the abricate file to parse to db.
                         It can accept more than one file in the case of
                         resistances."
+
+"-db_psql", "--database_name" - "his argument must be provided as the
+                                last argument. It states the database
+                                name that must be used."
+
 "-db", "--db" - "Provide the db to output in psql models."
+
 "-id", "--identity" - "minimum identity to be reported to db"
+
 "-cov", "--coverage" - "minimum coverage do be reported to db"
+
 "-csv", "--csv" - "Provide card csv file to get correspondence between
                     DNA accessions and ARO accessions. Usually named
                     aro_index.csv. By default this file is already
@@ -163,15 +192,15 @@ and list of species that other users may want to skip
                         provide a file with a listof species. Each
                         speciesshould be in each line.
 -non NODES_FILE, --nodes_ncbi NODES_FILE
-                        specify the path to the file containing nodes.dmp from
-                        NCBI
+                        specify the path to the file containing
+                        nodes.dmp from NCBI
 -nan NAMES_FILE, --names_ncbi NAMES_FILE
-                        specify the path to the file containing names.dmp from
-                        NCBI
+                        specify the path to the file containing
+                        names.dmp from NCBI
 -w, --weirdos         This option allows the userto add a checks for
-                        weirdentries. This is mainly usedto parse the plasmids
-                        refseq, so if you do not want this to be used, use
-                        this option
+                        weirdentries. This is mainly usedto parse the
+                        plasmids refseq, so if you do not want this to
+                        be used, use this option.
 
 ```
 
@@ -215,3 +244,74 @@ following:
     * "S pyogenes"
 
 Note: Yes people like to give interesting names to bacteria...
+
+# pATLAS API
+
+## Schematics of the pATLAS database creation
+
+![Workflow db creation](docs/gitbook/images/pATLAS_schematics.png)
+
+## Workflow for database creation
+
+1) Download plasmid sequences available in [NCBI refseq](ftp://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/)
+2) Extract fasta from tar.gz
+3) Download and extract [NCBI taxonomy](ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz),
+which will be fed to pATLAS.
+4) run [MASHix.py](#mashixpy) - the output will include a filtered
+fasta file (`master_fasta_*.fas`).
+5) run [ABRicate](https://github.com/tseemann/abricate), with CARD,
+ResFinder, PlasmidFinder, VFDB databases.
+```
+# e.g.
+abricate --db card <master_fasta*.fas> > abr_card.tsv
+abricate --db resfinder <master_fasta*.fas> > abr_resfinder.tsv
+abricate --db vfdb <master_fasta*.fas> > abr_vfdb.tsv
+abricate --db plasmidfinder <master_fasta*.fas> > abr_plasmidfinder.tsv
+```
+6) Download the [card index](https://card.mcmaster.ca/download/0/broadstreet-v2.0.2.tar.gz)
+necessary for the abricate2db.py script (aro_index.csv).
+7) run [abricate2db.py](abricate2dbpy) - using all the previous tsv as
+input.
+```
+# e.g.
+abricate2db.py -i abr_plasmidfinder.tsv -db plasmidfinder \
+    -id 80 -cov 90 -csv aro_index.csv -db_psql <database_name>
+```
+8) [dump database to a sql file](#database-export).
+
+### Automation of this steps
+
+This steps are fully automated in the nextflow pipeline
+[pATLAS-db-creation](https://github.com/tiagofilipe12/pATLAS-db-creation).
+
+### Creating a custom version of pATLAS
+
+If you require to add your own plasmids to pATLAS database
+without asking to add them to [pATLAS website](www.patlas.site),
+you can provide custom fasta files when building the database using
+the `-i` option of [MASHix.py](#mashixpy).
+Then follow the steps [described above](#workflow-for-database-creation).
+
+## Run pATLAS locally
+
+pATLAS can be run locally if you have PostgreSQL installed and
+configured. After, you just need to
+
+1) [Create your custom database version](#creating-a-custom-version-of-pATLAS)
+ or [generate the default pATLAS database](#workflow-for-database-creation)
+2) Create the database that the front end will run:
+```
+createdb <your_database>
+```
+3) Clone this repository:
+```
+git clone https://github.com/tiagofilipe12/pATLAS
+```
+4) Then execute the script `run.py`
+```
+cd pATLAS/patlas/db_manager
+./run.py <your_database>
+```
+Note: the database name is utterly important to properly say to the
+frontend where to get the data.
+5) Go to `127.0.0.1:5000`.
