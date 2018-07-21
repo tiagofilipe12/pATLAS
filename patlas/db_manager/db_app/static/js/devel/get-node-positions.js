@@ -40,7 +40,12 @@ const getPositions = (g, layout) => {
 
   g.forEachNode( (node) => {
 
-    const position = layout.getNodePosition(node.id)
+    const vivagraphPosition = layout.getNodePosition(node.id)
+    // parses default position numbers to have only 2 decimal numbers
+    const position = {
+      "x": parseFloat(vivagraphPosition.x.toFixed(2)),
+      "y": parseFloat(vivagraphPosition.y.toFixed(2))
+    }
 
     masterJSON.nodes.push({
       "id": node.id,
@@ -55,9 +60,16 @@ const getPositions = (g, layout) => {
     const currentHash = makeHash(link.fromId, link.toId)
       // gets size of fromId and toId nodes and calculates the ratio between
       // them
-    const fromSize = parseFloat(g.getNode(link.fromId).data.seqLength.split("</span>").slice(-1)[0])
-    const toSize = parseFloat(g.getNode(link.toId).data.seqLength.split("</span>").slice(-1)[0])
-    const sizeRatio = Math.min(fromSize, toSize) / Math.max(fromSize, toSize)
+    const fromSize = parseFloat(
+        g.getNode(link.fromId).data.seqLength.split("</span>").slice(-1)[0]
+    )
+    const toSize = parseFloat(
+        g.getNode(link.toId).data.seqLength.split("</span>").slice(-1)[0]
+    )
+    // reduces size ratio to three decimal numbers
+    const sizeRatio = parseFloat(
+        (Math.min(fromSize, toSize) / Math.max(fromSize, toSize)).toFixed(3)
+    )
 
     if (hashStore.indexOf(currentHash) < 0) {
       masterJSON.links.push({

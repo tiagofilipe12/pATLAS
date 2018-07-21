@@ -38,7 +38,7 @@ abricate --db plasmidfinder <master_fasta*.fas> > abr_plasmidfinder.tsv
 8) Download the [card index](https://card.mcmaster.ca/download/0/broadstreet-v2.0.2.tar.gz)
 necessary for the abricate2db.py script (aro_index.csv).
 
-9) run [abricate2db.py](https://github.com/tiagofilipe12/pATLAS#abricate2dbpy) - using all the previous tsv as
+9) Update the git submodules (`git submodule update --init --recursive`) and run [abricate2db.py](https://github.com/tiagofilipe12/pATLAS#abricate2dbpy) - using all the previous tsv as
 input.
 ```
 # e.g.
