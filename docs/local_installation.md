@@ -1,7 +1,7 @@
 # Run pATLAS locally
 
 pATLAS can be run locally if you have PostgreSQL installed and
-configured. After, you just need to
+configured. After, you just need to:
 
 1) Clone this repository:
 ```
@@ -9,7 +9,7 @@ git clone https://github.com/tiagofilipe12/pATLAS
 ```
 
 2) [Create your custom database version](#creating-a-custom-version-of-pATLAS)
- or [generate the default pATLAS database](#database_creation.md)
+ or [generate the default pATLAS database](#database_creation.md).
 
 3) Make sure all the necessary files are in place.
     - by default pATLAS generates a `import_to_vivagraph.json` file in
@@ -26,7 +26,7 @@ createdb <your_database>
 
 5) [load the generated sql file](https://github.com/tiagofilipe12/pATLAS#database-import)
 
-6) Then execute the script `run.py`
+6) Then execute the script `run.py`.
 ```
 cd pATLAS/patlas/db_manager
 ./run.py <your_database>

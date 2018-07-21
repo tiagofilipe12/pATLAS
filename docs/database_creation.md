@@ -4,9 +4,9 @@
 
 ## Workflow for database creation
 
-1) Download plasmid sequences available in [NCBI refseq](ftp://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/)
+1) Download plasmid sequences available in [NCBI refseq](ftp://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/).
 
-2) Extract fasta from tar.gz
+2) Extract fasta from tar.gz.
 
 3) Download and extract [NCBI taxonomy](ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz),
 which will be fed to pATLAS.
@@ -22,7 +22,7 @@ createdb <database_name>
 pATLAS/patlas/db_manager/db_create.py <database_name>
 ```
 
-6) run [MASHix.py](https://github.com/tiagofilipe12/pATLAS#mashixpy) - the output will include a filtered
+6) run [MASHix.py](https://github.com/tiagofilipe12/pATLAS#mashixpy) - the output will include a filtered.
 fasta file (`master_fasta_*.fas`).
 
 7) run [ABRicate](https://github.com/tseemann/abricate), with CARD,
