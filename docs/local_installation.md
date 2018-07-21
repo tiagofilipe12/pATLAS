@@ -8,8 +8,8 @@ configured. After, you just need to:
 git clone https://github.com/tiagofilipe12/pATLAS
 ```
 
-2) [Create your custom database version](#creating-a-custom-version-of-pATLAS)
- or [generate the default pATLAS database](#database_creation.md).
+2) [Create your custom database version](database_creation.md#creating-a-custom-version-of-pATLAS)
+ or [generate the default pATLAS database](database_creation.md).
 
 3) Make sure all the necessary files are in place.
     - by default pATLAS generates a `import_to_vivagraph.json` file in
