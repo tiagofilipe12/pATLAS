@@ -12,12 +12,13 @@ git clone https://github.com/tiagofilipe12/pATLAS
  or [generate the default pATLAS database](database_creation.md).
 
 3) Make sure all the necessary files are in place.
-    - by default pATLAS generates a `import_to_vivagraph.json` file in
-    the folder `<tag_provided_to_o_flag>/results`. Place this file in the
-    `pATLAS/patlas/db_manager/db_app/static/json` folder.
-    - change session to read the new `import_to_vivagraph.json` file by
-    changing from `false` to `true` a variable named `devel` in
-    `pATLAS/patlas/db_manager/db_app/static/js/pATLASGlobals.js`
+
+- by default pATLAS generates a `import_to_vivagraph.json` file in
+  the folder `<tag_provided_to_o_flag>/results`. Place this file in the
+  `pATLAS/patlas/db_manager/db_app/static/json` folder.
+- change session to read the new `import_to_vivagraph.json` file by
+  changing from `false` to `true` a variable named `devel` in
+  `pATLAS/patlas/db_manager/db_app/static/js/pATLASGlobals.js`
 
 4) Create the database that the front end will run:
 ```
