@@ -7,13 +7,11 @@ const downloadTypeHandler = (accList) => {
   $.post("api/senddownload/", {"accessions": JSON.stringify(accList)},
     (data, status) => {
       if (status === "success") {
-        console.log(data)
-        console.log(window.location.hostname)
         // sets data to localhost instead of pATLAS when using local versions
         // otherwise maintains the request to patlas.site
         data = (window.location.hostname === "127.0.0.1") ?
             data.replace("http://www.patlas.site", "") : data
-          
+
         // populates the alert when the download is ready
         $("#fillDownloadAlert").html(
           `Your download is ready: <a href=${data} target='_blank' 
