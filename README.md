@@ -43,6 +43,8 @@ If are interested in learning how to use pATLAS, please refer to
 * **Postgresql** (>= 10.0) - This script uses Postgres database to store the database:
 [releases page](https://www.postgresql.org/download/)
 
+* **Python 3** and the respective **pip**.
+
 * To install all other dependencies just run: _pip install -r requirements.txt_
 
 ## Backend Scripts
@@ -261,14 +263,16 @@ which will be fed to pATLAS.
 ```
 git clone https://github.com/tiagofilipe12/pATLAS
 ```
-5) Configure the database:
+5) Install its [dependencies](#dependencies)
+
+6) Configure the database:
 ```
 createdb <database_name>
 pATLAS/patlas/db_manager/db_create.py <database_name>
 ```
-6) run [MASHix.py](#mashixpy) - the output will include a filtered
+7) run [MASHix.py](#mashixpy) - the output will include a filtered
 fasta file (`master_fasta_*.fas`).
-7) run [ABRicate](https://github.com/tseemann/abricate), with CARD,
+8) run [ABRicate](https://github.com/tseemann/abricate), with CARD,
 ResFinder, PlasmidFinder, VFDB databases.
 ```
 # e.g.
@@ -277,16 +281,16 @@ abricate --db resfinder <master_fasta*.fas> > abr_resfinder.tsv
 abricate --db vfdb <master_fasta*.fas> > abr_vfdb.tsv
 abricate --db plasmidfinder <master_fasta*.fas> > abr_plasmidfinder.tsv
 ```
-8) Download the [card index](https://card.mcmaster.ca/download/0/broadstreet-v2.0.2.tar.gz)
+9) Download the [card index](https://card.mcmaster.ca/download/0/broadstreet-v2.0.2.tar.gz)
 necessary for the abricate2db.py script (aro_index.csv).
-9) run [abricate2db.py](#abricate2dbpy) - using all the previous tsv as
+10) run [abricate2db.py](#abricate2dbpy) - using all the previous tsv as
 input.
 ```
 # e.g.
 abricate2db.py -i abr_plasmidfinder.tsv -db plasmidfinder \
     -id 80 -cov 90 -csv aro_index.csv -db_psql <database_name>
 ```
-10) [dump database to a sql file](#database-export).
+11) [dump database to a sql file](#database-export).
 
 ### Automation of this steps
 
