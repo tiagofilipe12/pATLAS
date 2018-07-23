@@ -27,7 +27,26 @@ createdb <your_database>
 
 5) [load the generated sql file](https://github.com/tiagofilipe12/pATLAS#database-import)
 
-6) Then execute the script `run.py`.
+6) Install frontend dependencies:
+
+```
+# change directory to static direcoty where `index.html` will look for
+# its depdendenies
+cd pATLAS/patlas/db_manager/db_app/static/
+# then install them (package.json is located in this directory)
+yarn install
+```
+
+7) Compile node modules so that the html can understand, using webpack:
+
+```
+# You can also user a local installation of webpack.
+# entry-point.js is the config file where all the imported modules are
+# called
+node_modules/webpack/bin/webpack.js entry-point.js
+```
+
+8) Then execute the script `run.py`.
 ```
 cd pATLAS/patlas/db_manager
 ./run.py <your_database>
@@ -35,7 +54,7 @@ cd pATLAS/patlas/db_manager
 Note: the database name is utterly important to properly say to the
 frontend where to get the data.
 
-7) Go to `127.0.0.1:5000`.
+9) Go to `127.0.0.1:5000`.
 
 ## Optimization of the resources usage by the web page
 
