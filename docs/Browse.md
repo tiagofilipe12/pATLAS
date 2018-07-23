@@ -82,11 +82,11 @@ shared between pairs of sequences and thus associated with each link.
 
 In this option you may select a multitude of taxa filters ranging from order
 to species. This will highlight with different colors each of the selected
-taxa. For instance, if you select _Borreliella afzelii_ and _Borreliella 
-garinii_, the plasmids identified in the each of the two species with be
-highlighted with different colors.
+taxa. For instance, if you select _Acinetobacter_ in the genus dropdown, the plasmids in which
+the host genus was _Acinetobacter_ will be highlighted.
 
-  ![](gitbook/images/taxa_sample.png)
+
+![](gitbook/images/taxa_twitter_patlas.gif)
 
 
 ## Annotation
