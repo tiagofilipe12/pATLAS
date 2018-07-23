@@ -60,4 +60,5 @@ when users are analyzing results. Given that `POST`s generate a unique
 hash, if for some reason a duplicated post is made it will not be added
 twice to the database. It will return the same url and the routing will
 properly handle the exception.
+
 2) Import results using the [import from file](Import.md) menus.

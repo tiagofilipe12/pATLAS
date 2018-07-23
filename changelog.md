@@ -9,6 +9,11 @@ removed by filters that remove sequences
 * Updated database with the latest ncbi refseq release
 (7/13/18, 5:27:00 AM)
 
+## New features
+
+* Now local installations of pATLAS can download data rather than making
+a request to patlas.site, which will fail.
+
 ## Version 1.5.0
 
 ### Database
