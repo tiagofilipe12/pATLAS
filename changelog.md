@@ -4,8 +4,7 @@
 
 ### Database
 
-* `MASHix.py` now has an option that prevent sequences from being
-removed by filters that remove sequences
+* `MASHix.py` now has new filters to remove genes from plasmid database
 * Updated database with the latest ncbi refseq release
 (7/13/18, 5:27:00 AM)
 
