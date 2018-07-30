@@ -1,5 +1,42 @@
 # Run pATLAS locally
 
+## Docker compose (recommended)
+
+You can run pATLAS locally without much requirements by using
+[patlas-compose](https://github.com/bfrgoncalves/patlas-compose). This
+will automatically handle the installation of the version 1.5.2 of pATLAS
+and launch the service in a local instance. For that you just require:
+
+- [docker](https://docs.docker.com/install/#supported-platforms)
+- [docker-compose](https://docs.docker.com/compose/install/)
+
+Then, follow this simple steps:
+
+- Clone the repository [patlas-compose](https://github.com/bfrgoncalves/patlas-compose).
+
+```
+git clone https://github.com/bfrgoncalves/patlas-compose
+```
+
+- Enter the *patlas-compose* folder
+
+```
+cd patlas-compose
+```
+
+- Launch the compose:
+
+```
+docker-compose up
+```
+
+- Wait for the line `* Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+` to show up, meaning that the service is now running.
+
+- Access on `127.0.0.1:5000` or `0.0.0.0:5000`.
+
+## From scratch (alternatively)
+
 pATLAS can be run locally if you have PostgreSQL installed and
 configured. After, you just need to:
 
@@ -68,7 +105,7 @@ frontend where to get the data.
 
 10) Go to `127.0.0.1:5000`.
 
-## Optimization of the resources usage by the web page
+# Optimization of the resources usage by the web page
 
 Using the `devel = true` isn't very efficient, so you can allow the
 force directed graph to render in a `devel = true` session, then when
