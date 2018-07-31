@@ -2,6 +2,7 @@
 #######################
 .idea/
 .vscode/
+patlas/db_manager/db_app/static/node_modules
 
 patlas/db_manager/db_app/templates/*.json
 patlas/db_manager/db_app/templates/deprecated/
@@ -11,3 +12,7 @@ patlas/db_manager/db_app/__pycache__/
 patlas/db_manager/plasmid_db/
 patlas/utils/__pychache__
 *.pyc
+patlas/db_manager/db_app/static/*.svg
+patlas/db_manager/db_app/static/package-lock.json
+patlas/db_manager/db_app/static/yarn.lock
+patlas/db_manager/db_app/static/*.log
