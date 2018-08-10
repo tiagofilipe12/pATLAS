@@ -49,7 +49,7 @@ well as facilitate the access to that metadata.
 # Documentation
 
 If are interested in learning how to use pATLAS, please refer to
-[gitbook documentation](https://www.gitbook.com/book/tiagofilipe12/patlas/details).
+[gitbook documentation](https://patlas.gitbook.io/docs).
 
 ---
 
