@@ -158,7 +158,7 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
 
         const resHandle = await resRequest(g, graphics, renderer, gene, currentColor)
         resHandle.map( (request) => {
-          if (tempPageReRun === false) {
+          if (tempPageReRun === false && !listGiFilter.includes(request.plasmid_id)) {
             listGiFilter.push(request.plasmid_id)
           }
         })
@@ -168,6 +168,7 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
     // raise error message for the user
     document.getElementById("alertId").style.display = "block"
   }
+
   // if legend is requested then execute this!
   // shows legend
   // if (legendInst === true) {
