@@ -81,16 +81,23 @@ const controlFiltersSameLevel = (lastTaxaSelector, e, arrayOfSelectors) => {
       }
     }
     lastTaxaSelector = e.target.id
-  } else {
-    // otherwise just remove the disabled property.
-    lastTaxaSelector = false
+  } 
+
+  // a reduced to check if arrayOfSelectors is getting empty or not
+  const listCheck = arrayOfSelectors.reduce( (total, selector) => 
+    total + $(`#${selector}`).selectpicker("val").length, 0
+  )
+
+  // if listCheck is 0 then any dropdown can be selected again resseting 
+  // lastTaxaSelector to false
+  if (listCheck === 0) {
     for (const selector of arrayOfSelectors) {
       $(`#${selector}`).prop("disabled", false)
     }
+    return false
+  } else {
+    return lastTaxaSelector
   }
-
-  // returns the state of lastTaxaSelector
-  return lastTaxaSelector
 }
 
 /**
