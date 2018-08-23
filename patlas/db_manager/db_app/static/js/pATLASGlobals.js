@@ -153,6 +153,11 @@ const getArrayVir = () => {
  */
 let listGiFilter = []
 
+
+/**
+ * List used to control if the plots have already been displayed for that list
+ * @type {Array}
+ */
 let reloadAccessionList = []
 
 // variable to store previous list of accessions that iterate through table
