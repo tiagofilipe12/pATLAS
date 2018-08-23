@@ -2109,6 +2109,7 @@ const onLoad = () => {
     listGi = []
     listLengths = []
     listGiFilter = []
+    reloadAccessionList = []
 
     resetAllNodes(graphics, g, nodeColor, renderer)
 
