@@ -246,7 +246,7 @@ const onLoad = () => {
 
   } // closes renderGraph
 
-  const init = () => {
+  const init = async () => {
     if (firstInstace === true) {
       // the next if statement is only executed on development session, it
       // is way less efficient than the non development session.
@@ -299,15 +299,16 @@ const onLoad = () => {
         // this renders the graph when not in development session
         // this is a more efficient implementation which takes a different
         // file for loading the graph.
-        getArray.done(function (json) {
-          graphSize = json.nodes.length
-          // sequentially runs the following functions
-          // this in fact runs sequentially
-          addAllNodes(g, json.nodes, layout)
-          addAllLinks(g, json.links)
-          renderGraph(graphics)
-          parseRequestResults(requestResults)
-        })
+        const getArrayResponse = await (
+          await fetch("http://127.0.0.1:5000/fullDS")).json()
+
+        graphSize = getArrayResponse.nodes.length
+
+        await addAllNodes(g, getArrayResponse.nodes, layout)
+        await addAllLinks(g, getArrayResponse.links)
+        await renderGraph(graphics)
+        await parseRequestResults(requestResults)
+
       }
     } else {
       // storeMasterNode is empty in here
