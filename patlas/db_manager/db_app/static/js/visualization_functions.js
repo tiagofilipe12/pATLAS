@@ -300,7 +300,7 @@ const onLoad = () => {
         // this is a more efficient implementation which takes a different
         // file for loading the graph.
         const getArrayResponse = await (
-          await fetch("http://127.0.0.1:5000/fullDS")).json()
+          await fetch("/fullDS")).json()
 
         graphSize = getArrayResponse.nodes.length
 
