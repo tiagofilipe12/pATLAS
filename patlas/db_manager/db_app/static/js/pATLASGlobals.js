@@ -51,7 +51,7 @@ let clickedPopupButtonVir = false
 let areaSelection = false
 
 
-const getArray = (devel === true) ? $.getJSON("/test") : $.getJSON("/fullDS")
+const getArray = (devel === true) ? $.getJSON("/test") : null
 // an array to store bootstrap table related list for downloads and coloring
 // nodes on submit
 let bootstrapTableList = []
