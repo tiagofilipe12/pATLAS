@@ -316,19 +316,17 @@ const onLoad = () => {
         const readReload = Object.values(readFilejson)[readIndex]
         $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
           .show()
-        requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
+        requestDBList = await requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, listGi, readReload,
           assemblyJson)
       } else {
         // sets pageReRun to true
         pageReRun = true
-        $("#fileNameDiv").html(Object.keys(assemblyJson)[readIndex])
-          .show()
         // used when no reads are used to filter
-        requestDBList = requesterDB(g, listGiFilter, counter, renderGraph,
-          graphics, reloadAccessionList, renderer, listGi, false,
-          assemblyJson)
+        requestDBList = await requesterDB(g, listGiFilter, counter, renderGraph,
+          graphics, reloadAccessionList, renderer, listGi, false, assemblyJson)
       }
+
       listGiFilter = requestDBList[0] // list with the nodes used to filter
       reloadAccessionList = requestDBList[1] //list stores all nodes present
       // this listGi isn't the same as the initial but has information on
@@ -336,9 +334,9 @@ const onLoad = () => {
 
       // forces renderer after a while, because for some reason renderer doesn't
       // always occur after re_run
-      setTimeout( () => {
-        renderer.rerender()
-      }, 1000)
+      // setTimeout( () => {
+        // renderer.rerender()
+      // }, 1000)
     }
   }
 

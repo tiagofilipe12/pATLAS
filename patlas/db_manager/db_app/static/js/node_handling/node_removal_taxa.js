@@ -247,7 +247,6 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
             "0x" + "#fa5e00".replace("#", ""))
           // color for area selection
         }
-
       })
 
   }
