@@ -324,13 +324,13 @@ def show_highlighted_results():
                     type_obj = type(request_json["type"])
                     if type_obj is not str:
                         return "The value provided through 'type' entry must " \
-                               "be a string"
+                               "be a string", 400
 
                     # check the type of 'samples' key. It should be a dict.
                     sample_obj = type(request_json["samples"])
                     if sample_obj is not dict:
                         return "The value provided through 'sample' entry " \
-                               "must be a dictionary / JSON object."
+                               "must be a dictionary / JSON object.", 400
 
                     # checks if this type is present in the authorized_types
                     # list
@@ -338,13 +338,14 @@ def show_highlighted_results():
                         return "'{}' is not a valid type. Valid types are " \
                                "{}.".format(request_json["type"],
                                             " or ".join(authorized_types)
-                                            )
+                                            ), 400
                 else:
-                    return "No 'samples' field was provided in the JSON object."
+                    return "No 'samples' field was provided in the JSON " \
+                           "object.", 400
             else:
                 # if type doesn't exist then pATLAS will not be able to decide
                 # which mode to use in order to display results
-                return "No 'type' field was provided in the JSON object."
+                return "No 'type' field was provided in the JSON object.", 400
 
             # converts dict to a string so it can be more easily hashed, since
             # nested dicts can be trickier to hash.
@@ -378,7 +379,8 @@ def show_highlighted_results():
             # if a dictionary is not found then return a warning to the end
             # application
             return "ERROR: attempted to hash something that is not a JSON. " \
-                   "POST request must have a JSON format suitable for pATLAS."
+                   "POST request must have a JSON format suitable for " \
+                   "pATLAS.", 400
 
 
 @app.route("/downloads/", methods=["GET"])
@@ -421,4 +423,4 @@ def download_sequences():
                                     str(abs(hash("".join(request.args["query"]))))
                             )})
         else:
-            return "unique id is not valid."
+            return "unique id is not valid.", 400
