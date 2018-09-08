@@ -39,7 +39,8 @@ getCentralNode*/
 const onLoadWelcome = (callback) => {
   // forces welcomeModal to be the first thing the user sees when the page
   // is loaded
-  $("#welcomeModal").modal("show")
+  (requestResults === false) && ($("#welcomeModal").modal("show"))
+
   //then onLoad is run as a callback
   // for modal to show before page potential page freeze I made it wait half
   // a second before starting the load
