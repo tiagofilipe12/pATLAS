@@ -1,4 +1,4 @@
-/*globals assemblyJson, mashJson, readFilejson, fileMode*/
+/*globals assemblyJson, mashJson, readFilejson, fileMode, pageReload*/
 
 /**
  * Function that parses the results coming from external requests. If the
@@ -31,7 +31,6 @@ const parseRequestResults = (requestResults) => {
     // to select cutoffs and options associated with the type of import
     $("#welcomeModal").modal("hide")
     $("#importRequest").modal()
-
   }
   // else statement is not required because it is used for the default page
   // render

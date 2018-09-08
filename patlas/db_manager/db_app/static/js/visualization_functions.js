@@ -335,9 +335,9 @@ const onLoad = () => {
 
       // forces renderer after a while, because for some reason renderer doesn't
       // always occur after re_run
-      // setTimeout( () => {
-        // renderer.rerender()
-      // }, 1000)
+      setTimeout( () => {
+        renderer.rerender()
+      }, 1000)
     }
   }
 
@@ -1639,8 +1639,9 @@ const onLoad = () => {
       promises.push(fileName)
     })
 
-    Promise.all(promises).then( () => {
-      mappingHighlight(g, graphics, renderer)
+    Promise.all(promises).then( async () => {
+      await mappingHighlight(g, graphics, renderer)
+      await $("#reRunModalResults").modal("show")
     })
 
   })
@@ -1831,9 +1832,10 @@ const onLoad = () => {
     })
 
     // assures that all promises are fulfilled before executing everything else
-    Promise.all(promises).then( () => {
+    Promise.all(promises).then( async () => {
       readFilejson = parsedReadFileJson
-      mappingHighlight(g, graphics, renderer)
+      await mappingHighlight(g, graphics, renderer)
+      // await $("#reRunModalResults").modal("show")
     })
   })
 
@@ -2065,6 +2067,14 @@ const onLoad = () => {
     hideAllOtherPlots()
   })
 
+  $("#noRunRequests").unbind("click").bind("click", (e) => {
+    // if the page is in filter mode trigger the go back function,
+    // otherwise just dismiss the modal
+    if (firstInstace === false) {
+      $("#go_back").click()
+    }
+  })
+
 
   /**
    * Buttons that run the re run operation for the selected nodes. if reRunYes
@@ -2073,11 +2083,14 @@ const onLoad = () => {
    * is clicked only the selected nodes will be displayed in the filtered
    * network.
    */
-  $("#reRunYes, #reRunNo").unbind("click").bind("click", (e) => {
+  $("#reRunYes, #reRunNo, #reRunYesRequests, #reRunNoRequests").unbind("click")
+    .bind("click", (e) => {
+
+    $("#noRunRequests").hide()
 
     centralNode = false
 
-    getLinkedNodes = (e.target.id !== "reRunNo")
+    getLinkedNodes = (e.target.id.includes("reRunYes"))
 
     // resets areaSelection
     areaSelection = false
@@ -2110,6 +2123,10 @@ const onLoad = () => {
     listLengths = []
     listGiFilter = []
     reloadAccessionList = []
+
+    $("#noRunRequests").show()
+    // TODO this is a temporary fix to hide the sample name since imports from files still require function to be able to re add colors to nodes after this button click
+    $("#fileNameDiv").hide()
 
     resetAllNodes(graphics, g, nodeColor, renderer)
 
