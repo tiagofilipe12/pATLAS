@@ -37,16 +37,16 @@ getCentralNode*/
  * a delay of 1 sec.
  */
 const onLoadWelcome = (callback) => {
-  // forces welcomeModal to be the first thing the user sees when the page
-  // is loaded
-  (requestResults === false) && ($("#welcomeModal").modal("show"))
-
-  //then onLoad is run as a callback
-  // for modal to show before page potential page freeze I made it wait half
-  // a second before starting the load
-  setTimeout( () => {
+  // // forces welcomeModal to be the first thing the user sees when the page
+  // // is loaded
+  // (requestResults === false) && ($("#welcomeModal").modal("show"))
+  //
+  // //then onLoad is run as a callback
+  // // for modal to show before page potential page freeze I made it wait half
+  // // a second before starting the load
+  // setTimeout( () => {
     callback()
-  }, 1000)
+  // }, 1000)
 }
 
 
@@ -138,7 +138,7 @@ const onLoad = () => {
   const graphics = Viva.Graph.View.webglGraphics()
 
   //* Starts graphics renderer *//
-  const renderGraph = (graphics) => {
+  const renderGraph = async (graphics) => {
 
     //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader

@@ -77,6 +77,9 @@ let clickedHighchart = false
 
 let graphSize
 
+/**
+ * A variable that stores the total number of links
+ */
 // let totalNumberOfLinks
 
 /**

@@ -20,6 +20,7 @@ require("bootstrap-toggle")
 require("mousetrap")
 window.chroma = require("chroma-js")
 const Highcharts = window.Highcharts = require("highcharts")
+window.bluebirdPromise = require("bluebird")
 // Load modules after highcharts is loaded
 require("highcharts/modules/histogram-bellcurve")(Highcharts)
 require("highcharts/modules/heatmap")(Highcharts)

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "bluebird": "^3.5.2",
     "bootstrap": "3",
     "bootstrap-colorpicker": "^2.5.2",
     "bootstrap-select": "^1.13.1",
