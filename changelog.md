@@ -1,5 +1,19 @@
 # Changelog
 
+## Upcoming version
+
+### Database
+
+### Front end
+- Search for accession numbers now accept accession without version 
+(e.g NC_011413)
+- Import from file and requests now have an option to submit and filter 
+directly.
+
+### Performance
+- Performance of the page was significantly improved with the fix of issue #57
+- Welcome modal was temporarily hidden.
+
 ## Version 1.5.2
 
 ### Database

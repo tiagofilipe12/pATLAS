@@ -70,7 +70,8 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
  * data.
  * @param {Object} renderer - vivagraph object to render the graph.
  * @param {String}  query - the string with the accession number of the node
- * to be queried
+ * to be queried. Query string can be both in one of the following formats:
+ * e.g. NC_011413.1, NC_011413_1 or NC_011413
  * @param {Boolean|String} currentQueryNode - this variable may be a boolean
  * when there is no nodes queried before and the popup is closed. When,
  * there is already a popup set, this will have stored a string with the
@@ -80,16 +81,24 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
  */
 const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
 
-  const queriedNode = g.forEachNode((node) => {
+  let queriedMatch
+
+  const queriedNode = g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)
     const sequence = node.data.sequence.split(">")[3].split("<")[0]
     const x = nodeUI.position.x,
       y = nodeUI.position.y
-    if (sequence === query) {
+    // checks if query is equal to sequence or if the query is equal to the
+    // seuqence without the accession number
+    if (sequence === query ||
+      sequence.split("_").slice(0,2).join("_") === query) {
       // centers graph visualization in a given node, searching for gi
       renderer.moveTo(x, y)
       nodeUI.backupColor = nodeUI.color
       nodeUI.color = 0x900C3F
+      // assigns queriedMatch the sequence that hits the query in this if
+      // statement
+      queriedMatch = sequence
       // requests table for sequences metadata
       requestPlasmidTable(node, setupPopupDisplay)
       // also needs to reset previous node to its original color
@@ -101,17 +110,16 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
     }
   })
 
+  // check if there is a match for the queried node
   if (queriedNode !== true) {
     // if no query is returned then alert the user
     $("#alertId_search").show()
     window.setTimeout(() => { $("#alertId_search").hide() }, 5000)
+    return currentQueryNode
+  } else {
+    // if there is a match return the queriedMatch
+    return queriedMatch
   }
-  // if queriedNode is true then it mean that a match was found, otherwise
-  // it will return undefined
-  // then if queriedNode is set return query node to store as previous
-  // highlighted node
-  // otherwise returns currentQueryNode when wrong queries are made
-  return (queriedNode === true) ? query : currentQueryNode
 }
 
 

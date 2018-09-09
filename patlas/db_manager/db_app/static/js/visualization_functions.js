@@ -2251,12 +2251,14 @@ const onLoad = () => {
     $("#closePop").click()
 
     if (toggleStatus === false) {
+      // executed when searching the accession number
       const formvalueId = $("#formValueId").val()
       const query = (formvalueId === "") ? clickedHighchart :
         formvalueId.replace(".", "_")
 
       currentQueryNode = await centerToggleQuery(g, graphics, renderer, query,
         currentQueryNode)
+      console.log(currentQueryNode)
     } else {
       // executed for plasmid search
       currentQueryNode = await toggleOnSearch(g, graphics, renderer,
@@ -2300,6 +2302,7 @@ const onLoad = () => {
     xRangePlotList = []
 
     if (currentQueryNode !== false) {
+      console.log(graphics.getNodeUI(currentQueryNode))
       graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
     }
     currentQueryNode = false
