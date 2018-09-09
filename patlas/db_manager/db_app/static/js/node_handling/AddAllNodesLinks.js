@@ -1,4 +1,4 @@
-/*globals listLengths, listGi, list, totalNumberOfLinks, counter */
+/*globals listLengths, listGi, list, totalNumberOfLinks, counter, bluebirdPromise */
 
 const addAllNodes = (g, json, layout) => {
   // for (const i in json) {
