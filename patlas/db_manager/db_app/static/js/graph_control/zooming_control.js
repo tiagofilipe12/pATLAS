@@ -5,11 +5,11 @@
  * @param {Object} renderer - stores a series of functions related with
  * vivagraph renderer
  */
-const zoomOut = (desiredScale, currentScale, renderer) => {
+const zoomOutPatlas = (desiredScale, currentScale, renderer) => {
   if (desiredScale < currentScale) {
     currentScale = renderer.zoomOut()
     setTimeout( () => {
-      zoomOut(desiredScale, currentScale, renderer)
+      zoomOutPatlas(desiredScale, currentScale, renderer)
     }, 16)
   }
 }
@@ -26,5 +26,5 @@ const defaultZooming = (layout, renderer) => {
   const graphSize = Math.min(graphRect.x2 - graphRect.x1, graphRect.y2 - graphRect.y1)
   const screenSize = Math.min(document.body.clientWidth, document.body.clientHeight)
   const desiredScale = screenSize / graphSize
-  zoomOut(desiredScale, 1, renderer)
+  zoomOutPatlas(desiredScale, 1, renderer)
 }

@@ -170,7 +170,6 @@ const onLoad = () => {
     // computational intensive for old computers
     renderer.pause()
 
-
     //* * Loading Screen goes off **//
     $("#loading").hide()
     $("#couve-flor").css("visibility", "visible")
@@ -178,7 +177,6 @@ const onLoad = () => {
 
     // forces default zooming
     defaultZooming(layout, renderer)
-
 
     // used to center on the node with more links
     // this is used to skip if it is a re-run button execution
