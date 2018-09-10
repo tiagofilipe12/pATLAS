@@ -802,6 +802,8 @@ const onLoad = () => {
       hideAllOtherPlots()
       resetAllNodes(graphics, g, nodeColor, renderer)
 
+      selectedFilter = false
+
     }
   })
 

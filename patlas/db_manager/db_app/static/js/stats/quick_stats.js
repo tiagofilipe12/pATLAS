@@ -1,5 +1,6 @@
 /*globals colorNodes, areaSelection, previousTableList, Highcharts,
- arraysEqual, clickedHighchart, arraytByValue, associativeObj */
+ arraysEqual, clickedHighchart, arraytByValue, associativeObj,
+ currentQueryNode */
 
 //********//
 // PLOTS  //

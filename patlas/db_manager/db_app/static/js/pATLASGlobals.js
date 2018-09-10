@@ -109,7 +109,12 @@ let legendSliderControler = [
   "#virSubmit"
 ]
 
-let selectedFilter
+/**
+ * Variable that searches for the
+ * type {String | false}
+ */
+let selectedFilter = false
+
 let legendIndex = 0
 
 /**
