@@ -100,7 +100,7 @@
     left: 0;
     position: fixed;
     display: block;
-    opacity: 0.9;
+    /*opacity: 0.9;*/
     background-color: #fff;
     z-index: 99;
     text-align: center;
@@ -272,6 +272,10 @@
 
 #order_dropdown, #family_dropdown, #genus_dropdown, #species_dropdown,
 #famDropdown, #resDropdown, #cardDropdown, #virDropdown{
+    text-align: center;
+}
+
+.sampleDropdown{
     text-align: center;
 }
 
@@ -739,7 +743,7 @@ Careful when using this in other popovers in the future*/
     overflow-y: auto;
 }
 
-#uploadFileAssembly, #uploadFileMash, #uploadFileConsensus{
+#uploadFile, #uploadFileAssembly, #uploadFileMash, #uploadFileConsensus{
     margin-bottom: 5%;
 }
 

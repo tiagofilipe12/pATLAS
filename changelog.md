@@ -13,6 +13,7 @@ directly.
 ### Performance
 - Performance of the page was significantly improved with the fix of issue #57
 - Welcome modal was temporarily hidden.
+- Refactored `defaultZooming` function, now showing only the final zoom
 
 ## Version 1.5.2
 

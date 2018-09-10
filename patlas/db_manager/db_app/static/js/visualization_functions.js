@@ -138,7 +138,7 @@ const onLoad = () => {
   const graphics = Viva.Graph.View.webglGraphics()
 
   //* Starts graphics renderer *//
-  const renderGraph = async (graphics) => {
+  const renderGraph = (graphics) => {
 
     //** block #1 for node customization **//
     // first, tell webgl graphics we want to use custom shader
@@ -165,18 +165,21 @@ const onLoad = () => {
       preserveDrawingBuffer: true
     })
 
+    $("#couve-flor").css("visibility", "visible")
+
     renderer.run()
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
 
-    //* * Loading Screen goes off **//
-    $("#loading").hide()
-    $("#couve-flor").css("visibility", "visible")
-
-
     // forces default zooming
-    defaultZooming(layout, renderer)
+    defaultZooming(layout, graphics)
+
+    //* * Loading Screen goes off **//
+    setTimeout( () => {
+      renderer.rerender()
+      $("#loading").hide()
+    },100)
 
     // used to center on the node with more links
     // this is used to skip if it is a re-run button execution
@@ -2258,7 +2261,6 @@ const onLoad = () => {
 
       currentQueryNode = await centerToggleQuery(g, graphics, renderer, query,
         currentQueryNode)
-      console.log(currentQueryNode)
     } else {
       // executed for plasmid search
       currentQueryNode = await toggleOnSearch(g, graphics, renderer,
@@ -2302,7 +2304,6 @@ const onLoad = () => {
     xRangePlotList = []
 
     if (currentQueryNode !== false) {
-      console.log(graphics.getNodeUI(currentQueryNode))
       graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(currentQueryNode).backupColor
     }
     currentQueryNode = false

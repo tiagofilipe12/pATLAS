@@ -81,7 +81,13 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
  */
 const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
 
-  let queriedMatch
+  /**
+   * This variable will store the accession number with the version that will
+   * then be used to control if the popup is already open or not and to center
+   * on the queried node.
+   * @type {String|null}
+   */
+  let queriedMatch = null
 
   const queriedNode = g.forEachNode( (node) => {
     const nodeUI = graphics.getNodeUI(node.id)
@@ -89,7 +95,7 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
     const x = nodeUI.position.x,
       y = nodeUI.position.y
     // checks if query is equal to sequence or if the query is equal to the
-    // seuqence without the accession number
+    // sequence without the accession number
     if (sequence === query ||
       sequence.split("_").slice(0,2).join("_") === query) {
       // centers graph visualization in a given node, searching for gi
