@@ -458,22 +458,22 @@ const linkColoring = (g, graphics, renderer, mode, toggle) => {
 
     } else {
 
+      const userCutOff = 100 - parseFloat($("#formRatio").val())
+
       // used for "size" mode
       // checks if link has size ratio inside the specified value
-      if (100 - parseFloat($("#formRatio").val()) >= link.data.sizeRatio * 100) {
-        if (toggle === true) {
-          // stores nodes in array to remove after this loop
-          storeLinks.push(link)
-          promises.push(link)
-        } else {
-          // just colors the links within the selection
-          linkColor = $("#cp4Form").val().replace("#", "0x") + "FF"
-          linkUI.color = linkColor
-          promises.push(link)
-        }
+      if (userCutOff >= link.data.sizeRatio * 100 && toggle) {
+        // stores nodes in array to remove after this loop
+        storeLinks.push(link)
+        promises.push(link)
+      } else if (userCutOff < link.data.sizeRatio * 100 && !toggle){
+        // just colors the links within the selection
+        linkColor = $("#cp4Form").val().replace("#", "0x") + "FF"
+        linkUI.color = linkColor
+        promises.push(link)
       }
-
     }
+
   })
 
   Promise.all(promises).then( () => {
