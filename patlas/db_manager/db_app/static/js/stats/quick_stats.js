@@ -405,6 +405,9 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
 
   } else {
 
+    // resets threshold
+    currentQueryNode = false
+
     /**
      * Variable that converts all the values an object to floats and then sorts
      * them in ascending order.

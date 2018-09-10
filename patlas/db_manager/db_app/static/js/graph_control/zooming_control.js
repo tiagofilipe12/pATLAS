@@ -30,7 +30,7 @@ const defaultZooming = (layout, graphics) => {
   const scrollPoint = {
     x: document.body.clientWidth / 2,
     y: document.body.clientHeight / 2
-  };
+  }
   // the desired scale for the final zoom
   const desiredScale = screenSize / graphSize
   graphics.scale(desiredScale, scrollPoint)
