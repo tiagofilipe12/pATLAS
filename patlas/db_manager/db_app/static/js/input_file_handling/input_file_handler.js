@@ -55,16 +55,14 @@ const loadFilesToObj = async (files, textId) => {
       const reader = new FileReader()
 
       reader.onload = await function (f) {
-        arrayOfObj[fileName] = this.result
+        arrayOfObj[fileName] = reader.result
       }
 
       await reader.readAsText(file)
-
     }
   }
 
-  return arrayOfObj
-
+  return {arrayOfObj, arrayOfFiles}
 }
 
 
@@ -83,7 +81,10 @@ const handleFileSelect = (infileId, textId, callback) => {
     // change the color of the text inside input
     $(textId).css({"text-align": "center", "color": "#333333"})
 
-    loadFilesToObj(files, textId).then( (results) => { callback(results) })
+    loadFilesToObj(files, textId).then( (results) => {
+      dropdownSample(results, textId)
+      callback(results.arrayOfObj)
+    })
 
   }, false)
 }

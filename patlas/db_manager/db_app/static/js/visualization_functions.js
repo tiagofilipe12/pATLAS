@@ -423,12 +423,13 @@ const onLoad = () => {
       await emptyFiles()
 
       loadFilesToObj(files, `#${textId}`).then( (results) => {
+        dropdownSample(results, `#${textId}`)
         // parses results to the right type of file import
-        if (textId === "file_text") {readFilejson = results}
-        else if (textId === "file_text_mash") {mashJson = results}
-        else if (textId === "assembly_text") {assemblyJson = results}
-        else if (textId === "consensus_text") {consensusJson = results}
-        else if (textId === "project_text") {projectJson = results}
+        if (textId === "file_text") {readFilejson = results.arrayOfObj}
+        else if (textId === "file_text_mash") {mashJson = results.arrayOfObj}
+        else if (textId === "assembly_text") {assemblyJson = results.arrayOfObj}
+        else if (textId === "consensus_text") {consensusJson = results.arrayOfObj}
+        else if (textId === "project_text") {projectJson = results.arrayOfObj}
       })
 
     })
@@ -1219,6 +1220,7 @@ const onLoad = () => {
     .on("changed.bs.select", (e) => {
 
       const arrayOfSelections = $(`#${e.target.id}`).selectpicker("val")
+      console.log(arrayOfSelections)
 
       // fill panel group displaying current selected taxa filters
       let stringClass = e.target.id.slice(0, -4)
@@ -1231,6 +1233,12 @@ const onLoad = () => {
 
       filterDisplayer(arrayOfSelections, stringClass, divStringClass)
     })
+
+  $(".sampleDropdownSelect").on("changed.bs.select", (e) => {
+    // TODO make this arrayOfSelections a global variable that states the sample that is selected
+    const arrayOfSelections = $(`#${e.target.id}`).selectpicker("val")
+    console.log(arrayOfSelections)
+  })
 
 
   //* ******************//

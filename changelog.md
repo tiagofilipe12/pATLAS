@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming version
+## Upcoming version (1.6.0)
 
 ### Database
 
@@ -9,11 +9,17 @@
 (e.g NC_011413)
 - Import from file and requests now have an option to submit and filter 
 directly.
+- Import from file now has option that allows the user to select the sample to
+display.
 
 ### Performance
 - Performance of the page was significantly improved with the fix of issue #57
 - Welcome modal was temporarily hidden.
 - Refactored `defaultZooming` function, now showing only the final zoom
+
+### Bug fixes
+- Fixed minor issues after filtering datasets for link selections and for shift
+selections.
 
 ## Version 1.5.2
 

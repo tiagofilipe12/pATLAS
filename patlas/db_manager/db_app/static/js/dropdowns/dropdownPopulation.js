@@ -134,7 +134,19 @@ getArrayVir().done( (json) => {
   // populate the menus virulence filters
   singleDropdownPopulate("#virulenceList", listVir, "VirulenceClass")
 
-  // populate the menus for the intercection filters
+  // populate the menus for the intersection filters
   singleDropdownPopulate("#virList2", listVir, false)
 
 })
+
+const dropdownSample = (sampleObject, type) => {
+  // variable that will look for the modal body that contains both the text
+  // input and the select
+  const parentModalBody = $(type).parent().parent().parent().attr("id")
+  // variable that will fetch the desired select
+  const selectMenu = $(`#${parentModalBody} .row .sampleDropdown .selectpicker`)
+    .attr("id", `${type.replace("#", "")}_samples`)
+
+  // populates the dropdown of the modal in which the sample is being imported
+  singleDropdownPopulate(selectMenu, sampleObject.arrayOfFiles, "samplesClass")
+}
