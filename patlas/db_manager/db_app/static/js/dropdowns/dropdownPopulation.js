@@ -149,7 +149,6 @@ getArrayVir().done( (json) => {
  * imported from form.
  */
 const dropdownSample = (sampleObject, type) => {
-  console.log(fileMode)
   // variable that will look for the id of the modal body that contains both the
   // text input and the select
   const parentModalBody = $(type).parent().parent().parent().attr("id")
