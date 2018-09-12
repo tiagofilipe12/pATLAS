@@ -1987,6 +1987,7 @@ const onLoad = () => {
   $("#consensusSubmit").unbind("click").bind("click", (event) => {
     event.preventDefault()
     if (consensusJson !== false) {
+      fileMode = "consensus"
       const readString = JSON.parse(Object.values(consensusJson)[0])
       fileChecks(readString)
       $("#fileNameDiv").html(`Current sample: ${currentSample}`)
@@ -2606,6 +2607,9 @@ const onLoad = () => {
       currentSample = Object.keys(readFilejson)[outArray[0]]
       listGiFilter = outArray[1][1]
       listGi = outArray[1][0]
+
+      // updates the dropdown in the import modal
+      selectSampleDropdownProgrammatically()
     })
   })
 

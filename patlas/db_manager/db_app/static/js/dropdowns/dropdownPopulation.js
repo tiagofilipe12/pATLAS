@@ -1,5 +1,5 @@
 /*globals getArrayTaxa, getArrayRes, getArrayPf, getArrayVir,
-singleDropdownPopulate, filterDisplayer*/
+singleDropdownPopulate, filterDisplayer, fileMode*/
 
 const listOrders = [],
   listFamilies = [],
@@ -149,12 +149,15 @@ getArrayVir().done( (json) => {
  * imported from form.
  */
 const dropdownSample = (sampleObject, type) => {
+  console.log(fileMode)
   // variable that will look for the id of the modal body that contains both the
   // text input and the select
   const parentModalBody = $(type).parent().parent().parent().attr("id")
   // variable that will fetch the desired select
   const selectMenu = $(`#${parentModalBody} .row .sampleDropdown .selectpicker`)
     .attr("id", `${type.replace("#", "")}_samples`)
+
+  console.log(selectMenu)
 
   // forces the respective dropdown to be emptied each time a new file is
   // imported
@@ -164,4 +167,20 @@ const dropdownSample = (sampleObject, type) => {
   singleDropdownPopulate(selectMenu, sampleObject.arrayOfFiles, "samplesClass")
   // by default selects the first sample in the array in the dropdown
   selectMenu.selectpicker("val", sampleObject.arrayOfFiles[0])
+}
+
+/**
+ * Function to make a correspondence between the slider buttons for each sample
+ * imported and the respective dropdowns where they were imported
+ */
+const selectSampleDropdownProgrammatically = () => {
+  // these divs ids come from the above function in which selectMenu gets an id
+  const correspondenceDivs = {
+    "assembly": "#assembly_text_samples",
+    "mapping": "#file_text_samples",
+    "mash_screen": "#file_text_mash_samples",
+    "consensus": "#consensus_text_samples"
+  }
+
+  $(`${correspondenceDivs[fileMode]}`).selectpicker("val", currentSample)
 }
