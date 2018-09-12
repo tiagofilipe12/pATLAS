@@ -74,6 +74,7 @@ const loadFilesToObj = async (files, textId) => {
  * reading this function, i.e., after reading all files
  */
 const handleFileSelect = (infileId, textId, callback) => {
+
   document.getElementById(infileId).addEventListener("change", (e) => {
 
     const files = e.target.files // FileList object

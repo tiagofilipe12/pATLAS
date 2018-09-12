@@ -156,8 +156,6 @@ const dropdownSample = (sampleObject, type) => {
   const selectMenu = $(`#${parentModalBody} .row .sampleDropdown .selectpicker`)
     .attr("id", `${type.replace("#", "")}_samples`)
 
-  console.log(selectMenu)
-
   // forces the respective dropdown to be emptied each time a new file is
   // imported
   selectMenu.find("option").remove().end()
@@ -182,4 +180,13 @@ const selectSampleDropdownProgrammatically = () => {
   }
 
   $(`${correspondenceDivs[fileMode]}`).selectpicker("val", currentSample)
+
+  if (requestResults) {
+    // checks if requests are being used or other dropdowns from file selections
+    // this checks if the dropdown has no selection and if so it doesn't update
+    // currentSample
+    if ($("#sampleDropdownRequests").selectpicker("val") !== ""){
+      $("#sampleDropdownRequests").selectpicker("val", currentSample)
+    }
+  }
 }

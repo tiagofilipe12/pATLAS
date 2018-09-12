@@ -1,4 +1,5 @@
-/*globals assemblyJson, mashJson, readFilejson, fileMode, pageReload*/
+/*globals assemblyJson, mashJson, readFilejson, fileMode, pageReload,
+singleDropdownPopulate*/
 
 /**
  * Function that parses the results coming from external requests. If the
@@ -16,9 +17,17 @@ const parseRequestResults = (requestResults) => {
     $("#requestModalShow").show()
     fileMode = requestResults.type
 
+    // empties dropdown if it is already populated to avoid duplicates
+    // forces the respective dropdown to be emptied each time a new file is
+    // imported
+    $("#sampleDropdownRequests").find("option").remove().end()
+
     // populates the sample dropdown for the request modal
     singleDropdownPopulate("#sampleDropdownRequests",
       Object.keys(requestResults.samples), "samplesClass")
+
+    // By default it will select the first sample in array
+    $("#sampleDropdownRequests").selectpicker("val", Object.keys(requestResults.samples)[0])
 
     if (fileMode === "mapping") {
       readFilejson = requestResults.samples

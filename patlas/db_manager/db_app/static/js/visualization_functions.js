@@ -1244,6 +1244,7 @@ const onLoad = () => {
    */
   $(".sampleDropdownSelect").on("changed.bs.select", (e) => {
     currentSample = $(`#${e.target.id}`).selectpicker("val")
+    console.log("sample cahnge: ", currentSample)
   })
 
   //* ******************//
@@ -1636,6 +1637,10 @@ const onLoad = () => {
   $(".redundancyNo").unbind("click").bind("click", (event) => {
     event.preventDefault()
 
+    // empty requests modal dropdown
+    $("#sampleDropdownRequests").find("option").remove().end()
+      .selectpicker("refresh")
+
     // asserts which dict to use
     const queryFileJson = (mashJson) ? mashJson :
       (assemblyJson) ? assemblyJson :
@@ -1665,6 +1670,10 @@ const onLoad = () => {
   $(".redundancyYes").unbind("click").bind("click", (event) => {
 
     event.preventDefault()
+
+    // empty requests modal dropdown
+    $("#sampleDropdownRequests").find("option").remove().end()
+      .selectpicker("refresh")
 
     // initiates empty object that will store the final filtered JSON object
     // that will display the colors
@@ -2600,7 +2609,7 @@ const onLoad = () => {
     // checks the target button before sliding right or left
 
     showDiv().then( () => {
-      const outArray = (e.target.id === "slideRight") ?
+      const outArray = (e.currentTarget.id === "slideRight") ?
         slideToRight(readFilejson, g, listGi, graphics, renderer) :
         slideToLeft(readFilejson, g, listGi, graphics, renderer)
 
