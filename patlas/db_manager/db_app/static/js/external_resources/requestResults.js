@@ -16,6 +16,10 @@ const parseRequestResults = (requestResults) => {
     $("#requestModalShow").show()
     fileMode = requestResults.type
 
+    // populates the sample dropdown for the request modal
+    singleDropdownPopulate("#sampleDropdownRequests",
+      Object.keys(requestResults.samples), "samplesClass")
+
     if (fileMode === "mapping") {
       readFilejson = requestResults.samples
       $("#mappingCutOff").show()
