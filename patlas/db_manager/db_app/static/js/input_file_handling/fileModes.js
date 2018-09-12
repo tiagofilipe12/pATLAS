@@ -14,7 +14,8 @@ listGiFilter, typeOfProject*/
  */
 const mappingHighlight = (g, graphics, renderer) => {
 
-  // feeds the first file
+  // checks if no sample were imported
+  // then checks if the currentSample was set and if it is a string or an Object
   const readString = (Object.keys(readFilejson).length === 0) ?
     false : (typeof Object.values(readFilejson)[0] === "string") ?
       JSON.parse(Object.values(readFilejson)[0]) : Object.values(readFilejson)[0]

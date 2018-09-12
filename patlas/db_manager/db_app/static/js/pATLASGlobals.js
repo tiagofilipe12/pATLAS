@@ -65,7 +65,13 @@ let currentQueryNode = false
 
 let masterReadArray = []
 
+/**
+ * Variable that will store the imported samples whenever they are available,
+ * otherwise it will be set to false
+ * @type {boolean|Object}
+ */
 let readFilejson = false
+
 let mashJson = false
 let assemblyJson = false
 let consensusJson = false
@@ -224,3 +230,9 @@ let xRangePlotList = []
  * being imported. This behavior is set when the file import modal is dismissed
  */
 let fileMode = false
+
+/**
+ * Variable that stores the current selected sample.
+ * @type {boolean|String}
+ */
+let currentSample = false

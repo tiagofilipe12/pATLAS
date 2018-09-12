@@ -26,7 +26,7 @@ masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
 parseRequestResults, requestResults, currentQueryNode, centralNode,
-getCentralNode*/
+getCentralNode, dropdownSample*/
 
 
 /**
@@ -1220,7 +1220,6 @@ const onLoad = () => {
     .on("changed.bs.select", (e) => {
 
       const arrayOfSelections = $(`#${e.target.id}`).selectpicker("val")
-      console.log(arrayOfSelections)
 
       // fill panel group displaying current selected taxa filters
       let stringClass = e.target.id.slice(0, -4)
@@ -1234,12 +1233,14 @@ const onLoad = () => {
       filterDisplayer(arrayOfSelections, stringClass, divStringClass)
     })
 
+  /**
+   * event handler that listens for the changes in the dropdown that allows
+   * users to select samples. This will be responsible for setting the
+   * currentSample variable
+   */
   $(".sampleDropdownSelect").on("changed.bs.select", (e) => {
-    // TODO make this arrayOfSelections a global variable that states the sample that is selected
-    const arrayOfSelections = $(`#${e.target.id}`).selectpicker("val")
-    console.log(arrayOfSelections)
+    currentSample = $(`#${e.target.id}`).selectpicker("val")
   })
-
 
   //* ******************//
   //* ***INTERSECTIONS and UNIONS****//

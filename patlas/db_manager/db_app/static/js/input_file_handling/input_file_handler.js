@@ -1,4 +1,4 @@
-/* globals readFilejson */
+/* globals readFilejson, dropdownSample */
 
 // will cancel reader when defined... so during handleFileSelect
 /**

@@ -139,14 +139,31 @@ getArrayVir().done( (json) => {
 
 })
 
+/**
+ * Function that populates the samples dropdown, selecting the first sample in
+ * the sampleObject.arrayOfFiles by default that can then be changed by the
+ * user.
+ * @param {Object} sampleObject - An object containing the arrayOfFiles and
+ * arrayOfObj
+ * @param {String} type - The id of the div in which the sample was dragged or
+ * imported from form.
+ */
 const dropdownSample = (sampleObject, type) => {
-  // variable that will look for the modal body that contains both the text
-  // input and the select
+  console.log(sampleObject)
+  console.log(type)
+  // variable that will look for the id of the modal body that contains both the
+  // text input and the select
   const parentModalBody = $(type).parent().parent().parent().attr("id")
   // variable that will fetch the desired select
   const selectMenu = $(`#${parentModalBody} .row .sampleDropdown .selectpicker`)
     .attr("id", `${type.replace("#", "")}_samples`)
 
+  // forces the respective dropdown to be emptied each time a new file is
+  // imported
+  selectMenu.find("option").remove().end()
+
   // populates the dropdown of the modal in which the sample is being imported
   singleDropdownPopulate(selectMenu, sampleObject.arrayOfFiles, "samplesClass")
+  // by default selects the first sample in the array in the dropdown
+  selectMenu.selectpicker('val', sampleObject.arrayOfFiles[0])
 }
