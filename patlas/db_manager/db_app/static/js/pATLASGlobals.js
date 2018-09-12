@@ -77,8 +77,6 @@ let assemblyJson = false
 let consensusJson = false
 let projectJson = false
 
-let readIndex = 0
-
 let clickedHighchart = false
 
 let graphSize

@@ -2,7 +2,7 @@
 pushToMasterReadArray, hideDivsFileInputs, assemblyJson,
 previousTableList, readFilejson, nodeColor, listGi, fileChecks,
 masterReadArray, selector, areaSelection, showDiv, mashJson, assemblyJson,
-listGiFilter, typeOfProject*/
+listGiFilter, typeOfProject, currentSample*/
 
 
 /**
@@ -17,8 +17,10 @@ const mappingHighlight = (g, graphics, renderer) => {
   // checks if no sample were imported
   // then checks if the currentSample was set and if it is a string or an Object
   const readString = (Object.keys(readFilejson).length === 0) ?
-    false : (typeof Object.values(readFilejson)[0] === "string") ?
-      JSON.parse(Object.values(readFilejson)[0]) : Object.values(readFilejson)[0]
+    false : (typeof readFilejson[currentSample] === "string") ?
+      JSON.parse(readFilejson[currentSample]) : readFilejson[currentSample]
+
+  console.log(readString)
 
   fileChecks(readString)
 
@@ -41,7 +43,7 @@ const mappingHighlight = (g, graphics, renderer) => {
 
       assemblyJson = false
 
-      $("#fileNameDiv").html(Object.keys(mashJson)[0])
+      $("#fileNameDiv").html(`Current sample: ${currentSample}`)
         .show()
 
       showDiv().then(() => {
@@ -59,7 +61,7 @@ const mappingHighlight = (g, graphics, renderer) => {
 
     } else if (assemblyJson !== false) {
 
-      $("#fileNameDiv").html(Object.keys(assemblyJson)[0])
+      $("#fileNameDiv").html(`Current sample: ${currentSample}`)
         .show()
 
       showDiv().then(() => {
@@ -80,7 +82,7 @@ const mappingHighlight = (g, graphics, renderer) => {
 
       assemblyJson = false
 
-      $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+      $("#fileNameDiv").html(`Current sample: ${currentSample}`)
         .show()
 
       showDiv().then(() => {

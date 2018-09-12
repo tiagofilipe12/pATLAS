@@ -11,13 +11,17 @@
  * @param renderer
  * @returns {*[]}
  */
-const slideToRight = (readJson, readIndex, g, listGi, graphics, renderer) => {
+const slideToRight = (readJson, g, listGi, graphics, renderer) => {
+
+  // fetches the index of the currently selected sample
+  let readIndex = Object.keys(readJson).indexOf(currentSample)
+
   if (readIndex < Object.values(readJson).length || readIndex > 0) {
     // if readIndex is max value already then return to 0 to allow cycling
     (readIndex !== Object.values(readJson).length - 1) ?
     readIndex += 1 : readIndex = 0
     // change div containing naming of the file
-    $("#fileNameDiv").html(Object.keys(readJson)[readIndex])
+    $("#fileNameDiv").html(`Current sample: ${Object.keys(readJson)[readIndex]}`)
 
     const nextFile = (typeof Object.values(readJson)[readIndex] === "string") ?
       JSON.parse(Object.values(readJson)[readIndex]) :
@@ -30,14 +34,18 @@ const slideToRight = (readJson, readIndex, g, listGi, graphics, renderer) => {
 }
 
 // function to slide to left
-const slideToLeft = (readJson, readIndex, g, listGi, graphics, renderer) => {
+const slideToLeft = (readJson, g, listGi, graphics, renderer) => {
+
+  // fetches the index of the currently selected sample
+  let readIndex = Object.keys(readJson).indexOf(currentSample)
+
   if (readIndex < Object.values(readJson).length || readIndex > 0) {
     // if readIndex is 0 then it should get the max value possible to allow
     // cycling
     (readIndex !== 0) ?
       readIndex -= 1 : readIndex = Object.values(readJson).length - 1
     // change div containing naming of the file
-    $("#fileNameDiv").html(Object.keys(readJson)[readIndex])
+    $("#fileNameDiv").html(`Current sample: ${Object.keys(readJson)[readIndex]}`)
 
     const nextFile = (typeof Object.values(readJson)[readIndex] === "string") ?
       JSON.parse(Object.values(readJson)[readIndex]) :

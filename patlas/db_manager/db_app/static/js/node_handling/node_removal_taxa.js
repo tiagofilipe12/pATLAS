@@ -204,15 +204,19 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
       })
       .then( () => {
         renderGraph(graphics)
+        console.log(readString)
+        console.log(assemblyJson)
+        console.log(currentSample)
 
         if (readString !== false ) {
 
           readColoring(g, listGi, graphics, renderer, readString)
-
-        } else if (assemblyJson !== false) {
-
-          const assemblyString = JSON.parse(Object.values(assemblyJson)[0])
-          readColoring(g, listGi, graphics, renderer, assemblyString)
+        //
+        // } else if (assemblyJson !== false) {
+        //
+        //   const assemblyString = JSON.parse(Object.values(assemblyJson)[currentSample])
+        //   console.log(assemblyString)
+        //   readColoring(g, listGi, graphics, renderer, assemblyString)
 
         } else if (selectedFilter === "res") {
 

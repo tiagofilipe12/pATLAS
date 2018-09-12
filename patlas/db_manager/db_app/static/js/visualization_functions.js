@@ -26,7 +26,7 @@ masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
 parseRequestResults, requestResults, currentQueryNode, centralNode,
-getCentralNode, dropdownSample*/
+getCentralNode, dropdownSample, currentSample*/
 
 
 /**
@@ -313,10 +313,14 @@ const onLoad = () => {
 
       }
     } else {
+      console.log(readFilejson)
       // storeMasterNode is empty in here
       if (readFilejson !== false) {
-        const readReload = Object.values(readFilejson)[readIndex]
-        $("#fileNameDiv").html(Object.keys(readFilejson)[readIndex])
+        console.log(currentSample)
+        console.log(readFilejson)
+        const readReload = readFilejson[currentSample]
+        console.log(readReload)
+        $("#fileNameDiv").html(`Current sample: ${currentSample}`)
           .show()
         requestDBList = await requesterDB(g, listGiFilter, counter, renderGraph,
           graphics, reloadAccessionList, renderer, listGi, readReload,
@@ -1962,7 +1966,7 @@ const onLoad = () => {
         readFilejson = assemblyJson = results
         const readString = Object.values(results)[0]
         fileChecks(readString)
-        $("#fileNameDiv").html(Object.keys(readFilejson)[0])
+        $("#fileNameDiv").html(`Current sample: ${Object.keys(readFilejson)[0]}`)
           .show()
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
@@ -1985,7 +1989,7 @@ const onLoad = () => {
     if (consensusJson !== false) {
       const readString = JSON.parse(Object.values(consensusJson)[0])
       fileChecks(readString)
-      $("#fileNameDiv").html(Object.keys(consensusJson)[0])
+      $("#fileNameDiv").html(`Current sample: ${currentSample}`)
         .show()
       masterReadArray = []
       readFilejson = consensusJson
@@ -2596,10 +2600,10 @@ const onLoad = () => {
 
     showDiv().then( () => {
       const outArray = (e.target.id === "slideRight") ?
-        slideToRight(readFilejson, readIndex, g, listGi, graphics, renderer) :
-        slideToLeft(readFilejson, readIndex, g, listGi, graphics, renderer)
+        slideToRight(readFilejson, g, listGi, graphics, renderer) :
+        slideToLeft(readFilejson, g, listGi, graphics, renderer)
 
-      readIndex = outArray[0]
+      currentSample = Object.keys(readFilejson)[outArray[0]]
       listGiFilter = outArray[1][1]
       listGi = outArray[1][0]
     })

@@ -149,8 +149,6 @@ getArrayVir().done( (json) => {
  * imported from form.
  */
 const dropdownSample = (sampleObject, type) => {
-  console.log(sampleObject)
-  console.log(type)
   // variable that will look for the id of the modal body that contains both the
   // text input and the select
   const parentModalBody = $(type).parent().parent().parent().attr("id")
@@ -165,5 +163,5 @@ const dropdownSample = (sampleObject, type) => {
   // populates the dropdown of the modal in which the sample is being imported
   singleDropdownPopulate(selectMenu, sampleObject.arrayOfFiles, "samplesClass")
   // by default selects the first sample in the array in the dropdown
-  selectMenu.selectpicker('val', sampleObject.arrayOfFiles[0])
+  selectMenu.selectpicker("val", sampleObject.arrayOfFiles[0])
 }
