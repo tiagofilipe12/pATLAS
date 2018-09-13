@@ -1,5 +1,15 @@
-/*globals listLengths, listGi, list, totalNumberOfLinks, counter, bluebirdPromise */
+/*globals listLengths, listGi, list, totalNumberOfLinks, counter,
+bluebirdPromise */
 
+/**
+ * Function that allows the messages to be displayed in the loading div before
+ * the vivagraph functions to add nodes and links are executed, which can
+ * prevent them from showing up.
+ * @param {String} message - The message to pass to the loading div
+ * @param {Function} callbackFunction - The callback that should be executed to
+ * resolve the promise
+ * @returns {Promise<any>}
+ */
 const loadingMessage = (message, callbackFunction) => {
   return new Promise( (resolve) => {
     $("#loadingInfo").html(message)
@@ -11,6 +21,15 @@ const loadingMessage = (message, callbackFunction) => {
   })
 }
 
+
+/**
+ * Function to add all nodes in the initial setup
+ * @param g
+ * @param {Object} json - The object containing all the nodes to be added and
+ * their metadata
+ * @param layout
+ * @returns {*}
+ */
 const addAllNodes = (g, json, layout) => {
 
   return bluebirdPromise.map(json, (job) => {
@@ -39,6 +58,14 @@ const addAllNodes = (g, json, layout) => {
   })
 }
 
+/**
+ * Function to add all links in the initial setup. This function is executed
+ * after adding all nodes
+ * @param g
+ * @param {Object} json - The object containing all the links to be added and
+ * their metadata
+ * @returns {*}
+ */
 const addAllLinks = (g, json) => {
 
   return bluebirdPromise.map(json, (job) => {
