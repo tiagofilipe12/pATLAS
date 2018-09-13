@@ -127,10 +127,9 @@ const onLoad = () => {
     // the higher the value the slower
     gravity: -10,
     theta: 1,
-    // This is the main part of this example. We are telling force directed
-    // layout, that we want to change length of each physical spring
-    // by overriding `springTransform` method:
+
     springTransform(link, spring) {
+      // spring.length = link.data.distance
       spring.length = 100 * Math.log10(1 - link.data.distance) + 100
     }
   })
@@ -253,50 +252,15 @@ const onLoad = () => {
       // the next if statement is only executed on development session, it
       // is way less efficient than the non development session.
       if (devel === true) {
-        getArray.done(function (json) {
-          $.each(json, function (sequenceInfo, dictDist) {
-            counter++
-            // next we need to retrieve each information type independently
-            const sequence = sequenceInfo.split("_").slice(0, 3).join("_")
 
-            // and continues
-            const seqLength = sequenceInfo.split("_").slice(-1).join("")
-            const logLength = Math.log(parseInt(seqLength)) //ln seq length
-            listLengths.push(seqLength) // appends all lengths to this list
-            listGi.push(sequence)
-            //checks if sequence is not in list to prevent adding multiple nodes for each sequence
-            if (list.indexOf(sequence) < 0) {
-              g.addNode(sequence, {
-                sequence: "<span style='color:#468499; font-weight: bold;'>Accession:" +
-                " </span><a" +
-                " href='https://www.ncbi.nlm.nih.gov/nuccore/" + sequence.split("_").slice(0, 2).join("_") + "' target='_blank'>" + sequence + "</a>",
-                //species:"<font color='#468499'>Species:
-                // </font>" + species,
-                seqLength: "<span" +
-                " style='color:#468499; font-weight: bold;'>Sequence length:" +
-                " </span>" + seqLength,
-                logLength
-              })
-              list.push(sequence)
+        const getArrayResponse = await (
+          await fetch("/test")).json()
 
-              if (dictDist !== null) {
-                // loops between all arrays of array pairing sequence and distances
-                for (let i = 0; i < dictDist.length; i++) {
-                  const reference = Object.keys(dictDist[i])[0]  // stores
-                  // references in a unique variable
-                  const distance = Object.values(dictDist[i])[0].distance   // stores distances in a unique variable
-                  g.addLink(sequence, reference, { distance })
-                }
-              } else {
-                dictDist = []
-              }
-            }
-            // centers on node with more links
-            storeMasterNode = storeRecenterDom(storeMasterNode, dictDist, sequence, counter)
-          })
-          // precompute before rendering
-          renderGraph(graphics)
-        }) //new getArray end
+        await develGenerationGraph(g, getArrayResponse)
+
+        // precompute before rendering
+        await renderGraph(graphics)
+        // }) //new getArray end
       } else {
         // this renders the graph when not in development session
         // this is a more efficient implementation which takes a different
