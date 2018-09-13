@@ -313,13 +313,9 @@ const onLoad = () => {
 
       }
     } else {
-      console.log(readFilejson)
       // storeMasterNode is empty in here
       if (readFilejson !== false) {
-        console.log(currentSample)
-        console.log(readFilejson)
         const readReload = readFilejson[currentSample]
-        console.log(readReload)
         $("#fileNameDiv").html(`Current sample: ${currentSample}`)
           .show()
         requestDBList = await requesterDB(g, listGiFilter, counter, renderGraph,
@@ -1244,7 +1240,6 @@ const onLoad = () => {
    */
   $(".sampleDropdownSelect").on("changed.bs.select", (e) => {
     currentSample = $(`#${e.target.id}`).selectpicker("val")
-    console.log("sample cahnge: ", currentSample)
   })
 
   //* ******************//
@@ -2589,6 +2584,14 @@ const onLoad = () => {
       await recenterDOM(renderer, layout, [centralNode])
       $("#loading").hide()
     })
+  })
+
+  $("#closeRequestModal").unbind("click").bind("click", () => {
+    $(".redundancyNo").click()
+  })
+
+  $("#closeReRunModal").unbind("click").bind("click", () => {
+    $(".noRunRequests").click()
   })
 
 

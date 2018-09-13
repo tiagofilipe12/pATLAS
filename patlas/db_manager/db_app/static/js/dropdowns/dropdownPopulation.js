@@ -1,5 +1,6 @@
 /*globals getArrayTaxa, getArrayRes, getArrayPf, getArrayVir,
-singleDropdownPopulate, filterDisplayer, fileMode*/
+singleDropdownPopulate, filterDisplayer, fileMode, requestResults,
+currentSample*/
 
 const listOrders = [],
   listFamilies = [],

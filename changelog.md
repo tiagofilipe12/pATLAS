@@ -17,6 +17,9 @@ display.
 - Welcome modal was temporarily hidden.
 - Refactored `defaultZooming` function, now showing only the final zoom
 
+### Minor changes
+- Added default behavior for close buttons in modals for imports.
+
 ### Bug fixes
 - Fixed minor issues after filtering datasets for link selections and for shift
 selections.
