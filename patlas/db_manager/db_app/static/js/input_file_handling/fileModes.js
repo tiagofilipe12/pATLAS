@@ -20,8 +20,6 @@ const mappingHighlight = (g, graphics, renderer) => {
     false : (typeof readFilejson[currentSample] === "string") ?
       JSON.parse(readFilejson[currentSample]) : readFilejson[currentSample]
 
-  console.log(readString)
-
   fileChecks(readString)
 
   masterReadArray = []

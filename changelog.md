@@ -19,10 +19,13 @@ display.
 
 ### Minor changes
 - Added default behavior for close buttons in modals for imports.
+- Added small information messages to loading
 
 ### Bug fixes
 - Fixed minor issues after filtering datasets for link selections and for shift
 selections.
+- Fixed bug with when file is imported preventing selections of taxa,
+resistance, plasmidfinder, virulence and so on.
 
 ## Version 1.5.2
 

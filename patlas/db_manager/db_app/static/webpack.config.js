@@ -24,5 +24,6 @@ module.exports = {
       include: /\.min\.js$/,
       // minimize: true
     })
-  ]
+  ],
+  mode: "production",
 }

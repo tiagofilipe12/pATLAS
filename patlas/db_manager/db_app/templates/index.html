@@ -63,9 +63,18 @@
 <body onload=onLoadWelcome(onLoad)>
 
 <div id="loading">
-  <img id="loading-image" src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading..." ondblclick="alternativeLoading()"/>
-  <!-- Courtesy of Mickael Silva -->
-  <img id="loading-image-alt" src="{{ url_for('static', filename='images/pok_easter.gif') }}" alt="Loading..." />
+  <div id="loadingWrapper">
+    <div>
+      <img id="loading-image"
+           src="{{ url_for('static', filename='images/loading.gif') }}"
+           alt="Loading..." ondblclick="alternativeLoading()"/>
+      <!-- Courtesy of Mickael Silva -->
+      <img id="loading-image-alt"
+           src="{{ url_for('static', filename='images/pok_easter.gif') }}"
+           alt="Loading..." />
+    </div>
+    <div id="loadingInfo">Preparing pATLAS...</div>
+  </div>
 </div>
 
 <!-- welcome modal -->

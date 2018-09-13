@@ -148,16 +148,11 @@ const reAddNode = (g, jsonObj, newList, newListHashes, listGiFilter) => {
  * when loading for the first time
  * @param {String} readString - A string with the json objects to be parsed
  * into this function
- * @param {Object} assemblyJson - The object that contains the associations
- * of the new nodes to the plasmids present in pATLAS. This object may
- * suffer updates in future implementations, since this is an experimental
- * feature.
  * @returns {*[]} - returns an array containing two arrays that control the
  * the displayed accessions, both in listGiFilter and in realodAccessionList.
  */
 const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
-                     reloadAccessionList, renderer, listGi, readString,
-                     assemblyJson) => {
+                     reloadAccessionList, renderer, listGi, readString) => {
 
   if (listGiFilter.length > 0) {
 
@@ -204,19 +199,10 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
       })
       .then( () => {
         renderGraph(graphics)
-        console.log(readString)
-        console.log(assemblyJson)
-        console.log(currentSample)
 
         if (readString !== false ) {
 
           readColoring(g, listGi, graphics, renderer, readString)
-        //
-        // } else if (assemblyJson !== false) {
-        //
-        //   const assemblyString = JSON.parse(Object.values(assemblyJson)[currentSample])
-        //   console.log(assemblyString)
-        //   readColoring(g, listGi, graphics, renderer, assemblyString)
 
         } else if (selectedFilter === "res") {
 

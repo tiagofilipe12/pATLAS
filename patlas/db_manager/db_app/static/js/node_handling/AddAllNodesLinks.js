@@ -1,5 +1,16 @@
 /*globals listLengths, listGi, list, totalNumberOfLinks, counter, bluebirdPromise */
 
+const loadingMessage = (message, callbackFunction) => {
+  return new Promise( (resolve) => {
+    $("#loadingInfo").html(message)
+    // waits a while to update the message and then executes the required
+    // function
+    setTimeout( () => {
+      resolve(callbackFunction)
+    }, 10)
+  })
+}
+
 const addAllNodes = (g, json, layout) => {
 
   return bluebirdPromise.map(json, (job) => {

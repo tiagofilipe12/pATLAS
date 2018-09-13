@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node_modules/webpack/bin/webpack.js --mode development entry-point.js --output bundle.min.js --watch"
+  },
   "dependencies": {
     "bluebird": "^3.5.2",
     "bootstrap": "3",
@@ -22,6 +25,7 @@
     "uglify": "^0.1.5",
     "uglifyjs-webpack-plugin": "^1.2.0",
     "url-loader": "^0.6.2",
-    "webpack": "^3.10.0"
+    "webpack": "^4.6.0",
+    "webpack-cli": "^3.1.0"
   }
 }

@@ -26,7 +26,7 @@ masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
 parseRequestResults, requestResults, currentQueryNode, centralNode,
-getCentralNode, dropdownSample, currentSample*/
+getCentralNode, dropdownSample, currentSample, loadingMessage*/
 
 
 /**
@@ -306,27 +306,40 @@ const onLoad = () => {
 
         graphSize = getArrayResponse.nodes.length
 
-        await addAllNodes(g, getArrayResponse.nodes, layout)
-        await addAllLinks(g, getArrayResponse.links)
-        await renderGraph(graphics)
-        await parseRequestResults(requestResults)
+        // sequential code that first loads nodes, then links and then renders
+        // the graph
+        await loadingMessage(
+          "Loading plasmids...",
+          addAllNodes(g, getArrayResponse.nodes, layout)
+        )
 
+        await loadingMessage(
+          "Establishing the relationships between plasmids...",
+          addAllLinks(g, getArrayResponse.links)
+        )
+
+        await loadingMessage(
+          "Rendering the graph...",
+          renderGraph(graphics)
+        )
+
+        await parseRequestResults(requestResults)
       }
     } else {
+      console.log(readFilejson)
       // storeMasterNode is empty in here
       if (readFilejson !== false) {
         const readReload = readFilejson[currentSample]
         $("#fileNameDiv").html(`Current sample: ${currentSample}`)
           .show()
         requestDBList = await requesterDB(g, listGiFilter, counter, renderGraph,
-          graphics, reloadAccessionList, renderer, listGi, readReload,
-          assemblyJson)
+          graphics, reloadAccessionList, renderer, listGi, readReload)
       } else {
         // sets pageReRun to true
         pageReRun = true
         // used when no reads are used to filter
         requestDBList = await requesterDB(g, listGiFilter, counter, renderGraph,
-          graphics, reloadAccessionList, renderer, listGi, false, assemblyJson)
+          graphics, reloadAccessionList, renderer, listGi, false)
       }
 
       listGiFilter = requestDBList[0] // list with the nodes used to filter
@@ -502,6 +515,7 @@ const onLoad = () => {
       requestPlasmidTable(g.getNode(bootstrapTableList[0]), setupPopupDisplay)
     }
     showDiv().then( () => {
+      $("#loadingInfo").html("Coloring selected nodes...")
       colorNodes(g, graphics, renderer, bootstrapTableList, "0xFF7000")
 
       // handles hidden buttons
@@ -937,7 +951,7 @@ const onLoad = () => {
    * This event clears all the selected plasmid finder genes.
    */
   $("#pfClear").unbind("click").bind("click", (event) => {
-    // document.getElementById("reset-sliders").click()
+    $("#reset-sliders").click()
     // clear = true;
     event.preventDefault()
     // this needs an array for reusability purposes
@@ -1006,6 +1020,7 @@ const onLoad = () => {
     // reset nodes before submitting new colors
     const tempPageReRun = pageReRun
     showDiv().then( () => {
+      $("#loadingInfo").html("Fetching PlasmidFinder data...")
       pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
         legendInst = results
         pageReRun = false
@@ -1032,7 +1047,7 @@ const onLoad = () => {
    */
   $("#resClear").unbind("click").bind("click", (event) => {
     event.preventDefault()
-    // document.getElementById("reset-sliders").click()
+    $("#reset-sliders").click()
     resetDisplayTaxaBox(["p_Resfinder", "p_Card"])
 
     // resets dropdown selections
@@ -1102,6 +1117,7 @@ const onLoad = () => {
     const tempPageReRun = pageReRun
 
     showDiv().then( () => {
+      $("#loadingInfo").html("Fetching resistance data...")
       resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
         legendInst = results
         pageReRun = false
@@ -1127,7 +1143,7 @@ const onLoad = () => {
    * associated nodes
    */
   $("#virClear").unbind("click").bind("click", (event) => {
-    // document.getElementById("reset-sliders").click()
+    $("#reset-sliders").click()
     // clear = true;
     event.preventDefault()
     // this needs an array for reusability purposes
@@ -1196,6 +1212,7 @@ const onLoad = () => {
     // reset nodes before submitting new colors
     const tempPageReRun = pageReRun
     showDiv().then( () => {
+      $("#loadingInfo").html("Fetching virulence data...")
       virSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
         legendInst = results
         pageReRun = false
@@ -1299,6 +1316,7 @@ const onLoad = () => {
       typeOfProject[typeToProject] = objectOfSelections
 
       showDiv().then( () => {
+        $("#loadingInfo").html("Submitting your query...")
         listGiFilter = parseQueriesIntersection(g, graphics, renderer,
           objectOfSelections, typeToProject)
       })
@@ -1370,8 +1388,6 @@ const onLoad = () => {
 
     event.preventDefault()
 
-    // document.getElementById("reset-sliders").click()
-
     resetDisplayTaxaBox(idsArrays)
 
     // resets dropdown selections
@@ -1407,6 +1423,8 @@ const onLoad = () => {
   $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
 
     event.preventDefault()
+
+    $("#reset-sliders").click()
 
     legendIndex = 0
 
@@ -1501,7 +1519,8 @@ const onLoad = () => {
     $("#colorLegendBoxAdvanced").empty()
 
     showDiv().then( () => {
-        iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
+      $("#loadingInfo").html("Fetching selected taxa...")
+      iterateArrays(g, graphics, renderer, alertArrays, storeLis, i)
     })
 
   })
@@ -1521,6 +1540,8 @@ const onLoad = () => {
 
     $("#scaleLegend").empty()
     showDiv().then( () => {
+      $("#loadingInfo").html("Coloring links by distance... this may take a " +
+        "while.")
       linkColoring(g, graphics, renderer, "distance", false)
       // enables button group again
       // $("#toolButtonGroup button").removeAttr("disabled")
@@ -1579,12 +1600,13 @@ const onLoad = () => {
     $("#reset-links").click()
     $("#scaleLegend").empty()
 
-    showDiv().then(
-      setTimeout( () => {
+    showDiv().then( () => {
+      $("#loadingInfo").html("Coloring links by size ratio... this may take " +
+        "a while.")
         linkColoring(g, graphics, renderer, "size", toggleRatioStatus)
         // enables button group again
         // $("#toolButtonGroup button").removeAttr("disabled")
-      }, 100)
+      }
     )
 
   })
@@ -1608,12 +1630,11 @@ const onLoad = () => {
     $("#reset-links").click()
     $("#scaleLegend").empty()
 
-    showDiv().then(
-      setTimeout( () => {
-        removeBasedOnHashes(g, graphics, renderer, toggleRatioStatus)
-        // enables button group again
-        // $("#toolButtonGroup button").removeAttr("disabled")
-      }, 100)
+    showDiv().then( () => {
+      $("#loadingInfo").html("Coloring links by shared sequence... this may " +
+        "take a while.")
+      removeBasedOnHashes(g, graphics, renderer, toggleRatioStatus)
+      }
     )
 
   })
@@ -1877,6 +1898,7 @@ const onLoad = () => {
     areaSelection = false
 
     showDiv().then( () => {
+      $("#loadingInfo").html("Loading sample data...")
       getArrayMapping().done( (result) => {
         // puts to readFilejson object that may store many files
         readFilejson = {
@@ -1922,6 +1944,7 @@ const onLoad = () => {
     areaSelection = false
 
     showDiv().then( () => {
+      $("#loadingInfo").html("Loading sample data...")
       getArrayMash().done( (result) => {
         // puts to readFilejson object that may store many files
         mashJson = {
@@ -1966,6 +1989,7 @@ const onLoad = () => {
     hideAllOtherPlots()
     areaSelection = false
     showDiv().then(() => {
+      $("#loadingInfo").html("Loading sample data...")
       getArrayAssembly().then((results) => {
         readFilejson = assemblyJson = results
         const readString = Object.values(results)[0]
@@ -2005,8 +2029,8 @@ const onLoad = () => {
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
       areaSelection = false
-      $("#loading").show()
       showDiv().then( () => {
+        $("#loadingInfo").html("Loading data...")
         const outputList = readColoring(g, listGi, graphics, renderer, readString)
         listGi = outputList[0]
         listGiFilter = outputList[1]
@@ -2122,6 +2146,8 @@ const onLoad = () => {
 
     //* * Loading Screen goes on **//
     showDiv().then( () => {
+      $("#loadingInfo").html("Filtering plasmid network for the requested " +
+        "plasmids...")
       // removes nodes
       // freezeShift = true
 
@@ -2152,6 +2178,7 @@ const onLoad = () => {
     resetAllNodes(graphics, g, nodeColor, renderer)
 
     showDiv().then( () => {
+      $("#loadingInfo").html("Loading full plasmid network...")
       // removes nodes and forces adding same nodes
       setTimeout( () => {
         actualRemoval(g, graphics, onLoad, true)
@@ -2197,6 +2224,7 @@ const onLoad = () => {
     $("#tableModal").modal()
     showDiv()
       .then( () => {
+        $("#loadingInfo").html("Preparing table data...")
         previousTableList = makeTable(areaSelection, listGiFilter,
           previousTableList, g, graphics, graphSize)
         // enables button group again
@@ -2580,6 +2608,7 @@ const onLoad = () => {
 
   $("#center_graph").unbind("click").bind("click", () => {
     showDiv().then( async () => {
+      $("#loadingInfo").html("Centering in plasmid with most links...")
       await getCentralNode(g)
       await recenterDOM(renderer, layout, [centralNode])
       $("#loading").hide()
