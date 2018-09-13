@@ -326,7 +326,6 @@ const onLoad = () => {
         await parseRequestResults(requestResults)
       }
     } else {
-      console.log(readFilejson)
       // storeMasterNode is empty in here
       if (readFilejson !== false) {
         const readReload = readFilejson[currentSample]

@@ -123,6 +123,8 @@
 
 #loadingInfo{
     text-align: center;
+    font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;
+    font-weight: bold;
 }
 
 #boldDivider{
