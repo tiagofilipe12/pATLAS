@@ -1,6 +1,43 @@
 /*globals Viva */
 
 /**
+ * Function to unpin nodes on x key up
+ * @param g
+ * @param layout
+ */
+const unpinSelectedNodes = (g, layout) => {
+  for (const accession of listGiFilter) {
+    layout.pinNode(g.getNode(accession), false)
+  }
+}
+
+/**
+ * Function that enables to drag multiple nodes that are selected by the shift
+ * key
+ * @param graphics
+ * @param layout
+ * @param whatMoved
+ */
+const dragMultipleNodes = (g, graphics, layout, whatMoved) => {
+
+  for (const accession of listGiFilter){
+    // get node old position
+    const oldPos = layout.getNodePosition(accession)
+
+    // sum difference old position and what moved
+    const diff = {
+      x: oldPos.x + whatMoved.x,
+      y: oldPos.y + whatMoved.y
+    }
+
+    layout.setNodePosition(accession, diff.x, diff.y)
+
+    layout.pinNode(g.getNode(accession), true)
+
+  }
+}
+
+/**
  * Function to create overlay that permits startMultiSelect to change color
  * of nodes
  * @param {HTMLElement} overlayDom - html element graph-overlay which has
@@ -137,8 +174,6 @@ const startMultiSelect = (graph, renderer, layout) => {
         if (isInside(layout, node.id, topLeft, bottomRight)) {
           nodeUI.backupColor = nodeUI.color
           nodeUI.color = "0x" + "#fa5e00".replace("#", "")
-        } else {
-          nodeUI.color = 0x666370 // default grey
         }
       }
     }

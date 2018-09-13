@@ -234,3 +234,7 @@ let fileMode = false
  * @type {boolean|String}
  */
 let currentSample = false
+
+let lastPosition = false
+
+let dragging = false

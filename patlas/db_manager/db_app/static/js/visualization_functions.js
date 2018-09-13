@@ -26,7 +26,8 @@ masterReadArray, getLinkedNodes, pageReload, clickerButton, clickedHighchart,
 clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
 parseRequestResults, requestResults, currentQueryNode, centralNode,
-getCentralNode, dropdownSample, currentSample, loadingMessage*/
+getCentralNode, dropdownSample, currentSample, loadingMessage, lastPosition,
+dragging*/
 
 
 /**
@@ -763,8 +764,9 @@ const onLoad = () => {
   // event for shift key down
   // shows overlay div and exectures startMultiSelect
   $(document).unbind("keydown").bind("keydown", (e) => {
-    if (e.which === 16 && multiSelectOverlay === false && freezeShift === false) { // shift key
+    if (e.which === 16 && !multiSelectOverlay && !freezeShift && !dragging) { // shift key
       // should close popup open so it doesn't get into listGiFilter
+
       $("#closePop").click()
       $(".graph-overlay").show()
       multiSelectOverlay = true
@@ -778,10 +780,14 @@ const onLoad = () => {
       // respective divs
       Object.keys(selector).map( (el) => { selector[el].state = false })
       hideAllOtherPlots()
-      resetAllNodes(graphics, g, nodeColor, renderer)
+      // resetAllNodes(graphics, g, nodeColor, renderer)
 
       selectedFilter = false
 
+    } else if (e.which === 88 && !dragging) {
+      dragging = true
+      multiSelectOverlay = false
+      multiSelectOverlayObj.destroy()
     }
   })
 
@@ -793,10 +799,48 @@ const onLoad = () => {
       $(".graph-overlay").hide()
       $("#colorLegend").hide()
       if (multiSelectOverlay !== false) {
-        multiSelectOverlayObj = false
+        multiSelectOverlayObj.destroy()
       }
       multiSelectOverlay = false
+    } else if (e.which === 88) {
+      dragging = false
+      mouseCounter = 0
+      // unpin selected nodes
+      unpinSelectedNodes(g, layout)
+      renderer.rerender()
+
     }
+  })
+
+  let mouseCounter = 0
+
+  $(document).unbind("mousemove").bind("mousemove", async (e) => {
+    // checks if drag mode is on
+    if (dragging) {
+      mouseCounter++
+      // transform current mouse position to graph coordinates
+      const currentPosition = graphics.transformClientToGraphCoordinates({
+        x: e.pageX,
+        y: e.pageY
+      })
+      // sets the positions to move
+      const whatMoved = {
+        x: currentPosition.x - lastPosition.x,
+        y: currentPosition.y - lastPosition.y
+      }
+      listGiFilter = await reGetListGi(g, graphics)
+      await dragMultipleNodes(g, graphics, layout, whatMoved)
+      if (mouseCounter % 5 === 0) {
+        await renderer.rerender()
+      }
+    }
+
+    // sets last position of the mouse and transform coordinates to graph
+    // position
+    lastPosition = graphics.transformClientToGraphCoordinates({
+      x: e.pageX,
+      y: e.pageY
+    })
   })
 
 
