@@ -22,14 +22,15 @@ try:
     from utils.hist_util import plot_histogram
     from utils.taxa_fetch import executor
     from db_manager.db_app import db, models
+    from . import __version__
 except ImportError:
     from patlas.utils.hist_util import plot_histogram
     from patlas.utils.taxa_fetch import executor
     from patlas.db_manager.db_app import db, models
+    from patlas import __version__
 
 # This is a rather sketchy solution TODO remove this with a refactor of node_crawler
 sys.setrecursionlimit(10000)
-
 
 class Record:
 
@@ -102,7 +103,6 @@ def output_tree(infile, tag):
     -------
 
     """
-
 
     mother_directory = os.path.join(os.path.dirname(os.path.abspath(infile)),
                                     tag)
@@ -373,6 +373,7 @@ def master_fasta(fastas, output_tag, mother_directory):
     accession_out = os.path.join(mother_directory,
                                  "accessions_list_{}.lst".format(output_tag))
     with open(accession_out, "w") as fh:
+        fh.write("version: {}\n".format(__version__))
         fh.write("\n".join(all_accessions))
 
     return out_file, sequence_info, all_species
