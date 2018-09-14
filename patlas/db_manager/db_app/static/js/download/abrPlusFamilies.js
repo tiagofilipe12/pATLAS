@@ -223,10 +223,15 @@ const resPopupPopulate = async (queryArrayCardRange,
  * @returns {String} - trimmed string
  */
 const customTrim = (str, toTrim) => {
+  // check if toTrim parameter is given, if not trim by spaces as a normal
+  // .trim()
   toTrim = (typeof toTrim === "undefined") ? " " : toTrim
+  // generate the regex to search the desired character at the beginning and
+  // end of the string
   const regex = new RegExp(
     "^[" + toTrim + "]+|[" + toTrim + "]+$", "g"
   )
+  // replaces the regex by nothing and returns
   return str.replace(regex, "")
 }
 
