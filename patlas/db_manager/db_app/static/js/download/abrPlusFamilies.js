@@ -299,7 +299,6 @@ const resGetter = (nodeId) => {
           }
         }
       }
-      console.log(queryArrayCardRange, queryArrayResfinderRange)
       // then actually add it to popup_description div
       resPopupPopulate(queryArrayCardRange,queryArrayResfinderRange)
 
