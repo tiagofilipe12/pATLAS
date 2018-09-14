@@ -34,6 +34,7 @@ modals.
 selections.
 - Fixed bug with when file is imported preventing selections of taxa,
 resistance, plasmidfinder, virulence and so on.
+- Fixed parsing of resistance genes that contained ' in their gene names
 
 ## Version 1.5.2
 

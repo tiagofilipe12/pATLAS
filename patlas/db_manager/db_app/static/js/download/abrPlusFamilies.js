@@ -216,6 +216,19 @@ const resPopupPopulate = async (queryArrayCardRange,
 
 }
 
+/***
+ * Function to trim from the beginning and the end of a string a given character
+ * @param {String} str - string from which you want to trim both ends
+ * @param {String} toTrim - the pattern that is indented to remove from the str
+ * @returns {String} - trimmed string
+ */
+const customTrim = (str, toTrim) => {
+  toTrim = (typeof toTrim === "undefined") ? " " : toTrim
+  const regex = new RegExp(
+    "^[" + toTrim + "]+|[" + toTrim + "]+$", "g"
+  )
+  return str.replace(regex, "")
+}
 
 /**
  * This function is intended to use in a single query instances such as
@@ -236,13 +249,20 @@ const resGetter = (nodeId) => {
 
     try {
       // totalLength array corresponds to gene names
-      const totalLenght = data[0].json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
-      const accessionList = data[0].json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
-      const coverageList = data[0].json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
-      const databaseList = data[0].json_entry.database.replace(/['u\[\] ]/g, "").split(",")
-      const identityList = data[0].json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
-      const rangeList = data[0].json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
-      const aroList = data[0].json_entry.aro_accession.replace(/['u\[\] ]/g, "").split(",")
+      const totalLenght = data[0].json_entry.gene.replace(/["\[\] ]/g, "")
+        .split(",")
+      const accessionList = data[0].json_entry.accession
+        .replace(/['u\[\] ]/g, "").split(",")
+      const coverageList = data[0].json_entry.coverage
+        .replace(/['u\[\] ]/g, "").split(",")
+      const databaseList = data[0].json_entry.database
+        .replace(/['u\[\] ]/g, "").split(",")
+      const identityList = data[0].json_entry.identity
+        .replace(/['u\[\] ]/g, "").split(",")
+      const rangeList = data[0].json_entry.seq_range
+        .replace("[[", "[").replace("]]", "]").split("],")
+      const aroList = data[0].json_entry.aro_accession
+        .replace(/['u\[\] ]/g, "").split(",")
 
       for (const i in totalLenght) {
         if ({}.hasOwnProperty.call(totalLenght, i)) {
@@ -251,10 +271,9 @@ const resGetter = (nodeId) => {
             (rangeList[i] + "]").replace(/[\[\] ]/g, "").split(",")
 
           if (databaseList[i].indexOf("card") > -1) {
-
             queryArrayCardRange.push( {
                 "range": rangeEntry,
-                "genes": totalLenght[i],
+                "genes": customTrim(totalLenght[i], "'"),
                 "accessions": makeItClickable(accessionList[i].split(":")[0]),
                 "coverage": coverageList[i],
                 "identity": identityList[i],
@@ -266,7 +285,7 @@ const resGetter = (nodeId) => {
 
             queryArrayResfinderRange.push( {
                 "range": rangeEntry,
-                "genes": totalLenght[i],
+                "genes": customTrim(totalLenght[i], "'"),
                 "accessions": makeItClickable(accessionList[i]),
                 "coverage": coverageList[i],
                 "identity": identityList[i]
@@ -275,6 +294,7 @@ const resGetter = (nodeId) => {
           }
         }
       }
+      console.log(queryArrayCardRange, queryArrayResfinderRange)
       // then actually add it to popup_description div
       resPopupPopulate(queryArrayCardRange,queryArrayResfinderRange)
 
@@ -381,7 +401,7 @@ const plasmidFamilyGetter = (nodeId) => {
 
           queryArrayPFRange.push( {
               "range": rangeEntry,
-              "genes": totalLength[i],
+              "genes": customTrim(totalLenght[i], "'"),
               "accessions": makeItClickable(accessionList[i].split(":")[0]),
               "coverage": coverageList[i],
               "identity": identityList[i]
@@ -486,7 +506,7 @@ const virulenceGetter = (nodeId) => {
           queryArrayVirRange.push(
             {
               "range": rangeEntry,
-              "genes": totalLength[i],
+              "genes": customTrim(totalLenght[i], "'"),
               "accessions": makeItClickable(accessionList[i].split(":")[0]),
               "coverage": coverageList[i],
               "identity": identityList[i]
