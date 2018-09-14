@@ -26,6 +26,8 @@ display.
 - Added small information messages to loading.
 - Shift key drag selections now accept multiple selected areas and drag of
 multiple nodes.
+- Improved modals text and several formatting options were changed throughout
+modals.
 
 #### Bug fixes
 - Fixed minor issues after filtering datasets for link selections and for shift

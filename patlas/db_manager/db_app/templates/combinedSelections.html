@@ -6,146 +6,168 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h3 class="modal-title">Intersections between multiple filters</h3>
+        <h3 class="modal-title">Combined selections</h3>
       </div>
       <div class="modal-body" id="modal-body-intersections">
 
-        <div class="row" style="font-weight: bold;">Taxa</div>
-
-        <div class="col-md-3">
-          <div class="header_taxa">Orders</div>
-
-          <select class="selectpicker" data-dropup-auto="false"
-                  data-width="100%" multiple
-                  data-selected-text-format="count"
-                  data-live-search="true"
-                  data-title="No items selected" id="orderList2"
-                  data-size="15">
-            <!--populated by visualization_function.js-->
-          </select>
-        </div>
-        <div class="col-md-3">
-          <div class="header_taxa">Families</div>
-
-          <select class="selectpicker" data-dropup-auto="false"
-                  data-width="100%" multiple
-                  data-selected-text-format="count"
-                  data-live-search="true"
-                  data-title="No items selected" id="familyList2"
-                  data-size="15">
-            <!--populated by visualization_function.js-->
-          </select>
-        </div>
-        <div class="col-md-3">
-          <div class="header_taxa">Genera</div>
-
-          <select class="selectpicker" data-dropup-auto="false"
-                  data-width="100%" multiple
-                  data-selected-text-format="count"
-                  data-live-search="true"
-                  data-title="No items selected" id="genusList2"
-                  data-size="15">
-            <!--populated by visualization_function.js-->
-          </select>
+        <div class="row">
+          <div class="col-md-12" style="font-weight: bold;">Taxa</div>
         </div>
 
-        <div class="col-md-3">
-          <div class="header_taxa">Species</div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="header_taxa">Orders</div>
 
-          <select class="selectpicker" data-dropup-auto="false"
-                  data-width="100%" multiple
-                  data-selected-text-format="count"
-                  data-live-search="true"
-                  data-title="No items selected" id="speciesList2"
-                  data-size="15">
-            <!--populated by visualization_function.js-->
-          </select>
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="100%" multiple
+                    data-selected-text-format="count"
+                    data-live-search="true"
+                    data-title="No items selected" id="orderList2"
+                    data-size="15">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
+          <div class="col-md-3">
+            <div class="header_taxa">Families</div>
+
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="100%" multiple
+                    data-selected-text-format="count"
+                    data-live-search="true"
+                    data-title="No items selected" id="familyList2"
+                    data-size="15">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
+          <div class="col-md-3">
+            <div class="header_taxa">Genera</div>
+
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="100%" multiple
+                    data-selected-text-format="count"
+                    data-live-search="true"
+                    data-title="No items selected" id="genusList2"
+                    data-size="15">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <div class="header_taxa">Species</div>
+
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="100%" multiple
+                    data-selected-text-format="count"
+                    data-live-search="true"
+                    data-title="No items selected" id="speciesList2"
+                    data-size="15">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
         </div>
 
-        <div class="col-md-5">
-          <div style='border-top: 1px solid #aaa6aa; position: relative;
+        <div class="row">
+          <div class="col-md-4">
+            <div style='border-top: 1px solid #aaa6aa; position: relative;
                 top: 10px; margin-bottom: 10px; padding: 5px'></div>
-        </div>
-        <div class="col-md-2" style="color: #aaa6aa">
-          <b>AND / OR</b>
-        </div>
-        <div class="col-md-5">
-          <div style='border-top: 1px solid #aaa6aa; position: relative;
+          </div>
+          <div class="col-md-4" style="color: #aaa6aa">
+            <b>AND / OR</b>
+          </div>
+          <div class="col-md-4">
+            <div style='border-top: 1px solid #aaa6aa; position: relative;
                 top: 10px; margin-bottom: 10px; padding: 10px'></div>
+          </div>
         </div>
 
-        <div style="font-weight: bold;">Plasmid Families</div>
-        <div class="col-md-12">
-          <select class="selectpicker" data-dropup-auto="false"
-                  data-width="100%" multiple
-                  data-selected-text-format="count"
-                  data-live-search="true"
-                  data-title="No items selected" id="pfList2"
-                  data-size="15">
-            <!--populated by visualization_function.js-->
-          </select>
+        <div class="row">
+          <div class="col-md-12" style="font-weight: bold;">Plasmid Families</div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="100%" multiple
+                    data-selected-text-format="count"
+                    data-live-search="true"
+                    data-title="No items selected" id="pfList2"
+                    data-size="15">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
         </div>
 
-        <div class="col-md-5">
-          <div style='border-top: 1px solid #aaa6aa; position: relative;
+        <div class="row">
+          <div class="col-md-4">
+            <div style='border-top: 1px solid #aaa6aa; position: relative;
                 top: 10px; margin-bottom: 10px; padding: 5px'></div>
-        </div>
-        <div class="col-md-2" style="color: #aaa6aa">
-          <b>AND / OR</b>
-        </div>
-        <div class="col-md-5">
-          <div style='border-top: 1px solid #aaa6aa; position: relative;
+          </div>
+          <div class="col-md-4" style="color: #aaa6aa">
+            <b>AND / OR</b>
+          </div>
+          <div class="col-md-4">
+            <div style='border-top: 1px solid #aaa6aa; position: relative;
                 top: 10px; margin-bottom: 10px; padding: 10px'></div>
+          </div>
         </div>
 
-        <div style="font-weight: bold;">Resistances</div>
-        <div class="col-md-6">
-          <div class="header_taxa">ResFinder</div>
-          <select class="selectpicker" data-dropup-auto="false"
-                  data-width="100%" multiple
-                  data-selected-text-format="count"
-                  data-live-search="true"
-                  data-title="No items selected" id="resResfinderList2"
-                  data-size="15">
-            <!--populated by visualization_function.js-->
-          </select>
+        <div class="row">
+          <div class="col-md-12" style="font-weight: bold;">Resistances</div>
         </div>
-        <div class="col-md-6">
-          <div class="header_taxa">Card</div>
-          <select class="selectpicker" data-dropup-auto="false"
-                  data-width="100%" multiple
-                  data-selected-text-format="count"
-                  data-live-search="true"
-                  data-title="No items selected" id="resCardList2"
-                  data-size="15">
-            <!--populated by visualization_function.js-->
-          </select>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="header_taxa">ResFinder</div>
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="100%" multiple
+                    data-selected-text-format="count"
+                    data-live-search="true"
+                    data-title="No items selected" id="resResfinderList2"
+                    data-size="15">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
+          <div class="col-md-6">
+            <div class="header_taxa">Card</div>
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="100%" multiple
+                    data-selected-text-format="count"
+                    data-live-search="true"
+                    data-title="No items selected" id="resCardList2"
+                    data-size="15">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
         </div>
 
-        <div class="col-md-5">
-          <div style='border-top: 1px solid #aaa6aa; position: relative;
+        <div class="row">
+          <div class="col-md-4">
+            <div style='border-top: 1px solid #aaa6aa; position: relative;
                 top: 10px; margin-bottom: 10px; padding: 5px'></div>
-        </div>
-        <div class="col-md-2" style="color: #aaa6aa">
-          <b>AND / OR</b>
-        </div>
-        <div class="col-md-5">
-          <div style='border-top: 1px solid #aaa6aa; position: relative;
+          </div>
+          <div class="col-md-4" style="color: #aaa6aa">
+            <b>AND / OR</b>
+          </div>
+          <div class="col-md-4">
+            <div style='border-top: 1px solid #aaa6aa; position: relative;
                 top: 10px; margin-bottom: 10px; padding: 10px'></div>
+          </div>
         </div>
 
-        <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12" style="font-weight: bold;">Virulence</div>
+        </div>
 
-          <div style="font-weight: bold;">Virulence</div>
-
-          <select class="selectpicker" data-dropup-auto="false"
-                  data-width="100%" multiple
-                  data-selected-text-format="count"
-                  data-live-search="true"
-                  data-title="No items selected" id="virList2"
-                  data-size="10">
-            <!--populated by visualization_function.js-->
-          </select>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="header_taxa">VFDB</div>
+            <select class="selectpicker" data-dropup-auto="false"
+                    data-width="100%" multiple
+                    data-selected-text-format="count"
+                    data-live-search="true"
+                    data-title="No items selected" id="virList2"
+                    data-size="10">
+              <!--populated by visualization_function.js-->
+            </select>
+          </div>
         </div>
 
 
@@ -175,14 +197,12 @@
             <span class="glyphicon glyphicon-question-sign"></span>
           </button>
 
-          <button type="submit" class="btn btn-info"
-                  data-dismiss="modal" id="intersectionsModalSubmit"
-                  style="background-color: #4486c3">
-            Submit intersection</button>
-          <button type="submit" class="btn btn-success"
-                  data-dismiss="modal" id="unionModalSubmit"
-                  style="background-color: #5c9e63">
-            Submit union</button>
+          <button type="submit" class="btn btn-default"
+                  data-dismiss="modal" id="intersectionsModalSubmit">
+            Highlight intersection</button>
+          <button type="submit" class="btn btn-default"
+                  data-dismiss="modal" id="unionModalSubmit">
+            Highlight union</button>
         </div>
 
         <button type="submit" class="btn btn-danger"

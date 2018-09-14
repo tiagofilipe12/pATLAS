@@ -31,27 +31,6 @@ dragging, develGenerationGraph, unpinSelectedNodes*/
 
 
 /**
- * forces welcomeModal to be the first thing the user sees when the page
- * is loaded.
- * @param {function} callback - uses onLoad function as callback in order to
- * allow for welcomeModal to be displayer before rendering everything else with
- * a delay of 1 sec.
- */
-const onLoadWelcome = (callback) => {
-  // // forces welcomeModal to be the first thing the user sees when the page
-  // // is loaded
-  // (requestResults === false) && ($("#welcomeModal").modal("show"))
-  //
-  // //then onLoad is run as a callback
-  // // for modal to show before page potential page freeze I made it wait half
-  // // a second before starting the load
-  // setTimeout( () => {
-    callback()
-  // }, 1000)
-}
-
-
-/**
  * Function to empty the divs with the files.
  */
 const emptyFiles = () => {

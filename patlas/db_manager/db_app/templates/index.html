@@ -60,7 +60,7 @@
 
 </head>
 
-<body onload=onLoadWelcome(onLoad)>
+<body onload=onLoad()>
 
 <div id="loading">
   <div id="loadingWrapper">
@@ -142,7 +142,7 @@
              alt="pATLAS" style="width:30%;height:auto; display:block;
                      margin:auto;"/>
       </div>
-      <div class="modal-body" id="aboutModalBody">
+      <div class="modal-body about-font" id="aboutModalBody">
         <h1><b>Plasmid Atlas</b></h1>
         <a class="github-button" href="https://github.com/tiagofilipe12/pATLAS"
            data-size="large"
@@ -225,7 +225,7 @@
                alt="gitter"></a>
       </div>
       <div class="modal-footer">
-        <button type="close" class="btn btn-default"
+        <button type="close" class="btn btn-danger"
                 data-dismiss="modal" id="aboutDismiss">Close
         </button>
       </div>
@@ -247,7 +247,7 @@
         {% include 'faqs.html' %}
       </div>
       <div class="modal-footer">
-        <button type="close" class="btn btn-default"
+        <button type="close" class="btn btn-danger"
                 data-dismiss="modal" id="formDismiss">Close
         </button>
       </div>
@@ -276,7 +276,7 @@
         Note: Use "CC" button on YouTube player to display subtitles
       </div>
       <div class="modal-footer">
-        <button type="close" class="btn btn-default"
+        <button type="close" class="btn btn-danger"
                 data-dismiss="modal" id="videoDismiss">Close
         </button>
       </div>
@@ -316,12 +316,7 @@
               id="questionHeatmap">
         <span class="glyphicon glyphicon-question-sign"></span>
       </button>
-      <button type="submit" class="btn btn-default"
-              data-dismiss="modal" id="heatSubmit"
-      >Ok
-      </button>
-      <!--<button class="btn btn-danger" id="cancelTable">Close-->
-      <!--</button>-->
+      <button class="btn btn-danger" data-dismiss="modal">Close</button>
     </div>
   </div>
 </div>
@@ -376,7 +371,7 @@
         </button>
         <button type="submit" class="btn btn-default"
                 data-dismiss="modal" id="tableSubmit"
-                title="Highlight selected accessions on graph">Submit
+                title="Highlight selected accessions on graph">Highlight
         </button>
         <button class="btn btn-danger" id="cancelTable">Close
         </button>
@@ -460,7 +455,7 @@
         <button class="btn btn-default" id="fileSubmit" data-dismiss="modal"
                 type="button" data-toggle="modal" data-backdrop="static"
                 data-target="#redundancyModal"
-                >Ok
+                >Import
         </button>
         <button class="btn btn-danger" id="cancel_infile">Clear selection</button>
 
@@ -553,7 +548,7 @@
         <button class="btn btn-default" id="fileSubmit_mash" data-dismiss="modal"
                 type="button" data-toggle="modal" data-backdrop="static"
                 data-target="#redundancyModal"
-        >Ok
+        >Import
         </button>
         <button class="btn btn-danger" id="cancel_infile_mash">Clear
           selection</button>
@@ -644,7 +639,7 @@
         <button class="btn btn-default" id="assemblySubmit" data-dismiss="modal"
                 type="button" data-toggle="modal" data-backdrop="static"
                 data-target="#redundancyModal"
-        >Ok
+        >Import
         </button>
         <button class="btn btn-danger" id="cancel_assembly">Clear selection</button>
       </div>
@@ -683,8 +678,10 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesSubmit">Yes</button>
-        <button type="submit" class="btn btn-default" data-dismiss="modal" id="distancesCancel">No</button>
+        <button type="submit" class="btn btn-default" data-dismiss="modal"
+                id="distancesSubmit">Highlight</button>
+        <button type="submit" class="btn btn-danger" data-dismiss="modal"
+                id="distancesCancel">Close</button>
       </div>
     </div>
 
@@ -699,7 +696,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h3 class="modal-title">Filter nodes by sequence length</h3>
+        <h3 class="modal-title">Highlight nodes by sequence length</h3>
       </div>
       <div class="modal-body" id="modal-body-length">
         <div class="row">
@@ -719,7 +716,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-default" data-dismiss="modal" id="lengthSubmit">Ok</button>
+        <button type="submit" class="btn btn-default" data-dismiss="modal"
+                id="lengthSubmit">Ok</button>
       </div>
     </div>
 
@@ -737,7 +735,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h3 class="modal-title">Filter by taxa</h3>
+        <h3 class="modal-title">Taxa selection</h3>
       </div>
       <div class="modal-body" id="modal-body-taxa">
 
@@ -748,7 +746,7 @@
           <div class='col-md-12'>
             <div class="panel-group" id="displayCurrent">
               <div class="panel panel-info" >
-                <div class="panel-heading">Current filters</div>
+                <div class="panel-heading">Current selections</div>
                 <div class="panel-body" id="displayCurrentBox">
                   <!--Populated by visualization_functions.js-->
                   <p id="p_Order">Order:</p>
@@ -782,7 +780,7 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default"
-                data-dismiss="modal" id="taxaModalSubmit">Submit</button>
+                data-dismiss="modal" id="taxaModalSubmit">Highlight</button>
         <button type="submit" class="btn btn-danger"
                 id="taxaModalClear">Clear selection</button>
       </div>
@@ -804,7 +802,7 @@
      style="display: none">
   <button type="button" class="close" id="alertNoSelectionClose"
           aria-hidden="true" data-hide="true">&times;</button>
-  No selection was made! Please make a selection before attempting to filter.
+  No selection was made! Please make a selection before attempting to select.
 </div>
 
 <div class="alert alert-info alert-dismissable fade in" id="alertAssembly"
@@ -818,7 +816,7 @@
 <!--Alert message to check that some selection is made-->
 <div class="alert alert-danger alert-dismissable fade in" id="alertId" style="display: none">
   <button type="button" class="close" id="alertClose" aria-hidden="true" data-hide="true">&times;</button>
-  <strong>Warning!</strong> No filters were selected. No changes will be made!
+  <strong>Warning!</strong> No selections were made. No changes will be made!
 </div>
 
 <!--Alert message to check that some selection is made-->
@@ -834,12 +832,6 @@
           aria-hidden="true" data-hide="true">&times;</button>
   <strong>Warning!</strong> Are you sure this search is valid? Make sure
   the toggle on the left is properly set.
-</div>
-
-<!--Alert message to check that some selection is made-->
-<div class="alert alert-danger alert-dismissable fade in" id="alertId_node" style="display: none">
-  <button type="button" class="close" id="alertClose_node" aria-hidden="true" data-hide="true">&times;</button>
-  <strong>Warning!</strong> To enable filter dropdown options, disable "Node mode on" on the leftside switcher!
 </div>
 
 <!--Alert message to check that some selection is made-->
@@ -862,7 +854,7 @@
      style="display: none">
   <button type="button" class="close" id="alertClose_noResults" aria-hidden="true"
           data-hide="true">&times;</button>
-  <strong>Warning!</strong> This file has no results for the filters applied.
+  <strong>Warning!</strong> This file has no results for the parameters applied.
   Try to change the parameters provided through import menu.
 </div>
 
@@ -1060,7 +1052,7 @@
         <div id="collapse5" class="panel-collapse collapse">
       <!--<li class="collapse_groups">-->
           <button class="list-group-item"
-                  onclick='window.open("https://tiagofilipe12.gitbooks.io/patlas/content/")'>Documentation
+                  onclick='window.open("https://patlas.gitbook.io/docs/")'>Documentation
           </button>
           <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                   data-target="#videoModal">Video tutorial
@@ -1127,7 +1119,7 @@
           <button class="btn btn-default" id="Re_run"
                   type="button" data-toggle="modal" data-backdrop="static"
                   data-target="#reRunModal"
-                  title="Apply filters">
+                  title="Filter current selection">
             <span class="glyphicon glyphicon-filter"></span>
           </button>
           <!--for now this button is disabled since it does not have funcitonality-->
@@ -1410,8 +1402,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h3 class="modal-title">Filter plasmids by
-          resistance genes</h3>
+        <h3 class="modal-title">Resistances selection</h3>
       </div>
       <div class="modal-body" id="modalBodyABR">
 
@@ -1456,7 +1447,7 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default"
-                data-dismiss="modal" id="resSubmit">Submit</button>
+                data-dismiss="modal" id="resSubmit">Highlight</button>
         <button type="submit" class="btn btn-danger"
                 id="resClear">Clear selection</button>
       </div>
@@ -1472,8 +1463,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h3 class="modal-title">Filter plasmids by
-          plasmid family genes</h3>
+        <h3 class="modal-title">Plasmid family selection</h3>
       </div>
       <div class="modal-body" id="modalBodyFAM">
 
@@ -1514,7 +1504,7 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default"
-                data-dismiss="modal" id="pfSubmit">Submit</button>
+                data-dismiss="modal" id="pfSubmit">Highlight</button>
         <button type="submit" class="btn btn-danger"
                 id="pfClear">Clear selection</button>
       </div>
@@ -1530,8 +1520,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h3 class="modal-title">Filter plasmids by
-          virulence factor genes</h3>
+        <h3 class="modal-title">Virulence factor selection</h3>
       </div>
       <div class="modal-body" id="modalBodyVir">
 
@@ -1572,7 +1561,7 @@
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-default"
-                data-dismiss="modal" id="virSubmit">Submit</button>
+                data-dismiss="modal" id="virSubmit">Highlight</button>
         <button type="submit" class="btn btn-danger"
                 id="virClear">Clear selection</button>
       </div>

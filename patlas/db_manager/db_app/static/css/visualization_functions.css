@@ -826,7 +826,7 @@ Careful when using this in other popovers in the future*/
 
 #modal-body-intersections{
     text-align: center;
-    height: 440px;
+    height: 460px;
 }
 
 .dropdown-header{
@@ -846,4 +846,12 @@ Careful when using this in other popovers in the future*/
 
 .custom-file-form.is-dragover{
     background-color: #b4b4b4;
+}
+
+.modal-footer{
+    min-height: 60px;
+}
+
+.about-font{
+    font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;
 }
