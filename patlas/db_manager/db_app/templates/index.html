@@ -78,58 +78,58 @@
 </div>
 
 <!-- welcome modal -->
-<div class="modal fade" id="welcomeModal" data-backdrop="static"
-     role="dialog" tabindex="-1">
-  <div class="modal-dialog" id="welcomeDialog" style="width: 80%">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <img src="{{ url_for('static', filename='images/logo.png') }}"
-             alt="pATLAS" style="width:30%;height:auto; display:block;
-                     margin:auto;"/>
-      </div>
-      <div class="modal-body">
-        <h1>Welcome to Plasmid Atlas</h1>
-        <p class="mainText">Plasmid Atlas is a web interface that allow
-          users to
-          browse plasmid sequences available in the NCBI refseq
-          database. Here you can obtain metadata related with the
-          available plasmid sequences, such as species in which
-          they were described, antibiotic resistance information
-          and much more.</p>
+<!--<div class="modal fade" id="welcomeModal" data-backdrop="static"-->
+     <!--role="dialog" tabindex="-1">-->
+  <!--<div class="modal-dialog" id="welcomeDialog" style="width: 80%">-->
+    <!--<div class="modal-content">-->
+      <!--<div class="modal-header">-->
+        <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+        <!--<img src="{{ url_for('static', filename='images/logo.png') }}"-->
+             <!--alt="pATLAS" style="width:30%;height:auto; display:block;-->
+                     <!--margin:auto;"/>-->
+      <!--</div>-->
+      <!--<div class="modal-body">-->
+        <!--<h1>Welcome to Plasmid Atlas</h1>-->
+        <!--<p class="mainText">Plasmid Atlas is a web interface that allow-->
+          <!--users to-->
+          <!--browse plasmid sequences available in the NCBI refseq-->
+          <!--database. Here you can obtain metadata related with the-->
+          <!--available plasmid sequences, such as species in which-->
+          <!--they were described, antibiotic resistance information-->
+          <!--and much more.</p>-->
 
-        <p class="mainText">We are always happy
-          to improve user experience, so if you
-          find any
-          <a class="github-button" href="https://github.com/tiagofilipe12/pATLAS/issues"
-             aria-label="Issue tiagofilipe12/pATLAS on GitHub">Issue</a>
-          please report them to us. You can also contact us in
-          <a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">
-            <img src="{{ url_for('static', filename='images/Lobby.png') }}"
-                 alt="gitter" style="width: auto; height: auto"/></a>.
-        </p>
-        <p class="mainText"><b>Note:</b> pATLAS was tested for Google
-          Chrome, Firefox, Safari and Microsoft Edge, however
-          we recommend using Google Chrome
-          <img src="{{ url_for('static', filename='images/chrome_logo.png') }}"
-               style="width: 30px; height: 30px"/> for a better experience.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <div id="counternclose"
-             style="position: absolute; left:3%; bottom: 3%;">
-          <div id="counter" style="float: left">Closing in: 30s</div>
-          <button type="button" class="close" id="counterClose"
-                  style="float: right; margin-left: 4px; opacity: 1;">&times;
-          </button>
-        </div>
-        <button type="close" class="btn btn-default"
-                data-dismiss="modal" id="welcomeDismiss">Dismiss
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+        <!--<p class="mainText">We are always happy-->
+          <!--to improve user experience, so if you-->
+          <!--find any-->
+          <!--<a class="github-button" href="https://github.com/tiagofilipe12/pATLAS/issues"-->
+             <!--aria-label="Issue tiagofilipe12/pATLAS on GitHub">Issue</a>-->
+          <!--please report them to us. You can also contact us in-->
+          <!--<a href="https://gitter.im/plasmidATLAS/Lobby" target="_blank">-->
+            <!--<img src="{{ url_for('static', filename='images/Lobby.png') }}"-->
+                 <!--alt="gitter" style="width: auto; height: auto"/></a>.-->
+        <!--</p>-->
+        <!--<p class="mainText"><b>Note:</b> pATLAS was tested for Google-->
+          <!--Chrome, Firefox, Safari and Microsoft Edge, however-->
+          <!--we recommend using Google Chrome-->
+          <!--<img src="{{ url_for('static', filename='images/chrome_logo.png') }}"-->
+               <!--style="width: 30px; height: 30px"/> for a better experience.-->
+        <!--</p>-->
+      <!--</div>-->
+      <!--<div class="modal-footer">-->
+        <!--<div id="counternclose"-->
+             <!--style="position: absolute; left:3%; bottom: 3%;">-->
+          <!--<div id="counter" style="float: left">Closing in: 30s</div>-->
+          <!--<button type="button" class="close" id="counterClose"-->
+                  <!--style="float: right; margin-left: 4px; opacity: 1;">&times;-->
+          <!--</button>-->
+        <!--</div>-->
+        <!--<button type="close" class="btn btn-default"-->
+                <!--data-dismiss="modal" id="welcomeDismiss">Dismiss-->
+        <!--</button>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
 
 <!-- about modal -->
 <div class="modal fade" id="aboutModal" data-backdrop="static"
@@ -802,7 +802,7 @@
      style="display: none">
   <button type="button" class="close" id="alertNoSelectionClose"
           aria-hidden="true" data-hide="true">&times;</button>
-  No selection was made! Please make a selection before attempting to select.
+  No selection was made! Please make a selection before attempting to highlight.
 </div>
 
 <div class="alert alert-info alert-dismissable fade in" id="alertAssembly"

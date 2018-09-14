@@ -199,6 +199,7 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
       })
       .then( () => {
         renderGraph(graphics)
+        blockFilterModal = true
 
         if (readString !== false ) {
 

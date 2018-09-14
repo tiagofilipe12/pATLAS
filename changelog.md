@@ -28,6 +28,8 @@ display.
 multiple nodes.
 - Improved modals text and several formatting options were changed throughout
 modals.
+- Implemented highlight and filter for all node selections (taxa, resistances,
+plasmid families, virulence and combined selections).
 
 #### Bug fixes
 - Fixed minor issues after filtering datasets for link selections and for shift

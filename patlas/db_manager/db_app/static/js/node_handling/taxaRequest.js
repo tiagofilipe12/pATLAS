@@ -237,6 +237,9 @@ const iterateArrays = async (g, graphics, renderer, alertArrays, storeLis, i) =>
     i = outSpecies[1]
   }
 
+  // if blockFilterModal is false then show modal that allows to show
+  // buttons to filter or not the current selection right ahead
+  if (!blockFilterModal) { await $("#reRunModalResults").modal("show") }
   // then after all request have been made, handle legends and buttons divs
   await renderAfterTaxaRequests(storeLis)
 }

@@ -1307,7 +1307,7 @@ const onLoad = () => {
 
       showDiv().then( () => {
         $("#loadingInfo").html("Submitting your query...")
-        listGiFilter = parseQueriesIntersection(g, graphics, renderer,
+        parseQueriesIntersection(g, graphics, renderer,
           objectOfSelections, typeToProject)
       })
 
@@ -2155,6 +2155,7 @@ const onLoad = () => {
     areaSelection = false
     firstInstace = true
     pageReload = true
+    blockFilterModal = false
     list = []
     listGi = []
     listLengths = []

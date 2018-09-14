@@ -238,3 +238,5 @@ let currentSample = false
 let lastPosition = false
 
 let dragging = false
+
+let blockFilterModal = false

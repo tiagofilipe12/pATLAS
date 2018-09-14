@@ -134,21 +134,27 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
     "resfinder": selectedResfinder
   }
 
+  if (selectedCard !== 0 || selectedResfinder.length !== 0) {
+    legendInst = true
+    // if blockFilterModal is false then show modal that allows to show
+    // buttons to filter or not the current selection right ahead
+    if (!blockFilterModal) { await $("#reRunModalResults").modal("show") }
+  }
+
   // check if arrays are empty
   if (selectedCard.length !== 0 && selectedResfinder.length === 0) {
     // if only card has selected entries
-    storeLis = await iterateSelectedArrays(selectedCard, g, graphics, renderer, tempPageReRun)
-    legendInst = true
+    storeLis = await iterateSelectedArrays(selectedCard, g, graphics,
+      renderer, tempPageReRun)
   } else if (selectedCard.length === 0 && selectedResfinder.length !== 0) {
     // if only resfinder has selected entries
-    storeLis = await iterateSelectedArrays(selectedResfinder, g, graphics, renderer, tempPageReRun)
-    legendInst = true
+    storeLis = await iterateSelectedArrays(selectedResfinder, g, graphics,
+      renderer, tempPageReRun)
   } else if (selectedCard.length !== 0 && selectedResfinder.length !== 0) {
     // if multiple menus are selected
     const currentColor = 0xf71735   // sets color of all changes_nodes to be red
     storeLis = "<li class='centeredList'><button class='jscolor btn btn-default'" +
       " style='background-color:#f71735'></button>&nbsp;multiple selection</li>"
-    legendInst = true
     const mergedSelectedArray = selectedCard.concat(selectedResfinder)
     // in this case selected color must be the same and constant
 
@@ -164,6 +170,8 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
         })
       }
     }
+
+
   } else {
     // raise error message for the user
     document.getElementById("alertId").style.display = "block"
@@ -234,6 +242,10 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
       }
     }
     legendInst = true
+
+    // if blockFilterModal is false then show modal that allows to show
+    // buttons to filter or not the current selection right ahead
+    if (!blockFilterModal) { await $("#reRunModalResults").modal("show") }
   } else {
     // raise error message for the user
     document.getElementById("alertId").style.display = "block"
@@ -297,9 +309,17 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
             listGiFilter.push(request.plasmid_id)
           }
         })
+
+        // if blockFilterModal is false then show modal that allows to show
+        // buttons to filter or not the current selection right ahead
+        if (!blockFilterModal) { await $("#reRunModalResults").modal("show") }
       }
     }
     legendInst = true
+
+    // if blockFilterModal is false then show modal that allows to show
+    // buttons to filter or not the current selection right ahead
+    if (!blockFilterModal) { await $("#reRunModalResults").modal("show") }
   } else {
     // raise error message for the user
     document.getElementById("alertId").style.display = "block"

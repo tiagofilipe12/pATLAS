@@ -267,26 +267,33 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   // after everything is done then render the respective divs
   $("#loading").hide()
 
-  const storeLis = setStoreLis(objectOfSelections, selectedColor, stringToSelection)
+  // check if there is any selection
+  if (listGiFilter.length !== 0) {
+    const storeLis = setStoreLis(objectOfSelections, selectedColor, stringToSelection)
+    $("#readString").empty()
+    $("#readLegend").empty()
+    $("#read_label").hide()
+    $("#fileNameDiv").hide()
 
-  // show legend
+    $("#colorLegend").show()
 
-  $("#readString").empty()
-  $("#readLegend").empty()
-  $("#read_label").hide()
-  $("#fileNameDiv").hide()
+    $("#advanced_label").show()
+    $("#colorLegendBoxAdvanced").empty()
+      .append(storeLis +
+        "<li class='centeredList'><button class='jscolor btn btn-default'" +
+        " style='background-color:#666370' ></button>&nbsp;unselected</li>")
 
-  $("#colorLegend").show()
+    $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+      " #plotButton").show()
+    // enables button group again
+    $("#toolButtonGroup button").removeAttr("disabled")
 
-  $("#advanced_label").show()
-  $("#colorLegendBoxAdvanced").empty()
-    .append(storeLis +
-      "<li class='centeredList'><button class='jscolor btn btn-default'" +
-      " style='background-color:#666370' ></button>&nbsp;unselected</li>")
-
-  $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-    " #plotButton").show()
-  // enables button group again
-  $("#toolButtonGroup button").removeAttr("disabled")
+    // if blockFilterModal is false then show modal that allows to show
+    // buttons to filter or not the current selection right ahead
+    if (!blockFilterModal) { await $("#reRunModalResults").modal("show") }
+  } else {
+    // if no selection was made...
+    $("#alertNoSelection").show()
+  }
 
 }
