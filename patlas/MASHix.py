@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-## Last update: 11/6/2018
-## Author: T.F. Jesus
-## This script runs MASH in plasmid databases making a pairwise diagonal matrix
-## for each pairwise comparison between libraries
-## Note: each header in fasta is considered a reference
+# Last update: 14/8/2018
+# Author: T.F. Jesus
+# This script runs MASH in plasmid databases making a pairwise diagonal matrix
+# for each pairwise comparison between libraries
+# Note: each header in fasta is considered a reference
 
 import argparse
 import sys
@@ -233,6 +233,10 @@ def master_fasta(fastas, output_tag, mother_directory):
 
     species_output = open(species_out, "w")
 
+    # creates a list of accession numbers, listing all accessions in
+    # input seuqences
+    all_accessions = []
+
     # sets first length instance
     length = 0
     accession = False
@@ -306,6 +310,8 @@ def master_fasta(fastas, output_tag, mother_directory):
                 plasmid_name = search_substing(line)
                 # species related functions
                 all_species.append(" ".join(species.split("_")))
+                # append accession that will be outputed to file
+                all_accessions.append(accession)
 
                 # added this if statement to check whether CDS is present in
                 # fasta header, since database contain them with CDS in string
@@ -362,6 +368,13 @@ def master_fasta(fastas, output_tag, mother_directory):
     # writes a species list to output file
     species_output.write("\n".join(str(i) for i in list(set(all_species))))
     species_output.close()
+
+    # write accessions to a file
+    accession_out = os.path.join(mother_directory,
+                                 "accessions_list_{}.lst".format(output_tag))
+    with open(accession_out, "w") as fh:
+        fh.write("\n".join(all_accessions))
+
     return out_file, sequence_info, all_species
 
 

@@ -2,7 +2,9 @@
 
 ## Upcoming version (1.6.0)
 
-### Database
+### Back end
+- Added code that allows to save a list of all the accession numbers to a file,
+so that future changes to the database can be easily documented.
 
 ### Front end
 
