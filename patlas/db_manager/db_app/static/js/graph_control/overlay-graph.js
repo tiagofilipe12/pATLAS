@@ -2,8 +2,8 @@
 
 /**
  * Function to unpin nodes on x key up
- * @param g
- * @param layout
+ * @param {Object} g
+ * @param {Object} layout
  */
 const unpinSelectedNodes = (g, layout) => {
   for (const accession of listGiFilter) {
@@ -14,9 +14,10 @@ const unpinSelectedNodes = (g, layout) => {
 /**
  * Function that enables to drag multiple nodes that are selected by the shift
  * key
- * @param graphics
- * @param layout
- * @param whatMoved
+ * @param {Object} graphics
+ * @param {Object} layout
+ * @param {Object} whatMoved - An object with the positions of the mouse
+ * movement translated to vivagraph coordinates
  */
 const dragMultipleNodes = (g, graphics, layout, whatMoved) => {
 

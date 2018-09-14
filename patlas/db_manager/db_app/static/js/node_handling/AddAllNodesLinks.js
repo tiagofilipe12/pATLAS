@@ -1,5 +1,5 @@
 /*globals listLengths, listGi, list, totalNumberOfLinks, counter,
-bluebirdPromise */
+bluebirdPromise, storeMasterNode */
 
 /**
  * Function that allows the messages to be displayed in the loading div before

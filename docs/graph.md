@@ -33,9 +33,29 @@ clicked again it will pause the force layout.
 The second leftmost button allows the user to make area selections using
 `shift key + left mouse dragging` to select plasmid in a rectangular area.
 Releasing `shift key` or `left mouse click` will release the selection area
-and maintain the selected plasmids in a green color.
+and color the selected plasmids in orange.
 To disable this mode, click this button again and it will turn grey again
 and lock area selection.
+
+#### Reset selections made
+Area selections made with this function can be made through the 
+[`reset nodes`](topbar.md) button or by clicking in the `shift key` without
+selecting anything.
+
+#### Multiple selections
+Multiple selections are allowed and can be used to drag multiple clusters to a 
+user specified area. To do so, users can make multiple area selections by
+pressing the `shift key` without releasing and making several selections with
+mouse drag and click. **Note:** Do not release `shift key` between multiple 
+selections! If you do so, selection is finished.
+
+#### Drag multiple nodes
+After multiple selections are made they can be dragged to a user specified area,
+by pressing `x key`, while still pressing `shift key` and moving the mouse 
+around. While pressing `x key` and `shift key` when you move the mouse (without
+right or left click or otherwise you will drag the entire graph), the selected
+plasmids (in orange) will move to according to the mouse movement.
+
 
 ### Zooming buttons
 

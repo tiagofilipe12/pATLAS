@@ -27,7 +27,7 @@ clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
 parseRequestResults, requestResults, currentQueryNode, centralNode,
 getCentralNode, dropdownSample, currentSample, loadingMessage, lastPosition,
-dragging*/
+dragging, develGenerationGraph, unpinSelectedNodes*/
 
 
 /**
@@ -763,24 +763,28 @@ const onLoad = () => {
 
   // event for shift key down
   // shows overlay div and exectures startMultiSelect
-  $(document).unbind("keydown").bind("keydown", (e) => {
+  $(document).unbind("keydown").bind("keydown", async (e) => {
     if (e.which === 16 && !multiSelectOverlay && !freezeShift && !dragging) { // shift key
       // should close popup open so it doesn't get into listGiFilter
 
       $("#closePop").click()
       $(".graph-overlay").show()
+
+      // before selecting anything it should clear previous selections
+      await resetAllNodes(graphics, g, nodeColor, renderer)
+      listGiFilter = [] //if selection is made listGiFilter should be empty
+      previousTableList = []
+
       multiSelectOverlay = true
-      multiSelectOverlayObj = startMultiSelect(g, renderer, layout)
+      multiSelectOverlayObj = await startMultiSelect(g, renderer, layout)
       $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
         " #plotButton").show()
       areaSelection = true
-      listGiFilter = [] //if selection is made listGiFilter should be empty
-      previousTableList = []
+
       // transform selector object that handles plots and hide their
       // respective divs
       Object.keys(selector).map( (el) => { selector[el].state = false })
-      hideAllOtherPlots()
-      // resetAllNodes(graphics, g, nodeColor, renderer)
+      await hideAllOtherPlots()
 
       selectedFilter = false
 

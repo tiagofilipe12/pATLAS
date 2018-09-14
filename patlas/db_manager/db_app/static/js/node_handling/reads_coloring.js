@@ -588,7 +588,6 @@ const colorLegendFunction = (readMode) => {
  */
 const resetAllNodes = (graphics, g, nodeColor, renderer) => {
   // first iters nodes to get nodeColor (default color)
-  // TODO avoid using this function within resetAllNodes function and use async/await instead
   nodeColorReset(graphics, g, nodeColor, renderer)
   // then deals with legend, and buttons associated with filters
   if ($("#scaleLegend").html() !== "") {

@@ -5,23 +5,29 @@
 ### Database
 
 ### Front end
+
+#### Database queries
 - Search for accession numbers now accept accession without version 
-(e.g NC_011413)
+(e.g NC_011413).
+
+#### Import results
 - Import from file and requests now have an option to submit and filter 
 directly.
 - Import from file now has option that allows the user to select the sample to
 display.
 
-### Performance
-- Performance of the page was significantly improved with the fix of issue #57
+#### Performance
+- Performance of the page was significantly improved with the fix of issue #57.
 - Welcome modal was temporarily hidden.
-- Refactored `defaultZooming` function, now showing only the final zoom
+- Refactored `defaultZooming` function, now showing only the final zoom.
 
-### Minor changes
+#### Other changes
 - Added default behavior for close buttons in modals for imports.
-- Added small information messages to loading
+- Added small information messages to loading.
+- Shift key drag selections now accept multiple selected areas and drag of
+multiple nodes.
 
-### Bug fixes
+#### Bug fixes
 - Fixed minor issues after filtering datasets for link selections and for shift
 selections.
 - Fixed bug with when file is imported preventing selections of taxa,
