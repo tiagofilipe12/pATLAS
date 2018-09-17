@@ -27,7 +27,7 @@ clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
 parseRequestResults, requestResults, currentQueryNode, centralNode,
 getCentralNode, dropdownSample, currentSample, loadingMessage, lastPosition,
-dragging, develGenerationGraph, unpinSelectedNodes*/
+dragging, develGenerationGraph, unpinSelectedNodes, blockFilterModal*/
 
 
 /**

@@ -1,4 +1,4 @@
-/*globals listGiFilter, colorList, mapRequest, typeOfProject */
+/*globals listGiFilter, colorList, mapRequest, typeOfProject, blockFilterModal*/
 
 
 /**

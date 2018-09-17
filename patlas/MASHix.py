@@ -29,7 +29,7 @@ except ImportError:
     from patlas.utils.crowd_curation import black_list
     from patlas.db_manager.db_app import db, models
 
-# This is a rather sketchy solution TODO remove this with a refactor of node_crawler
+# TODO This is a rather sketchy solution, remove this with a refactor of node_crawler
 sys.setrecursionlimit(10000)
 
 class Record:
@@ -324,7 +324,7 @@ def master_fasta(fastas, output_tag, mother_directory):
                     reason = "origin"
                 elif accession in black_list:
                     truePlasmid = False
-                    reason = "crowd curation"
+                    reason = black_list[accession]
                 else:
                     truePlasmid = True
 
@@ -888,7 +888,8 @@ def main():
 
     mash_options = parser.add_argument_group("MASH related options")
     mash_options.add_argument("-k", "--kmers", dest="kmer_size", default="21",
-                              help="Provide the number of k-mers to be provided to mash "
+                              help="Provide the number of k-mers to be provided"
+                                   " to mash "
                                    "sketch. Default: 21.")
     mash_options.add_argument("-p", "--pvalue", dest="pvalue",
                               default="0.05", help="Provide the p-value to "
@@ -926,8 +927,8 @@ def main():
                                help="this option allows to only run the part "
                                     "of the script that is required to "
                                     "generate the filtered fasta. Allowing for "
-                                    "instance to debug sequences that shoudn't "
-                                    "be removed using 'cds' and 'origin' "
+                                    "instance to debug sequences that shouldn't"
+                                    " be removed using 'cds' and 'origin' "
                                     "keywords")
 
     args = parser.parse_args()

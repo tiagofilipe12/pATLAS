@@ -1,4 +1,5 @@
-/*globals colorList, listGiFilter, colorNodes, legendInst, typeOfProject */
+/*globals colorList, listGiFilter, colorNodes, legendInst, typeOfProject,
+blockFilterModal */
 
 // function to remove first char from every string in array
 const removeFirstCharFromArray = (arr) => {
