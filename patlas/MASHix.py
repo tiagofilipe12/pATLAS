@@ -21,13 +21,13 @@ from collections import defaultdict
 try:
     from utils.hist_util import plot_histogram
     from utils.taxa_fetch import executor
+    from utils.crowd_curation import black_list
     from db_manager.db_app import db, models
-    from . import __version__
 except ImportError:
     from patlas.utils.hist_util import plot_histogram
     from patlas.utils.taxa_fetch import executor
+    from patlas.utils.crowd_curation import black_list
     from patlas.db_manager.db_app import db, models
-    from patlas import __version__
 
 # This is a rather sketchy solution TODO remove this with a refactor of node_crawler
 sys.setrecursionlimit(10000)
@@ -319,11 +319,12 @@ def master_fasta(fastas, output_tag, mother_directory):
                         and "plasmid" not in line.lower():
                     truePlasmid = False
                     reason = "cds"
-                   #continue
                 elif "origin" in line.lower():
                     truePlasmid = False
                     reason = "origin"
-                    #continue
+                elif accession in black_list:
+                    truePlasmid = False
+                    reason = "crowd curation"
                 else:
                     truePlasmid = True
 
@@ -373,7 +374,7 @@ def master_fasta(fastas, output_tag, mother_directory):
     accession_out = os.path.join(mother_directory,
                                  "accessions_list_{}.lst".format(output_tag))
     with open(accession_out, "w") as fh:
-        fh.write("version: {}\n".format(__version__))
+        fh.write("version: 1.5.2\n")
         fh.write("\n".join(all_accessions))
 
     return out_file, sequence_info, all_species
@@ -902,8 +903,8 @@ def main():
     other_options = parser.add_argument_group("Other options")
     other_options.add_argument("-rm", "--remove", dest="remove",
                                action="store_true", help="Remove any temporary "
-                                                         "files and folders not "
-                                                         "needed (not present "
+                                                         "files and folders not"
+                                                         " needed (not present "
                                                          "in results "
                                                          "subdirectory).")
     other_options.add_argument("-hist", "--histograms", dest="histograms",
@@ -943,22 +944,21 @@ def main():
     names_file = args.names_file
     nodes_file = args.nodes_file
 
-    ## lists all fastas given to argparser
+    # lists all fastas given to argparser
     fastas = [f for f in args.inputfile if f.endswith((".fas", ".fasta",
                                                        ".fna", ".fsa", ".fa"))]
 
-    ## creates output directory tree
-    output_tag = args.output_tag.replace("/", "")  ## if the user gives and
+    # creates output directory tree
+    output_tag = args.output_tag.replace("/", "")  # if the user gives and
     # input tag that is already a folder
     mother_directory = output_tree(fastas[0], output_tag)
 
-    ## checks if multiple fastas are provided or not avoiding master_fasta
+    # checks if multiple fastas are provided or not avoiding master_fasta
     # function
     print("***********************************")
     print("Creating main database...\n")
     main_fasta, sequence_info, all_species = master_fasta(fastas, output_tag,
                                              mother_directory)
-
 
     # if the parameter sequences_to_remove is provided the script will only
     # generate the fasta files and a list of the sequences that were removed
@@ -968,11 +968,11 @@ def main():
               "Leaving script...")
         sys.exit(0)
 
-    #########################
-    ### genera block here ###
-    #########################
+    #####################
+    # genera block here #
+    #####################
 
-    ## runs mash related functions
+    # runs mash related functions
     print("***********************************")
     print("Sketching reference...\n")
     ref_sketch = sketch_references(main_fasta, output_tag, threads, kmer_size,
@@ -983,7 +983,7 @@ def main():
     print("Making temporary files for each genome in fasta...\n")
     genomes = genomes_parser(main_fasta, mother_directory)
 
-    ## This must be multiprocessed since it is extremely fast to do mash
+    # This must be multiprocessed since it is extremely fast to do mash
     # against one plasmid sequence
     print("***********************************")
     print("Sketching genomes and running mash distances...\n")
@@ -993,7 +993,7 @@ def main():
                                      output_tag, kmer_size, mother_directory),
                              genomes)  # process genomes iterable with pool
 
-    ## loop to print a nice progress bar
+    # loop to print a nice progress bar
     try:
         for _ in tqdm.tqdm(mp, total=len(genomes)):
             pass
@@ -1005,7 +1005,7 @@ def main():
     # remaining options are triggered
     print("\nFinished MASH... uf uf uf!")
 
-    ## Makes distances matrix csv file
+    # Makes distances matrix csv file
     print("\n***********************************")
     print("Creating distance matrix...\n")
     lists_traces = mash_distance_matrix(mother_directory, sequence_info,
