@@ -35,6 +35,7 @@ modals.
 - Implemented highlight and filter for all node selections (taxa, resistances,
 plasmid families, virulence and combined selections).
 - Added faq on how to report sequences that aren't plasmids.
+- Removed histogram from length plot
 
 #### Bug fixes
 - Fixed minor issues after filtering datasets for link selections and for shift
