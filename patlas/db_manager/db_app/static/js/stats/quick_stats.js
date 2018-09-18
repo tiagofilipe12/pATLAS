@@ -431,7 +431,9 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
 
     // returns true if all elements have the same size and thus make only a
     // scatter
-    const allEqual = (histoArray) => histoArray.every( (v) => v === histoArray[0] )
+    const allEqual = (histoArray) => histoArray.every(
+      (v) => v === histoArray[0]
+    )
 
     // some defaults comment to both graphs instances, when there are
     // several bins or just one
@@ -440,29 +442,27 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
       labels: {enabled: false},
       categories: accessionArray,
       title: {text: null},
-      opposite: true
     }
 
     const defaultYAxis = {
-      title: {text: "Sequence size (scatter)"},
-      opposite: true
+      title: {text: "Sequence size (bp)"},
     }
 
     const defaultSeries = {
       name: "Individual plasmids",
       type: "scatter",
       data: histoArray,
-      color: "#000501",
+      color: "#ff4c4a",
       cursor: "pointer",
       marker: {
-        radius: 3
+        radius: 4
       },
       events: {
         mouseOver() {
-          axisHighlight(this, 0, "black", "bold")
+          axisHighlight(this, 1, "black", "bold")
         },
         mouseOut() {
-          axisHighlight(this, 0, "#666666", "normal")
+          axisHighlight(this, 1, "#666666", "normal")
         },
       },
       point: {
@@ -470,7 +470,7 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
           click() {
             clickedHighchart = this.category
             $("#submitButton").click()
-            highlightHist(this)
+            // highlightHist(this)
           }
         }
       }
@@ -493,14 +493,18 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
     // checks if all lengths in array are the same and if so... do not
     // do histogram
     if (allEqual(histoArray) === false) {
-      layout.xAxis = [defaultXAxis, {
-        title: {text: "Sequence size (histogram)"},
-        // opposite: true
-      }]
-      layout.yAxis = [defaultYAxis, {
-        title: {text: "Number of plasmids (histogram)"},
-        // opposite: true
-      }]
+      layout.xAxis = [
+      //   {
+      //   title: {text: "Sequence size (histogram)"},
+      // },
+        defaultXAxis
+      ]
+      layout.yAxis = [
+        // {
+      //   title: {text: "Number of plasmids (histogram)"},
+      // },
+        defaultYAxis
+      ]
       // tooltip that enables different tooltips on each series
       // series.name is here used to return different tooltips for each
       layout.tooltip = {
@@ -508,38 +512,40 @@ const statsParser = (g, graphics, renderer, accessionResultsList, masterObj,
           if (this.series.name === "Individual plasmids") {
             return "<b>Accession no.: </b>" +
               this.x + "<br><b>Size (bp): </b>" + this.y
-          } else {
-            return "<b>No. of plasmids: </b>" + this.y + "<br><b>Range: </b>" +
-              Math.floor(this.x + 1) + " - " + Math.floor(this.point.x2)
           }
+          // else {
+          //   return "<b>No. of plasmids: </b>" + this.y + "<br><b>Range: </b>" +
+          //     Math.floor(this.x + 1) + " - " + Math.floor(this.point.x2)
+          // }
         }
       }
-      layout.series = [{
-        type: "histogram",
-        name: "Distribution by length",
-        xAxis: 1,
-        yAxis: 1,
-        baseSeries: 1,
-        color: selector[taxaType.replace(" ", "")].color,
-        zIndex: -1,
-        cursor: "pointer",
-        events: {
-          mouseOver() {
-            axisHighlight(this, 1, "black", "bold")
-          },
-          mouseOut() {
-            axisHighlight(this, 1, "#666666", "normal")
-          }
-        },
-        point: {
-          events: {
-            click() {
-              // highlights the scatter on bar click
-              highLightScatter(this)
-            }
-          }
-        }
-      }, defaultSeries]
+      layout.series = [defaultSeries]
+      //   [{
+      //   type: "histogram",
+      //   name: "Distribution by length",
+      //   xAxis: 1,
+      //   yAxis: 1,
+      //   baseSeries: "s",
+      //   // color: selector[taxaType.replace(" ", "")].color,
+      //   zIndex: -1,
+      //   cursor: "pointer",
+      //   events: {
+      //     mouseOver() {
+      //       axisHighlight(this, 0, "black", "bold")
+      //     },
+      //     mouseOut() {
+      //       axisHighlight(this, 0, "#666666", "normal")
+      //     }
+      //   },
+      //   point: {
+      //     events: {
+      //       click() {
+      //         // highlights the scatter on bar click
+      //         highLightScatter(this)
+      //       }
+      //     }
+      //   }
+      // }, defaultSeries]
     } else {
       // instance for one bin only... no histogram will be shown
       $("#alertPlot").show()
