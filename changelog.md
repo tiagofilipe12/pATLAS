@@ -7,6 +7,7 @@
 so that future changes to the database can be easily documented.
 - Added black list for accession numbers that are reported to be misplaced as 
 plasmids in refseq database.
+- Update database to NCBI refseq 091418.
 
 ### Front end
 
