@@ -203,7 +203,9 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   // now processes the current selection
   const pfQuery = document.getElementById("p_PlasmidFinder").innerHTML
 
-  let selectedPf = pfQuery.replace("PlasmidFinder:", "").split(",").filter(Boolean)
+  let selectedPf = pfQuery.replace("PlasmidFinder:", "")
+    .split(",")
+    .filter(Boolean)
 
   selectedPf = removeFirstCharFromArray(selectedPf)
 

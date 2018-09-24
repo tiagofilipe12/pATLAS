@@ -95,11 +95,22 @@ getArrayPf().done((json) => {
   // iterate over the file
   $.each(json, (accession, entry) => {
     const geneEntries = entry.gene
-    for (let i in geneEntries) {
-      if (geneEntries.hasOwnProperty(i)) {
-        if (listPF.indexOf(geneEntries[i]) < 0) {
-          listPF.push(geneEntries[i])
-        }
+    for (let i of geneEntries) {
+
+      //TODO this should be removed once plasmidefinder abricate is used - listPF.push(i), everything else should be ignored
+      const length_split = i.split("_")
+      const parsed_i = length_split
+        .slice(0, length_split.length - 1)
+        .join("_")
+        // replace every _NC in the end
+        .replace(/\_NC$/, "")
+        // then remove _ in the end of the plasmidfinder gene name
+        .replace(/\_$/, "")
+
+      // checks if entry is already in listPF and if so doesn't populate the
+      // dropdown.
+      if (listPF.indexOf(parsed_i) < 0) {
+        listPF.push(parsed_i)
       }
     }
   })
