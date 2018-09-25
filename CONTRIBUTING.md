@@ -6,7 +6,7 @@ pATLAS database, from anyone that as a suggestion that can improve the website.
 
 ## Issues
 
-The way to report a problem with a sequence or to suggest new features or even report a bug is by opening [issues](https://github.com/tiagofilipe12/pATLAS/issues). 
+The way to report a problem with a sequence or to suggest new features or even report a bug or even a wrong sequence is by opening [issues](https://github.com/tiagofilipe12/pATLAS/issues). 
 Therefore, feel free to do so.
 
 ## Pull requests
