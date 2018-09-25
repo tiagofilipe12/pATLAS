@@ -14,7 +14,7 @@ except ImportError:
 
 
 from flask import json, render_template, Response, redirect, url_for, \
-    after_this_request
+    after_this_request, send_from_directory
 from flask_restful import request
 import ctypes
 import sqlalchemy
@@ -94,13 +94,6 @@ def index():
         return render_template("failed_request_results.html")
 
 
-@app.route("/robots.txt")
-def main_summary():
-    return repetitive_function(
-        "db_app/static/txt/robots.txt"
-    )
-
-
 @app.route("/test")
 def main_summary():
     return repetitive_function(
@@ -160,6 +153,18 @@ def mash_sample():
     return repetitive_function(
         "db_app/static/json/samples/mash_screen_sample_sorted.json"
     )
+
+
+@app.route("/robots.txt")
+def static_robots():
+    """
+    This is a view to serve robots.txt that allow bots to search the page.
+
+    Returns
+    -------
+    A file sent from the static directory with the name robots.txt
+    """
+    return send_from_directory(app.static_folder, request.path[1:])
 
 
 @app.route("/api/senddownload/", methods=["GET", "POST"])
