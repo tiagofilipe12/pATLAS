@@ -94,6 +94,13 @@ def index():
         return render_template("failed_request_results.html")
 
 
+@app.route("/robots.txt")
+def main_summary():
+    return repetitive_function(
+        "db_app/static/txt/robots.txt"
+    )
+
+
 @app.route("/test")
 def main_summary():
     return repetitive_function(
