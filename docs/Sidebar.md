@@ -41,7 +41,33 @@ that display pATLAS key features.
 
 #### FAQs
 
-A set of questions that may occur to users when using pATLAS
+A set of questions that may occur to users when using pATLAS. 
+
+#### Report sequence.
+
+Here users can report any problem that they find with a plasmid available in 
+pATLAS. For instance, if there is a gene sequence rather than a plasmid. This
+is part of the _crowd curation_ of pATLAS, which is an initiative that aims to
+ease the curation of the database by users that find an issue with a RefSeq
+sequence that shouldn't be a plasmid. pATLAS already has some filters that
+prevent non-plasmid sequences from getting into the database, however 
+in each database update it is expected that new issues may arise, thus we
+acknowledge every contribution to help us curate the database.
+
+When clicked, this button will open a pre-formatted GitHub issue like the one below:
+
+![](gitbook/images/gh_issue.png)
+
+The user reporting will have to replace `<brief title of the issue>` with the
+desired title and then the body of the issue is already pre-filled with
+two headers:
+
+* `Sequences accessions` - In which the users should state the accession numbers
+of the sequences that have issues.
+
+* `Description of the issue` - Here the users should state the reason by which 
+the sequence should be removed/curated from the pATLAS plasmid database.
+
 
 ## About
 

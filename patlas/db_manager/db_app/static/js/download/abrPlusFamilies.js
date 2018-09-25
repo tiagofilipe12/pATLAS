@@ -390,11 +390,36 @@ const plasmidFamilyGetter = (nodeId) => {
 
     try{
       // totalLength array corresponds to gene names
-      const totalLength = data[0].json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
-      const accessionList = data[0].json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
+      let totalLength = data[0].json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+      let accessionList = data[0].json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
       const coverageList = data[0].json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
       const identityList = data[0].json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
       const rangeList = data[0].json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
+
+      // TODO parser required for new plasmidfinder db
+      if (accessionList[0] === "") {
+
+        accessionList = totalLength.map( (el) => {
+          const length_split = el.split("_")
+          if (length_split.indexOf("NC") > 0) {
+            return length_split.slice(length_split.length - 2).join("_")
+          } else {
+            return length_split.slice(length_split.length - 1).join("_")
+          }
+        })
+
+        totalLength = totalLength.map( (el) => {
+          const length_split = el.split("_")
+          // check if there is a NC
+          if (length_split.indexOf("NC") > 0) {
+            return length_split.slice(0, length_split.length - 2).join("_").replace(/\_$/, "")
+          } else {
+            return length_split.slice(0, length_split.length - 1).join("_").replace(/\_$/, "")
+          }
+        })
+
+
+      }
 
       for (const i in totalLength) {
         if ({}.hasOwnProperty.call(totalLength, i)) {
@@ -405,7 +430,7 @@ const plasmidFamilyGetter = (nodeId) => {
 
           queryArrayPFRange.push( {
               "range": rangeEntry,
-              "genes": customTrim(totalLenght[i], "'"),
+              "genes": customTrim(totalLength[i], "'"),
               "accessions": makeItClickable(accessionList[i].split(":")[0]),
               "coverage": coverageList[i],
               "identity": identityList[i]
@@ -510,7 +535,7 @@ const virulenceGetter = (nodeId) => {
           queryArrayVirRange.push(
             {
               "range": rangeEntry,
-              "genes": customTrim(totalLenght[i], "'"),
+              "genes": customTrim(totalLength[i], "'"),
               "accessions": makeItClickable(accessionList[i].split(":")[0]),
               "coverage": coverageList[i],
               "identity": identityList[i]

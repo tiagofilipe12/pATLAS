@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-## Last update: 11/6/2018
-## Author: T.F. Jesus
-## This script runs MASH in plasmid databases making a pairwise diagonal matrix
-## for each pairwise comparison between libraries
-## Note: each header in fasta is considered a reference
+# Last update: 14/8/2018
+# Author: T.F. Jesus
+# This script runs MASH in plasmid databases making a pairwise diagonal matrix
+# for each pairwise comparison between libraries
+# Note: each header in fasta is considered a reference
 
 import argparse
 import sys
@@ -21,15 +21,16 @@ from collections import defaultdict
 try:
     from utils.hist_util import plot_histogram
     from utils.taxa_fetch import executor
+    from utils.crowd_curation import black_list
     from db_manager.db_app import db, models
 except ImportError:
     from patlas.utils.hist_util import plot_histogram
     from patlas.utils.taxa_fetch import executor
+    from patlas.utils.crowd_curation import black_list
     from patlas.db_manager.db_app import db, models
 
-# This is a rather sketchy solution TODO remove this with a refactor of node_crawler
+# TODO This is a rather sketchy solution, remove this with a refactor of node_crawler
 sys.setrecursionlimit(10000)
-
 
 class Record:
 
@@ -102,7 +103,6 @@ def output_tree(infile, tag):
     -------
 
     """
-
 
     mother_directory = os.path.join(os.path.dirname(os.path.abspath(infile)),
                                     tag)
@@ -233,6 +233,10 @@ def master_fasta(fastas, output_tag, mother_directory):
 
     species_output = open(species_out, "w")
 
+    # creates a list of accession numbers, listing all accessions in
+    # input seuqences
+    all_accessions = []
+
     # sets first length instance
     length = 0
     accession = False
@@ -306,6 +310,8 @@ def master_fasta(fastas, output_tag, mother_directory):
                 plasmid_name = search_substing(line)
                 # species related functions
                 all_species.append(" ".join(species.split("_")))
+                # append accession that will be outputed to file
+                all_accessions.append(accession)
 
                 # added this if statement to check whether CDS is present in
                 # fasta header, since database contain them with CDS in string
@@ -313,11 +319,12 @@ def master_fasta(fastas, output_tag, mother_directory):
                         and "plasmid" not in line.lower():
                     truePlasmid = False
                     reason = "cds"
-                   #continue
                 elif "origin" in line.lower():
                     truePlasmid = False
                     reason = "origin"
-                    #continue
+                elif accession in black_list:
+                    truePlasmid = False
+                    reason = black_list[accession]
                 else:
                     truePlasmid = True
 
@@ -362,6 +369,14 @@ def master_fasta(fastas, output_tag, mother_directory):
     # writes a species list to output file
     species_output.write("\n".join(str(i) for i in list(set(all_species))))
     species_output.close()
+
+    # write accessions to a file
+    accession_out = os.path.join(mother_directory,
+                                 "accessions_list_{}.lst".format(output_tag))
+    with open(accession_out, "w") as fh:
+        fh.write("version: 1.5.2\n")
+        fh.write("\n".join(all_accessions))
+
     return out_file, sequence_info, all_species
 
 
@@ -873,7 +888,8 @@ def main():
 
     mash_options = parser.add_argument_group("MASH related options")
     mash_options.add_argument("-k", "--kmers", dest="kmer_size", default="21",
-                              help="Provide the number of k-mers to be provided to mash "
+                              help="Provide the number of k-mers to be provided"
+                                   " to mash "
                                    "sketch. Default: 21.")
     mash_options.add_argument("-p", "--pvalue", dest="pvalue",
                               default="0.05", help="Provide the p-value to "
@@ -888,8 +904,8 @@ def main():
     other_options = parser.add_argument_group("Other options")
     other_options.add_argument("-rm", "--remove", dest="remove",
                                action="store_true", help="Remove any temporary "
-                                                         "files and folders not "
-                                                         "needed (not present "
+                                                         "files and folders not"
+                                                         " needed (not present "
                                                          "in results "
                                                          "subdirectory).")
     other_options.add_argument("-hist", "--histograms", dest="histograms",
@@ -911,8 +927,8 @@ def main():
                                help="this option allows to only run the part "
                                     "of the script that is required to "
                                     "generate the filtered fasta. Allowing for "
-                                    "instance to debug sequences that shoudn't "
-                                    "be removed using 'cds' and 'origin' "
+                                    "instance to debug sequences that shouldn't"
+                                    " be removed using 'cds' and 'origin' "
                                     "keywords")
 
     args = parser.parse_args()
@@ -929,22 +945,21 @@ def main():
     names_file = args.names_file
     nodes_file = args.nodes_file
 
-    ## lists all fastas given to argparser
+    # lists all fastas given to argparser
     fastas = [f for f in args.inputfile if f.endswith((".fas", ".fasta",
                                                        ".fna", ".fsa", ".fa"))]
 
-    ## creates output directory tree
-    output_tag = args.output_tag.replace("/", "")  ## if the user gives and
+    # creates output directory tree
+    output_tag = args.output_tag.replace("/", "")  # if the user gives and
     # input tag that is already a folder
     mother_directory = output_tree(fastas[0], output_tag)
 
-    ## checks if multiple fastas are provided or not avoiding master_fasta
+    # checks if multiple fastas are provided or not avoiding master_fasta
     # function
     print("***********************************")
     print("Creating main database...\n")
     main_fasta, sequence_info, all_species = master_fasta(fastas, output_tag,
                                              mother_directory)
-
 
     # if the parameter sequences_to_remove is provided the script will only
     # generate the fasta files and a list of the sequences that were removed
@@ -954,11 +969,11 @@ def main():
               "Leaving script...")
         sys.exit(0)
 
-    #########################
-    ### genera block here ###
-    #########################
+    #####################
+    # genera block here #
+    #####################
 
-    ## runs mash related functions
+    # runs mash related functions
     print("***********************************")
     print("Sketching reference...\n")
     ref_sketch = sketch_references(main_fasta, output_tag, threads, kmer_size,
@@ -969,7 +984,7 @@ def main():
     print("Making temporary files for each genome in fasta...\n")
     genomes = genomes_parser(main_fasta, mother_directory)
 
-    ## This must be multiprocessed since it is extremely fast to do mash
+    # This must be multiprocessed since it is extremely fast to do mash
     # against one plasmid sequence
     print("***********************************")
     print("Sketching genomes and running mash distances...\n")
@@ -979,7 +994,7 @@ def main():
                                      output_tag, kmer_size, mother_directory),
                              genomes)  # process genomes iterable with pool
 
-    ## loop to print a nice progress bar
+    # loop to print a nice progress bar
     try:
         for _ in tqdm.tqdm(mp, total=len(genomes)):
             pass
@@ -991,7 +1006,7 @@ def main():
     # remaining options are triggered
     print("\nFinished MASH... uf uf uf!")
 
-    ## Makes distances matrix csv file
+    # Makes distances matrix csv file
     print("\n***********************************")
     print("Creating distance matrix...\n")
     lists_traces = mash_distance_matrix(mother_directory, sequence_info,

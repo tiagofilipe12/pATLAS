@@ -27,7 +27,7 @@ clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
 parseRequestResults, requestResults, currentQueryNode, centralNode,
 getCentralNode, dropdownSample, currentSample, loadingMessage, lastPosition,
-dragging, develGenerationGraph, unpinSelectedNodes*/
+dragging, develGenerationGraph, unpinSelectedNodes, blockFilterModal*/
 
 
 /**
@@ -73,28 +73,28 @@ const onLoad = () => {
    *  seconds. However if counterClose button is triggered this counter will
    *  stop.
    */
-  if (($("#welcomeModal").data("bs.modal") || {}).isShown) {
-    let logger = 30
-    let countDown = setInterval( () => {
-      if ($("#counter").html() !== "") {
-        logger -= 1
-        $("#counter").html(`Closing in: ${logger.toString()}s`)
-        if (logger === 0) {
-          clearInterval(countDown)
-          $("#welcomeModal").modal("hide")
-          $("#counter").html("")
-        }
-      }
-    }, 1000)
-  }
+  // if (($("#welcomeModal").data("bs.modal") || {}).isShown) {
+  //   let logger = 30
+  //   let countDown = setInterval( () => {
+  //     if ($("#counter").html() !== "") {
+  //       logger -= 1
+  //       $("#counter").html(`Closing in: ${logger.toString()}s`)
+  //       if (logger === 0) {
+  //         clearInterval(countDown)
+  //         $("#welcomeModal").modal("hide")
+  //         $("#counter").html("")
+  //       }
+  //     }
+  //   }, 1000)
+  // }
 
   /**
    * Button event to close the countdown for welcome div
    */
-  $("#counterClose").unbind("click").bind("click", () => {
-    $("#counter").html("")
-    $("#counterClose").hide()
-  })
+  // $("#counterClose").unbind("click").bind("click", () => {
+  //   $("#counter").html("")
+  //   $("#counterClose").hide()
+  // })
 
   // initiate vivagraph instance
   const g = Viva.Graph.graph()

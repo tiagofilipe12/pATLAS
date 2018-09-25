@@ -85,7 +85,6 @@ class GetResistances(Resource):
     def post(self):
         var_response = request.form["accession"].replace("[", "")\
             .replace("]", "").replace('"', "").split(",")
-        print(var_response)
         single_query = db.session.query(Card).filter(
             Card.plasmid_id.in_(var_response)).all()
         return single_query
@@ -149,12 +148,14 @@ class GetAccessionPF(Resource):
         args = req_parser.parse_args()
         # This queries name object in json_entry and retrieves an array with
         # all objects that matched the args (json_entry, plasmid_id)
+        parsed_gene = args.gene.replace('"', '')    # TODO parser for new plasmidfinder db
         records = db.session.query(Database).filter(
-            Database.json_entry["gene"].astext.contains(args.gene)
+            Database.json_entry["gene"].astext.contains(parsed_gene)
         ).all()
         # contains method allows us to query in array that is converted to a
         # string
         return records
+
 
 class GetAccessionVir(Resource):
     @marshal_with(card_field)

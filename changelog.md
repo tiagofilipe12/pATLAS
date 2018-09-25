@@ -1,8 +1,14 @@
 # Changelog
 
-## Upcoming version (1.6.0)
+## Version 1.6.0
 
-### Database
+### Back end
+- Added code that allows to save a list of all the accession numbers to a file,
+so that future changes to the database can be easily documented.
+- Added black list for accession numbers that are reported to be misplaced as 
+plasmids in refseq database.
+- Update database to NCBI refseq 091418.
+- Added first implementation to parse result from plasmidfinder new database.
 
 ### Front end
 
@@ -30,6 +36,10 @@ multiple nodes.
 modals.
 - Implemented highlight and filter for all node selections (taxa, resistances,
 plasmid families, virulence and combined selections).
+- Added faq on how to report sequences that aren't plasmids.
+- Removed histogram from length plot.
+- Added new button that allow users to more easily report a sequence, by using
+github api for pre-filled issues.
 
 #### Bug fixes
 - Fixed minor issues after filtering datasets for link selections and for shift
