@@ -535,7 +535,7 @@ const virulenceGetter = (nodeId) => {
           queryArrayVirRange.push(
             {
               "range": rangeEntry,
-              "genes": customTrim(totalLenght[i], "'"),
+              "genes": customTrim(totalLength[i], "'"),
               "accessions": makeItClickable(accessionList[i].split(":")[0]),
               "coverage": coverageList[i],
               "identity": identityList[i]
