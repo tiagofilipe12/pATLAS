@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming version (1.6.0)
+## Version 1.6.0
 
 ### Back end
 - Added code that allows to save a list of all the accession numbers to a file,
