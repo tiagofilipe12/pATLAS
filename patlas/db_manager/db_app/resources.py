@@ -85,7 +85,6 @@ class GetResistances(Resource):
     def post(self):
         var_response = request.form["accession"].replace("[", "")\
             .replace("]", "").replace('"', "").split(",")
-        print(var_response)
         single_query = db.session.query(Card).filter(
             Card.plasmid_id.in_(var_response)).all()
         return single_query
