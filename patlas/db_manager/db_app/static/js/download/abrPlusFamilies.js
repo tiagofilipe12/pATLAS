@@ -259,7 +259,7 @@ const resGetter = (nodeId) => {
           if (databaseList[i].indexOf("card") > -1) {
             queryArrayCardRange.push( {
                 "range": rangeEntry,
-                "genes": trimer(totalLenght[i], "'"),
+                "genes": customTrimer(totalLenght[i], "'"),
                 "accessions": makeItClickable(accessionList[i].split(":")[0]),
                 "coverage": coverageList[i],
                 "identity": identityList[i],
@@ -271,7 +271,7 @@ const resGetter = (nodeId) => {
 
             queryArrayResfinderRange.push( {
                 "range": rangeEntry,
-                "genes": trimer(totalLenght[i], "'"),
+                "genes": customTrimer(totalLenght[i], "'"),
                 "accessions": makeItClickable(accessionList[i]),
                 "coverage": coverageList[i],
                 "identity": identityList[i]
@@ -411,7 +411,7 @@ const plasmidFamilyGetter = (nodeId) => {
 
           queryArrayPFRange.push( {
               "range": rangeEntry,
-              "genes": trimer(totalLength[i], "'"),
+              "genes": customTrimer(totalLength[i], "'"),
               "accessions": makeItClickable(accessionList[i].split(":")[0]),
               "coverage": coverageList[i],
               "identity": identityList[i]
@@ -516,7 +516,7 @@ const virulenceGetter = (nodeId) => {
           queryArrayVirRange.push(
             {
               "range": rangeEntry,
-              "genes": trimer(totalLength[i], "'"),
+              "genes": customTrimer(totalLength[i], "'"),
               "accessions": makeItClickable(accessionList[i].split(":")[0]),
               "coverage": coverageList[i],
               "identity": identityList[i]

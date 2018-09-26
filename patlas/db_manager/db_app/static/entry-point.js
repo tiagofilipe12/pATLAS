@@ -44,7 +44,7 @@ require("bootstrap-table/dist/bootstrap-table.min.css")
 require("bootstrap-select/dist/css/bootstrap-select.min.css")
 require("bootstrap-toggle/css/bootstrap-toggle.min.css")
 
-const trimer = require("trimer")
+window.customTrimer = require("trimer")
 
 // import custom stylesheet
 require("./css/visualization_functions.css")
