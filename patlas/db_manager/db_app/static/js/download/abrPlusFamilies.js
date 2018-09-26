@@ -216,25 +216,6 @@ const resPopupPopulate = async (queryArrayCardRange,
 
 }
 
-/***
- * Function to trim from the beginning and the end of a string a given character
- * @param {String} str - string from which you want to trim both ends
- * @param {String} toTrim - the pattern that is indented to remove from the str
- * @returns {String} - trimmed string
- */
-const customTrim = (str, toTrim) => {
-  // check if toTrim parameter is given, if not trim by spaces as a normal
-  // .trim()
-  toTrim = (typeof toTrim === "undefined") ? " " : toTrim
-  // generate the regex to search the desired character at the beginning and
-  // end of the string
-  const regex = new RegExp(
-    "^[" + toTrim + "]+|[" + toTrim + "]+$", "g"
-  )
-  // replaces the regex by nothing and returns
-  return str.replace(regex, "")
-}
-
 /**
  * This function is intended to use in a single query instances such as
  * popup_description button
@@ -278,7 +259,7 @@ const resGetter = (nodeId) => {
           if (databaseList[i].indexOf("card") > -1) {
             queryArrayCardRange.push( {
                 "range": rangeEntry,
-                "genes": customTrim(totalLenght[i], "'"),
+                "genes": trimer(totalLenght[i], "'"),
                 "accessions": makeItClickable(accessionList[i].split(":")[0]),
                 "coverage": coverageList[i],
                 "identity": identityList[i],
@@ -290,7 +271,7 @@ const resGetter = (nodeId) => {
 
             queryArrayResfinderRange.push( {
                 "range": rangeEntry,
-                "genes": customTrim(totalLenght[i], "'"),
+                "genes": trimer(totalLenght[i], "'"),
                 "accessions": makeItClickable(accessionList[i]),
                 "coverage": coverageList[i],
                 "identity": identityList[i]
@@ -430,7 +411,7 @@ const plasmidFamilyGetter = (nodeId) => {
 
           queryArrayPFRange.push( {
               "range": rangeEntry,
-              "genes": customTrim(totalLength[i], "'"),
+              "genes": trimer(totalLength[i], "'"),
               "accessions": makeItClickable(accessionList[i].split(":")[0]),
               "coverage": coverageList[i],
               "identity": identityList[i]
@@ -535,7 +516,7 @@ const virulenceGetter = (nodeId) => {
           queryArrayVirRange.push(
             {
               "range": rangeEntry,
-              "genes": customTrim(totalLength[i], "'"),
+              "genes": trimer(totalLength[i], "'"),
               "accessions": makeItClickable(accessionList[i].split(":")[0]),
               "coverage": coverageList[i],
               "identity": identityList[i]

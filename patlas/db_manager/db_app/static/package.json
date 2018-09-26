@@ -16,6 +16,7 @@
     "mousetrap": "^1.6.1",
     "nouislider": "^10.1.0",
     "tableexport.jquery.plugin": "^1.9.8",
+    "trimer": "^1.0.0",
     "vivagraphjs": "^0.10.0"
   },
   "devDependencies": {
