@@ -1,4 +1,4 @@
-/*globals xRangePlotList, Highcharts*/
+/*globals xRangePlotList, Highcharts, trimer*/
 
 /**
  * Function that makes a given accession number clickable.
