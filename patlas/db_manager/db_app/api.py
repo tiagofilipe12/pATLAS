@@ -22,14 +22,16 @@ except ImportError:
             GetAccessionPF, GetPlasmidName, GetAccessionVir, GetVirulence, \
             GetAccessionTaxa, GetAccessionHashes, GetMetal, GetAccessionMetal
 
-## start api
+# start api
 api = Api(app)
 
-## add resources to api upon being called
+# add resources to api upon being called
 
-api.add_resource(GetSpecies, "/api/getspecies/", endpoint="get_species")
+api.add_resource(GetSpecies, "/api/getspecies/",
+                 endpoint="get_species")
 
-api.add_resource(GetPlasmidName, "/api/getplasmidname/", endpoint="get_plasmidname")
+api.add_resource(GetPlasmidName, "/api/getplasmidname/",
+                 endpoint="get_plasmidname")
 
 api.add_resource(GetResistances, "/api/getresistances/",
                  endpoint="get_resistances")
@@ -49,16 +51,16 @@ api.add_resource(GetAccessionRes, "/api/getaccessionres/",
                  endpoint="get_accession_res")
 
 api.add_resource(GetAccessionPF, "/api/getaccessionpf/",
-endpoint="get_accessionpf")
+                 endpoint="get_accessionpf")
 
 api.add_resource(GetAccessionVir, "/api/getaccessionvir/",
-endpoint="get_accessionvir")
+                 endpoint="get_accessionvir")
 
 api.add_resource(GetAccessionMetal, "/api/getaccessionmetal/",
-endpoint="get_accessionmetal")
+                 endpoint="get_accessionmetal")
 
 api.add_resource(GetAccessionTaxa, "/api/getaccessiontaxa/",
-endpoint="get_accessiontaxa")
+                 endpoint="get_accessiontaxa")
 
 api.add_resource(GetAccessionHashes, "/api/getaccessionhash/",
-endpoint="get_accessionhash")
+                 endpoint="get_accessionhash")

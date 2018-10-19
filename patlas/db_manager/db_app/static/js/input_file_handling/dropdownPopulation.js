@@ -87,6 +87,25 @@ const virRequest = (g, graphics, renderer, gene, currentColor) => {
   })
 }
 
+// function to query plasmidfinder database
+const metalRequest = (g, graphics, renderer, gene, currentColor) => {
+  // return a promise for each query
+  const geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
+  // inside other genes such as ermc ermc1 and so on
+  return $.get("api/getaccessionmetal/", {"gene": geneQuotes}, (data, status) => {
+    let listData = []
+    for (let object in data) {
+      if ({}.hasOwnProperty.call(data, object)) {
+        listData.push(data[object].plasmid_id)
+      }
+    }
+    if (currentColor !== false) {
+      colorNodes(g, graphics, renderer, listData, currentColor)
+      renderer.rerender()
+    }
+  })
+}
+
 const iterateSelectedArrays = async (array, g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""
   for (let i in array) {
@@ -332,6 +351,81 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   // if (legendInst === true) {
   $("#vir_label").show()
   await $("#colorLegendBoxVir").empty()
+    .append(
+      storeLis +
+      "<li class='centeredList'><button class='jscolor btn btn-default'" +
+      " style='background-color:#666370' ></button>&nbsp;unselected</li>"
+    )
+    .show()
+  // }
+
+  return legendInst
+}
+
+// function to display resistances after clicking resSubmit button
+const metalSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
+  listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
+  // starts legend variable
+  let legendInst = false // by default legend is off
+  let storeLis = ""  // initiates storeLis to store the legend entries and colors
+  // now processes the current selection
+  const pfQuery = document.getElementById("p_Metal").innerHTML
+  let selectedMetal = pfQuery.replace("Metal:", "").split(",").filter(Boolean)
+
+  selectedMetal = removeFirstCharFromArray(selectedMetal)
+
+  // adds selected  metal to typeOfProject
+  typeOfProject["metal"] = selectedMetal
+
+  // check if arrays are empty
+  if (selectedMetal.length !== 0) {
+
+    for (let i in selectedMetal) {
+      if ({}.hasOwnProperty.call(selectedMetal, i)) {
+        // establish current color to use
+        const currentColor = colorList[i].replace("#", "0x")
+        // variable with the selected gene
+        const gene = selectedMetal[i].replace(" ", "")
+        // variable to store all lis for legend
+        if (storeLis === "undefined") {
+          storeLis = "<li" +
+            " class='centeredList'><button class='jscolor btn btn-default'" +
+            " style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            "</li>"
+        } else {
+          storeLis = storeLis + "<li" +
+            " class='centeredList'><button class='jscolor btn btn-default'" +
+            " style='background-color:" + colorList[i] + "'></button>&nbsp;" + gene +
+            "</li>"
+        }
+        // after setting the legend make the actual request
+        // promises.push(
+        const metalHandle = await metalRequest(g, graphics, renderer, gene, currentColor)
+        metalHandle.map( (request) => {
+          if (tempPageReRun === false) {
+            listGiFilter.push(request.plasmid_id)
+          }
+        })
+
+        // if blockFilterModal is false then show modal that allows to show
+        // buttons to filter or not the current selection right ahead
+        if (!blockFilterModal) { await $("#reRunModalResults").modal("show") }
+      }
+    }
+    legendInst = true
+
+    // if blockFilterModal is false then show modal that allows to show
+    // buttons to filter or not the current selection right ahead
+    if (!blockFilterModal) { await $("#reRunModalResults").modal("show") }
+  } else {
+    // raise error message for the user
+    document.getElementById("alertId").style.display = "block"
+  }
+  // if legend is requested then execute this!
+  // shows legend
+  // if (legendInst === true) {
+  $("#metal_label").show()
+  await $("#colorLegendBoxMetal").empty()
     .append(
       storeLis +
       "<li class='centeredList'><button class='jscolor btn btn-default'" +

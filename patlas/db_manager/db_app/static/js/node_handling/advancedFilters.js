@@ -220,6 +220,21 @@ const parseQueriesIntersection = async (g, graphics, renderer,
     listVir = mergeNRemoveDuplicatesFromArray(listVir)
   }
 
+  let listMetal = []
+
+  if (objectOfSelections.metal.length > 0) {
+
+    for (const metal of objectOfSelections.metal) {
+
+      const metalHandle = await metalRequest(g, graphics, renderer, metal, false)
+      listMetal.push(mapRequest(metalHandle))
+    }
+
+    // merge results and remove duplicates
+    listMetal = mergeNRemoveDuplicatesFromArray(listMetal)
+
+  }
+
   // remove empty arrays
   let arrayOfArrays = [listTaxa, listRes, listPf, listVir]
   arrayOfArrays = arrayOfArrays.filter( (n) => { return n.length !== 0 })

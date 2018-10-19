@@ -1289,6 +1289,7 @@ const onLoad = () => {
 
       let objectOfSelections = {
 
+        metal: $("#metalList2").selectpicker("val"),
         virulence: $("#virList2").selectpicker("val"),
         card: $("#resCardList2").selectpicker("val"),
         resfinder: $("#resResfinderList2").selectpicker("val"),

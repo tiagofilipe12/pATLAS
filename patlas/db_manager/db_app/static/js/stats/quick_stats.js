@@ -830,6 +830,69 @@ const getMetadataVir = (g, graphics, renderer, tempList, taxaType, sortAlp, sort
 }
 
 /**
+ * This function is similar to getMetadata but uses 'MetalResistance'
+ * psql table to retrieve metal resistance associated genes
+ * @param g - graph related functions that iterate through nodes
+ * and links.
+ * @param {Object} graphics - vivagraph functions related with node and link
+ * data.
+ * @param {Object} renderer - vivagraph object to render the graph.
+ * @param {Array} tempList - The array of accession numbers to be queried
+ * @param {String} taxaType - A string that are defined on button click and
+ * that defines which parsing is needed to plot
+ * @param {boolean} sortAlp - variable that controls if array is to be
+ * sorted alphabetically and therefore render the graph in the same manner
+ * @param {boolean} sortVal - variable that controls if array is to be
+ * sorted in descending order.
+ * @returns {Array} metalList - an array which contain the retrieved
+ * values from the psql table for each of the queried accession number given
+ * a taxaType.
+ */
+const getMetadataMetal = (g, graphics, renderer, tempList, taxaType, sortAlp, sortVal) => {
+  // resets progressBar
+  resetProgressBar()
+  // let associativeObj = {}
+
+  let metalList = []
+  $.post("api/getmetal/", { "accession": JSON.stringify(tempList) })
+  // when all promises are gathered
+    .then( (results) => {
+      results.map( (data) => {
+        const metalName = (data.json_entry.gene === null) ?
+          "unknown" : data.json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+        //then if unknown can push directly to array
+        if (metalName === "unknown") {
+          metalList.push(metalName)
+        } else {
+          // otherwise needs to parse the array into an array
+          for (const i in metalName) {
+            if ({}.hasOwnProperty.call(metalName, i)) {
+              metalList.push(metalName[i])
+              associativeObjAssigner(associativeObj, data.plasmid_id, metalName[i])
+            }
+          }
+        }
+
+      })
+
+      // show info on the nodes that are shown
+      selector[taxaType].alertString = `Displaying results for ${results.length} of ${tempList.length} 
+        (${((results.length/tempList.length) * 100).toFixed(1)}%) selected 
+        plasmids. The remaining ${tempList.length - results.length} are unknown.`
+
+      $("#spanEntries").html(selector[taxaType].alertString)
+      $("#alertPlotEntries").show()
+
+      // checks whether metalList is empty meaning that there are no metal
+      // resistance genes for this selection
+      const layout = layoutGet(taxaType)
+      statsParser(g, graphics, renderer, false, metalList, layout, taxaType, sortAlp, sortVal, associativeObj)
+    })
+
+  return metalList
+}
+
+/**
  * Case switch function for getMetadata for plots, instead of a combo else
  * if statement
  * @param {String} taxaType - The type of plot to be generated
@@ -936,7 +999,8 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
   return (mode === "plasmidfamilies") ? getMetadataPF(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
     (mode === "resistances") ? getMetadataRes(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
       (mode === "virulence") ? getMetadataVir(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
-        getMetadata(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal)
+        (mode === "metal") ? getMetadataMetal(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal) :
+          getMetadata(g, graphics, renderer, tempListAccessions, mode, sortAlp, sortVal)
 }
 
 /**
@@ -949,7 +1013,7 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
  * @param {Object} renderer - vivagraph object to render the graph.
  * @param {boolean} areaSelection
  * @param {Array} listGiFilter - The current list of accession numbers to be
- * filtered or in this case used to construt the plot
+ * filtered or in this case used to construct the plot
  * @param {String} clickerButton - the mode that will be executed. This
  * controls the type of plot to be made.
  * @param g - graph related functions that iterate through nodes
@@ -957,7 +1021,7 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
  * @param graphics - vivagraph functions related with node and link
  * data.
  * @returns {Array} - returns the list of plasmid to be plotted (accession
- * numbers at this strage)
+ * numbers at this stage)
  */
 const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
 
@@ -969,10 +1033,11 @@ const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilt
       (clickerButton === "plasmidfamilies") ? getMetadataPF(g, graphics, renderer, listGiFilter, clickerButton, false, false) :
         (clickerButton === "resistances") ? getMetadataRes(g, graphics, renderer, listGiFilter, clickerButton, false, false) :
           (clickerButton === "virulence") ? getMetadataVir(g, graphics, renderer, listGiFilter, clickerButton, false, false) :
-            getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
+            (clickerButton === "metal") ? getMetadataMetal(g, graphics, renderer, listGiFilter, clickerButton, false, false) :
+              getMetadata(g, graphics, renderer, listGiFilter, clickerButton, false, false)
   } else {
     // this code prevents plot from being queried again, since it is already
-    // stored in a div it is just a matter of hidding all other and showing
+    // stored in a div it is just a matter of hiding all other and showing
     // this one
     hideAllOtherPlots()
     $(`#${selector[clickerButton.replace(" ", "")].div}`).show()

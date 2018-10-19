@@ -775,6 +775,11 @@
                   data-target="#virModal"
                   id="virulenceCombined" >+ Virulence
           </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#virModal"
+                  id="metalCombined" >+ Metal
+          </button>
         </div>
 
       </div>
@@ -955,6 +960,11 @@
                     data-target="#virModal"
                     id="virulenceFilter" >Virulence
             </button>
+            <button class="button list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#metalModal"
+                    id="metalFilter" >Metal
+            </button>
           </ul>
           <ul class="list-group headerPanelGroup">Advanced
             <button class="list-group-item" href="#"
@@ -1017,6 +1027,10 @@
             <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                     data-target="#modalPlot"
                     id="virStats">Virulence
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="metalStats">Metal
             </button>
           </ul>
           <ul class="list-group headerPanelGroup">Other
@@ -1362,6 +1376,7 @@
         <div id="chartContainerCluster"></div>
         <div id="chartContainerPlasmidFamilies"></div>
         <div id="chartContainerVirulence"></div>
+        <div id="chartContainerMetal"></div>
       </div>
 
       <div class="modal-footer">
@@ -1397,6 +1412,8 @@
         <button class="btn btn-default" id="pfPlot">Plasmid Families
         </button>
         <button class="btn btn-default" id="virPlot">Virulence
+        </button>
+        <button class="btn btn-default" id="metalPlot">Metal
         </button>
       </div>
     </div>
@@ -1450,6 +1467,11 @@
                   data-toggle="modal" data-backdrop="static"
                   data-target="#virModal"
                   >+ Virulence
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#metalModal"
+                  >+ Metal
           </button>
         </div>
 
@@ -1508,6 +1530,10 @@
                   data-toggle="modal" data-backdrop="static"
                   data-target="#virModal">+ Virulence
           </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#metalModal">+ Metal
+          </button>
         </div>
 
       </div>
@@ -1534,7 +1560,7 @@
       <div class="modal-body" id="modalBodyVir">
 
         <!--virulence dropdowns-->
-        {% include 'vir_filters.html' %}
+        {% include 'metal_filters.html' %}
 
         <div class="row" id="modalBodyVir2">
           <div class='col-md-12'>
@@ -1573,6 +1599,63 @@
                 data-dismiss="modal" id="virSubmit">Highlight</button>
         <button type="submit" class="btn btn-danger"
                 id="virClear">Clear selection</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal for metal resistance-->
+<div id="metalModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="modal-title">Metal resistance selection</h3>
+      </div>
+      <div class="modal-body" id="modalBodyMetal">
+
+        <!--metal dropdowns-->
+        {% include 'metal_filters.html' %}
+
+        <div class="row" id="modalBodyMetal2">
+          <div class='col-md-12'>
+            <div class="panel-group" id="displayCurrentMetal">
+              <div class="panel panel-info" >
+                <div class="panel-heading">
+                  Selected genes</div>
+                <div class="panel-body"
+                     id="displayCurrentBoxMetal">
+                  <!--Populated by visualization_functions.js-->
+                  <p id="p_Metal">Metal:</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center">
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#taxaModal">+ Taxa
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#plasmidFamiliesModal">+ Plasmid families
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#resModal">+ Resistances
+          </button>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="metalSubmit">Highlight</button>
+        <button type="submit" class="btn btn-danger"
+                id="metalClear">Clear selection</button>
       </div>
     </div>
 

@@ -79,6 +79,7 @@ const promiseGather = async (listGiFilter) => {
   request.resistances = await $.post("api/getresistances/", {"accession": JSON.stringify(listGiFilter)})
   request.pfamilies = await $.post("api/getplasmidfinder/", {"accession": JSON.stringify(listGiFilter)})
   request.virulence = await $.post("api/getvirulence/", {"accession": JSON.stringify(listGiFilter)})
+  request.metal = await $.post("api/getmetal/", {"accession": JSON.stringify(listGiFilter)})
   return request
 }
 
