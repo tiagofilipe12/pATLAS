@@ -4,18 +4,19 @@ from sqlalchemy import func
 
 try:
     from db_manager.db_app import db
-    from db_manager.db_app.models import Plasmid, Card, Database, Positive
+    from db_manager.db_app.models import Plasmid, Card, Database, Positive, \
+        MetalDatabase
 except ImportError:
     try:
         from db_app import db
-        from db_app.models import Plasmid, Card, Database, Positive
+        from db_app.models import Plasmid, Card, Database, Positive, \
+            MetalDatabase
     except ImportError:
         from patlas.db_manager.db_app import db
         from patlas.db_manager.db_app.models import Plasmid, Card, Database, \
-            Positive
-#from flask import jsonify
+            Positive, MetalDatabase
 
-## Defines response fields
+# Defines response fields
 
 # Nested fields avoid the necessity to call JSON.parse() in js which often
 # renders problems with double quoting from python
@@ -32,7 +33,8 @@ nested_entry_fields = {
 
 entry_field = {
     "plasmid_id": fields.String,
-    # parse only the json required? Cannot use nested method because entry in database is a string with a json inside
+    # parse only the json required? Cannot use nested method because entry in
+    # database is a string with a json inside
     "json_entry": fields.Nested(nested_entry_fields)
 }
 
@@ -52,7 +54,7 @@ card_field = {
     "json_entry": fields.Nested(nested_card_fields)
 }
 
-## define reqparse arguments
+# define reqparse arguments
 
 req_parser = reqparse.RequestParser()
 req_parser.add_argument("accession", dest="accession", type=str,
@@ -112,6 +114,16 @@ class GetVirulence(Resource):
         return single_query
 
 
+class GetMetal(Resource):
+    @marshal_with(card_field)
+    def post(self):
+        var_response = request.form["accession"].replace("[", "")\
+            .replace("]", "").replace('"', "").split(",")
+        single_query = db.session.query(MetalDatabase).filter(
+            MetalDatabase.plasmid_id.in_(var_response)).all()
+        return single_query
+
+
 class GetAccession(Resource):
     @marshal_with(entry_field)
     def get(self):
@@ -124,6 +136,7 @@ class GetAccession(Resource):
             Plasmid.json_entry["name"].astext == args.name
         ).all()
         return records
+
 
 class GetAccessionRes(Resource):
     @marshal_with(card_field)
@@ -139,6 +152,7 @@ class GetAccessionRes(Resource):
         # contains method allows us to query in array that is converted to a
         # string
         return records
+
 
 class GetAccessionPF(Resource):
     @marshal_with(card_field)
@@ -172,6 +186,23 @@ class GetAccessionVir(Resource):
         # string
         return records
 
+
+class GetAccessionMetal(Resource):
+    @marshal_with(card_field)
+    def get(self):
+        # Put req_parser inside get function. Only this way it parses the
+        # request.
+        args = req_parser.parse_args()
+        # This queries name object in json_entry and retrieves an array with
+        # all objects that matched the args (json_entry, plasmid_id)
+        records = db.session.query(MetalDatabase).filter(
+            MetalDatabase.json_entry["gene"].astext.contains(args.gene)
+        ).all()
+        # contains method allows us to query in array that is converted to a
+        # string
+        return records
+
+
 class GetAccessionTaxa(Resource):
     @marshal_with(entry_field)
     def get(self):
@@ -186,6 +217,7 @@ class GetAccessionTaxa(Resource):
         # contains method allows us to query in array that is converted to a
         # string
         return records
+
 
 class GetPlasmidName(Resource):
     @marshal_with(entry_field)
@@ -202,6 +234,7 @@ class GetPlasmidName(Resource):
         # contains method allows us to query in array that is converted to a
         # string
         return records
+
 
 class GetAccessionHashes(Resource):
     # @marshal_with(entry_field)
