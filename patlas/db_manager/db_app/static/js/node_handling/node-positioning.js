@@ -38,7 +38,6 @@ const storeRecenterDom = (storeMasterNode, dictDist, sequence, counter) => {
   return returnedArray
 }
 
-
 /**
  * Function to fetch the node with more links currently being displayed by
  * vivagraph

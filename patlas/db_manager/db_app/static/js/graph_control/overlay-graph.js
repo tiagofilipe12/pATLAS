@@ -1,7 +1,7 @@
 /*globals Viva */
 
 /**
- * Function to unpin nodes on x key up
+ * Function to unpin nodes on x key up. Used to stop multi-dragging of nodes
  * @param {Object} g
  * @param {Object} layout
  */

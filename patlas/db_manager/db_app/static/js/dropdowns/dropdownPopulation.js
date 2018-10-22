@@ -2,6 +2,8 @@
 singleDropdownPopulate, filterDisplayer, fileMode, requestResults,
 currentSample*/
 
+// start 4 arrays one for each taxonomic level that will be populated by
+// getArrayTaxa function
 const listOrders = [],
   listFamilies = [],
   listGenera = [],
@@ -11,8 +13,6 @@ const listOrders = [],
  * Part of the code that populates all taxa associated dropdowns, both in
  * browse --> taxa and browse --> advanced multiple
  */
-
-// if (firstInstace === true && pageReload === false) {
 getArrayTaxa().done((json) => {
   $.each(json, (sps, other) => {    // sps aka species
     const species = sps.split("_").join(" ")
@@ -53,7 +53,6 @@ getArrayTaxa().done((json) => {
  * Part of the code that populates the resistance dropdowns available through
  * browse --> resistances and browse --> advanced multiple
  */
-// if (firstInstace === true && pageReload === false) {
 getArrayRes().done( (json) => {
   const listCard = [],
     listRes = []
@@ -83,7 +82,6 @@ getArrayRes().done( (json) => {
   singleDropdownPopulate("#resResfinderList2", listRes, false)
 
 })
-
 
 /**
  * Code that gests plasmidfinder dropdowns populated. Both through browse -->
@@ -120,9 +118,7 @@ getArrayPf().done((json) => {
 
   // populate the menus for the intercection filters
   singleDropdownPopulate("#pfList2", listPF, false)
-
 })
-
 
 /**
  * Code that gets the virulence dropdowns populated, both through browse -->
@@ -148,7 +144,6 @@ getArrayVir().done( (json) => {
 
   // populate the menus for the intersection filters
   singleDropdownPopulate("#virList2", listVir, false)
-
 })
 
 /**

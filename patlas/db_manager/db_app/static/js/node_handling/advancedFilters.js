@@ -57,7 +57,6 @@ const mergeNRemoveDuplicatesFromArray = (arr) => {
   return mergedListRes
 }
 
-
 /**
  * Function that controls if a selector is being clicked for the first time
  * or if it is being deselected in order to allow to use other selectors
@@ -117,7 +116,17 @@ const mapRequest = (requestConst) => {
   return requestList
 }
 
-
+/**
+ * Function that sets the lis to be added to the legend for intersection and
+ * union queries.
+ * @param {Object} objectOfSelections - The object with all the selections made
+ * through the select menus available in the intersection and union modals
+ * (advanced filters --> combined selections)
+ * @param currentColor - the current color being used
+ * @param selectedFilter - the name of the current filter. e.g. ermc for
+ * resistance
+ * @returns {string}
+ */
 const setStoreLis = (objectOfSelections, currentColor, selectedFilter) => {
 
   let storeLis = "<li class='centeredList'><button" +
@@ -134,7 +143,9 @@ const setStoreLis = (objectOfSelections, currentColor, selectedFilter) => {
  * @param {Object} graphics - vivagraph functions related with node and link
  * data.
  * @param {Function} renderer - Function that forces the graph to be updated.
- * @param objectOfSelections
+ * @param {Object} objectOfSelections - The object with all the selections made
+ * through the select menus available in the intersection and union modals
+ * (advanced filters --> combined selections)
  * @returns {Promise<*>}
  */
 const parseQueriesIntersection = async (g, graphics, renderer,
@@ -171,9 +182,6 @@ const parseQueriesIntersection = async (g, graphics, renderer,
     listTaxa = mergeNRemoveDuplicatesFromArray(listTaxa)
 
   }
-
-  // get accessions from taxa requests
-  // const listTaxa = mapRequest(taxaQueryResults)
 
   let listRes = []
 

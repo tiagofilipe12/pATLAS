@@ -11,7 +11,6 @@ const resetDisplayTaxaBox = (array) => {
   }
 }
 
-
 /**
  * Function that is responsible for updating the respective element that
  * displays the information of the selected taxa, resistances, virulence or

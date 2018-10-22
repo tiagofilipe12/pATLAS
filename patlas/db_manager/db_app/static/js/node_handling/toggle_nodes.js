@@ -21,7 +21,6 @@ const toggleManager = (toggleStatus) => {
   }
 }
 
-
 /**
  * Function that handles the request of a single node click opening the
  * top-right side popup, with metadata about a plasmid
@@ -60,7 +59,6 @@ const requestPlasmidTable = (node, setupPopupDisplay) => {
     setupPopupDisplay(node, speciesName, plasmidName, clusterId) //callback
   }
 }
-
 
 /**
  * function that iterates all nodes and when it finds a match recenters the dom
@@ -127,7 +125,6 @@ const centerToggleQuery = (g, graphics, renderer, query, currentQueryNode) => {
     return queriedMatch
   }
 }
-
 
 /**
  * Function to search plasmid names when toggle is on. This function is

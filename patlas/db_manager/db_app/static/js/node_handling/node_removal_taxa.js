@@ -320,7 +320,6 @@ const showDiv = () => {
   })
 }
 
-
 /**
  * Function to hide divs associated with file imports. Preventing from clicking
  * on buttons while loading new files.
@@ -361,4 +360,3 @@ const nodeColorReset = (graphics, g, nodeColor, renderer) => {
   })
   renderer.rerender()
 }
-
