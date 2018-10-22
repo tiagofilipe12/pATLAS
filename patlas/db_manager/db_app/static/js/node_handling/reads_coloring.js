@@ -606,7 +606,8 @@ const resetAllNodes = (graphics, g, nodeColor, renderer) => {
 
 
 /**
- * Function to push value to masterReadArray
+ * Function to push value to masterReadArray that is used for heatmap
+ * construction.
  * @param {Object} readFilejson - the object that contains the files to be
  * loaded and their respective jsons as values.
  * @returns {Array} returnArray - returns an array with all the accession

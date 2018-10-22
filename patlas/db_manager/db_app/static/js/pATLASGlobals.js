@@ -2,6 +2,10 @@
  * A bunch of global functions to be used throughout patlas
  */
 
+/**
+ * The variable in which the version is stored. This variable will be used to
+ * check the version of the imported files and projects.
+ */
 const version = "1.6.0"
 
 /**
@@ -30,7 +34,7 @@ const devel = false
 // is activated
 // let rerun = false
 
-// helps set menu to close status
+// helps set left side menu to close status
 let firstClickMenu = true
 
 // checks if vivagraph should load first initial dataset or the filters
@@ -41,44 +45,113 @@ let pageReload = false
 // filtering to work properly
 let pageReRun = false
 
-// starts a global instance for checking if button was clicked before
-// let clickedPopupButtonRes = false
+/**
+ * Variable that checks if resistance button tab in right side popup menu has
+ * already been
+ * clicked or not. This prevents the frontend from making unnecessary requests
+ * to the backend if the same plasmid popup is selected since the previous click
+ * on this tab
+ * @type {boolean}
+ */
+
 let clickedPopupButtonCard = false
+/**
+ * Variable that checks if plasmidfinder button tab in right side popup menu
+ * has already been
+ * clicked or not. This prevents the frontend from making unnecessary requests
+ * to the backend if the same plasmid popup is selected since the previous click
+ * on this tab
+ * @type {boolean}
+ */
+
 let clickedPopupButtonFamily = false
+/**
+ * Variable that checks if virulence button tab in right side popup menu has
+ * already been
+ * clicked or not. This prevents the frontend from making unnecessary requests
+ * to the backend if the same plasmid popup is selected since the previous click
+ * on this tab
+ * @type {boolean}
+ */
 let clickedPopupButtonVir = false
 
 // variable to control stats displayer
+/**
+ * Variable to control if selections made with shift click are made or not.
+ * If false it means that no selections were made using shift key plus mouse
+ * dragging and if true it means that a selection has been made using shift key.
+ *
+ * @type {boolean}
+ */
 let areaSelection = false
 
-
-// const getArray = (devel === true) ? $.getJSON("/test") : null
-// an array to store bootstrap table related list for downloads and coloring
-// nodes on submit
+/**
+ * an array to store bootstrap table related list for downloads and coloring
+ * nodes on submit
+ * @type {Array}
+ */
 let bootstrapTableList = []
-// dictionary to store all the connections between species and other taxa
-// level available. This needs to be stored here because there is no reason
-// to execute the getArrayTaxa twice.
-// const dictGenera = {}
 
-// buttonSubmit current node
+/**
+ * Variable that stores the node being currently clicked and used for the right
+ * side popup. When false it means that no plasmid is being queried and the
+ * right side popup should be closed, but if different from false should store
+ * the accession number of the currently selected plasmid.
+ * @type {boolean|String}
+ */
 let currentQueryNode = false
 
+/**
+ * Variable that is used to store the files and the data to generate the heatmap
+ * when importing multiple file at once.
+ * @type {Array}
+ */
 let masterReadArray = []
 
 /**
  * Variable that will store the imported samples whenever they are available,
- * otherwise it will be set to false
+ * otherwise it will be set to false. This variable is used for mapping results
+ * but it may be used to set access to objects defined in mashJson and
+ * assemblyJson since it will be in fact used as the main object to set
+ * selections throughout pATLAS every time a file is imported. So, this is
+ * really important!
  * @type {boolean|Object}
  */
 let readFilejson = false
 
+/**
+ * Variable that will store the imports from mash screen.
+ * @type {boolean|Object}
+ */
 let mashJson = false
+
+/**
+ * Variable that will store the imports from mash dist.
+ * @type {boolean|Object}
+ */
 let assemblyJson = false
+
+/**
+ * Variable that will store the imports from consensus files.
+ * @type {boolean|Object}
+ */
 let consensusJson = false
+
+/**
+ * Variable that will store the imports from project files.
+ * @type {boolean|Object}
+ */
 let projectJson = false
 
+/**
+ * Variable that allows to select one node from highcharts graphs.
+ * @type {boolean}
+ */
 let clickedHighchart = false
 
+/**
+ * variable that stores the number of nodes a graph has.
+ */
 let graphSize
 
 /**
@@ -92,20 +165,50 @@ let graphSize
  */
 let multiSelectOverlayObj = false
 
+/**
+ * Variable to check if legend is defined or not and if so display it in the
+ */
 let legendInst
 
-// object that lets collect plot data and that enable to click on bars and
-// retrieve selected nodes in vivagraph
+/**
+ * object that lets collect plot data and that enable to click on bars and
+ * retrieve selected nodes in vivagraph (highlighting them)
+ * @type {Object}
+ */
 let associativeObj = {}
 
-// globals to control plot instances
+/**
+ * Global that controls the type of plot that will be displayed depending on the
+ * buttons that are clicked. For instance if species button is clicked it will
+ * be set to "species".
+ */
 let clickerButton
 
+/**
+ * List of accession numbers that will be used to construct a given plot
+ */
 let listPlots
 
+/**
+ * Creates a temporary store for the results from requestDB function in which
+ * the first element will have listGiFilter (the list of accession numbers that
+ * will selected) and as the second element reloadAccessionList (a list that
+ * stores all the nodes that are in the current view, including those that are
+ * not selected with colors). This array will only have two entries or it will
+ * be undefined as the default state.
+ * @type {Array}
+ */
 let requestDBList
 
 // legend slider controller vars
+/**
+ * Array that contains a list of the legend slider buttons that allow to cycle
+ * the legend from one type of selection to another, for instance it allows to
+ * change the legend color scheme from taxa selections to resistances, without
+ * having to make a new seletion each time the user wants to see a different
+ * selection.
+ * @type {Array}
+ */
 let legendSliderControler = [
   "#taxaModalSubmit",
   "#resSubmit",
@@ -115,10 +218,15 @@ let legendSliderControler = [
 
 /**
  * Variable that searches for the
- * type {String | false}
+ * @type {String|boolean}
  */
 let selectedFilter = false
 
+/**
+ * Alongside with legendSliderControler array this var will allow to cycle
+ * the legend.
+ * @type {number}
+ */
 let legendIndex = 0
 
 /**
@@ -165,29 +273,54 @@ const getArrayVir = () => {
  */
 let listGiFilter = []
 
-
 /**
  * List used to control if the plots have already been displayed for that list
  * @type {Array}
  */
 let reloadAccessionList = []
 
-// variable to store previous list of accessions that iterate through table
-// is the same or not
+/**
+ * variable to store previous list of accessions that iterate through table
+ * is the same or not
+ * @type {Array}
+ */
 let previousTableList = []
 
-let sliderMinMax = [] // initiates an array for min and max slider entries
-// and stores it for reloading instances of onload()
+/**
+ * initiates an array for min and max slider entries and stores it for
+ * reloading instances of onload()
+ * @type {Array}
+ */
+let sliderMinMax = []
+
+/**
+ * This list of all nodes available in default visualization, therefore all
+ * accession numbers of plasmids available in patlas.
+ * @type {Array}
+ */
 let listGi = []
-// define render on the scope of onload in order to be used by buttons
-// outside renderGraph
+
+/**
+ * defines render on the scope of onload in order to be used by buttons outside
+ * renderGraph
+ */
 let renderer
 
-// variable used to control if div is shown or not
+/**
+ * variable used to control if div is shown or not
+ * @type {boolean}
+ */
 let multiSelectOverlay = false
-// store the node with more links
-let storeMasterNode = []    //cleared every instance of onload
-// start array that controls taxa filters
+
+/**
+ * store the node with more links. This variable is cleared every instance of
+ * onload. This array contains two entries, the first is the accession number
+ * of the central node and the second is the total number of links of that
+ * accession number in patlas. The idea is that the node with more links is
+ * the storeMasterNode and the central node of the current visualization
+ * @type {Array}
+ */
+let storeMasterNode = []
 
 /**
  * Variable that will store the central node in which the dom can be centered
@@ -195,20 +328,47 @@ let storeMasterNode = []    //cleared every instance of onload
  */
 let centralNode = false
 
-const idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"]
+/**
+ * sets a counter for the loop between the inputs nodes.
+ * @type {number}
+ */
+let counter = -1
 
-let counter = -1 //sets a counter for the loop between the inputs nodes
 // Sets parameters to be passed to WebglCircle in order to change
 // node shape, setting color and size.
-const nodeColor = 0x666370 // hex rrggbb
-const minNodeSize = 4 // a value that assures that the node is
-// displayed without increasing the size of big nodes too much
+/**
+ * Sets parameters to be passed to WebglCircle in order to change node shape,
+ * setting color and size. colors follow the following enconde: '0x' + hex code
+ * (rrggbb)
+ * @type {number}
+ */
+const nodeColor = 0x666370
 
-let list = []   // list to store references already ploted as nodes
-// links between accession numbers
-let listLengths = [] // list to store the lengths of all nodes
+/**
+ *  a value that assures that the node is displayed without increasing the
+ *  size of big nodes too much
+ * @type {number}
+ */
+const minNodeSize = 4
 
-let getLinkedNodes = false // a boolean variable to control the Re_run behavior
+/**
+ * list to store references already plotted as nodes links between accession
+ * numbers
+ * @type {Array}
+ */
+let list = []
+
+/**
+ * list to store the lengths of all nodes
+ * @type {Array}
+ */
+let listLengths = []
+
+/**
+ * a boolean variable to control the Re_run behavior
+ * @type {boolean}
+ */
+let getLinkedNodes = false
 
 /**
  * Variable that controls the behavior of shift key through refreshButton
@@ -217,8 +377,16 @@ let getLinkedNodes = false // a boolean variable to control the Re_run behavior
  */
 let freezeShift = true
 
+/**
+ * Variable to store the length slider element id. This will then be used by
+ * nodeUISlider module
+ */
 let slider
 
+/**
+ * The array that will be used to populate the xrange plot data
+ * @type {Array}
+ */
 let xRangePlotList = []
 
 /**
@@ -235,8 +403,24 @@ let fileMode = false
  */
 let currentSample = false
 
+/**
+ * The last position of the mouse that is used to drag multiple nodes at once
+ * by using shift + x function to drag multiple nodes
+ * @type {boolean}
+ */
 let lastPosition = false
 
+/**
+ * Variable used to check if dragging is active and once mouse is released
+ * it will be set to false again
+ * @type {boolean}
+ */
 let dragging = false
 
+/**
+ * Variable to prevent filter modal from appearing. if blockFilterModal is
+ * false then show modal that allows to show buttons to filter or not the
+ * current selection
+ * @type {boolean}
+ */
 let blockFilterModal = false

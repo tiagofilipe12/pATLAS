@@ -1378,6 +1378,8 @@ const onLoad = () => {
 
     event.preventDefault()
 
+    // resets all the entries for this paragraphs in the html
+    const idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"]
     resetDisplayTaxaBox(idsArrays)
 
     // resets dropdown selections

@@ -957,7 +957,7 @@ const statsColor = (g, graphics, renderer, mode, sortAlp, sortVal) => {
  * @param graphics - vivagraph functions related with node and link
  * data.
  * @returns {Array} - returns the list of plasmid to be plotted (accession
- * numbers at this strage)
+ * numbers at this stage)
  */
 const repetitivePlotFunction = (g, graphics, renderer, areaSelection, listGiFilter, clickerButton) => {
 
