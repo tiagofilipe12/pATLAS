@@ -41,7 +41,9 @@ def fetch_taxid(taxa_list, names_file, weirdos):
             "mussel"
         ])
 
-    name = open(names_file, "r")
+    print("names_file: ", names_file)
+
+    name = open(names_file, "r", encoding="utf-8")
     # parses names.dmp file and outputs a list of taxid
     taxid_dic = {}
 
