@@ -5,6 +5,7 @@ import json
 import plotly
 import plotly.graph_objs as go
 
+
 def make_histogram(trace_list):
     '''
     Function to make an histogram from a list
@@ -30,16 +31,17 @@ def make_histogram(trace_list):
     fig = go.Figure(data=[trace_lengths], layout=layout)
     plotly.offline.plot(fig, filename="dist.html", auto_open=False)
 
+
 def main():
     '''
     This script just have main function, which basically transforms a json
     file into a csv file for spreadsheet exploration
 
     '''
-    #open output file
-    ofile  = open("output_size_n_links.csv", "w")
+    # open output file
+    ofile = open("output_size_n_links.csv", "w")
 
-    #read input
+    # read input
     input_json = sys.argv[1]
 
     reader = open(input_json)
@@ -96,6 +98,7 @@ def main():
     refactored_json = open("refactored_filtered.json", "w")
     refactored_json.write(json.dumps(dict_refactored_json))
     refactored_json.close()
+
 
 if __name__ == "__main__":
     main()

@@ -5,7 +5,7 @@ import json
 import os
 import sys
 
-## change path before loading modules
+# change path before loading modules
 # TODO instead of this, this should be a module that can be passed to a main in
 # patlas folder
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),"..")))
@@ -14,6 +14,7 @@ try:
     from db_manager.db_app import db, models
 except ImportError:
     from patlas.db_manager.db_app import db, models
+
 
 def model_selector(selected_class):
     '''
@@ -27,6 +28,7 @@ def model_selector(selected_class):
         model_class = models.Positive
     return model_class
 
+
 def output_json(dict_main_json, blast_out, selected_class, id_param, perc_cov_param):
     '''
     This function outputs a dictionary of json entries per each Accession
@@ -37,7 +39,7 @@ def output_json(dict_main_json, blast_out, selected_class, id_param, perc_cov_pa
         list_json_entries=[]
         tab_split = line.split("\t")
         NCBI_accession = tab_split[12]
-        #ARO_NCBI_accession = tab_split[0].split("|")[1].strip()
+        # ARO_NCBI_accession = tab_split[0].split("|")[1].strip()
         length = float(tab_split[13].strip())
         # The difference between query end and query start in alignment
         align_length = float(tab_split[7].strip()) - float(tab_split[6].strip())
@@ -71,6 +73,7 @@ def output_json(dict_main_json, blast_out, selected_class, id_param, perc_cov_pa
                 dict_main_json[NCBI_accession] = list_json_entries
 
     return dict_main_json
+
 
 def json_dumping(dict_main_json, model_class):
     '''
@@ -143,6 +146,7 @@ def main():
                     args.perc_cover)
 
     json_dumping(dict_main_json, model_class)
+
 
 if __name__ == "__main__":
     main()

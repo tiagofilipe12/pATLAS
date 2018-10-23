@@ -1,6 +1,7 @@
-## Last update: 8/5/2017
-## Author: T.F. Jesus
-## This is an auxiliary script for MASHix.py, which generates histograms for the lists stored in lists_traces
+# Last update: 8/5/2017
+# Author: T.F. Jesus
+# This is an auxiliary script for MASHix.py, which generates histograms for the
+# lists stored in lists_traces
 
 import os
 import plotly
@@ -9,12 +10,31 @@ import numpy
 
 
 def plot_histogram(lists_traces, output_tag, mother_directory):
+    """
+    A function that will make two plots. A first one with an histogram with the
+    number of sequences within a range of mash distances. A second histogram
+    with the number of sequences within a range of significant pairwise
+    distances.
+
+    Parameters
+    ----------
+    lists_traces: list
+        the list of all traces to be added to the plots
+    output_tag: str
+        The name of the files that will be outputted
+    mother_directory: str
+        The directory where the output file will be stored
+
+    Returns
+    -------
+
+    """
     lengths = []
     averages = []
     medians = []
     maximum = []
     minimum = []
-    ## parsing the list to length, average, median, max and min variables
+    # parsing the list to length, average, median, max and min variables
     for trace_list in lists_traces:
         # trace_list=[x for x in trace_list if x != 0]
         if trace_list:
@@ -61,8 +81,8 @@ def plot_histogram(lists_traces, output_tag, mother_directory):
                                  xbins=dict(start=numpy.min(minimum),
                                             size=0.01,
                                             end=numpy.max(minimum)))
-    ## ploting
-    ## first plot
+    # plotting
+    # first plot
     layout = go.Layout(barmode='overlay',
                        xaxis=dict(
                            title='Mash distances'
@@ -76,7 +96,7 @@ def plot_histogram(lists_traces, output_tag, mother_directory):
     plotly.offline.plot(fig, filename=os.path.join(
         mother_directory, "results", output_tag + '_avg_med_dist.html'),
                                    auto_open=False)
-    ## second plot
+    # second plot
     layout2 = go.Layout(xaxis=dict(
         title='Number of significant <i>(p-value</i> >  '
               '0.05) pairwise differences'
