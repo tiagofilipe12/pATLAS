@@ -274,5 +274,4 @@ class GetAccessionHashes(Resource):
                             resulting_obj[record.plasmid_id] = [
                                 linked_accession]
 
-
         return resulting_obj
