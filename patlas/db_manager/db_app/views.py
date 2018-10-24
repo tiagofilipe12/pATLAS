@@ -51,6 +51,7 @@ def repetitive_function(path):
     return response
 
 
+# Allow connections from other services
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')

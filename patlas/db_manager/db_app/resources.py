@@ -30,7 +30,6 @@ nested_entry_fields = {
     "cluster": fields.String
 }
 
-
 entry_field = {
     "plasmid_id": fields.String,
     # parse only the json required? Cannot use nested method because entry in

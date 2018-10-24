@@ -1,4 +1,4 @@
-## the actual file that does the structure to be imported in the database
+# the actual file that does the structure to be imported in the database
 
 try:
     from db_manager.db_app import db
@@ -80,6 +80,7 @@ class SequenceDB(db.Model):
 
     def __repr__(self):
         return "<SequenceDB %r>" % (self.sequence_entry)
+
 
 class UrlDatabase(db.Model):
     """
