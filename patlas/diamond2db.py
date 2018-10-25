@@ -146,7 +146,7 @@ class DiamondDbInsertion:
 
                         unique_entries.append(reference_accession)
 
-        # self.db_dump(temp_dict, db_type)
+        self.db_dump(temp_dict, db_type)
         self.write_json_file(temp_dict, db_type)
 
     @staticmethod
