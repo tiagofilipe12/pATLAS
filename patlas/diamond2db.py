@@ -31,9 +31,9 @@ class DiamondDbInsertion:
         ----------
         file: str
             The file name
-        cov_cutoff: int
+        cov_cutoff: float
             The cutoff that will be used to filter results for coverage
-        id_cutoff: int
+        id_cutoff: float
             The cutoff that will be used to filter results for identity
         db_type: str
             The database type to which to dump results
@@ -63,9 +63,9 @@ class DiamondDbInsertion:
         ----------
         file: str
             The file name
-        cov_cutoff: int
+        cov_cutoff: float
             The cutoff that will be used to filter results for coverage
-        id_cutoff: int
+        id_cutoff: float
             The cutoff that will be used to filter results for identity
         db_type: str
             The database type to which to dump results
