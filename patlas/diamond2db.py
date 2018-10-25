@@ -81,6 +81,11 @@ class DiamondDbInsertion:
 
         temp_dict = {}
 
+        # starts two variables to control the previous entry so that diamond txt
+        # can be filtered
+        previous_range = []
+        previous_plasmid = False
+
         with open(file) as fh:
             for line in fh:
 
@@ -113,13 +118,38 @@ class DiamondDbInsertion:
                     # in this case the aro_accession isn't needed
                     aro_accession = False
 
+                    # the current range for plasmid sequence start and end
+                    current_range = sorted([int(fields[6]), int(fields[7])])
+
+                    # when the line changes to a new plasmid, previous_range
+                    # list should be emptied
+                    if previous_plasmid and previous_plasmid != \
+                            reference_accession:
+                        previous_range = []
+
+                    check_range = self.check_ranges(previous_range,
+                                                    current_range,
+                                                    previous_plasmid,
+                                                    reference_accession)
+
+                    # if the function check_range returns true then the entry
+                    # should not be added, otherwise if the sequence is to be
+                    # added then proceed to the next check and add to
+                    # previous_range and previous_plasmid
+                    if check_range:
+                        continue
+                    else:
+                        previous_range.append(current_range)
+                        previous_plasmid = reference_accession
+
                     # checks if coverage and identity are within the desired
                     # thresholds and avoids adding to dict if not
                     if coverage >= cov_cutoff and identity >= id_cutoff:
 
                         if reference_accession not in unique_entries:
                             temp_dict[reference_accession] = {
-                                "seq_range": [(int(fields[6]), int(fields[7]))],
+                                "seq_range": [(current_range[0],
+                                               current_range[1])],
                                 "gene": [fields[1].split("|")[1]],
                                 "accession": [accession],
                                 "database": [database],
@@ -130,7 +160,7 @@ class DiamondDbInsertion:
                         else:
                             temp_dict[reference_accession][
                                 "seq_range"].append(
-                                (int(fields[6]), int(fields[7])))
+                                (current_range[0], current_range[1]))
                             temp_dict[reference_accession]["gene"].append(
                                 fields[1].split("|")[1])
                             temp_dict[reference_accession][
@@ -148,6 +178,53 @@ class DiamondDbInsertion:
 
         self.db_dump(temp_dict, db_type)
         self.write_json_file(temp_dict, db_type)
+
+    @staticmethod
+    def check_ranges(previous_range, current_range, previous_plasmid,
+                     reference_accession):
+        """
+        Function that checks if current line has already been reported for the
+        range in the plasmid sequence. This avoids adding many entries per
+        sequence range and chooses just the best hit for that range. This
+        assumes that diamond output entries have the best hit on the top and
+        worst hits on the bottom, at least for the same ranges.
+
+        Parameters
+        ----------
+        previous_range: list
+            A list of lists with the ranges that were already queried
+        current_range: list
+            A list with the start and end position of the current query
+        previous_plasmid: str
+            the accession number of the previously added plasmid
+        reference_accession: str
+            the accession number of the current plasmid (the plasmid in the
+            line being parsed)
+
+        Returns
+        -------
+            returns True when the current entry has a range inside other range
+            already added to the temp_dict dict.
+
+        """
+
+        # checks if previous range start and end is within the
+        # current range for the line, if so skips to the next line
+        if previous_range:
+            # checks if previous_plasmid is different from the one
+            # being currently queried in the line
+            if previous_plasmid and previous_plasmid == \
+                    reference_accession:
+                # iterate through all lists of list of ranges to check if a
+                # given entry already exists
+                for range_entry in previous_range:
+                    # if query start is higher than previous query
+                    # start and query end is lower than previous
+                    # sequence end then it means that we are inside
+                    # the range of the previous line
+                    if current_range[0] >= range_entry[0] \
+                            and current_range[1] <= range_entry[1]:
+                        return True
 
     @staticmethod
     def db_dump(temp_dict, db_type):
