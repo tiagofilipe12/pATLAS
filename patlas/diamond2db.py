@@ -14,8 +14,8 @@ except ImportError:
 class DiamondDbInsertion:
     """
     A class instance that parses the output of diamond and handles the dump
-    of results to the pATLAS datbase and also generates a file that is
-    used by the frontend to populate dropdowns.
+    of results to the pATLAS database and also generates a file that is
+    used by the frontend to populate dropdown.
     """
 
     def __init__(self, file, db_type, cov_cutoff=80, id_cutoff=90):
@@ -57,7 +57,7 @@ class DiamondDbInsertion:
         '-f 6 qseqid sseqid pident length mismatch gapopen qstart qend slen
         sstart send evalue bitscore'
         This just changes the slen in relation to the default output of diamond,
-        which particulary important here to calculate the coverage
+        which particularly important here to calculate the coverage
 
         Parameters
         ----------
@@ -69,9 +69,6 @@ class DiamondDbInsertion:
             The cutoff that will be used to filter results for identity
         db_type: str
             The database type to which to dump results
-
-        Returns
-        -------
 
         """
 
@@ -264,7 +261,7 @@ class DiamondDbInsertion:
     def write_json_file(dict_to_dump, db_type):
         """
         This method will write the necessary entries in temp_dict to the json
-        file used to construct the dropdowns
+        file used to construct the dropdown
 
         Parameters
         ----------
@@ -286,8 +283,8 @@ class DiamondDbInsertion:
         ]
 
         for acc, json_entry in dict_to_dump.items():
-            # for each accession contained in dict_to_tump start an entry in
-            # json_dict so that the dropdowns have all the entries available
+            # for each accession contained in dict_to_dump start an entry in
+            # json_dict so that the dropdown have all the entries available
             # in the database
             json_dict[acc] = {}
 
