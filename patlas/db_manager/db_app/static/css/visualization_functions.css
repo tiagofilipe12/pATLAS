@@ -272,7 +272,7 @@
 }
 
 #order_dropdown, #family_dropdown, #genus_dropdown, #species_dropdown,
-#famDropdown, #resDropdown, #cardDropdown, #virDropdown{
+#famDropdown, #resDropdown, #cardDropdown, #virDropdown, #metalDropdown{
     text-align: center;
 }
 
@@ -302,7 +302,7 @@
 }
 
 #modal-body-taxa-1, #modalBodyFAM1, #modalBodyABR1, #modalBodyVir1,
-#modal-body-intersections{
+#modalBodyMetal1, #modal-body-intersections{
     margin-bottom: 5%;
 }
 
@@ -826,7 +826,8 @@ Careful when using this in other popovers in the future*/
 
 #modal-body-intersections{
     text-align: center;
-    height: 460px;
+    height: 550px;
+    /*overflow-y: auto;*/
 }
 
 .dropdown-header{
