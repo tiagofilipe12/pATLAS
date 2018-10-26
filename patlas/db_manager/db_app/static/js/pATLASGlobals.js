@@ -6,7 +6,7 @@
  * The variable in which the version is stored. This variable will be used to
  * check the version of the imported files and projects.
  */
-const version = "1.6.0"
+const version = "1.6.1"
 
 /**
  * variable that will store the object to be exported to a json file on

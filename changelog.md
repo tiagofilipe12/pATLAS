@@ -1,5 +1,17 @@
 # Changelog
 
+## Version 1.6.1
+
+### Back end
+
+- Added bacmet implementation for the backend (resources, views and models)
+- Added a new script called diamond2db.py which enables to send bacmet results
+to the database table.
+
+### Front end
+
+- Added implementation of bacmet for the statistics, browsing, tables and popups
+
 ## Version 1.6.0
 
 ### Back end

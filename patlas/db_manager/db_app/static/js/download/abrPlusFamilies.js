@@ -568,7 +568,7 @@ const metalGetter = (nodeId) => {
     // passed to jquery to append to popup_descriptions div
     // set of arrays for card db
     const queryArrayMetalRange = []
-    
+
     try{
       // totalLength array corresponds to gene names
       const totalLength = data[0].json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
