@@ -119,8 +119,6 @@ class GetMetal(Resource):
         single_query = db.session.query(MetalDatabase).filter(
             MetalDatabase.plasmid_id.in_(var_response)).all()
 
-        print("returned metal: ", single_query)
-
         return single_query
 
 
