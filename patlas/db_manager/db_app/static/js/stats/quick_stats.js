@@ -62,6 +62,12 @@ const selector = {
     div: "chartContainerVirulence",
     state: false,
     alertString: false
+  },
+  metal: {
+    color: "#ff6aac",
+    div: "chartContainerMetal",
+    state: false,
+    alertString: false
   }
 }
 
@@ -606,6 +612,7 @@ const resetProgressBar = () => {
 const layoutGet = (taxaType) => {
   // this taxaType remains in this scope
   if (taxaType === "plasmidfamilies") { taxaType = "plasmid families" }
+  if (taxaType === "metal") { taxaType = "biocide & metal"}
 
   return {
     chart: {

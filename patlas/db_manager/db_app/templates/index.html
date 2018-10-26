@@ -1326,26 +1326,30 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h3 class="modal-title">Quick statistics histograms</h3>
       </div>
-      <div class="modal-body" id="modal-body-plot">
-        <div class="alert alert-warning alert-dismissable fade in"
-             id="alertPlot"
-             style="display: none">
-          <button type="button" class="close"
-                  aria-hidden="true" data-hide="true"
-                  onclick="this.parentNode.style.display = 'none'">
-            &times;</button>
-          <strong>Warning!</strong> All plasmids have same size.
-          There is no sufficient data to plot an histogram.
+      <div>
+        <div class="modal-body" id="modal-body-plot">
+          <div class="alert alert-warning alert-dismissable fade in"
+               id="alertPlot"
+               style="display: none">
+            <button type="button" class="close"
+                    aria-hidden="true" data-hide="true"
+                    onclick="this.parentNode.style.display = 'none'">
+              &times;</button>
+            <strong>Warning!</strong> All plasmids have same size.
+            There is no sufficient data to plot an histogram.
+          </div>
+          <div class="alert alert-info alert-dismissable fade in"
+               id="alertPlotEntries">
+            <span id="spanEntries" style="font-size: 12px"></span>
+            <button type="button" class="close"
+                    aria-hidden="true" data-hide="true"
+                    onclick="this.parentNode.style.display = 'none'">
+              &times;</button>
+          </div>
         </div>
-        <div class="alert alert-info alert-dismissable fade in"
-             id="alertPlotEntries">
-          <span id="spanEntries" style="font-size: 12px"></span>
-          <button type="button" class="close"
-                  aria-hidden="true" data-hide="true"
-                  onclick="this.parentNode.style.display = 'none'">
-            &times;</button>
-        </div>
-        <div>
+
+        <div id="statsToolBox">
+          <div class="header_taxa">Plot toolbox</div>
           <button class="btn btn-info" id="sortGraph"
                   type="button" data-toogle="tooptip"
                   title="Sort graph">
@@ -1356,6 +1360,31 @@
                   title="Sort graph">
             <span class="glyphicon glyphicon-sort-by-alphabet"></span>
           </button>
+
+
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="20%"
+                  data-selected-text-format="count"
+                  data-title="Change plot..." id="statsList">
+
+            <optgroup label="Taxa">
+              <option>Species</option>
+              <option>Genera</option>
+              <option>Families</option>
+              <option>Orders</option>
+            </optgroup>
+            <optgroup label="Annotations">
+              <option>Resistances</option>
+              <option>PlasmidFinder</option>
+              <option>Virulence</option>
+              <option>Biocide & Metal</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option>Length</option>
+              <option>Clusters</option>
+            </optgroup>
+
+          </select>
 
         </div>
         <div id="progressDiv">
@@ -1394,26 +1423,27 @@
         >
           <span class="glyphicon glyphicon-question-sign"></span>
         </button>
-        <button class="btn btn-default"  id="speciesPlot">Species
-        </button>
-        <button class="btn btn-default"  id="genusPlot">Genera
-        </button>
-        <button class="btn btn-default"  id="familyPlot">Families
-        </button>
-        <button class="btn btn-default"  id="orderPlot">Orders
-        </button>
-        <button class="btn btn-default" id="lengthPlot">Length
-        </button>
-        <button class="btn btn-default"  id="clusterPlot">Clusters
-        </button>
-        <button class="btn btn-default" id="resPlot">Resistances
-        </button>
-        <button class="btn btn-default" id="pfPlot">Plasmid Families
-        </button>
-        <button class="btn btn-default" id="virPlot">Virulence
-        </button>
-        <button class="btn btn-default" id="metalPlot">Biocide & Metal
-        </button>
+
+        <!--<button class="btn btn-default"  id="speciesPlot">Species-->
+        <!--</button>-->
+        <!--<button class="btn btn-default"  id="genusPlot">Genera-->
+        <!--</button>-->
+        <!--<button class="btn btn-default"  id="familyPlot">Families-->
+        <!--</button>-->
+        <!--<button class="btn btn-default"  id="orderPlot">Orders-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="lengthPlot">Length-->
+        <!--</button>-->
+        <!--<button class="btn btn-default"  id="clusterPlot">Clusters-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="resPlot">Resistances-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="pfPlot">Plasmid Families-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="virPlot">Virulence-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="metalPlot">Biocide & Metal-->
+        <!--</button>-->
       </div>
     </div>
 

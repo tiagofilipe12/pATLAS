@@ -2466,20 +2466,31 @@ const onLoad = () => {
   //**********************************************************//
 
   /**
-   * Button events that are fired for buttons inside statsModal, that enable to
-   * switch b/w plots.
+   * Event for the dropdown available in statsPlot Modal, allowing to quickly
+   * switch between different types of plots
    */
-  $("#lengthPlot, #speciesPlot, #genusPlot, #familyPlot, #orderPlot, " +
-    "#clusterPlot, #resPlot, #pfPlot, #virPlot").unbind("click").bind("click", (event) => {
-    // this gets the clicked selector, gets its html, converts it to lower
-    // case and trims for white spaces and new line chars
-    clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
-    if (event.target.id === "lengthPlot") {
+  $("#statsList").on("changed.bs.select", (e) => {
+
+    // fetches the target option being selected in the dropdown
+    const selectedTarget = $(`#${e.target.id}`).selectpicker("val")
+      .toLowerCase()
+
+    // assigns to clickerButton the appropriate entry for the parsers in
+    // repetitivePlotFunction
+    clickerButton = (selectedTarget === "plasmidfinder") ? "plasmidfamilies" :
+      (selectedTarget === "biocide & metal") ? "metal" : selectedTarget
+
+    // controls if the two sort buttons should be enabled or not
+    if (clickerButton === "length") {
       $("#sortGraph, #sortGraphAlp").attr("disabled", true)
     } else {
       $("#sortGraph, #sortGraphAlp").attr("disabled", false)
     }
-    listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
+
+    // generates the plot itself
+    listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection,
+      listGiFilter, clickerButton)
+
   })
 
   //************************************************//
