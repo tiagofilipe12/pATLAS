@@ -75,6 +75,8 @@ let clickedPopupButtonFamily = false
  */
 let clickedPopupButtonVir = false
 
+let clickedPopupButtonMetal = false
+
 // variable to control stats displayer
 /**
  * Variable to control if selections made with shift click are made or not.

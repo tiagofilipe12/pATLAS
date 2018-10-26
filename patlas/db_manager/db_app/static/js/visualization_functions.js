@@ -2407,6 +2407,12 @@ const onLoad = () => {
     }
   })
 
+  $("#metalButton").unbind("click").bind("click", () => {
+    if (clickedPopupButtonMetal === false) {
+      clickedPopupButtonMetal = metalGetter(currentQueryNode)
+    }
+  })
+
   //************************************//
   //**** BUTTONS THAT CONTROL PLOTS ****//
   //************************************//
