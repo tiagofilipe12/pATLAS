@@ -127,6 +127,11 @@ def vir_summary():
     return repetitive_function("db_app/static/json/virulence.json")
 
 
+@app.route("/metal")
+def vir_summary():
+    return repetitive_function("db_app/static/json/metal.json")
+
+
 #  routes for sample files
 @app.route("/map_sample")
 def map_sample():
