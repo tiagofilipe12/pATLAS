@@ -126,7 +126,9 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
               "speciesName": "",
               "plasmidName": "",
               "resGenes": "",
-              "pfGenes": ""
+              "pfGenes": "",
+              "virGenes": "",
+              "metalGenes": ""
             }
             // gets percentage for mapping import
             const seqPercentage = (g.getNode(accession) &&
@@ -188,12 +190,21 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
                 break
               }
             }
+            for (let metalRequests of requests.metal) {
+              if (metalRequests.plasmid_id === accession) {
+                entry.metalGenes = metalRequests.json_entry.gene.replace(/['u"\[\]]/g, "")
+                // loops must be break because there must be only one entry
+                break
+              }
+            }
+
             // since not allways the response is an empty string and sometimes
             // it returns undefined... this check is to prevent showing empty
             // columns in table
             entry.resGenes = (entry.resGenes === "" || typeof entry.resGenes === "undefined") ? "N/A" : entry.resGenes
             entry.pfGenes = (entry.pfGenes === "" || typeof entry.pfGenes === "undefined") ? "N/A" : entry.pfGenes
             entry.virGenes = (entry.virGenes === "" || typeof entry.virGenes === "undefined") ? "N/A" : entry.virGenes
+            entry.metalGenes = (entry.metalGenes === "" || typeof entry.metalGenes === "undefined") ? "N/A" : entry.metalGenes
             promises.push(entry)
           }
         }
@@ -265,6 +276,11 @@ const makeTable = (areaSelection, listGiFilter, previousTableList, g, graphics) 
               }, {
                 field: "cluster",
                 title: "Cluster no.",
+                visible: false,
+                sortable: true
+              }, {
+                field: "metalGenes",
+                title: "Biocide & metal genes",
                 visible: false,
                 sortable: true
               }],
