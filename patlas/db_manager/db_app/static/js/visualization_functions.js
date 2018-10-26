@@ -2417,15 +2417,25 @@ const onLoad = () => {
    */
   $("#genusStats, #speciesStats, #familyStats, #orderStats," +
     " #resistanceStats, #pfamilyStats, #virStats, #clusterStats, " +
-    "#lengthStats").unbind("click").bind("click", (event) => {
+    "#lengthStats, #metalStats").unbind("click").bind("click", (event) => {
     // this gets the clicked selector, gets its html, converts it to lower
     // case and trims for white spaces and new line chars
-    clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
+    clickerButton = $(event.target).html()
+      .toLowerCase()
+      .trim()
+      .replace(" ", "")
+
+    // checks if metal button is clicked and if so change the clickerButton
+    // to 'metal'
+    clickerButton = (clickerButton.includes("metal")) ? "metal" : clickerButton
+
     if (event.target.id === "lengthStats") {
       $("#sortGraph, #sortGraphAlp").attr("disabled", true)
     } else {
       $("#sortGraph, #sortGraphAlp").attr("disabled", false)
     }
+
+    // assures that the modal is opened before triggering the function
     setTimeout( () => {
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     }, 500)
