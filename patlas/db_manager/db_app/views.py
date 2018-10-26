@@ -128,7 +128,7 @@ def vir_summary():
 
 
 @app.route("/metal")
-def vir_summary():
+def metal_summary():
     return repetitive_function("db_app/static/json/metal.json")
 
 
