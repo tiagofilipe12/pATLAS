@@ -265,6 +265,10 @@ const getArrayVir = () => {
   return $.getJSON("/virulence")
 }
 
+const getArrayMetal = () => {
+  return $.getJSON("/metal")
+}
+
 /**
  * This is list is the master list that controls every selection made in patlas.
  * It controls selections made through filters, file input and is used for

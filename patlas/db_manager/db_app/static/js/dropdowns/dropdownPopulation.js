@@ -1,6 +1,6 @@
 /*globals getArrayTaxa, getArrayRes, getArrayPf, getArrayVir,
 singleDropdownPopulate, filterDisplayer, fileMode, requestResults,
-currentSample*/
+currentSample, getArrayMetal*/
 
 // start 4 arrays one for each taxonomic level that will be populated by
 // getArrayTaxa function
@@ -144,6 +144,32 @@ getArrayVir().done( (json) => {
 
   // populate the menus for the intersection filters
   singleDropdownPopulate("#virList2", listVir, false)
+})
+
+/**
+ * Code that gets the metal resistance dropdowns populated, both through browse
+ * --> metal or browse --> advanced multiple
+ */
+getArrayMetal().done( (json) => {
+  // first parse the json input file
+  const listMetal = []
+  // iterate over the file
+  $.each(json, (accession, entry) => {
+    const geneEntries = entry.gene
+    for (let i in geneEntries) {
+      if (geneEntries.hasOwnProperty(i)) {
+        if (listMetal.indexOf(geneEntries[i]) < 0) {
+          listMetal.push(geneEntries[i])
+        }
+      }
+    }
+  })
+
+  // populate the menus virulence filters
+  singleDropdownPopulate("#metalList", listMetal, "MetalClass")
+
+  // populate the menus for the intersection filters
+  singleDropdownPopulate("#metalList2", listMetal, false)
 })
 
 /**
