@@ -75,6 +75,14 @@ let clickedPopupButtonFamily = false
  */
 let clickedPopupButtonVir = false
 
+/**
+ * Variable that checks if bacmet button tab in right side popup menu has
+ * already been
+ * clicked or not. This prevents the frontend from making unnecessary requests
+ * to the backend if the same plasmid popup is selected since the previous click
+ * on this tab
+ * @type {boolean}
+ */
 let clickedPopupButtonMetal = false
 
 // variable to control stats displayer

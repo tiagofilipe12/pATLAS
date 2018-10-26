@@ -406,6 +406,7 @@ const plasmidFamilyGetter = (nodeId) => {
       }
       // then actually add it to popup_description div
       pfPopupPopulate(queryArrayPFRange)
+
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no PlasmidFinder information available in database."
@@ -507,6 +508,7 @@ const virulenceGetter = (nodeId) => {
       }
       // then actually add it to popup_description div
       virPopupPopulate(queryArrayVirRange)
+
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no Virulence information available in database."
@@ -566,7 +568,7 @@ const metalGetter = (nodeId) => {
     // passed to jquery to append to popup_descriptions div
     // set of arrays for card db
     const queryArrayMetalRange = []
-
+    
     try{
       // totalLength array corresponds to gene names
       const totalLength = data[0].json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
@@ -593,9 +595,10 @@ const metalGetter = (nodeId) => {
       }
       // then actually add it to popup_description div
       metalPopupPopulate(queryArrayMetalRange)
+
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
-        " This sequence has no Virulence information available in database."
+        " This sequence has no Biocide & Metal resistance information available in database."
       $("#alertId_db").show()
       $("#alertClose_db").click( () => {
         $("#alertId_db").hide()  // hide this div
