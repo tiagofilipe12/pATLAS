@@ -41,7 +41,9 @@ def fetch_taxid(taxa_list, names_file, weirdos):
             "mussel"
         ])
 
-    name = open(names_file, "r")
+    print("names_file: ", names_file)
+
+    name = open(names_file, "r", encoding="utf-8")
     # parses names.dmp file and outputs a list of taxid
     taxid_dic = {}
 
@@ -86,7 +88,9 @@ def family_taxid(taxid_dic, nodes_file):
 
     """
 
-    nodes = open(nodes_file, "r")
+    print("nodes file: ", nodes_file)
+
+    nodes = open(nodes_file, "r", encoding="utf-8")
     parent_taxid_dic = {}
 
     for line in nodes:
@@ -108,7 +112,7 @@ def family_taxid(taxid_dic, nodes_file):
 
 # function to fetch taxids given a list of genera
 def fetch_taxid_by_id(parent_taxid_dic, names_file):
-    name = open(names_file, "r")
+    name = open(names_file, "r", encoding="utf-8")
     # parses names.dmp file and outputs a list of taxid
     taxa_name_dic = {}
     for line in name:

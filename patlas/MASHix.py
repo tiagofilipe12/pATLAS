@@ -29,8 +29,10 @@ except ImportError:
     from patlas.utils.crowd_curation import black_list
     from patlas.db_manager.db_app import db, models
 
-# TODO This is a rather sketchy solution, remove this with a refactor of node_crawler
+# TODO This is a rather sketchy solution, remove this with a refactor of node_
+#  crawler
 sys.setrecursionlimit(10000)
+
 
 class Record:
 
@@ -381,7 +383,7 @@ def master_fasta(fastas, output_tag, mother_directory):
 
 
 def genomes_parser(main_fasta, mother_directory):
-    '''
+    """
     A function that gets the names of all entries in master_fasta. It also
     generates temporary fastas for each one of the entries in fasta that are
     removed at the end of the script. This is used to construct the distance
@@ -401,7 +403,8 @@ def genomes_parser(main_fasta, mother_directory):
         A list that stores the names of the files that would be parsed by
         multiprocessing_mash function
 
-    '''
+    """
+
     out_folder = os.path.join(mother_directory, "tmp")
     out_file = os.path.join(out_folder, os.path.basename(main_fasta)[:-4])
     if_handle = open(main_fasta, "r")
@@ -492,7 +495,7 @@ def sketch_references(inputfile, output_tag, threads, kmer_size,
                         inputfile]
     p = Popen(sketcher_command, stdout=PIPE, stderr=PIPE)
     p.wait()
-    #	stdout,stderr= p.communicate()
+    # stdout,stderr= p.communicate()
     return out_file + ".msh"
 
 
@@ -613,13 +616,13 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
 
 
         size = sequence_info[ref_accession][1]
-        ## Added new reference string in order to parse easier within
+        # Added new reference string in order to parse easier within
         #  visualization_functions.js
         rec = Record(ref_accession, size, mash_dist, percentage_hashes)
         #  to json
-        ## there is no need to store all values since we are only interested in
+        # there is no need to store all values since we are only interested in
         # representing the significant ones
-        ## and those that correlate well with ANI (mashdist<=0.1)
+        # and those that correlate well with ANI (mashdist<=0.1)
         if float(p_value) < float(pvalue) and \
                 ref_accession != seq_accession and \
                 float(mash_dist) < float(mashdist):
@@ -628,35 +631,29 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
     # Get modified reference accession
     string_sequence = "{}_{}".format(seq_accession,
                                      sequence_info[seq_accession][1])
-    ##stores accession and lenght
+    # stores accession and lenght
 
-    ## Added new sequence string in order to parse easier within
+    # Added new sequence string in order to parse easier within
     # visualization_functions.js
-    ## adds an entry to postgresql database
-    ## but first lets parse some variables used for the database
+    # adds an entry to postgresql database
+    # but first lets parse some variables used for the database
     spp_name = sequence_info[seq_accession][0]
     length = sequence_info[seq_accession][1]
     plasmid_name = sequence_info[seq_accession][2]
     exportable_accession = "_".join(string_sequence.split("_")[:-1])
     if temporary_list:
-        ## actual database filling
-        ## string_sequence.split("_")[-1] is used to remove length from
+        # actual database filling
+        # string_sequence.split("_")[-1] is used to remove length from
         # accession in database
-        ## cannot use json.dumps because it puts double quotes
+        # cannot use json.dumps because it puts double quotes
         doc = {"name": spp_name,
                "length": length,
                "plasmid_name": plasmid_name,
                "significantLinks": [rec.get_dict() for rec in
                                     temporary_list],
                }
-        #
-        # row = models.Plasmid(
-        #     plasmid_id = "_".join(string_sequence.split("_")[:-1]),
-        #     json_entry = doc
-        # )
-        #db.session.add(row)
-        #db.session.commit()
-    ## used for graphics visualization
+
+    # used for graphics visualization
         return temporary_list, string_sequence, exportable_accession, doc
     # When temporary_list is empty, return tuple for consistency
     else:
@@ -665,14 +662,7 @@ def multiprocess_mash_file(sequence_info, pvalue, mashdist,
                "length": length,
                "plasmid_name": plasmid_name,
                "significantLinks": None}
-        # row = models.Plasmid(
-        #     plasmid_id="_".join(string_sequence.split("_")[:-1]),
-        #     json_entry=doc
-        # )
-        # if seq_accession == "NC_002106_1" or seq_accession == "NC_002107_1":
-        #     print(seq_accession)
-        #db.session.add(row)
-        #db.session.commit()
+
         return None, string_sequence, exportable_accession, doc
 
 
@@ -740,17 +730,16 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
     """
 
-    ## read all infiles
+    # read all infiles
     in_folder = os.path.join(mother_directory, "genome_sketchs", "dist_files")
     out_file = open(os.path.join(mother_directory, "results",
                                  "import_to_vivagraph.json"), "w")
-    master_dict = {}  ## A dictionary to store all distances to all references of
+    master_dict = {}  # A dictionary to store all distances to all references of
     accession_match_dict = {}
     lookup_table = defaultdict(list)
-    #  each sequence/genome
+    # each sequence/genome
     list_mash_files = [f for f in os.listdir(in_folder) if f.endswith(
         "distances.txt")]
-    # lists_traces=[]		## list that lists all trace_lists generated
 
     # new mp module
     pool = Pool(int(threads))  # Create a multiprocessing Pool
@@ -758,7 +747,7 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
         partial(multiprocess_mash_file, sequence_info, pvalue, mashdist,
                 in_folder), list_mash_files)  # process list_mash_files
     # iterable with pool
-    ## loop to print a nice progress bar
+    # loop to print a nice progress bar
     try:
         for _ in tqdm.tqdm(mp2, total=len(list_mash_files)):
             pass
@@ -766,7 +755,7 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
         print("progress will not be tracked because of 'reasons'... check if "
               "you have tqdm package installed.")
     pool.close()
-    pool.join()  ## needed in order for the process to end before the remaining
+    pool.join()  # needed in order for the process to end before the remaining
     #  options are triggered
 
     # new block to get trace_list and num_links
@@ -808,7 +797,6 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
 
         # Update link counter for filtered dic
         master_dict.update(new_dic)
-
 
     # block to add
     accession_final_dict = {}
@@ -854,7 +842,7 @@ def mash_distance_matrix(mother_directory, sequence_info, pvalue, mashdist,
         db.session.commit()
 
     # use master_dict to generate links do db
-    ## writes output json for loading in vivagraph
+    # writes output json for loading in vivagraph
     out_file.write(json.dumps(master_dict))
     out_file.close()
 
@@ -979,7 +967,7 @@ def main():
     ref_sketch = sketch_references(main_fasta, output_tag, threads, kmer_size,
                                    mother_directory)
 
-    ## breaks master fasta into multiple fastas with one genome each
+    # breaks master fasta into multiple fastas with one genome each
     print("***********************************")
     print("Making temporary files for each genome in fasta...\n")
     genomes = genomes_parser(main_fasta, mother_directory)
@@ -1002,7 +990,7 @@ def main():
         print("progress will not be tracked because of 'reasons'... check if "
               "you have tqdm package installed.")
     pool.close()
-    pool.join()  ## needed in order for the process to end before the
+    pool.join()  # needed in order for the process to end before the
     # remaining options are triggered
     print("\nFinished MASH... uf uf uf!")
 
@@ -1013,7 +1001,7 @@ def main():
                                         pvalue, mashdist, threads,
                                         nodes_file, names_file, all_species)
 
-    ## remove master_fasta
+    # remove master_fasta
     if args.remove:
         print("***********************************")
         print("Removing temporary files and folders...")
@@ -1021,7 +1009,7 @@ def main():
             if d in ["genome_sketchs", "tmp"]:
                 shutil.rmtree(os.path.join(mother_directory, d))
 
-    ## Histograms
+    # Histograms
     if args.histograms:
         print("***********************************")
         print("Outputing histograms...")

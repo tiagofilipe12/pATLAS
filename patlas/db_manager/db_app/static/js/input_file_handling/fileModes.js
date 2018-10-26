@@ -4,7 +4,6 @@ previousTableList, readFilejson, nodeColor, listGi, fileChecks,
 masterReadArray, selector, areaSelection, showDiv, mashJson, assemblyJson,
 listGiFilter, typeOfProject, currentSample*/
 
-
 /**
  * Function that parses the nodes to be highlighted and handles the globals
  * required for posterior analysis or filters

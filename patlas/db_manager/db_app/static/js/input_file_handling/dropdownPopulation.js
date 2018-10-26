@@ -1,7 +1,11 @@
 /*globals colorList, listGiFilter, colorNodes, legendInst, typeOfProject,
 blockFilterModal */
 
-// function to remove first char from every string in array
+/**
+ * Function to remove the first character from every string in an array
+ * @param arr
+ * @returns {*}
+ */
 const removeFirstCharFromArray = (arr) => {
   // return arr.map( (el) => el.replace(" ", ""))
   const returnArray = arr.map( (el) => {
@@ -11,11 +15,17 @@ const removeFirstCharFromArray = (arr) => {
       return el
     }
   })
-
   return returnArray
 }
 
-// function to populate any dropdown menu with select
+/**
+ * Function to populate any dropdown menu with select
+ * @param {String} divId - the id of the div
+ * @param {Array} arrayToSort - the array that will be sorted and put into
+ * the dropdown
+ * @param {String} className - the class of each select to be added to the
+ * dropdown
+ */
 const singleDropdownPopulate = (divId, arrayToSort, className) => {
   // first sort the array alphabetically
   const sortedArray = arrayToSort.sort()
@@ -30,7 +40,16 @@ const singleDropdownPopulate = (divId, arrayToSort, className) => {
   $(divId).selectpicker("refresh")
 }
 
-// function to query resistance database
+/**
+ * Function to query the resistance database
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param {String} gene - the gene being queried
+ * @param currentColor - the color code to be attributed to all nodes that have
+ * the queried gene.
+ * @returns {*}
+ */
 const resRequest = (g, graphics, renderer, gene, currentColor) => {
   // return a promise for each query
   const geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
@@ -49,7 +68,16 @@ const resRequest = (g, graphics, renderer, gene, currentColor) => {
   })
 }
 
-// function to query plasmidfinder database
+/**
+ * Function to query the plasmidfinder database
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param {String} gene - the gene being queried
+ * @param currentColor - the color code to be attributed to all nodes that have
+ * the queried gene.
+ * @returns {*}
+ */
 const pfRequest = (g, graphics, renderer, gene, currentColor) => {
   // return a promise for each query
   const geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
@@ -68,7 +96,16 @@ const pfRequest = (g, graphics, renderer, gene, currentColor) => {
   })
 }
 
-// function to query plasmidfinder database
+/**
+ * Function to query the vfdb database
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param {String} gene - the gene being queried
+ * @param currentColor - the color code to be attributed to all nodes that have
+ * the queried gene.
+ * @returns {*}
+ */
 const virRequest = (g, graphics, renderer, gene, currentColor) => {
   // return a promise for each query
   const geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
@@ -87,7 +124,15 @@ const virRequest = (g, graphics, renderer, gene, currentColor) => {
   })
 }
 
-// function to query plasmidfinder database
+/**
+ * Function to query metal resistance db (bacmet)
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param gene
+ * @param currentColor
+ * @returns {*}
+ */
 const metalRequest = (g, graphics, renderer, gene, currentColor) => {
   // return a promise for each query
   const geneQuotes = `"${gene}"`  // quotes were added to prevent substrings
@@ -106,6 +151,16 @@ const metalRequest = (g, graphics, renderer, gene, currentColor) => {
   })
 }
 
+/**
+ * Function that iterates through all the arrays available for the resistance
+ * databases (card and resfinder). Used within the scope of resSubmitFunction.
+ * @param {Array} array - the list of all the selected resistances
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param tempPageReRun
+ * @returns {Promise<string>}
+ */
 const iterateSelectedArrays = async (array, g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""
   for (let i in array) {
@@ -131,7 +186,15 @@ const iterateSelectedArrays = async (array, g, graphics, renderer, tempPageReRun
   return storeLis
 }
 
-// function to display resistances after clicking resSubmit button
+/**
+ * Function to display resistances after clicking resSubmit button. Enables
+ * queries from the left side menu
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param tempPageReRun
+ * @returns {Promise<boolean>}
+ */
 const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
@@ -197,10 +260,6 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
     document.getElementById("alertId").style.display = "block"
   }
 
-  // if legend is requested then execute this!
-  // shows legend
-  // if (legendInst === true) {
-
   $("#res_label").show()
   await $("#colorLegendBoxRes").empty()
     .append(
@@ -209,11 +268,18 @@ const resSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
       " style='background-color:#666370' ></button>&nbsp;unselected</li>"
     )
     .show()
-  // }
   return legendInst
 }
 
-// function to display resistances after clicking resSubmit button
+/**
+ * Function to display plasmidfinder after clicking pfSubmit button. Enables
+ * queries from the left side menu
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param tempPageReRun
+ * @returns {Promise<boolean>}
+ */
 const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
@@ -253,7 +319,6 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
             "</li>"
         }
         // after setting the legend make the actual request
-        // promises.push(
         const pfHandle = await pfRequest(g, graphics, renderer, gene, currentColor)
         pfHandle.map( (request) => {
           if (tempPageReRun === false) {
@@ -272,9 +337,7 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
     // raise error message for the user
     document.getElementById("alertId").style.display = "block"
   }
-  // if legend is requested then execute this!
   // shows legend
-  // if (legendInst === true) {
   $("#pf_label").show()
   await $("#colorLegendBoxPf").empty()
     .append(
@@ -287,7 +350,15 @@ const pfSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   return legendInst
 }
 
-// function to display resistances after clicking resSubmit button
+/**
+ * Function to display virulence after clicking virSubmit button. Enables
+ * queries from the left side menu
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param tempPageReRun
+ * @returns {Promise<boolean>}
+ */
 const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable
@@ -324,7 +395,6 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
             "</li>"
         }
         // after setting the legend make the actual request
-        // promises.push(
         const virHandle = await virRequest(g, graphics, renderer, gene, currentColor)
         virHandle.map( (request) => {
           if (tempPageReRun === false) {
@@ -346,9 +416,7 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
     // raise error message for the user
     document.getElementById("alertId").style.display = "block"
   }
-  // if legend is requested then execute this!
   // shows legend
-  // if (legendInst === true) {
   $("#vir_label").show()
   await $("#colorLegendBoxVir").empty()
     .append(
@@ -357,12 +425,19 @@ const virSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
       " style='background-color:#666370' ></button>&nbsp;unselected</li>"
     )
     .show()
-  // }
 
   return legendInst
 }
 
-// function to display resistances after clicking resSubmit button
+/**
+ * Function to display metal resistance after clicking virSubmit button. Enables
+ * queries from the left side menu
+ * @param g
+ * @param graphics
+ * @param renderer
+ * @param tempPageReRun
+ * @returns {Promise<boolean>}
+ */
 const metalSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   listGiFilter = (tempPageReRun === false) ? [] : listGiFilter
   // starts legend variable

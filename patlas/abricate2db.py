@@ -12,6 +12,7 @@ except ImportError:
     from patlas.db_manager.db_app import db, models
     from patlas.templates.process_abricate import Abricate
 
+
 def get_card_dict(csv_file):
     """
     Function to construct a correspondence between nucleotide accession
@@ -237,8 +238,7 @@ def main():
                                    "argument. It states the database name that"
                                    "must be used.")
     parser.add_argument("-db", "--db", dest="output_psql_db",
-                        choices=["resistance", "plasmidfinder", "virulence",
-                                 "metal"],
+                        choices=["resistance", "plasmidfinder", "virulence"],
                         required=True,
                         help="Provide the db to output in psql models.")
     parser.add_argument("-id", "--identity", dest="identity",

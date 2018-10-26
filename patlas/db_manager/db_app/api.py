@@ -45,7 +45,8 @@ api.add_resource(GetMetal, "/api/getmetal/",
 api.add_resource(GetPlasmidFinder, "/api/getplasmidfinder/",
                  endpoint="get_plasmidfinder")
 
-api.add_resource(GetAccession, "/api/getaccession/", endpoint="get_accession")
+api.add_resource(GetAccession, "/api/getaccession/",
+                 endpoint="get_accession")
 
 api.add_resource(GetAccessionRes, "/api/getaccessionres/",
                  endpoint="get_accession_res")

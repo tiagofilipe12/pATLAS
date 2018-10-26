@@ -68,34 +68,6 @@ const onLoad = () => {
     inputMax = document.getElementById("slider_input_max"),
     inputs = [inputMin, inputMax]
 
-  /**
-   *  sets a counter for welcome div that will dismiss the modal after 30
-   *  seconds. However if counterClose button is triggered this counter will
-   *  stop.
-   */
-  // if (($("#welcomeModal").data("bs.modal") || {}).isShown) {
-  //   let logger = 30
-  //   let countDown = setInterval( () => {
-  //     if ($("#counter").html() !== "") {
-  //       logger -= 1
-  //       $("#counter").html(`Closing in: ${logger.toString()}s`)
-  //       if (logger === 0) {
-  //         clearInterval(countDown)
-  //         $("#welcomeModal").modal("hide")
-  //         $("#counter").html("")
-  //       }
-  //     }
-  //   }, 1000)
-  // }
-
-  /**
-   * Button event to close the countdown for welcome div
-   */
-  // $("#counterClose").unbind("click").bind("click", () => {
-  //   $("#counter").html("")
-  //   $("#counterClose").hide()
-  // })
-
   // initiate vivagraph instance
   const g = Viva.Graph.graph()
   // define layout
@@ -114,9 +86,16 @@ const onLoad = () => {
     }
   })
 
+  /**
+   * Variable that stores the webgl graphics object from vivagraph
+   */
   const graphics = Viva.Graph.View.webglGraphics()
 
-  //* Starts graphics renderer *//
+  /**
+   * This function renders the vivagraph graph
+   * @param {Object} graphics - Variable that stores the webgl graphics object
+   * from vivagraph
+   */
   const renderGraph = (graphics) => {
 
     //** block #1 for node customization **//
@@ -131,11 +110,13 @@ const onLoad = () => {
       return new WebglCircle(nodeSize, nodeColor)
     })
 
-    //* * END block #1 for node customization **//
-    // rerun precomputes 500
+    // During devel session prerender will run 500 times the render, otherwise
+    // it will use the log value of the size of listGiFilter (the number of
+    // nodes being highlighted) * 50
     const prerender = (devel === true) ? 500 :
-      parseInt(Math.log(listGiFilter.length)) * 50//prerender depending on the size of the listGiFilter
+      parseInt(Math.log(listGiFilter.length)) * 50
 
+    // starts the renderer object
     renderer = Viva.Graph.View.renderer(g, {
       layout,
       graphics,
@@ -144,9 +125,13 @@ const onLoad = () => {
       preserveDrawingBuffer: true
     })
 
+    // this couve-flor div is in fact the div that will show the links and nodes
+    // graph, which is being set to visible here!
     $("#couve-flor").css("visibility", "visible")
 
+    // start the renderer
     renderer.run()
+
     // by default the animation on forces is paused since it may be
     // computational intensive for old computers
     renderer.pause()
@@ -154,7 +139,7 @@ const onLoad = () => {
     // forces default zooming
     defaultZooming(layout, graphics)
 
-    //* * Loading Screen goes off **//
+    // here loading screen has to be hidden
     setTimeout( () => {
       renderer.rerender()
       $("#loading").hide()
@@ -165,7 +150,6 @@ const onLoad = () => {
     if (storeMasterNode.length > 0) {
       recenterDOM(renderer, layout, storeMasterNode)
     }
-
 
     // sets the limits of buttons and slider
     // this is only triggered on first instance because we only want to get
@@ -186,7 +170,6 @@ const onLoad = () => {
         }
       })
     }
-
 
     /**
      * Event that will update the slider input boxes if one of the handlers is
@@ -227,7 +210,12 @@ const onLoad = () => {
 
   } // closes renderGraph
 
+  /**
+   * Function that is responsible for the
+   */
   const init = async () => {
+    // if firstInstace it means that the graph is being generated for the fist
+    // time and has no filtered datasets
     if (firstInstace === true) {
       // the next if statement is only executed on development session, it
       // is way less efficient than the non development session.
@@ -270,7 +258,8 @@ const onLoad = () => {
         await parseRequestResults(requestResults)
       }
     } else {
-      // storeMasterNode is empty in here
+      // This else statement is executed each time a filter is applied in the
+      // vivagraph visualization. storeMasterNode is empty in here.
       if (readFilejson !== false) {
         const readReload = readFilejson[currentSample]
         $("#fileNameDiv").html(`Current sample: ${currentSample}`)
@@ -303,28 +292,25 @@ const onLoad = () => {
   //* ***********************************************//
 
   /**
-   * Event listener for read files
+   * Event listener for mapping files
    */
   handleFileSelect("infile", "#file_text", (newReadJson) => {
     readFilejson = newReadJson
   })
 
-
   /**
-   * Event lisntener for mash screen files
+   * Event listener for mash screen files
    */
   handleFileSelect("mashInfile", "#file_text_mash", (newMashJson) => {
     mashJson = newMashJson
   })
 
-
   /**
-   * Event linestener for assembly files
+   * Event listener for assembly files
    */
   handleFileSelect("assemblyfile", "#assembly_text", (newAssemblyJson) => {
     assemblyJson = newAssemblyJson
   })
-
 
   /**
    * Event listener for consensus files
@@ -333,14 +319,12 @@ const onLoad = () => {
     consensusJson = newConsensusJson
   })
 
-
   /**
    * Event listener for project files imports
    */
   handleFileSelect("projectFile", "#project_text", (newProjectJson) => {
     projectJson = newProjectJson
   })
-
 
   /**
    * Event that clears div with text of selected files when upload file buttons
@@ -354,12 +338,6 @@ const onLoad = () => {
   //***************//
   //* DRAG N DROP *//
   //***************//
-
-  $(".modal")
-    .on("drag dragstart dragend dragover dragenter dragleave drop", (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-    })
 
   $(".custom-file-form")
     .on("drag dragstart dragend dragover dragenter dragleave drop", (e) => {
@@ -389,7 +367,6 @@ const onLoad = () => {
       })
 
     })
-
 
   //*********//
   //* TABLE *//
@@ -444,7 +421,6 @@ const onLoad = () => {
     downloadTypeHandler(bootstrapTableList)
   })
 
-
   /**
    * Table button that colors the nodes that correspond to the checked boxes
    * in the table.
@@ -475,14 +451,12 @@ const onLoad = () => {
     })
   })
 
-
   /**
    * Function that closes the table modal
    */
   $("#cancelTable").unbind("click").bind("click", () => {
     $("#tableModal").modal("toggle")
   })
-
 
   /**
    * Button events that clear all uploaded files, avoiding that different type
@@ -493,12 +467,11 @@ const onLoad = () => {
     emptyFiles()
   })
 
-
   //**********//
   //* ALERTS *//
   //**********//
 
-  // control the alertClose button
+  // a series of button events to close several bootstrap alerts
   $("#alertClose").unbind("click").bind("click", () => {
     $("#alertId").hide()  // hide this div
   })
@@ -550,7 +523,6 @@ const onLoad = () => {
   $("#alertClose_Version").unbind("click").bind("click", () => {
     $("#alertId_Version").hide()  // hide this div
   })
-
 
   //**********//
   //* LEGEND *//
@@ -604,16 +576,17 @@ const onLoad = () => {
     "#questionRatio, #exportProjectQuestion, #importProjectQuestion, " +
     "#questionCombined, #questionHash").popover()
 
-
+  // sets the container for the popover
   $("#infoMap, #infoMash, #infoAssembly").popover( { container: "body" } )
-
 
   //************//
   //* PROJECTS *//
   //************//
 
+  /**
+   * Event that triggers the project save to a file
+   */
   $("#projectSubmit").unbind("click").bind("click", () => {
-
     /**
      * Creates a copy of typeOfProject
      * @type {{} & Object}
@@ -644,10 +617,10 @@ const onLoad = () => {
       fileDownloader(`${projectName}.json`, "data:application/json;charset=utf-8",
         [textToExport])
     } else {
+      // if checkTypeOfProject is true show alert
       $("#alertId_noProject").show()
     }
   })
-
 
   /**
    * Function that handles for the first time the projectJson file. It will
@@ -658,7 +631,6 @@ const onLoad = () => {
    * immediately.
    */
   $("#projectLoadSubmit").unbind("click").bind("click", () => {
-
     // first check if viewList has nothing selected
     if (!$("#viewList").val()) {
       $("#alertIdnoSelectedview").show()
@@ -737,7 +709,6 @@ const onLoad = () => {
     })
 
     emptyFiles()
-
   })
 
   // event for shift key down
@@ -774,10 +745,13 @@ const onLoad = () => {
     }
   })
 
-  // event for shift key up
-  // destroys overlay div and transformes multiSelectOverlay to false
+  let mouseCounter = 0
+
+  /**
+   * Event for shift key up, which destroys the overlay div and transforms
+   * multiSelectOverlay to false
+   */
   $(document).unbind("keyup").bind("keyup", (e) => {
-  // document.addEventListener("keyup", (e) => {
     if (e.which === 16 && multiSelectOverlay !== "disable") {
       $(".graph-overlay").hide()
       $("#colorLegend").hide()
@@ -795,8 +769,9 @@ const onLoad = () => {
     }
   })
 
-  let mouseCounter = 0
-
+  /**
+   * Event that is triggered to allow multiple nodes to be dragged at once
+   */
   $(document).unbind("mousemove").bind("mousemove", async (e) => {
     // checks if drag mode is on
     if (dragging) {
@@ -826,16 +801,15 @@ const onLoad = () => {
     })
   })
 
-
   /**
    * function to avoid shift key to be triggered when any modal is open
    */
   $(".modal").on("shown.bs.modal", () => {
     multiSelectOverlay = "disable"
   })
-  /**
-   * function to allow shift key to select nodes again, on modal close
-   */
+    /**
+     * function to allow shift key to select nodes again, on modal close
+     */
     .on("hidden.bs.modal", () => {
       multiSelectOverlay = false
       // this force question buttons to close if tableModal and modalPlot are
@@ -845,6 +819,14 @@ const onLoad = () => {
         "#exportProjectQuestion, #importProjectQuestion, #questionCombined, " +
         "#questionHash")
         .popover("hide")
+    })
+    /**
+     * Event that prevents drag and drop on modal from exiting the page and
+     * opening the file dragged to the browser.
+     */
+    .on("drag dragstart dragend dragover dragenter dragleave drop", (e) => {
+      e.preventDefault()
+      e.stopPropagation()
     })
 
 
@@ -910,6 +892,7 @@ const onLoad = () => {
     // if statement used to check if backup color is set
     if (nodeUI1.backupColor) { nodeUI1.backupColor = nodeUI1.color }
 
+    // changes the color of the node into red
     nodeUI1.color = 0xFFC300
     renderer.rerender()
 
@@ -919,14 +902,6 @@ const onLoad = () => {
     graphics.transformGraphToClientCoordinates(domPos)
     domPos.x = (domPos.x + nodeUI1.size) + "px"
     domPos.y = (domPos.y) + "px"
-
-    // this sets the popup internal buttons to allow them to run,
-    // otherwise they won't run because its own function returns this
-    // variable to false, preventing the popup to expand with its
-    // respective functions
-    // clickedPopupButtonCard = true
-    // clickedPopupButtonRes = true
-    // clickedPopupButtonFamily = true
 
     // requests table for sequences metadata
     requestPlasmidTable(node, setupPopupDisplay)
@@ -958,16 +933,7 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    if ($("#scaleLegend").html() !== "") {
-      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-        " #plotButton, #colorLegend").hide()
-    } else {
-
-      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-        " #plotButton").hide()
-    }
   })
-
 
   /**
    * This button event submits a query to the psql database that searches for
@@ -990,6 +956,7 @@ const onLoad = () => {
     hideAllOtherPlots()
     areaSelection = false
 
+    // sets slider legend buttons to enable, allowing them to be clicked
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
     // empties taxa and plasmidfinder legend
@@ -1009,6 +976,9 @@ const onLoad = () => {
 
     // reset nodes before submitting new colors
     const tempPageReRun = pageReRun
+
+    // after setting these variables, show loading div with messages and makes
+    // the request to the API in order to show the results
     showDiv().then( () => {
       $("#loadingInfo").html("Fetching PlasmidFinder data...")
       pfSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
@@ -1052,15 +1022,6 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    if ($("#scaleLegend").html() !== "") {
-      // showLegend.style.display = "none"
-      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-        " #plotButton, #colorLegend").hide()
-    } else {
-
-      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-        " #plotButton").hide()
-    }
   })
 
 
@@ -1106,6 +1067,8 @@ const onLoad = () => {
 
     const tempPageReRun = pageReRun
 
+    // after setting these variables, show loading div with messages and makes
+    // the request to the API in order to show the results
     showDiv().then( () => {
       $("#loadingInfo").html("Fetching resistance data...")
       resSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) => {
@@ -1116,8 +1079,7 @@ const onLoad = () => {
           $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
             " #plotButton, #colorLegend").show()
         }
-        // enables button group again
-        // $("#toolButtonGroup button").removeAttr("disabled")
+
         $("#loading").hide()
       })
     })
@@ -1150,14 +1112,6 @@ const onLoad = () => {
     Object.keys(selector).map( (el) => { selector[el].state = false })
     hideAllOtherPlots()
     areaSelection = false
-    if ($("#scaleLegend").html() !== "") {
-      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-        " #plotButton, #colorLegend").hide()
-    } else {
-
-      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-        " #plotButton").hide()
-    }
   })
 
 
@@ -1201,6 +1155,9 @@ const onLoad = () => {
 
     // reset nodes before submitting new colors
     const tempPageReRun = pageReRun
+
+    // after setting these variables, show loading div with messages and makes
+    // the request to the API in order to show the results
     showDiv().then( () => {
       $("#loadingInfo").html("Fetching virulence data...")
       virSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
@@ -1212,8 +1169,7 @@ const onLoad = () => {
           $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
             " #plotButton, #colorLegend").show()
         }
-        // enables button group again
-        // $("#toolButtonGroup button").removeAttr("disabled")
+
         $("#loading").hide()
       })
     })
@@ -1263,10 +1219,6 @@ const onLoad = () => {
       " #speciesList2, #genusList2, #familyList2, #orderList2")
       .selectpicker("deselectAll")
 
-    // hide divs for buttons when selections are not made
-    $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-      " #plotButton, #colorLegend").hide()
-
     // an array of dropdown selectors to remove the disabled attr
     const arrayOfSelectors = ["orderList2", "familyList2", "genusList2",
       "speciesList2", "resResfinderList2", "resCardList2"]
@@ -1306,6 +1258,8 @@ const onLoad = () => {
 
       typeOfProject[typeToProject] = objectOfSelections
 
+      // after setting these variables, show loading div with messages and makes
+      // the request to the API in order to show the results
       showDiv().then( () => {
         $("#loadingInfo").html("Submitting your query...")
         parseQueriesIntersection(g, graphics, renderer,
@@ -1367,7 +1321,6 @@ const onLoad = () => {
       }
     )
 
-
   //* ******************//
   //* ***Taxa Filter****//
   //* ******************//
@@ -1379,6 +1332,8 @@ const onLoad = () => {
 
     event.preventDefault()
 
+    // resets all the entries for this paragraphs in the html
+    const idsArrays = ["p_Order", "p_Family", "p_Genus", "p_Species"]
     resetDisplayTaxaBox(idsArrays)
 
     // resets dropdown selections
@@ -1387,23 +1342,15 @@ const onLoad = () => {
     $("#genusList").selectpicker("deselectAll")
     $("#speciesList").selectpicker("deselectAll")
 
-    // slider.noUiSlider.set([min, max])
-
     previousTableList = []
+
     // transform selector object that handles plots and hide their
     // respective divs
     Object.keys(selector).map( (el) => { selector[el].state = false })
-    hideAllOtherPlots()
-    areaSelection = false
-    if ($("#scaleLegend").html() !== "") {
-      // showLegend.style.display = "none"
-      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-        " #plotButton, #colorLegend").hide()
-    } else {
 
-      $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
-        " #plotButton").hide()
-    }
+    hideAllOtherPlots()
+    // sets area selection to false
+    areaSelection = false
   })
 
 
@@ -1414,13 +1361,17 @@ const onLoad = () => {
   $("#taxaModalSubmit").unbind("click").bind("click", (event) => {
 
     event.preventDefault()
-
+    // resets the length sliders
     $("#reset-sliders").click()
 
     legendIndex = 0
 
     selectedFilter = "taxa"
 
+    /**
+     * Checks if more than one taxa level is selected at once
+     * @type {number}
+     */
     let i = 0
 
     pageReRun = false
@@ -1486,7 +1437,8 @@ const onLoad = () => {
 
     //* *** End Alert for taxa filter ****//
 
-    // renders the graph for the desired taxon if more than one taxon type is selected
+    // renders the graph for the desired taxon if more than one taxon type is
+    // selected
     let storeLis = "" // a variable to store all <li> generated for legend
 
 
@@ -1516,7 +1468,6 @@ const onLoad = () => {
 
   })
 
-
   //* *********************//
   //* * Distances filter **//
   //* *********************//
@@ -1534,8 +1485,6 @@ const onLoad = () => {
       $("#loadingInfo").html("Coloring links by distance... this may take a " +
         "while.")
       linkColoring(g, graphics, renderer, "distance", false)
-      // enables button group again
-      // $("#toolButtonGroup button").removeAttr("disabled")
     })
     const readMode = false
     colorLegendFunction(readMode)
@@ -1544,7 +1493,6 @@ const onLoad = () => {
   //**************************//
   //* LENGTH EVENT LISTENERS *//
   //**************************//
-
 
   /**
    * Button event to submit current selection to the network if enter key is
@@ -1555,7 +1503,6 @@ const onLoad = () => {
   $("#lengthSubmit").unbind("click").bind("click", () => {
     slider.noUiSlider.set([Math.log(inputs[0].valueAsNumber), Math.log(inputs[1].valueAsNumber)])
   })
-
 
   /**
    * Event listener for "enter" key to update the slider and the graph. This
@@ -1570,7 +1517,6 @@ const onLoad = () => {
       slider.noUiSlider.set([Math.log(inputs[0].valueAsNumber), Math.log(inputs[1].valueAsNumber)])
     }
   })
-
 
   //**************//
   //* RATIO SIZE *//
@@ -1595,13 +1541,9 @@ const onLoad = () => {
       $("#loadingInfo").html("Coloring links by size ratio... this may take " +
         "a while.")
         linkColoring(g, graphics, renderer, "size", toggleRatioStatus)
-        // enables button group again
-        // $("#toolButtonGroup button").removeAttr("disabled")
       }
     )
-
   })
-
 
   //**************//
   //* SHARED HASHES *//
@@ -1627,20 +1569,26 @@ const onLoad = () => {
       removeBasedOnHashes(g, graphics, renderer, toggleRatioStatus)
       }
     )
-
   })
-
 
   //* ************//
   //* ***READS****//
   //* ************//
 
-
+  /**
+   * Event for submit mapping files. It just sets fileMode to mapping and then
+   * everything else is done within the redundancy removal buttons
+   * (redundancyNo and redundancyYes).
+   */
   $("#fileSubmit").unbind("click").bind("click", (event) => {
     event.preventDefault()
     fileMode = "mapping"
   })
 
+  /**
+   * Event listener for when the user selects not to remove redundancy from
+   * the imported results
+   */
   $(".redundancyNo").unbind("click").bind("click", (event) => {
     event.preventDefault()
 
@@ -1654,6 +1602,7 @@ const onLoad = () => {
         (consensusJson) ? consensusJson :
           readFilejson
 
+    // starts an array that stores all the promises made.
     let promises = []
 
     // re-assigns readFilejson to an object avoid it to be false
@@ -1667,13 +1616,19 @@ const onLoad = () => {
       promises.push(fileName)
     })
 
+    // once all promises are generated, nodes can be colored
     Promise.all(promises).then( async () => {
       await mappingHighlight(g, graphics, renderer)
+      // asks if the user wants to filter results or not, prompting a new modal
       await $("#reRunModalResults").modal("show")
     })
 
   })
 
+  /**
+   * Event listener for when the user wants to remove redundant results from
+   * the imported results.
+   */
   $(".redundancyYes").unbind("click").bind("click", (event) => {
 
     event.preventDefault()
@@ -1686,7 +1641,7 @@ const onLoad = () => {
     // that will display the colors
     let parsedReadFileJson = {}
 
-    // list of promises to be collected
+    // starts an array that stores all the promises made.
     let promises = []
 
     // list that stores all the removed nodes from parsedReadFileJson
@@ -1867,14 +1822,24 @@ const onLoad = () => {
     Promise.all(promises).then( async () => {
       readFilejson = parsedReadFileJson
       await mappingHighlight(g, graphics, renderer)
-      // await $("#reRunModalResults").modal("show")
+      // then asks if the user wants to filter the current selection or not
+      // and how
+      await $("#reRunModalResults").modal("show")
     })
   })
 
+  /**
+   * Event listener to cancel the reading of the file. This will empty the div
+   * with the text for the file selection.
+   */
   $("#cancel_infile").unbind("click").bind("click", () => {
     readFilejson = abortRead("file_text")
   })
 
+  /**
+   * Function that will load results for mapping approach as an example so that
+   * users may have an example without importing any real data.
+   */
   $("#sampleMapping").unbind("click").bind("click", (event) => {
     event.preventDefault()
     masterReadArray = []
@@ -1909,17 +1874,25 @@ const onLoad = () => {
   //* ***MASH SCREEN****//
   //* ************//
 
+  /**
+   * Event handler for mash submit. sets fileMode to mash_screen
+   */
   $("#fileSubmit_mash").unbind("click").bind("click", (event) => {
     event.preventDefault()
     fileMode = "mash_screen"
   })
 
 
+  /**
+   * Event handler to cancel the import of mash_screen file
+   */
   $("#cancel_infile_mash").unbind("click").bind("click", () => {
     mashJson = abortRead("file_text_mash")
   })
 
-
+  /**
+   * Event handler to import sample results for mash_screen
+   */
   $("#sampleMash").unbind("click").bind("click", (event) => {
     event.preventDefault()
     masterReadArray = []
@@ -1957,15 +1930,24 @@ const onLoad = () => {
   //* * Assembly **//
   //* ********* ***//
 
+  /**
+   * Event handler to import assembly results. It sets fileMode to assembly
+   */
   $("#assemblySubmit").unbind("click").bind("click", (event) => {
     event.preventDefault()
     fileMode = "assembly"
   })
 
+  /**
+   * Event handler to cancel the import of assembly
+   */
   $("#cancel_assembly").unbind("click").bind("click", () => {
     assemblyJson = abortRead("assembly_text")
   })
 
+  /**
+   * Added sample assembly data for demonstration purposes.
+   */
   $("#sampleAssembly").unbind("click").bind("click", (event) => {
     event.preventDefault()
     masterReadArray = []
@@ -2003,8 +1985,13 @@ const onLoad = () => {
   //* * Consensus **//
   //* ********* ***//
 
+  /**
+   * Added event listener for consensus file imports submit button.
+   */
   $("#consensusSubmit").unbind("click").bind("click", (event) => {
     event.preventDefault()
+    // if consensusJson is differnt from false it means that the file has
+    // already been loaded.
     if (consensusJson !== false) {
       fileMode = "consensus"
       const readString = JSON.parse(Object.values(consensusJson)[0])
@@ -2041,10 +2028,12 @@ const onLoad = () => {
     }
   })
 
+  /**
+   * Event linstener to cacel the import of consensus files
+   */
   $("#cancel_consensus").unbind("click").bind("click", () => {
     consensusJson = abortRead("consensus_text")
   })
-
 
   //***********************//
   //* SIDE BAR CONTROLS *//
@@ -2058,11 +2047,9 @@ const onLoad = () => {
     $("#collapseGroup").find(".collapse.in").collapse("hide")
   })
 
-
   //***********************//
   //* TOP NAV BAR BUTTONS *//
   //***********************//
-
 
   /**
    * Button that toggles the side menu
@@ -2139,8 +2126,6 @@ const onLoad = () => {
     showDiv().then( () => {
       $("#loadingInfo").html("Filtering plasmid network for the requested " +
         "plasmids...")
-      // removes nodes
-      // freezeShift = true
 
       actualRemoval(g, graphics, onLoad, false)
 
@@ -2164,7 +2149,6 @@ const onLoad = () => {
     reloadAccessionList = []
 
     $("#noRunRequests").show()
-    // TODO this is a temporary fix to hide the sample name since imports from files still require function to be able to re add colors to nodes after this button click
     $("#fileNameDiv").hide()
 
     resetAllNodes(graphics, g, nodeColor, renderer)
@@ -2174,8 +2158,6 @@ const onLoad = () => {
       // removes nodes and forces adding same nodes
       setTimeout( () => {
         actualRemoval(g, graphics, onLoad, true)
-        // enables button group again
-        // $("#toolButtonGroup button").removeAttr("disabled")
       }, 100)
     })
   })
@@ -2219,8 +2201,6 @@ const onLoad = () => {
         $("#loadingInfo").html("Preparing table data...")
         previousTableList = makeTable(areaSelection, listGiFilter,
           previousTableList, g, graphics, graphSize)
-        // enables button group again
-        // $("#toolButtonGroup button").removeAttr("disabled")
       })
   })
 
@@ -2319,7 +2299,6 @@ const onLoad = () => {
     document.getElementById("formValueId").value = ""
   })
 
-
   //*****************//
   //* POPUP BUTTONS *//
   //*****************//
@@ -2350,14 +2329,11 @@ const onLoad = () => {
     renderer.rerender()
   })
 
-
   /**
    * Button that downloads a csv file with all the metadata available through
    * the popup
    */
   $("#downloadCsv").unbind("click").bind("click", () => {
-    // $(document).on("click", "#downloadCsv", () => {
-
     // execute the same replacement function for all this divs
     const targetArray = quickFixString([
       "#accessionPop",
@@ -2403,7 +2379,6 @@ const onLoad = () => {
     recenterDOM(renderer, layout, [popupAccession])
   })
 
-
   /**
    * Button that controls the display of the resistance information in the popup
    */
@@ -2412,7 +2387,6 @@ const onLoad = () => {
       clickedPopupButtonCard = resGetter(currentQueryNode)
     }
   })
-
 
   /**
    * Button that controls the display of the plasmid finder information
@@ -2424,7 +2398,6 @@ const onLoad = () => {
     }
   })
 
-
   /**
    * Button that controls the display of the virulence information in the popup
    */
@@ -2433,7 +2406,6 @@ const onLoad = () => {
       clickedPopupButtonVir = virulenceGetter(currentQueryNode)
     }
   })
-
 
   //************************************//
   //**** BUTTONS THAT CONTROL PLOTS ****//
@@ -2459,7 +2431,6 @@ const onLoad = () => {
     }, 500)
   })
 
-
   /**
    * Button that trigger the event to sort the graph by values (descending
    * order)
@@ -2474,9 +2445,7 @@ const onLoad = () => {
     if (listPlotsType) { statsParser(g, graphics, renderer, false,
       listPlotsType, layoutPlot, clickerButton, false, sortVal, associativeObj)
     }
-
   })
-
 
   /**
    * Button that trigger the event to sort the graph alphabetically
@@ -2491,7 +2460,6 @@ const onLoad = () => {
       listPlotsType, layoutPlot, clickerButton, sortAlp, false, associativeObj)
     }
   })
-
 
   //**********************************************************//
   // BUTTONS INSIDE PLOT MODAL THAT ALLOW TO SWITCH B/W PLOTS //
@@ -2514,7 +2482,6 @@ const onLoad = () => {
     listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
   })
 
-
   //************************************************//
   //**** BUTTONS THAT CONTROL VIVAGRAPH DISPLAY ****//
   //************************************************//
@@ -2527,7 +2494,6 @@ const onLoad = () => {
    * @type {boolean}
    */
   let paused = true
-
 
   /**
    * Button event that pauses or plays the force layout into vivagraph network.
@@ -2558,7 +2524,6 @@ const onLoad = () => {
     renderer.rerender()   // rerender after zoom avoids glitch with
     // duplicated nodes
   })
-
 
   /**
    * Button that enables zooming out into vivagraph canvas
@@ -2598,6 +2563,10 @@ const onLoad = () => {
     }
   })
 
+  /**
+   * Function to center the graph in the current central node, the node with
+   * more links.
+   */
   $("#center_graph").unbind("click").bind("click", () => {
     showDiv().then( async () => {
       $("#loadingInfo").html("Centering in plasmid with most links...")
@@ -2607,14 +2576,19 @@ const onLoad = () => {
     })
   })
 
+  /**
+   * Closes requests modal
+   */
   $("#closeRequestModal").unbind("click").bind("click", () => {
     $(".redundancyNo").click()
   })
 
+  /**
+   * Closes re run modal
+   */
   $("#closeReRunModal").unbind("click").bind("click", () => {
     $(".noRunRequests").click()
   })
-
 
   /** control the visualization of multiple files for read mode
    * The default idea is that the first file in this readFilejson object is the
@@ -2646,11 +2620,9 @@ const onLoad = () => {
     })
   })
 
-
   // this forces the entire script to run
   init() //forces main json or the filtered objects to run before
   // rendering the graph
-
 
   /**
    * function for keyboard shortcut to save file with node positions
@@ -2660,7 +2632,6 @@ const onLoad = () => {
   Mousetrap.bind("shift+ctrl+space", () => {
     initCallback(g, layout, devel)
   })
-
 
   /**
    * This synchronizes div that are used to set the cutoff values, either they

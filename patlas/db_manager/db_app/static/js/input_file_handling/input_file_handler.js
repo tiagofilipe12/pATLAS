@@ -1,6 +1,5 @@
 /* globals readFilejson, dropdownSample */
 
-// will cancel reader when defined... so during handleFileSelect
 /**
  * Function that cancel reader, which basically deletes the file to be
  * loaded from the form
@@ -13,7 +12,6 @@ const abortRead = (divToClean) => {
   $(`#${divToClean}`).css({"text-align": "center", "color": "#a5a5a5"})
   return ""
 }
-
 
 /**
  * Function that promisifies the return of the object with all file names as keys
@@ -65,7 +63,6 @@ const loadFilesToObj = async (files, textId) => {
   return {arrayOfObj, arrayOfFiles}
 }
 
-
 /**
  * Function to handle one file at a time (per button).
  * @param {String} infileId - button id that loads the file
@@ -89,7 +86,6 @@ const handleFileSelect = (infileId, textId, callback) => {
 
   }, false)
 }
-
 
 /**
  * Function to check if jsonObj is empty and warn the user for which entries

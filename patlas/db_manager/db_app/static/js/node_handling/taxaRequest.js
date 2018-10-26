@@ -1,6 +1,5 @@
 /*globals listGiFilter, colorList, mapRequest, typeOfProject, blockFilterModal*/
 
-
 /**
  * Function to color nodes that are in the list under accessionRequested
  * @param {Object} g - object that stores vivagraph graph associated functions.
@@ -26,7 +25,6 @@ const colorNodes = (g, graphics, renderer, accessionRequested, currentColor) => 
   })
   renderer.rerender()
 }
-
 
 /**
  * Function that fetches the accession numbers from the database given a
@@ -59,7 +57,6 @@ const speciesRequest = (g, graphics, renderer, taxa, currentColor) => {
   })
 }
 
-
 /**
  * Function that fetches the accession numbers from the database given a taxa
  * (that is not a species). It searches in the psql database json_entry.taxa
@@ -91,7 +88,6 @@ const taxaRequest = (g, graphics, renderer, taxa, currentColor) => {
     }
   })
 }
-
 
 /**
  * This function handles the type of the request, when it is a query of species
@@ -145,7 +141,6 @@ const taxaRequestWrapper = async (g, graphics, renderer, storeLis,
   return [storeLis, i]
 }
 
-
 /**
  * A function that will be executed after making all the queries to plot handle
  * the showing and hiding of divs, namely the legend
@@ -172,7 +167,6 @@ const renderAfterTaxaRequests = (storeLis) => {
     $("#loading").hide()
   }
 }
-
 
 /**
  * The key function that handles the order of the queries (order --> family

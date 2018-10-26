@@ -15,7 +15,6 @@ const fileDownloader = (fileName, typeOfFile, textToExport) => {
   FileSaver.saveAs(file, fileName)
 }
 
-
 /**
  * Function to parse the current view to be displayed by the project. It can be
  * used for initial import of the project or for further views cycling
@@ -43,7 +42,6 @@ const importProject = (importedFileProject, view) => {
 
   return firstProject[view]
 }
-
 
 /**
  * The objective of this function is to populate the respective displayers in
@@ -179,7 +177,6 @@ const setProjectView = async (projectInitialView, view) => {
       const stringClass = view.charAt(0).toUpperCase() + view.slice(1)
       await filterDisplayerProjects(item, stringClass, `#p_${stringClass}`)
     }
-
   }
 
   // then make sure that dropdowns are also selected as well as displayers in

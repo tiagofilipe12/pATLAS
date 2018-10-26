@@ -1,10 +1,9 @@
 /* globals readColoring, fileChecks */
 
-// function to slide to right
 /**
  * Function to slide files to rightmost file in array
- * @param readJson
- * @param readIndex
+ * @param {Object} readJson - The object that stores keys between files and the
+ * corresponding json results that may be displayed at a time
  * @param g
  * @param listGi
  * @param graphics
@@ -33,7 +32,15 @@ const slideToRight = (readJson, g, listGi, graphics, renderer) => {
   }
 }
 
-// function to slide to left
+/**
+ * Function to slide files to leftmost file in array
+ * @param {Object} readJson - The object that stores keys between files and the
+ * corresponding json results that may be displayed at a time * @param g
+ * @param listGi
+ * @param graphics
+ * @param renderer
+ * @returns {any[]}
+ */
 const slideToLeft = (readJson, g, listGi, graphics, renderer) => {
 
   // fetches the index of the currently selected sample

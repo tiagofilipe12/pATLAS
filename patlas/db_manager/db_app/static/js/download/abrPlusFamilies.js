@@ -10,19 +10,11 @@ const makeItClickable = (desiredString) => {
     desiredString + "' target='_blank'>" + desiredString + "</a>"
 }
 
-
-// const googleIt = (string) => {
-//   return "<a target='_blank'" +
-//     " href='http://www.google.com/search?q=" + string +
-//     "%20site:https://card.mcmaster.ca'>" + string + "</a>"
-// }
-
 const makeCardClickable = (string) => {
   // TODO this should be refactored to include direct card entry
   return "<a href='https://card.mcmaster.ca/aro/" +
     string.replace("ARO:", "") + "' target='_blank'>" + string + "</a>"
 }
-
 
 /**
  * Function that parses the queryArrays with ranges
@@ -55,7 +47,6 @@ const generatePlotLengthData = (queryArrayRange, idx) => {
 
 }
 
-
 /**
  * Function that parses the query range array and make it available to display
  * in html div
@@ -82,7 +73,6 @@ const getRangeToString = (queryArrayRange) => {
   }
 
 }
-
 
 /**
  * Function to construct the xrange plot
@@ -142,9 +132,7 @@ const populateHighchartXrange = (lenghtData) => {
       }
     }
   })
-
 }
-
 
 /**
  * Function to populate the resistance associated entries in the popup
@@ -307,7 +295,6 @@ const resGetter = (nodeId) => {
   return true
 }
 
-
 /**
  * This function populates the plasmid finder associated divs in the popup,
  * including the plot.
@@ -348,7 +335,6 @@ const pfPopupPopulate = async (queryArrayPFRange) => {
 
   $("#resistancePopupPlot").show()
 }
-
 
 /**
  * Function to make the request for the plasmid finder entry after a node click
@@ -437,10 +423,8 @@ const plasmidFamilyGetter = (nodeId) => {
       window.setTimeout( () => { $("#alertId_db").hide() }, 5000)
     }
   })
-
   return true
 }
-
 
 /**
  * Function to populate the virulence associated divs available in the popup
@@ -481,7 +465,6 @@ const virPopupPopulate = async (queryArrayVirRange) => {
   $("#resistancePopupPlot").show()
 
 }
-
 
 /**
  * Function that makes the request for the clicked node, retrieving the clicked
@@ -541,6 +524,5 @@ const virulenceGetter = (nodeId) => {
       window.setTimeout( () => { $("#alertId_db").hide() }, 5000)
     }
   })
-
   return true
 }

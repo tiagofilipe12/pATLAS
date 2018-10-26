@@ -30,7 +30,6 @@ nested_entry_fields = {
     "cluster": fields.String
 }
 
-
 entry_field = {
     "plasmid_id": fields.String,
     # parse only the json required? Cannot use nested method because entry in
@@ -60,13 +59,13 @@ req_parser = reqparse.RequestParser()
 req_parser.add_argument("accession", dest="accession", type=str,
                         help="Accession number to be queried")
 req_parser.add_argument("name", dest="name", type=str, help="taxa "
-                                                              "to be queried")
+                                                            "to be queried")
 req_parser.add_argument("gene", dest="gene", type=str, help="gene "
-                                                              "to be queried")
+                                                            "to be queried")
 req_parser.add_argument("taxa", dest="taxa", type=str, help="taxa "
-                                                              "to be queried")
+                                                            "to be queried")
 req_parser.add_argument("plasmid_name", dest="plasmid_name", type=str,
-                          help="plasmid name to be queried")
+                        help="plasmid name to be queried")
 
 req_parser.add_argument("perc_hashes", dest="perc_hashes", type=float,
                         help="the percentage of hashes to be queried")
@@ -105,8 +104,6 @@ class GetPlasmidFinder(Resource):
 class GetVirulence(Resource):
     @marshal_with(card_field)
     def post(self):
-        # Put req_parser inside get function. Only this way it parses the
-        # request.
         var_response = request.form["accession"].replace("[", "") \
             .replace("]", "").replace('"', "").split(",")
         single_query = db.session.query(Positive).filter(
@@ -237,7 +234,6 @@ class GetPlasmidName(Resource):
 
 
 class GetAccessionHashes(Resource):
-    # @marshal_with(entry_field)
     def get(self):
         # Put req_parser inside get function. Only this way it parses the
         # request.
@@ -273,6 +269,5 @@ class GetAccessionHashes(Resource):
                         else:
                             resulting_obj[record.plasmid_id] = [
                                 linked_accession]
-
 
         return resulting_obj
