@@ -6,7 +6,7 @@
  * The variable in which the version is stored. This variable will be used to
  * check the version of the imported files and projects.
  */
-const version = "1.6.0"
+const version = "1.6.1"
 
 /**
  * variable that will store the object to be exported to a json file on
@@ -74,6 +74,16 @@ let clickedPopupButtonFamily = false
  * @type {boolean}
  */
 let clickedPopupButtonVir = false
+
+/**
+ * Variable that checks if bacmet button tab in right side popup menu has
+ * already been
+ * clicked or not. This prevents the frontend from making unnecessary requests
+ * to the backend if the same plasmid popup is selected since the previous click
+ * on this tab
+ * @type {boolean}
+ */
+let clickedPopupButtonMetal = false
 
 // variable to control stats displayer
 /**
@@ -263,6 +273,10 @@ const getArrayPf = () => {
  */
 const getArrayVir = () => {
   return $.getJSON("/virulence")
+}
+
+const getArrayMetal = () => {
+  return $.getJSON("/metal")
 }
 
 /**

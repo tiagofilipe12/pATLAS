@@ -27,7 +27,8 @@ clickedPopupButtonVir, listPlots, removeBasedOnHashes, hideDivsFileInputs,
 xRangePlotList, loadFilesToObj, mappingHighlight, fileMode, version,
 parseRequestResults, requestResults, currentQueryNode, centralNode,
 getCentralNode, dropdownSample, currentSample, loadingMessage, lastPosition,
-dragging, develGenerationGraph, unpinSelectedNodes, blockFilterModal*/
+dragging, develGenerationGraph, unpinSelectedNodes, blockFilterModal,
+clickedPopupButtonMetal*/
 
 
 /**
@@ -871,12 +872,7 @@ const onLoad = () => {
     $("#closePop").click()
 
     pageReRun = false
-    $("#resTab").removeClass("active")
-    $("#resButton").removeClass("active")
-    $("#pfTab").removeClass("active")
-    $("#plasmidButton").removeClass("active")
-    $("#virButton").removeClass("active")
-    $("#virTab").removeClass("active")
+
     // this resets previous selected node to previous color
     if (currentQueryNode) {
       graphics.getNodeUI(currentQueryNode).color = graphics.getNodeUI(
@@ -1241,6 +1237,7 @@ const onLoad = () => {
 
       let objectOfSelections = {
 
+        metal: $("#metalList2").selectpicker("val"),
         virulence: $("#virList2").selectpicker("val"),
         card: $("#resCardList2").selectpicker("val"),
         resfinder: $("#resResfinderList2").selectpicker("val"),
@@ -2263,13 +2260,6 @@ const onLoad = () => {
   $("#submitButton").unbind("click").bind("click", async (event) => {
     event.preventDefault()    // prevents page from reloading
 
-    $("#resTab").removeClass("active")
-    $("#resButton").removeClass("active")
-    $("#pfTab").removeClass("active")
-    $("#plasmidButton").removeClass("active")
-    $("#virTab").removeClass("active")
-    $("#virButton").removeClass("active")
-
     $("#closePop").click()
 
     if (toggleStatus === false) {
@@ -2307,15 +2297,17 @@ const onLoad = () => {
    * clicked.
    */
   $("#closePop").unbind("click").bind("click", () => {
-    $("#resTab").removeClass("active")
-    $("#resButton").removeClass("active")
-    $("#pfTab").removeClass("active")
-    $("#plasmidButton").removeClass("active")
+    // make tab divs inactive
+    $("#resTab, #pfTab, #virTab, #metalTab").removeClass("active")
+    // make buttons inactive
+    $("#plasmidButton, #metalButton, #virButton, #resButton")
+      .removeClass("active")
     $("#popup_description").hide()
 
     clickedPopupButtonCard = false
     clickedPopupButtonFamily = false
     clickedPopupButtonVir = false
+    clickedPopupButtonMetal = false
 
     // when the popup is closed the plot with the annotations should be hidden
     $("#resistancePopupPlot").hide()
@@ -2406,6 +2398,16 @@ const onLoad = () => {
     }
   })
 
+  /**
+   * Button that controls the display of the metal resistance information
+   * in the popup
+   */
+  $("#metalButton").unbind("click").bind("click", () => {
+    if (clickedPopupButtonMetal === false) {
+      clickedPopupButtonMetal = metalGetter(currentQueryNode)
+    }
+  })
+
   //************************************//
   //**** BUTTONS THAT CONTROL PLOTS ****//
   //************************************//
@@ -2416,15 +2418,25 @@ const onLoad = () => {
    */
   $("#genusStats, #speciesStats, #familyStats, #orderStats," +
     " #resistanceStats, #pfamilyStats, #virStats, #clusterStats, " +
-    "#lengthStats").unbind("click").bind("click", (event) => {
+    "#lengthStats, #metalStats").unbind("click").bind("click", (event) => {
     // this gets the clicked selector, gets its html, converts it to lower
     // case and trims for white spaces and new line chars
-    clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
+    clickerButton = $(event.target).html()
+      .toLowerCase()
+      .trim()
+      .replace(" ", "")
+
+    // checks if metal button is clicked and if so change the clickerButton
+    // to 'metal'
+    clickerButton = (clickerButton.includes("metal")) ? "metal" : clickerButton
+
     if (event.target.id === "lengthStats") {
       $("#sortGraph, #sortGraphAlp").attr("disabled", true)
     } else {
       $("#sortGraph, #sortGraphAlp").attr("disabled", false)
     }
+
+    // assures that the modal is opened before triggering the function
     setTimeout( () => {
       listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
     }, 500)
@@ -2465,20 +2477,31 @@ const onLoad = () => {
   //**********************************************************//
 
   /**
-   * Button events that are fired for buttons inside statsModal, that enable to
-   * switch b/w plots.
+   * Event for the dropdown available in statsPlot Modal, allowing to quickly
+   * switch between different types of plots
    */
-  $("#lengthPlot, #speciesPlot, #genusPlot, #familyPlot, #orderPlot, " +
-    "#clusterPlot, #resPlot, #pfPlot, #virPlot").unbind("click").bind("click", (event) => {
-    // this gets the clicked selector, gets its html, converts it to lower
-    // case and trims for white spaces and new line chars
-    clickerButton = $(event.target).html().toLowerCase().trim().replace(" ", "")
-    if (event.target.id === "lengthPlot") {
+  $("#statsList").on("changed.bs.select", (e) => {
+
+    // fetches the target option being selected in the dropdown
+    const selectedTarget = $(`#${e.target.id}`).selectpicker("val")
+      .toLowerCase()
+
+    // assigns to clickerButton the appropriate entry for the parsers in
+    // repetitivePlotFunction
+    clickerButton = (selectedTarget === "plasmidfinder") ? "plasmidfamilies" :
+      (selectedTarget === "biocide & metal") ? "metal" : selectedTarget
+
+    // controls if the two sort buttons should be enabled or not
+    if (clickerButton === "length") {
       $("#sortGraph, #sortGraphAlp").attr("disabled", true)
     } else {
       $("#sortGraph, #sortGraphAlp").attr("disabled", false)
     }
-    listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection, listGiFilter, clickerButton)
+
+    // generates the plot itself
+    listPlots = repetitivePlotFunction(g, graphics, renderer, areaSelection,
+      listGiFilter, clickerButton)
+
   })
 
   //************************************************//

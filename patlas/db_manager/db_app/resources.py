@@ -118,6 +118,7 @@ class GetMetal(Resource):
             .replace("]", "").replace('"', "").split(",")
         single_query = db.session.query(MetalDatabase).filter(
             MetalDatabase.plasmid_id.in_(var_response)).all()
+
         return single_query
 
 

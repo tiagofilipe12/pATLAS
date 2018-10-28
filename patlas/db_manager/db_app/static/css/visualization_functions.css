@@ -272,7 +272,7 @@
 }
 
 #order_dropdown, #family_dropdown, #genus_dropdown, #species_dropdown,
-#famDropdown, #resDropdown, #cardDropdown, #virDropdown{
+#famDropdown, #resDropdown, #cardDropdown, #virDropdown, #metalDropdown{
     text-align: center;
 }
 
@@ -302,7 +302,7 @@
 }
 
 #modal-body-taxa-1, #modalBodyFAM1, #modalBodyABR1, #modalBodyVir1,
-#modal-body-intersections{
+#modalBodyMetal1, #modal-body-intersections{
     margin-bottom: 5%;
 }
 
@@ -612,7 +612,7 @@
 
 #modal-body-plot{
     width: 100%;
-    max-height: 600px;
+    max-height: 620px;
     margin: auto;
 }
 
@@ -644,7 +644,7 @@
 }
 
 #popup_description {
-    width: 500px;
+    width: 550px;
     max-height: 60%;
     padding: 10px 30px 10px 30px;
     /*border: 1px solid grey;*/
@@ -826,7 +826,8 @@ Careful when using this in other popovers in the future*/
 
 #modal-body-intersections{
     text-align: center;
-    height: 460px;
+    height: 550px;
+    /*overflow-y: auto;*/
 }
 
 .dropdown-header{
@@ -840,7 +841,7 @@ Careful when using this in other popovers in the future*/
 }
 
 #resistancePopupPlot{
-    height: 300px;
+    height: 350px;
     display: none;
 }
 
@@ -854,4 +855,9 @@ Careful when using this in other popovers in the future*/
 
 .about-font{
     font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;
+}
+
+#statsToolBox{
+    padding: 20px;
+    text-align: center
 }

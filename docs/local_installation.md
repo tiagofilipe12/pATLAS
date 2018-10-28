@@ -47,9 +47,9 @@ git clone https://github.com/tiagofilipe12/pATLAS
 
 2) [Create your custom database version](database_creation.md#creating-a-custom-version-of-pATLAS)
  or [generate the default pATLAS database](database_creation.md) or
- [download sql file from version 1.5.2](https://github.com/tiagofilipe12/pATLAS/releases/tag/1.5.2)
+ [download sql file from version 1.6.1](https://github.com/tiagofilipe12/pATLAS/releases/tag/1.6.1)
  (the `tar.gz` archive).
- **Note:** if you download the sql file from version 1.5.2 you may skip
+ **Note:** if you download the sql file from version 1.6.1 you may skip
  steps 3 to 4 and **continue with step 5**.
 
 3) Make sure all the necessary files are in place.

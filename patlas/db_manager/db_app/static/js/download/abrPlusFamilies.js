@@ -103,7 +103,7 @@ const populateHighchartXrange = (lenghtData) => {
       title: {
         text: ""
       },
-      categories: ["CARD", "ResFinder", "PFinder", "VFDB"],
+      categories: ["CARD", "ResFinder", "PFinder", "VFDB", "BacMet"],
       reversed: true,
       labels: {
         rotation: 270
@@ -323,9 +323,7 @@ const pfPopupPopulate = async (queryArrayPFRange) => {
     }).join(", ")
   )
 
-
   $("#pfRangePopSpan").html(getRangeToString(queryArrayPFRange))
-
 
   const pfFinderLengthData = await generatePlotLengthData(queryArrayPFRange, 2)
 
@@ -408,6 +406,7 @@ const plasmidFamilyGetter = (nodeId) => {
       }
       // then actually add it to popup_description div
       pfPopupPopulate(queryArrayPFRange)
+
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no PlasmidFinder information available in database."
@@ -509,6 +508,7 @@ const virulenceGetter = (nodeId) => {
       }
       // then actually add it to popup_description div
       virPopupPopulate(queryArrayVirRange)
+
     } catch (error) {
       document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
         " This sequence has no Virulence information available in database."
@@ -519,6 +519,93 @@ const virulenceGetter = (nodeId) => {
 
       $("#virGenePopSpan, #virGenbankPopSpan, #virCoveragePopSpan," +
         "#virIdentityPopSpan, #virRangePopSpan").html("N/A")
+
+      // hides the div after 5 seconds
+      window.setTimeout( () => { $("#alertId_db").hide() }, 5000)
+    }
+  })
+  return true
+}
+
+const metalPopupPopulate = async (queryArrayMetalRange) => {
+
+  $("#metalGenePopSpan").html(queryArrayMetalRange.map( (e, index) => {
+      return `${index + 1}: ${e.genes.toString()}`
+    }).join(", ")
+  )
+
+  $("#metalGenbankPopSpan").html(queryArrayMetalRange.map( (e, index) => {
+      return `${index + 1}: ${e.accessions.toString()}`
+    }).join(", ")
+  )
+
+  $("#metalCoveragePopSpan").html(queryArrayMetalRange.map( (e, index) => {
+      return `${index + 1}: ${e.coverage.toString()}`
+    }).join(", ")
+  )
+  $("#metalIdentityPopSpan").html(queryArrayMetalRange.map( (e, index) => {
+      return `${index + 1}: ${e.identity.toString()}`
+    }).join(", ")
+  )
+
+  $("#metalRangePopSpan").html(getRangeToString(queryArrayMetalRange))
+
+  const virulenceLengthData = await generatePlotLengthData(queryArrayMetalRange, 4)
+
+  xRangePlotList = xRangePlotList.concat(virulenceLengthData)
+
+  await populateHighchartXrange(xRangePlotList)
+
+  $("#resistancePopupPlot").show()
+
+}
+
+const metalGetter = (nodeId) => {
+  // here in this function there is no need to parse the
+  // data.json_entry.database entry since it is a single database
+  $.post("api/getmetal/", {"accession": JSON.stringify([nodeId])}, (data, status) => {
+    // first we need to gather all information in a format that may be
+    // passed to jquery to append to popup_descriptions div
+    // set of arrays for card db
+    const queryArrayMetalRange = []
+
+    try{
+      // totalLength array corresponds to gene names
+      const totalLength = data[0].json_entry.gene.replace(/['u\[\] ]/g, "").split(",")
+      const accessionList = data[0].json_entry.accession.replace(/['u\[\] ]/g, "").split(",")
+      const coverageList = data[0].json_entry.coverage.replace(/['u\[\] ]/g, "").split(",")
+      const identityList = data[0].json_entry.identity.replace(/['u\[\] ]/g, "").split(",")
+      const rangeList = data[0].json_entry.seq_range.replace("[[", "[").replace("]]", "]").split("],")
+      for (const i in totalLength) {
+        if ({}.hasOwnProperty.call(totalLength, i)) {
+
+          const rangeEntry = (rangeList[i].indexOf("]") > -1) ?
+            rangeList[i].replace(/[\[\] ]/g, "").split(",") :
+            (rangeList[i] + "]").replace(/[\[\] ]/g, "").split(",")
+          queryArrayMetalRange.push(
+            {
+              "range": rangeEntry,
+              "genes": customTrimer(totalLength[i], "'"),
+              "accessions": makeItClickable(accessionList[i].split(":")[0]),
+              "coverage": coverageList[i],
+              "identity": identityList[i]
+            }
+          )
+        }
+      }
+      // then actually add it to popup_description div
+      metalPopupPopulate(queryArrayMetalRange)
+
+    } catch (error) {
+      document.getElementById("alertId_db").childNodes[0].nodeValue = "Warning!" +
+        " This sequence has no Biocide & Metal resistance information available in database."
+      $("#alertId_db").show()
+      $("#alertClose_db").click( () => {
+        $("#alertId_db").hide()  // hide this div
+      })
+
+      $("#metalGenePopSpan, #metalGenbankPopSpan, #metalCoveragePopSpan," +
+        "#metalIdentityPopSpan, #metalRangePopSpan").html("N/A")
 
       // hides the div after 5 seconds
       window.setTimeout( () => { $("#alertId_db").hide() }, 5000)

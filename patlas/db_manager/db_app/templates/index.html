@@ -156,7 +156,7 @@
           contained in High Throughput Sequencing data.
         </p>
 
-        <h3><b>Version:</b> 1.6.0</h3>
+        <h3><b>Version:</b> 1.6.1</h3>
         <p class="mainText">
         </p>
         <h3><b>Last pATLAS database update:</b> 20 September 2018</h3>
@@ -774,6 +774,11 @@
                   data-target="#virModal"
                   id="virulenceCombined" >+ Virulence
           </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#virModal"
+                  id="metalCombined" >+ Biocide & Metal
+          </button>
         </div>
 
       </div>
@@ -954,6 +959,11 @@
                     data-target="#virModal"
                     id="virulenceFilter" >Virulence
             </button>
+            <button class="button list-group-item" href="#"
+                    data-toggle="modal" data-backdrop="static"
+                    data-target="#metalModal"
+                    id="metalFilter" >Biocide & Metal
+            </button>
           </ul>
           <ul class="list-group headerPanelGroup">Advanced
             <button class="list-group-item" href="#"
@@ -1016,6 +1026,10 @@
             <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
                     data-target="#modalPlot"
                     id="virStats">Virulence
+            </button>
+            <button class="list-group-item" href="#" data-toggle="modal" data-backdrop="static"
+                    data-target="#modalPlot"
+                    id="metalStats">Biocide & Metal
             </button>
           </ul>
           <ul class="list-group headerPanelGroup">Other
@@ -1312,26 +1326,30 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h3 class="modal-title">Quick statistics histograms</h3>
       </div>
-      <div class="modal-body" id="modal-body-plot">
-        <div class="alert alert-warning alert-dismissable fade in"
-             id="alertPlot"
-             style="display: none">
-          <button type="button" class="close"
-                  aria-hidden="true" data-hide="true"
-                  onclick="this.parentNode.style.display = 'none'">
-            &times;</button>
-          <strong>Warning!</strong> All plasmids have same size.
-          There is no sufficient data to plot an histogram.
+      <div>
+        <div class="modal-body" id="modal-body-plot">
+          <div class="alert alert-warning alert-dismissable fade in"
+               id="alertPlot"
+               style="display: none">
+            <button type="button" class="close"
+                    aria-hidden="true" data-hide="true"
+                    onclick="this.parentNode.style.display = 'none'">
+              &times;</button>
+            <strong>Warning!</strong> All plasmids have same size.
+            There is no sufficient data to plot an histogram.
+          </div>
+          <div class="alert alert-info alert-dismissable fade in"
+               id="alertPlotEntries">
+            <span id="spanEntries" style="font-size: 12px"></span>
+            <button type="button" class="close"
+                    aria-hidden="true" data-hide="true"
+                    onclick="this.parentNode.style.display = 'none'">
+              &times;</button>
+          </div>
         </div>
-        <div class="alert alert-info alert-dismissable fade in"
-             id="alertPlotEntries">
-          <span id="spanEntries" style="font-size: 12px"></span>
-          <button type="button" class="close"
-                  aria-hidden="true" data-hide="true"
-                  onclick="this.parentNode.style.display = 'none'">
-            &times;</button>
-        </div>
-        <div>
+
+        <div id="statsToolBox">
+          <div class="header_taxa">Plot toolbox</div>
           <button class="btn btn-info" id="sortGraph"
                   type="button" data-toogle="tooptip"
                   title="Sort graph">
@@ -1342,6 +1360,31 @@
                   title="Sort graph">
             <span class="glyphicon glyphicon-sort-by-alphabet"></span>
           </button>
+
+
+          <select class="selectpicker" data-dropup-auto="false"
+                  data-width="20%"
+                  data-selected-text-format="count"
+                  data-title="Change plot..." id="statsList">
+
+            <optgroup label="Taxa">
+              <option>Species</option>
+              <option>Genera</option>
+              <option>Families</option>
+              <option>Orders</option>
+            </optgroup>
+            <optgroup label="Annotations">
+              <option>Resistances</option>
+              <option>PlasmidFinder</option>
+              <option>Virulence</option>
+              <option>Biocide & Metal</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option>Length</option>
+              <option>Clusters</option>
+            </optgroup>
+
+          </select>
 
         </div>
         <div id="progressDiv">
@@ -1361,6 +1404,7 @@
         <div id="chartContainerCluster"></div>
         <div id="chartContainerPlasmidFamilies"></div>
         <div id="chartContainerVirulence"></div>
+        <div id="chartContainerMetal"></div>
       </div>
 
       <div class="modal-footer">
@@ -1379,24 +1423,27 @@
         >
           <span class="glyphicon glyphicon-question-sign"></span>
         </button>
-        <button class="btn btn-default"  id="speciesPlot">Species
-        </button>
-        <button class="btn btn-default"  id="genusPlot">Genera
-        </button>
-        <button class="btn btn-default"  id="familyPlot">Families
-        </button>
-        <button class="btn btn-default"  id="orderPlot">Orders
-        </button>
-        <button class="btn btn-default" id="lengthPlot">Length
-        </button>
-        <button class="btn btn-default"  id="clusterPlot">Clusters
-        </button>
-        <button class="btn btn-default" id="resPlot">Resistances
-        </button>
-        <button class="btn btn-default" id="pfPlot">Plasmid Families
-        </button>
-        <button class="btn btn-default" id="virPlot">Virulence
-        </button>
+
+        <!--<button class="btn btn-default"  id="speciesPlot">Species-->
+        <!--</button>-->
+        <!--<button class="btn btn-default"  id="genusPlot">Genera-->
+        <!--</button>-->
+        <!--<button class="btn btn-default"  id="familyPlot">Families-->
+        <!--</button>-->
+        <!--<button class="btn btn-default"  id="orderPlot">Orders-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="lengthPlot">Length-->
+        <!--</button>-->
+        <!--<button class="btn btn-default"  id="clusterPlot">Clusters-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="resPlot">Resistances-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="pfPlot">Plasmid Families-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="virPlot">Virulence-->
+        <!--</button>-->
+        <!--<button class="btn btn-default" id="metalPlot">Biocide & Metal-->
+        <!--</button>-->
       </div>
     </div>
 
@@ -1449,6 +1496,11 @@
                   data-toggle="modal" data-backdrop="static"
                   data-target="#virModal"
                   >+ Virulence
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#metalModal"
+                  >+ Biocide & Metal
           </button>
         </div>
 
@@ -1507,6 +1559,10 @@
                   data-toggle="modal" data-backdrop="static"
                   data-target="#virModal">+ Virulence
           </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#metalModal">+ Biocide & Metal
+          </button>
         </div>
 
       </div>
@@ -1564,6 +1620,10 @@
                   data-toggle="modal" data-backdrop="static"
                   data-target="#resModal">+ Resistances
           </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#metalModal">+ Biocide & Metal
+          </button>
         </div>
 
       </div>
@@ -1572,6 +1632,67 @@
                 data-dismiss="modal" id="virSubmit">Highlight</button>
         <button type="submit" class="btn btn-danger"
                 id="virClear">Clear selection</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal for metal resistance-->
+<div id="metalModal" class="modal fade" role="dialog" tabindex="-1">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h3 class="modal-title">Biocide & Metal resistance selection</h3>
+      </div>
+      <div class="modal-body" id="modalBodyMetal">
+
+        <!--metal dropdowns-->
+        {% include 'metal_filters.html' %}
+
+        <div class="row" id="modalBodyMetal2">
+          <div class='col-md-12'>
+            <div class="panel-group" id="displayCurrentMetal">
+              <div class="panel panel-info" >
+                <div class="panel-heading">
+                  Selected genes</div>
+                <div class="panel-body"
+                     id="displayCurrentBoxMetal">
+                  <!--Populated by visualization_functions.js-->
+                  <p id="p_Metal">Biocide & Metal resistances:</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center">
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#taxaModal">+ Taxa
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#plasmidFamiliesModal">+ Plasmid families
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#resModal">+ Resistances
+          </button>
+          <button class="btn btn-info" href="#" data-dismiss="modal"
+                  data-toggle="modal" data-backdrop="static"
+                  data-target="#metalModal">+ Virulence
+          </button>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-default"
+                data-dismiss="modal" id="metalSubmit">Highlight</button>
+        <button type="submit" class="btn btn-danger"
+                id="metalClear">Clear selection</button>
       </div>
     </div>
 

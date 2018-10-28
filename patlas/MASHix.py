@@ -376,7 +376,7 @@ def master_fasta(fastas, output_tag, mother_directory):
     accession_out = os.path.join(mother_directory,
                                  "accessions_list_{}.lst".format(output_tag))
     with open(accession_out, "w") as fh:
-        fh.write("version: 1.5.2\n")
+        fh.write("version: 1.6.1\n")
         fh.write("\n".join(all_accessions))
 
     return out_file, sequence_info, all_species
