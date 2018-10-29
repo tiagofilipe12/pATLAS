@@ -2331,6 +2331,7 @@ const onLoad = () => {
       "#speciesNamePop",
       "#lengthPop",
       "#plasmidNamePop",
+      "#clusterIdPop",
       "#percentagePop",
       "#percentagePopMash",
       "#copyNumberPop",
@@ -2356,7 +2357,24 @@ const onLoad = () => {
       "#pfCoveragePop",
       "#pfIdentityPop",
       "#pfRangePop",
-      "#clusterIdPop"
+      "#virPop",
+      "#virGenePop",
+      "#virGenbankPop",
+      "#virCoveragePop",
+      "#virIdentityPop",
+      "#virRangePop",
+      "#virPop",
+      "#virGenePop",
+      "#virGenbankPop",
+      "#virCoveragePop",
+      "#virIdentityPop",
+      "#virRangePop",
+      "#metalPop",
+      "#metalGenePop",
+      "#metalGenbankPop",
+      "#metalCoveragePop",
+      "#metalIdentityPop",
+      "#metalRangePop"
     ])
     // then convert the resulting array to a csv file
     arrayToCsv(targetArray)
