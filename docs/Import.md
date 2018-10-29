@@ -155,6 +155,9 @@ Results will be available within the current working directory in a folder named
 `results`. These files can be uploaded to their respective menus within the pATLAS
 sidebar menu.
 
+You can also use [`flowcraft.py report` module](https://flowcraft.readthedocs.io/en/latest/user/basic_usage.html#reports) to generate interactive reports
+that can send requests to pATLAS directly without importing a file to pATLAS.
+
 ---
 
 # Redundancy removal
