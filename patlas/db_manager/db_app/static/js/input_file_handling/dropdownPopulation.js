@@ -445,7 +445,7 @@ const metalSubmitFunction = async (g, graphics, renderer, tempPageReRun) => {
   let storeLis = ""  // initiates storeLis to store the legend entries and colors
   // now processes the current selection
   const pfQuery = document.getElementById("p_Metal").innerHTML
-  let selectedMetal = pfQuery.replace("Metal:", "").split(",").filter(Boolean)
+  let selectedMetal = pfQuery.replace("Biocide & Metal:", "").split(",").filter(Boolean)
 
   selectedMetal = removeFirstCharFromArray(selectedMetal)
 
