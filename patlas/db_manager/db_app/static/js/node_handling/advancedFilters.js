@@ -244,7 +244,7 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   }
 
   // remove empty arrays
-  let arrayOfArrays = [listTaxa, listRes, listPf, listVir]
+  let arrayOfArrays = [listTaxa, listRes, listPf, listVir, listMetal]
   arrayOfArrays = arrayOfArrays.filter( (n) => { return n.length !== 0 })
 
   // here arrayOfArrays must not have empty arrays
@@ -276,14 +276,16 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   let stringToSelection = ""
 
   // loop to write stringToSelection
-  for (const el of [taxaStrings, pfStrings, resStrings, virStrings]){
+  for (const el of [taxaStrings, pfStrings, resStrings, virStrings,
+    metalStrings]){
     if (el) {
       stringToSelection += `[${el}] <b>${selectedFilter}</b> `
     }
   }
 
   // removes last selected filter from stringToSelection
-  stringToSelection = stringToSelection.substring(0, stringToSelection.length - 9)
+  stringToSelection = stringToSelection.substring(0,
+    stringToSelection.length - 9)
 
   // color nodes after having tempList
   await colorNodes(g, graphics, renderer, listGiFilter, selectedColor)
@@ -294,14 +296,11 @@ const parseQueriesIntersection = async (g, graphics, renderer,
   // check if there is any selection
   if (listGiFilter.length !== 0) {
     const storeLis = setStoreLis(objectOfSelections, selectedColor, stringToSelection)
-    $("#readString").empty()
-    $("#readLegend").empty()
-    $("#read_label").hide()
-    $("#fileNameDiv").hide()
+    $("#readString, #readLegend").empty()
+    $("#read_label, #fileNameDiv").hide()
 
-    $("#colorLegend").show()
+    $("#colorLegend, #advanced_label").show()
 
-    $("#advanced_label").show()
     $("#colorLegendBoxAdvanced").empty()
       .append(storeLis +
         "<li class='centeredList'><button class='jscolor btn btn-default'" +
