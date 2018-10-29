@@ -224,6 +224,10 @@ const requesterDB = (g, listGiFilter, counter, renderGraph, graphics,
 
           $("#virSubmit").click()
 
+        } else if (selectedFilter === "metal") {
+
+          $("#metalSubmit").click()
+
         } else if (selectedFilter === "∩") {
 
           $("#intersectionsModalSubmit").click()

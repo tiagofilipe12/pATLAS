@@ -698,7 +698,7 @@ const onLoad = () => {
     $("#viewWrapper").hide()
     // clicks every clear button in each modal and reset-sliders
     $("#reset-sliders, #pfClear, #virClear, #resClear, #taxaModalClear, " +
-      "#intersectionsModalClear").click()
+      "#intersectionsModalClear, #metalClear").click()
     // hides fileNameDiv
     $("#fileNameDiv").hide()
 
@@ -955,20 +955,12 @@ const onLoad = () => {
     // sets slider legend buttons to enable, allowing them to be clicked
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
-    // empties taxa and plasmidfinder legend
-    $("#taxa_label").hide()
-    $("#colorLegendBox").empty()
-    $("#res_label").hide()
-    $("#colorLegendBoxRes").empty()
-    $("#vir_label").hide()
-    $("#colorLegendBoxVir").empty()
-    $("#advanced_label").hide()
-    $("#colorLegendBoxAdvanced").empty()
-
-    $("#readString").empty()
-    $("#readLegend").empty()
-    $("#read_label").hide()
-    $("#fileNameDiv").hide()
+    // empties all other legends legend
+    $("#taxa_label, #res_label, #vir_label, #metal_label, #advanced_label, " +
+      "#read_label, #fileNameDiv").hide()
+    $("#colorLegendBox, #colorLegendBoxRes, #colorLegendBoxMetal," +
+      " #colorLegendBoxVir, #colorLegendBoxAdvanced, #readString, " +
+      "#readLegend").empty()
 
     // reset nodes before submitting new colors
     const tempPageReRun = pageReRun
@@ -1044,20 +1036,12 @@ const onLoad = () => {
 
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
-    // empties all other legend
-    $("#taxa_label").hide()
-    $("#colorLegendBox").empty()
-    $("#vir_label").hide()
-    $("#colorLegendBoxVir").empty()
-    $("#pf_label").hide()
-    $("#colorLegendBoxPf").empty()
-    $("#advanced_label").hide()
-    $("#colorLegendBoxAdvanced").empty()
-
-    $("#readString").empty()
-    $("#readLegend").empty()
-    $("#read_label").hide()
-    $("#fileNameDiv").hide()
+    // empties all other legends legend
+    $("#taxa_label, #metal_label, #vir_label, #pf_label, #advanced_label, " +
+      "#read_label, #fileNameDiv").hide()
+    $("#colorLegendBox, #colorLegendBoxMetal, #colorLegendBoxPf," +
+      " #colorLegendBoxVir, #colorLegendBoxAdvanced, #readString, " +
+      "#readLegend").empty()
 
     areaSelection = false
 
@@ -1135,19 +1119,12 @@ const onLoad = () => {
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
     // empties taxa and plasmidfinder legend
-    $("#taxa_label").hide()
-    $("#colorLegendBox").empty()
-    $("#res_label").hide()
-    $("#colorLegendBoxRes").empty()
-    $("#pf_label").hide()
-    $("#colorLegendBoxPf").empty()
-    $("#advanced_label").hide()
-    $("#colorLegendBoxAdvanced").empty()
-
-    $("#readString").empty()
-    $("#readLegend").empty()
-    $("#read_label").hide()
-    $("#fileNameDiv").hide()
+    // empties all other legends legend
+    $("#taxa_label, #res_label, #metal_label, #pf_label, #advanced_label, " +
+      "#read_label, #fileNameDiv").hide()
+    $("#colorLegendBox, #colorLegendBoxRes, #colorLegendBoxPf," +
+      " #colorLegendBoxMetal, #colorLegendBoxAdvanced, #readString, " +
+      "#readLegend").empty()
 
     // reset nodes before submitting new colors
     const tempPageReRun = pageReRun
@@ -1172,10 +1149,84 @@ const onLoad = () => {
   })
 
   /**
+   * Button event that clears all the selected metal genes and their
+   * associated nodes
+   */
+  $("#metalClear").unbind("click").bind("click", (event) => {
+    $("#reset-sliders").click()
+    event.preventDefault()
+    // this needs an array for reusability purposes
+    resetDisplayTaxaBox(["p_Metal"])
+
+    // resets dropdown selections
+    $("#virulenceList").selectpicker("deselectAll")
+
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+  })
+
+  /**
+   * Button event that submits the current selection of virulence genes to
+   * display into pATLAS network. It makes a query of the selected virulence
+   * genes to the psql database served side.
+   */
+  $("#metalSubmit").unbind("click").bind("click", (event) => {
+    event.preventDefault()
+
+    legendIndex = 3
+
+    selectedFilter = "metal"
+
+    // clears previous selected nodes
+    nodeColorReset(graphics, g, nodeColor, renderer)
+    previousTableList = []
+    // transform selector object that handles plots and hide their
+    // respective divs
+    Object.keys(selector).map( (el) => { selector[el].state = false })
+    hideAllOtherPlots()
+    areaSelection = false
+
+    $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
+
+    // empties all other legends legend
+    $("#taxa_label, #res_label, #vir_label, #pf_label, #advanced_label, " +
+      "#read_label, #fileNameDiv").hide()
+    $("#colorLegendBox, #colorLegendBoxRes, #colorLegendBoxPf," +
+      " #colorLegendBoxVir, #colorLegendBoxAdvanced, #readString, " +
+      "#readLegend").empty()
+
+    // reset nodes before submitting new colors
+    const tempPageReRun = pageReRun
+
+    // after setting these variables, show loading div with messages and makes
+    // the request to the API in order to show the results
+    showDiv().then( () => {
+      $("#loadingInfo").html("Fetching virulence data...")
+      metalSubmitFunction(g, graphics, renderer, tempPageReRun).then( (results) =>  {
+        legendInst = results
+        pageReRun = false
+        // just show legend if any selection is made at all
+        if (legendInst === true) {
+          // showLegend.style.display = "block"
+          $("#Re_run, #go_back, #download_ds, #tableShow, #heatmapButtonTab," +
+            " #plotButton, #colorLegend").show()
+        }
+
+        $("#loading").hide()
+      })
+    })
+  })
+
+
+  /**
    * event listener for dropdown clicks that populate the displayer in modal
    */
   $("#orderList, #familyList, #genusList, #speciesList, #cardList, " +
-    "#resfinderList, #plasmidFinderList, #virulenceList")
+    "#resfinderList, #plasmidFinderList, #virulenceList, #metalList")
     .on("changed.bs.select", (e) => {
 
       const arrayOfSelections = $(`#${e.target.id}`).selectpicker("val")
@@ -1184,7 +1235,6 @@ const onLoad = () => {
       let stringClass = e.target.id.slice(0, -4)
       // convert first char to upper case
       stringClass  = stringClass.charAt(0).toUpperCase() + stringClass.slice(1)
-      // const tempVar = this.lastChild.innerHTML
 
       // checks if a taxon is already in display
       const divStringClass = "#p_" + stringClass
@@ -1262,15 +1312,12 @@ const onLoad = () => {
           objectOfSelections, typeToProject)
       })
 
-      // empties taxa and plasmidfinder legend
-      $("#res_label").hide()
-      $("#colorLegendBoxRes").empty()
-      $("#pf_label").hide()
-      $("#colorLegendBoxPf").empty()
-      $("#vir_label").hide()
-      $("#colorLegendBoxVir").empty()
-      $("#taxa_label").hide()
-      $("#colorLegendBox").empty()
+      // empties all other legends legend
+      $("#taxa_label, #res_label, #vir_label, #pf_label, #metal_label, " +
+        "#read_label, #fileNameDiv").hide()
+      $("#colorLegendBox, #colorLegendBoxRes, #colorLegendBoxPf," +
+        " #colorLegendBoxVir, #colorLegendBoxMetal, #readString, " +
+        "#readLegend").empty()
 
     }
   )
@@ -1447,15 +1494,12 @@ const onLoad = () => {
 
     $("#slideLegendLeft, #slideLegendRight").prop("disabled", false)
 
-    // empties taxa and plasmidfinder legend
-    $("#res_label").hide()
-    $("#colorLegendBoxRes").empty()
-    $("#pf_label").hide()
-    $("#colorLegendBoxPf").empty()
-    $("#vir_label").hide()
-    $("#colorLegendBoxVir").empty()
-    $("#advanced_label").hide()
-    $("#colorLegendBoxAdvanced").empty()
+    // empties all other legends legend
+    $("#pf_label, #res_label, #vir_label, #metal_label, #advanced_label, " +
+      "#read_label, #fileNameDiv").hide()
+    $("#colorLegendBoxPf, #colorLegendBoxRes, #colorLegendBoxMetal," +
+      " #colorLegendBoxVir, #colorLegendBoxAdvanced, #readString, " +
+      "#readLegend").empty()
 
     showDiv().then( () => {
       $("#loadingInfo").html("Fetching selected taxa...")
@@ -2228,11 +2272,9 @@ const onLoad = () => {
   $("#reset-links").unbind("click").bind("click", (event) => {
     event.preventDefault()
     const arrayOfDivs = [
-      $("#colorLegendBox").html(),
-      $("#colorLegendBoxRes").html(),
-      $("#colorLegendBoxPf").html(),
-      $("#readLegend").html(),
-      $("#assemblyLegend").html(),
+      $("#colorLegendBox, #colorLegendBoxRes, #colorLegendBoxPf, " +
+        "#colorLegendBoxMetal, #colorLegendBoxVir, #readLegend, " +
+        "#assemblyLegend").html(),
 
     ]
     let divCounter = 0
@@ -2244,8 +2286,7 @@ const onLoad = () => {
         }
       }
     }
-    $("#scaleLegend").empty()
-    $("#scaleString").empty()
+    $("#scaleLegend, #scaleString").empty()
     $("#distance_label").hide()
     setTimeout(function () {
       resetLinkColor(g, graphics, renderer)

@@ -223,7 +223,8 @@ let legendSliderControler = [
   "#taxaModalSubmit",
   "#resSubmit",
   "#pfSubmit",
-  "#virSubmit"
+  "#virSubmit",
+  "#metalSubmit"
 ]
 
 /**
