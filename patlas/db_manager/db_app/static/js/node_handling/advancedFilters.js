@@ -272,6 +272,8 @@ const parseQueriesIntersection = async (g, graphics, renderer,
     objectOfSelections.virulence.join(" ∪ ")
   const pfStrings = (objectOfSelections.pfinder) &&
     objectOfSelections.pfinder.join(" ∪ ")
+  const metalStrings = (objectOfSelections.metal) &&
+    objectOfSelections.metal.join(" ∪ ")
 
   let stringToSelection = ""
 
