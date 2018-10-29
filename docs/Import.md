@@ -8,6 +8,21 @@ The `json` files can be imported using a the `Upload file...` button or
 by dragging and droping the files to the text box on the right of this
 button.
 
+To do so, you can use two different programs:
+    
+* [pATLASflow](#patlasflow) - In this approach it is assumed that the user has
+already performed qc analysis, assemblies and every required analysis before, mash dist,
+mash screen and mapping approaches here provided.
+* [FlowCraft](#flowcraft) - Here you can use raw reads and feed an assembly, mapping
+or mash screen approach. The pipeline will handle qc analysis and trimming with default
+parameters described in FlowCraft documentation and then perform the desired
+analysis (either mash dist / assembly, mash screen or mapping).
+
+**Note**: Check also the [redundancy removal](#redundancy-removal) rules described at 
+the end of this file.
+
+# pATLASflow
+
 ## Download and install requirements to run the pipeline
 
 **[pATLASflow](https://github.com/tiagofilipe12/pATLASflow) is a [NextFlow](https://www.nextflow.io/)
@@ -49,7 +64,7 @@ The sequence pipeline can be run with the following command:
 
 `nextflow run tiagofilipe12/pATLASflow --assembly --fasta "your_folder/*.fasta"`
 
-The resulting `JSON` file can then be provided to pATLAS in the **Sequence** menu.
+The resulting `JSON` file can then be provided to pATLAS in the **Assembly** menu.
 
 ## Consensus
 
@@ -61,7 +76,88 @@ To generate this `JSON` input users must run the following command:
 Then, the following `JSON` file can then be provided to pATLAS in the
 **Consensus** menu.
 
-## Redundancy removal
+---
+
+# FlowCraft
+
+## Download and install requirements
+
+In order to download and install FlowCraft please follow the 
+[official instructions](https://flowcraft.readthedocs.io/en/latest/getting_started/installation.html).
+
+## Use FlowCraft recipes
+
+In order to use pATLAS recipes using FlowCraft there a 4 recipes that you can use:
+
+* ### Mapping
+
+First build the pipeline script with this command:
+
+```
+flowcraft.py build -r plasmids_mapping -o pipeline
+```
+
+And then execute the pipeline by running nextflow in the script:
+
+```
+nextflow run pipeline.nf
+```
+
+* ### Assembly / Mash Dist
+
+First build the pipeline script with this command:
+
+```
+flowcraft.py build -r plasmids_assembly -o pipeline
+```
+
+And then execute the pipeline by running nextflow in the script:
+
+```
+nextflow run pipeline.nf
+```
+
+
+* ### Mash Screen
+
+First build the pipeline script with this command:
+
+```
+flowcraft.py build -r plasmids_mash -o pipeline
+```
+
+And then execute the pipeline by running nextflow in the script:
+
+```
+nextflow run pipeline.nf
+```
+
+* ### All
+
+This will run all the above pipelines in the same command and generate different
+outputs for each one of the approaches.
+
+First build the pipeline script with this command:
+
+```
+flowcraft.py build -r plasmids -o pipeline
+```
+
+And then execute the pipeline by running nextflow in the script:
+
+```
+nextflow run pipeline.nf
+```
+
+### Import results from FlowCraft
+
+Results will be available within the current working directory in a folder named:
+`results`. These files can be uploaded to their respective menus within the pATLAS
+sidebar menu.
+
+---
+
+# Redundancy removal
 
 After loading the files through any of these popup menus and setting
 the desired cutoffs, a new popup will appear asking if the user wants
