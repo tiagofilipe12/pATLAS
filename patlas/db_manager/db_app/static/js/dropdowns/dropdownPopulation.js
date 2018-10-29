@@ -166,7 +166,7 @@ getArrayMetal().done( (json) => {
   })
 
   // populate the menus virulence filters
-  singleDropdownPopulate("#metalList", listMetal, "MetalClass")
+  singleDropdownPopulate("#BacMetList", listMetal, "MetalClass")
 
   // populate the menus for the intersection filters
   singleDropdownPopulate("#metalList2", listMetal, false)

@@ -1156,10 +1156,10 @@ const onLoad = () => {
     $("#reset-sliders").click()
     event.preventDefault()
     // this needs an array for reusability purposes
-    resetDisplayTaxaBox(["p_Metal"])
+    resetDisplayTaxaBox(["p_BacMet"])
 
     // resets dropdown selections
-    $("#virulenceList").selectpicker("deselectAll")
+    $("#BacMetList").selectpicker("deselectAll")
 
     previousTableList = []
     // transform selector object that handles plots and hide their
@@ -1170,7 +1170,7 @@ const onLoad = () => {
   })
 
   /**
-   * Button event that submits the current selection of virulence genes to
+   * Button event that submits the current selection of metal genes to
    * display into pATLAS network. It makes a query of the selected virulence
    * genes to the psql database served side.
    */
@@ -1226,7 +1226,7 @@ const onLoad = () => {
    * event listener for dropdown clicks that populate the displayer in modal
    */
   $("#orderList, #familyList, #genusList, #speciesList, #cardList, " +
-    "#resfinderList, #plasmidFinderList, #virulenceList, #metalList")
+    "#resfinderList, #plasmidFinderList, #virulenceList, #BacMetList")
     .on("changed.bs.select", (e) => {
 
       const arrayOfSelections = $(`#${e.target.id}`).selectpicker("val")
@@ -1237,7 +1237,10 @@ const onLoad = () => {
       stringClass  = stringClass.charAt(0).toUpperCase() + stringClass.slice(1)
 
       // checks if a taxon is already in display
+      console.log(stringClass)
       const divStringClass = "#p_" + stringClass
+
+      console.log(divStringClass)
 
       filterDisplayer(arrayOfSelections, stringClass, divStringClass)
     })
