@@ -6,6 +6,9 @@
         href="{{ url_for('static', filename='images/pATLAS.png') }}"
         size="32x32">
   <title>Plasmid Atlas</title>
+  <!--custom Open Graph tags-->
+  <meta property="og:image"
+        content="{{ url_for('static', filename='images/pATLAS.png') }}" />
   <!--Import dependencies using yarn + webpack-->
   <script language="javascript" type="text/javascript" src="{{ url_for('static', filename='dist/bundle.min.js') }}"></script>
   <!-- Place this tag in your head or just before your close body tag. -->
