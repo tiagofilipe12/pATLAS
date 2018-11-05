@@ -12,6 +12,7 @@
 # Table of contents
 
 * [Description](#description)
+    * [Citation](#citation)
 * [Documentation](#documentation)
 * [Development](#development)
     * [Dependencies](#dependencies)
@@ -45,6 +46,13 @@ With this tool we have two main goals:
 well as facilitate the access to that metadata.
 2. Improve the ease of interpreting results from High Throughput Sequencing
    (HTS) for plasmid detection.
+
+## Citation
+
+Tiago F Jesus, Bruno Ribeiro-Gonçalves, Diogo N Silva, Valeria Bortolaia, 
+Mário Ramirez, João A Carriço; Plasmid ATLAS: plasmid visual analytics and 
+identification in high-throughput sequencing data, Nucleic Acids Research,
+gky1073, [https://doi.org/10.1093/nar/gky1073](https://doi.org/10.1093/nar/gky1073)
 
 # Documentation
 

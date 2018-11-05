@@ -40,3 +40,10 @@ dist results (for assemblies).
 * Download sequences for selected plasmids.
 * Display metadata for one plasmid or multiple selected plasmids.
 * Ability to share projects between sessions and users.
+
+## Citation
+
+Tiago F Jesus, Bruno Ribeiro-Gonçalves, Diogo N Silva, Valeria Bortolaia, 
+Mário Ramirez, João A Carriço; Plasmid ATLAS: plasmid visual analytics and 
+identification in high-throughput sequencing data, Nucleic Acids Research,
+gky1073, [https://doi.org/10.1093/nar/gky1073](https://doi.org/10.1093/nar/gky1073)
