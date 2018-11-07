@@ -677,15 +677,10 @@ const onLoad = () => {
    * Dynamically updates each one of the dropdowns and if the click is on the
    * viewList2 dropdown it will fire the projectLoadSubmit click event.
    */
-  $("#viewList, #viewList2").on("changed.bs.select", (e) => {
-
-    $("#viewList, #viewList2").selectpicker("val", $(`#${e.target.id}`).val())
-
+  $("#viewList2").on("changed.bs.select", (e) => {
+    $("#viewList").selectpicker("val", $(`#${e.target.id}`).val())
     // fires the click event if the selection is on viewList2
-    if (e.target.id === "viewList2") {
-      $("#projectLoadSubmit").click()
-    }
-
+    $("#projectLoadSubmit").click()
   })
 
 
@@ -1237,11 +1232,8 @@ const onLoad = () => {
       stringClass  = stringClass.charAt(0).toUpperCase() + stringClass.slice(1)
 
       // checks if a taxon is already in display
-      console.log(stringClass)
       const divStringClass = "#p_" + stringClass
-
-      console.log(divStringClass)
-
+      
       filterDisplayer(arrayOfSelections, stringClass, divStringClass)
     })
 
